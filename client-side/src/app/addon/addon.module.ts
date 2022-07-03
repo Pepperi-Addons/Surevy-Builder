@@ -7,15 +7,19 @@ import { PepNgxLibModule, PepAddonService } from '@pepperi-addons/ngx-lib';
 import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
 import { PepSizeDetectorModule } from '@pepperi-addons/ngx-lib/size-detector';
 import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
-import { PepIconRegistry, pepIconSystemClose } from '@pepperi-addons/ngx-lib/icon';
+import { PepIconRegistry, pepIconSystemClose, pepIconArrowLeftAlt } from '@pepperi-addons/ngx-lib/icon';
 
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 
 import { AddonService } from './addon.service';
 import { BlockComponent } from './index';
 
+import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
+//import { pepIconTextAlignCenter, pepIconTextAlignLeft, pepIconTextAlignRight, pepIconArrowBackRight, pepIconArrowBackLeft, pepIconArrowBack, pepIconArrowLeftAlt,pepIconArrowDown, pepIconArrowUp, PepIconModule, pepIconNumberPlus, PepIconRegistry, pepIconSystemBin, pepIconSystemBolt, pepIconSystemClose, pepIconSystemEdit, pepIconSystemMove } from '@pepperi-addons/ngx-lib/icon';
+
 const pepIcons = [
     pepIconSystemClose,
+    pepIconArrowLeftAlt
 ];
 
 export const routes: Routes = [
@@ -36,6 +40,7 @@ export const routes: Routes = [
         PepSizeDetectorModule,
         PepTopBarModule,
         PepPageLayoutModule,
+        PepButtonModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,

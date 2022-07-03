@@ -3,6 +3,7 @@ import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AddonService } from "./addon.service";
+import { IPepFormFieldClickEvent } from "@pepperi-addons/ngx-lib/form";
 
 @Component({
     selector: 'addon-block',
@@ -15,6 +16,7 @@ export class BlockComponent implements OnInit {
     @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
     
     screenSize: PepScreenSizeType;
+    public hasSurevy = false;
 
     constructor(
         public addonService: AddonService,
@@ -31,5 +33,9 @@ export class BlockComponent implements OnInit {
 
     openDialog() {
         
+    }
+
+    navigateSurevyPage(fieldClickEvent: IPepFormFieldClickEvent = null){
+        //this.navigationService.navigateToPage(fieldClickEvent.id);
     }
 }
