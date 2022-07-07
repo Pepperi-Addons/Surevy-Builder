@@ -1,7 +1,7 @@
 <div class="survey-container">
     <pep-page-layout [showShadow]="true">
         <div pep-side-area>
-            <pep-side-bar [ignoreResize]="true" [showToggle]="false" (stateChange)="onSidebarStateChange($event)">
+            <pep-side-bar [ignoreResize]="true" (stateChange)="onSidebarStateChange($event)">
                 <div header-content class="side-bar-title">
                     <pep-button class="back-button" sizeType="sm" iconName="arrow_left_alt"
                         (buttonClick)="onNavigateBackFromEditor();"></pep-button>
@@ -21,7 +21,7 @@
 
                     <h4>Add Items</h4>
 
-                    <pep-menu class="pep-spacing-element" [items]="menuItems" [type]="'action-select'"
+                    <pep-menu class="pep-spacing-element" [items]="menuItems" [text]="'Add a Question'" [iconName]="'arrow_down'"
                         (menuItemClick)="onAddQuestionClicked($event)">
                     </pep-menu>
 
