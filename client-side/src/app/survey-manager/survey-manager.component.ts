@@ -60,6 +60,6 @@ export class ServeyManagerComponent implements OnInit {
     }
 
     onAddQuestionClicked(item) {
-
+        console.log('onAddQuestionClicked', item);
     }
 }
