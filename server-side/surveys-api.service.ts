@@ -27,7 +27,7 @@ export class SurveyApiService {
         });
     }
 
-    private async upsertSurveyTablesSchemes(): Promise<AddonDataScheme[]> {
+    private async createSurveyTablesSchemes(): Promise<AddonDataScheme[]> {
         const promises: AddonDataScheme[] = [];
 
         // Create Survey table
@@ -120,8 +120,10 @@ export class SurveyApiService {
         return await this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).key(surveykey).get() as Survey;
     }
 
-    async upsertRelationsAndScheme(): Promise<void> {
-        this.upsertSurveyTablesSchemes();
+    async upsertRelationsAndScheme(install = true): Promise<void> {
+        if (install) {
+            this.createSurveyTablesSchemes();
+        }
 
         this.upsertSettingsRelation();
     }

@@ -27,7 +27,14 @@ export async function uninstall(client: Client, request: Request): Promise<any> 
 }
 
 export async function upgrade(client: Client, request: Request): Promise<any> {
-    return {success:true,resultObject:{}}
+    try {
+        const service = new SurveyApiService(client)
+        service.upsertRelationsAndScheme(false);
+    } catch (err) {
+        throw new Error(`Failed to create ADAL Tables. error - ${err}`);
+    }
+
+    return { success: true, resultObject: {} };
 }
 
 export async function downgrade(client: Client, request: Request): Promise<any> {
