@@ -20,6 +20,7 @@ import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 
 import { ServeysManagerComponent } from './surveys-manager.component';
+import { config } from '../addon.config';
 
 const pepIcons = [
     pepIconSystemClose,
@@ -56,7 +57,7 @@ export const routes: Routes = [
             loader: {
                 provide: TranslateLoader,
                 useFactory: (addonService: PepAddonService) => 
-                    PepAddonService.createMultiTranslateLoader(addonService),
+                    PepAddonService.createMultiTranslateLoader(addonService, ['ngx-lib', 'ngx-composite-lib'], config.AddonUUID),
                 deps: [PepAddonService]
             }, isolate: false
         }),

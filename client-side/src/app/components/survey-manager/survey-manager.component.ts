@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
+import { SurveysService } from "src/app/services/surveys.service";
 
 @Component({
     selector: 'survey-manager',
@@ -13,6 +14,8 @@ export class ServeyManagerComponent implements OnInit {
     @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
 
     screenSize: PepScreenSizeType;
+    showEditor = true;
+    sectionsColumnsDropList = [];
 
     businesUnitOptions: any[] = [{key: '1', value: '1'}, {key: '2', value: '2'}, {key: '3', value: '4'}]; //TEMP
     menuItems = [
@@ -35,6 +38,7 @@ export class ServeyManagerComponent implements OnInit {
 
     constructor(        
         public layoutService: PepLayoutService,
+        private surveysService: SurveysService,
         public translate: TranslateService
     ) {
         this.layoutService.onResize$.subscribe(size => {
@@ -42,10 +46,23 @@ export class ServeyManagerComponent implements OnInit {
         });        
     }
 
+    private subscribeEvents() {
+        // Get the sections id's into sectionsColumnsDropList for the drag & drop.
+        this.surveysService.sectionsChange$.subscribe(res => {
+            // Concat all results into one array.
+            this.sectionsColumnsDropList = [].concat(...res.map(section => {
+                return section.Key
+            }));
+        });
+    }
+
     ngOnInit() {
         console.log('loading ServeyManagerComponent');
+
+        this.subscribeEvents();
     }
    
+    
 
     onSidebarStateChange(state) {
         console.log('onSidebarStateChange', state);

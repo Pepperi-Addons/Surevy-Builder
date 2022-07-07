@@ -58,8 +58,8 @@ export class SurveyApiService {
 
         const addonBlockRelation: Relation = {
             RelationName: "SettingsBlock",
-            GroupName: 'Survey',
-            Name: 'Survey',
+            GroupName: 'Surveys',
+            Name: 'Surveys',
             Description: 'Survey Builder (Beta)',
             Type: "NgComponent",
             SubType: "NG14",

@@ -40,7 +40,9 @@
                         [styleType]="'strong'">
                     </pep-button>
                 </div>
-                <div>Main Area</div>
+                <div>
+                    <survey-builder-internal [editMode]="showEditor" [screenSize]="screenSize" [sectionsColumnsDropList]="sectionsColumnsDropList"></survey-builder-internal>
+                </div>
             </div>
         </ng-container>
     </pep-page-layout>

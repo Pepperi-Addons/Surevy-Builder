@@ -1,0 +1,14 @@
+:host {
+    display: block;
+}
+
+.sections-container {
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    display: grid;
+
+    .draggable-section {
+        display: block;
+    }
+}

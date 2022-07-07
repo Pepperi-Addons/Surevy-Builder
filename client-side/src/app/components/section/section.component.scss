@@ -1,0 +1,10 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
+
+.section-container {
+    position: relative;
+    display: grid;
+    height: inherit;
+    max-height: inherit;
+    min-height: variables.$draggable-item-height;
+
+}

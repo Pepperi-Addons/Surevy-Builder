@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { IPepGenericListDataSource, IPepGenericListPager, IPepGenericListActions, IPepGenericListInitData, PepGenericListService } from "@pepperi-addons/ngx-composite-lib/generic-list";
 import { DataViewFieldType, GridDataViewField, Page } from '@pepperi-addons/papi-sdk';
 import { PepSelectionData } from '@pepperi-addons/ngx-lib/list';
+import { NavigationService } from "src/app/services/navigation.service";
 
 
 @Component({
@@ -18,12 +19,19 @@ export class ServeysManagerComponent implements OnInit {
     dataSource: IPepGenericListDataSource;
     actions: IPepGenericListActions;
 
+    addPadding = true;
+
     constructor(
         public layoutService: PepLayoutService,
         public translate: TranslateService,
-        private _router: Router,
-        private _route: ActivatedRoute,
+        private navigationService: NavigationService,
+        private router: Router,
+        private activatedRoute: ActivatedRoute,
     ) {
+        this.activatedRoute.data.subscribe(data => {
+            this.addPadding = data.addPadding ?? true;
+        })
+
         this.layoutService.onResize$.subscribe(size => {
             this.screenSize = size;
         });
@@ -109,7 +117,8 @@ export class ServeysManagerComponent implements OnInit {
     }
 
     onSurveyClicked(event) {
-        this._router.navigate([`./addons/cf17b569-1af4-45a9-aac5-99f23cae45d8/surveys/123abc?dev=true`]);
+        // this._router.navigate([`./addons/cf17b569-1af4-45a9-aac5-99f23cae45d8/surveys/123abc?dev=true`]);
+        this.navigationService.navigateToSurvey('123abc');
     }
 
     onAddSurveyClicked() {
