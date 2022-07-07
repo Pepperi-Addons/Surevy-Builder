@@ -1,12 +1,11 @@
 import { NgModule, OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { BlockComponent } from './addon/addon.component';
 
 // Important for single spa
 @Component({
     selector: 'app-empty-route',
-    template: '<div></div>',
+    template: '<div>Route is not exist.</div>',
 })
 export class EmptyRouteComponent { }
 
@@ -29,10 +28,7 @@ const routes: Routes = [
             }
         ]
     },
-    {
-        path: '**',
-        component: EmptyRouteComponent
-    }
+    {   path: '**', component: EmptyRouteComponent }
 ];
 
 @NgModule({
