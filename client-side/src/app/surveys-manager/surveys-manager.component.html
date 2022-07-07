@@ -1,0 +1,14 @@
+<div class="surveys-container">
+    <div class="surveys-title">
+        {{ 'SURVEYS_MANAGER.MAIN_EXPLANATION' | translate }}
+    </div>
+    <pep-generic-list [dataSource]="dataSource" [actions]="actions" [inline]="true" [showTopBar]="true"
+        [showSearch]="true" [supportSorting]="true" [uuidMapping]="'Key'"
+        [title]="'SURVEYS_MANAGER.SECONDARY_HEADER' | translate" (fieldClick)="onSurveyClicked($event)">
+        <ng-container right-buttons>
+            <pep-button class="pep-spacing-element" [value]="'SURVEYS_MANAGER.ADD_SURVEY' | translate" [sizeType]="'sm'"
+                [styleType]="'strong'" (buttonClick)="onAddSurveyClicked()">
+            </pep-button>
+        </ng-container>
+    </pep-generic-list>
+</div>

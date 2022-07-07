@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BlockComponent } from './addon/addon.component';
@@ -8,18 +8,24 @@ import { BlockComponent } from './addon/addon.component';
     selector: 'app-empty-route',
     template: '<div></div>',
 })
-export class EmptyRouteComponent {}
+export class EmptyRouteComponent { }
 
 const routes: Routes = [
     {
-        path: `settings/:addon_uuid`,
+        path: `settings/:addonUUID`,
         children: [
             {
-                path: ':editor',
-                component: BlockComponent
-                // TODO: solve routing
-                // path: '**',
-                // loadChildren: () => import('./addon/addon.module').then(m => m.BlockModule)
+                path: '**',
+                loadChildren: () => import('./surveys-manager/surveys-manager.module').then(m => m.SurveysManagerModule)
+            },
+        ]
+    },
+    {
+        path: `addons/:addonUUID`,
+        children: [
+           {
+                path: '',
+                loadChildren: () => import('./survey-manager/survey-manager.module').then(m => m.SurveyManagerModule)
             }
         ]
     },

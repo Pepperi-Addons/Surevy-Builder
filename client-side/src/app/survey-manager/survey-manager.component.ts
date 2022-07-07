@@ -2,14 +2,12 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angu
 import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 
-import { AddonService } from "./addon.service";
-
 @Component({
-    selector: 'addon-block',
-    templateUrl: './addon.component.html',
-    styleUrls: ['./addon.component.scss']
+    selector: 'survey-manager',
+    templateUrl: './survey-manager.component.html',
+    styleUrls: ['./survey-manager.component.scss']
 })
-export class BlockComponent implements OnInit {
+export class ServeyManagerComponent implements OnInit {
     @Input() hostObject: any;
 
     @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
@@ -17,9 +15,25 @@ export class BlockComponent implements OnInit {
     screenSize: PepScreenSizeType;
 
     businesUnitOptions: any[] = [{key: '1', value: '1'}, {key: '2', value: '2'}, {key: '3', value: '4'}]; //TEMP
+    menuItems = [
+        {
+            key: `question1`,
+            text: 'question 1',
+            iconName: 'arrow_left_alt'
+        },
+        {
+            key: `question2`,
+            text: 'question 2',
+            iconName: 'arrow_left_alt'
+        },
+        {
+            key: `question3`,
+            text: 'question 3',
+            iconName: 'arrow_left_alt'
+        },
+    ] //TEMP
 
-    constructor(
-        public addonService: AddonService,
+    constructor(        
         public layoutService: PepLayoutService,
         public translate: TranslateService
     ) {
@@ -29,11 +43,9 @@ export class BlockComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.log('loading ServeyManagerComponent');
     }
-
-    openDialog() {
-
-    }
+   
 
     onSidebarStateChange(state) {
         console.log('onSidebarStateChange', state);
@@ -45,5 +57,9 @@ export class BlockComponent implements OnInit {
 
     onAddSectionClicked() {
         
+    }
+
+    onAddQuestionClicked(item) {
+
     }
 }

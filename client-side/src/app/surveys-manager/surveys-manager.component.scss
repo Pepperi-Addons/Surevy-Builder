@@ -1,0 +1,14 @@
+:host {
+    height: 100%;
+}
+
+.surveys-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 65rem;    
+    height: inherit;    
+}
+
+.surveys-title { 
+    max-width: 34rem;
+}

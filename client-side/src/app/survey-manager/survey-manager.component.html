@@ -21,6 +21,10 @@
 
                     <h4>Add Items</h4>
 
+                    <pep-menu class="pep-spacing-element" [items]="menuItems" [type]="'action-select'"
+                        (menuItemClick)="onAddQuestionClicked($event)">
+                    </pep-menu>
+
                     <pep-button value="Add a Section" styleType="weak" styleStateType="system" sizeType="lg"
                         iconName="number_plus" iconPosition="end" (buttonClick)="onAddSectionClicked()"></pep-button>
 
@@ -29,7 +33,7 @@
         </div>
         <ng-container pep-main-area>
             <div class="main-area-container">
-                <div class="header-container">                  
+                <div class="header-container">
                     <pep-button class="pep-spacing-element" [value]="'Preview'" [sizeType]="'sm'">
                     </pep-button>
                     <pep-button class="pep-spacing-element" [value]="'Publish'" [sizeType]="'sm'"

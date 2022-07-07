@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+
 import { MatIconModule } from '@angular/material/icon';
-/*
-import { PepIconModule, pepIconNumberPlus, PepIconRegistry, pepIconSystemBolt, pepIconSystemClose,
-    pepIconSystemEdit, pepIconSystemMove, pepIconSystemBin, pepIconViewCardMd, pepIconSystemView, pepIconDeviceMobile, pepIconDeviceTablet, pepIconDeviceDesktop } from '@pepperi-addons/ngx-lib/icon';*/
+import { PepGenericListModule } from '@pepperi-addons/ngx-composite-lib/generic-list';
+
 import { PepNgxLibModule, PepAddonService } from '@pepperi-addons/ngx-lib';
 import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
 import { PepSideBarModule } from '@pepperi-addons/ngx-lib/side-bar';
@@ -19,8 +19,7 @@ import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
 
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 
-import { AddonService } from './addon.service';
-import { BlockComponent } from './index';
+import { ServeysManagerComponent } from './surveys-manager.component';
 
 const pepIcons = [
     pepIconSystemClose,
@@ -31,19 +30,20 @@ const pepIcons = [
 export const routes: Routes = [
     {
         path: '',
-        component: BlockComponent
+        component: ServeysManagerComponent
     }
 ];
 
 @NgModule({
     declarations: [
-        BlockComponent,
+        ServeysManagerComponent,
     ],
     imports: [
         CommonModule,
         HttpClientModule,
-        MatIconModule,
+        MatIconModule,        
         PepNgxLibModule,
+        PepGenericListModule,
         PepSizeDetectorModule,
         PepTopBarModule,
         PepSideBarModule,
@@ -51,24 +51,23 @@ export const routes: Routes = [
         PepButtonModule,
         PepTextboxModule,
         PepTextareaModule,
-        PepSelectModule,
+        PepSelectModule,        
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,
-                useFactory: PepAddonService.createMultiTranslateLoader,
+                useFactory: (addonService: PepAddonService) => 
+                    PepAddonService.createMultiTranslateLoader(addonService),
                 deps: [PepAddonService]
             }, isolate: false
         }),
         RouterModule.forChild(routes)
     ],
-    exports:[BlockComponent],
+    exports:[ServeysManagerComponent],
     providers: [
-        TranslateStore,
-        // When loading this module from route we need to add this here (because only this module is loading).
-        AddonService
+        TranslateStore       
     ]
 })
-export class BlockModule {
+export class SurveysManagerModule {
     constructor(
         translate: TranslateService,
         private pepIconRegistry: PepIconRegistry,

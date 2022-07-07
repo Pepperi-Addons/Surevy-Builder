@@ -16,11 +16,11 @@ import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
+import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
 
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 
-import { AddonService } from './addon.service';
-import { BlockComponent } from './index';
+import { ServeyManagerComponent } from './survey-manager.component';
 
 const pepIcons = [
     pepIconSystemClose,
@@ -30,14 +30,14 @@ const pepIcons = [
 
 export const routes: Routes = [
     {
-        path: '',
-        component: BlockComponent
+        path: 'surveys/:surveyUUID',
+        component: ServeyManagerComponent
     }
 ];
 
 @NgModule({
     declarations: [
-        BlockComponent,
+        ServeyManagerComponent,
     ],
     imports: [
         CommonModule,
@@ -52,6 +52,7 @@ export const routes: Routes = [
         PepTextboxModule,
         PepTextareaModule,
         PepSelectModule,
+        PepMenuModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,
@@ -61,14 +62,12 @@ export const routes: Routes = [
         }),
         RouterModule.forChild(routes)
     ],
-    exports:[BlockComponent],
+    exports:[ServeyManagerComponent],
     providers: [
-        TranslateStore,
-        // When loading this module from route we need to add this here (because only this module is loading).
-        AddonService
+        TranslateStore       
     ]
 })
-export class BlockModule {
+export class SurveyManagerModule {
     constructor(
         translate: TranslateService,
         private pepIconRegistry: PepIconRegistry,
