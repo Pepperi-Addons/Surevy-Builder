@@ -8,12 +8,10 @@ import { PepAddonService } from '@pepperi-addons/ngx-lib';
 import { TranslateModule, TranslateLoader, TranslateStore } from '@ngx-translate/core';
 import { AppRoutingModule } from './app.routes';
 
-import { SurveysManagerModule } from './surveys-manager/surveys-manager.module';
-import { SurveyManagerModule } from './survey-manager/survey-manager.module';
-import { BlockModule } from './addon/addon.module';
+// import { SurveysManagerModule } from './components/surveys-manager/surveys-manager.module';
+// import { SurveyManagerModule } from './components/survey-manager/survey-manager.module';
 
 import { AppComponent } from './app.component';
-
 
 @NgModule({
     declarations: [
@@ -23,15 +21,14 @@ import { AppComponent } from './app.component';
         BrowserModule,
         BrowserAnimationsModule,
         HttpClientModule,
-        SurveysManagerModule,
-        SurveyManagerModule,
-        BlockModule,
+        // SurveysManagerModule,
+        // SurveyManagerModule,
         AppRoutingModule,       
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
                 useFactory: (addonService: PepAddonService) => 
-                    PepAddonService.createMultiTranslateLoader(addonService),
+                    PepAddonService.createMultiTranslateLoader(addonService, ['ngx-lib', 'ngx-composite-lib']),
                 deps: [PepAddonService]
             }
         })

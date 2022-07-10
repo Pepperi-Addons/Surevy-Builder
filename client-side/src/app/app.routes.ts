@@ -1,12 +1,10 @@
 import { NgModule, OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { BlockComponent } from './addon/addon.component';
 
-// Important for single spa
 @Component({
     selector: 'app-empty-route',
-    template: '<div></div>',
+    template: '<div>Route is not exist.</div>',
 })
 export class EmptyRouteComponent { }
 
@@ -16,7 +14,7 @@ const routes: Routes = [
         children: [
             {
                 path: '**',
-                loadChildren: () => import('./surveys-manager/surveys-manager.module').then(m => m.SurveysManagerModule)
+                loadChildren: () => import('./components/surveys-manager/surveys-manager.module').then(m => m.SurveysManagerModule)
             },
         ]
     },
@@ -25,14 +23,11 @@ const routes: Routes = [
         children: [
            {
                 path: '',
-                loadChildren: () => import('./survey-manager/survey-manager.module').then(m => m.SurveyManagerModule)
+                loadChildren: () => import('./components/survey-manager/survey-manager.module').then(m => m.SurveyManagerModule)
             }
         ]
     },
-    {
-        path: '**',
-        component: EmptyRouteComponent
-    }
+    {   path: '**', component: EmptyRouteComponent }
 ];
 
 @NgModule({

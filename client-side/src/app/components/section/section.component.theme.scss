@@ -1,0 +1,6 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions';
+
+
+.section-container {
+    background: functions.get-pep-color(color-system-primary-invert, color-base);
+}

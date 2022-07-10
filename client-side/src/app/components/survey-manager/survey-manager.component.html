@@ -1,7 +1,7 @@
 <div class="survey-container">
     <pep-page-layout [showShadow]="true">
         <div pep-side-area>
-            <pep-side-bar [ignoreResize]="true" [showToggle]="false" (stateChange)="onSidebarStateChange($event)">
+            <pep-side-bar [ignoreResize]="true" (stateChange)="onSidebarStateChange($event)">
                 <div header-content class="side-bar-title">
                     <pep-button class="back-button" sizeType="sm" iconName="arrow_left_alt"
                         (buttonClick)="onNavigateBackFromEditor();"></pep-button>
@@ -21,6 +21,10 @@
 
                     <h4>Add Items</h4>
 
+                    <pep-menu class="pep-spacing-element" [items]="menuItems" [text]="'Add a Question'" [iconName]="'arrow_down'" [sizeType]="'lg'"
+                        (menuItemClick)="onAddQuestionClicked($event)">
+                    </pep-menu>
+
                     <pep-button value="Add a Section" styleType="weak" styleStateType="system" sizeType="lg"
                         iconName="number_plus" iconPosition="end" (buttonClick)="onAddSectionClicked()"></pep-button>
 
@@ -29,14 +33,16 @@
         </div>
         <ng-container pep-main-area>
             <div class="main-area-container">
-                <div class="header-container">                  
+                <div class="header-container">
                     <pep-button class="pep-spacing-element" [value]="'Preview'" [sizeType]="'sm'">
                     </pep-button>
                     <pep-button class="pep-spacing-element" [value]="'Publish'" [sizeType]="'sm'"
                         [styleType]="'strong'">
                     </pep-button>
                 </div>
-                <div>Main Area</div>
+                <div>
+                    <survey-builder-internal [editMode]="showEditor" [screenSize]="screenSize" [sectionsColumnsDropList]="sectionsColumnsDropList"></survey-builder-internal>
+                </div>
             </div>
         </ng-container>
     </pep-page-layout>
