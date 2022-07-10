@@ -1,6 +1,6 @@
 <pep-page-layout>
     <ng-container pep-top-area>
-        <pep-top-bar [title]="('Title_Addon' | translate)">
+        <pep-top-bar [title]="('SURVEY_MANAGER.MAIN_HEADER' | translate)">
             <!-- <div header-start-content>
                 <pep-button  class="back-button pull-left flip pep-spacing-element" iconName="arrow_left_alt" (buttonClick)="navigateSurevyPage();"></pep-button>
             </div> -->
@@ -12,10 +12,10 @@
     <ng-container pep-main-area>
         <div class="add-on-width">
             <div class="pageExplanation">
-                <span class="body-md">{{ 'PAGES_MANAGER.MAIN_EXPLANATION' | translate }}</span>
+                <span class="body-md">{{ 'SURVEY_MANAGER.MAIN_EXPLANATION' | translate }}</span>
             </div>
             <pep-generic-list *ngIf="hasSurevy" [dataSource]="pagesDataSource" [actions]="actions" [inline]="true" [showTopBar]="true" [showSearch]="true"
-                    [supportSorting]="true" [uuidMapping]="'Key'" [title]="'PAGES_MANAGER.SECONDARY_HEADER' | translate" (fieldClick)="onCustomizeFieldClick($event)"> 
+                    [supportSorting]="true" [uuidMapping]="'Key'" [title]="'SURVEY_MANAGER.SECONDARY_HEADER' | translate" (fieldClick)="onCustomizeFieldClick($event)"> 
                 <ng-container right-buttons >
                     <ng-container *ngTemplateOutlet="topBarEnd"></ng-container>
                 </ng-container>
@@ -31,8 +31,8 @@
                             <img [src]="imagesPath + 'brand-leaf-skiny.svg'">
                             <img [src]="imagesPath + 'brand-leaf-round.svg'">
                         </div>
-                        <h2>{{ "PAGES_MANAGER.PAGES_HEADER" | translate}}</h2>
-                        <span>{{ "PAGES_MANAGER.NO_PAGES_MSG" | translate}}</span>
+                        <h2>{{ "SURVEY_MANAGER.PAGES_HEADER" | translate}}</h2>
+                        <span>{{ "SURVEY_MANAGER.NO_PAGES_MSG" | translate}}</span>
                 </div>
             </ng-container>
         </div>
@@ -42,7 +42,7 @@
 <ng-template #topBarEnd>
     <!-- <pep-menu class="pep-spacing-element" [items]="[{key: 'import', text: 'ACTIONS.IMPORT' | translate }]" [sizeType]="'sm'" (menuItemClick)="onMenuItemClicked($event)">
     </pep-menu> -->
-    <pep-button class="pep-spacing-element" [value]="'PAGES_MANAGER.A_PAGE' | translate" [sizeType]="'sm'" [styleType]="'strong'" (buttonClick)="addNewPage();">
+    <pep-button class="pep-spacing-element" [value]="'SURVEY_MANAGER.A_SURVEY' | translate" [sizeType]="'sm'" [styleType]="'strong'" (buttonClick)="addNewPage();">
     </pep-button>
 </ng-template>
 
