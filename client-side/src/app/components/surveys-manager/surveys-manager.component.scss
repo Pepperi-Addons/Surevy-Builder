@@ -5,6 +5,16 @@
     height: 100%;
 }
 
+.surveys-container {
+    &.add-padding {
+        padding-inline: variables.$content-padding;
+
+        @media (max-width: variables.$screen-max-size-xs) {
+            padding-inline: 0;
+        }
+    }
+}
+
 // .surveys-container {
 //     display: flex;
 //     flex-direction: column;
