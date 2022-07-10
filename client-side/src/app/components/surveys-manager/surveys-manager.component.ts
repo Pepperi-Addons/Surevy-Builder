@@ -17,7 +17,7 @@ export class ServeysManagerComponent implements OnInit {
     screenSize: PepScreenSizeType;
 
     dataSource: IPepGenericListDataSource;
-    actions: IPepGenericListActions;
+    //actions: IPepGenericListActions;
 
     addPadding = true;
     //imagesPath = '';
@@ -41,7 +41,7 @@ export class ServeysManagerComponent implements OnInit {
     ngOnInit() {
         //
         this.dataSource = this.setDataSource();
-        this.actions = this.setActions();
+        //this.actions = this.setActions();
     }
 
     setDataSource() {
@@ -99,9 +99,33 @@ export class ServeysManagerComponent implements OnInit {
         }
     }
 
-    setActions(): IPepGenericListActions {
-        return {
-            get: async (data: PepSelectionData) => {
+    // setActions(): IPepGenericListActions {
+    //     return {
+    //         get: async (data: PepSelectionData) => {
+    //             return [];
+    //         }
+    //     }
+    // }
+
+    actions: IPepGenericListActions = {        
+        get: async (data: PepSelectionData) => {
+            if (data?.rows.length === 1 ) {
+                return [{
+                        title: this.translate.instant("ACTIONS.EDIT"),
+                        handler: async (data: PepSelectionData) => {
+                            this._navigationService.navigateToSurvey(data?.rows[0]);
+                        }
+                    }, {
+                        title: this.translate.instant("ACTIONS.DELETE"),
+                        handler: async (data: PepSelectionData) => {
+                            if (data?.rows.length > 0) {
+                                //this.deleteSurvey(data?.rows[0]);
+                            }
+                        }
+                    }
+                ]
+            } 
+            else {
                 return [];
             }
         }
@@ -118,8 +142,7 @@ export class ServeysManagerComponent implements OnInit {
     }
 
     onSurveyClicked(event) {
-        // this._router.navigate([`./addons/cf17b569-1af4-45a9-aac5-99f23cae45d8/surveys/123abc?dev=true`]);
-        this._navigationService.navigateToSurvey('123abc');
+        this._navigationService.navigateToSurvey(event.id);
     }
 
     onAddSurveyClicked() {
