@@ -20,8 +20,8 @@ export class ServeysManagerComponent implements OnInit {
     actions: IPepGenericListActions;
 
     addPadding = true;
-    imagesPath = '';
-    hasSurevy = true;
+    //imagesPath = '';
+    //hasSurevy = true;
 
     constructor(
         public layoutService: PepLayoutService,
@@ -47,7 +47,7 @@ export class ServeysManagerComponent implements OnInit {
     setDataSource() {
         return {
             init: async (params) => {
-                //TODO - get serveys from api
+                //TODO - get serveys from api and set the hasSurvey to true/false when get surveys
                 const serveys: any[] = [
                     {
                         Name: 'Survey 1',
@@ -77,7 +77,7 @@ export class ServeysManagerComponent implements OnInit {
                         Type: 'Grid',
                         Title: '',
                         Fields: [
-                            this.getRegularReadOnlyColumn('Name', 'Link'),
+                            this.getRegularReadOnlyColumn('Name', 'Link',),
                             this.getRegularReadOnlyColumn('Description'),
                             this.getRegularReadOnlyColumn('CreationDate', 'DateAndTime'),
                             this.getRegularReadOnlyColumn('ModificationDate', 'DateAndTime'),
@@ -111,7 +111,7 @@ export class ServeysManagerComponent implements OnInit {
         return {
             FieldID: columnId,
             Type: columnType,
-            Title: this.translate.instant(`SURVEYS_MANAGER.GRID_HEADER_${columnId.toUpperCase()}`),
+            Title: `SURVEYS_MANAGER.GRID_HEADER.${columnId.toUpperCase()}`,// this.translate.instant(`SURVEYS_MANAGER.GRID_HEADER_${columnId.toUpperCase()}`),
             Mandatory: false,
             ReadOnly: true
         }

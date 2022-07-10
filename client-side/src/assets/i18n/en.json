@@ -4,11 +4,13 @@
         "ADD_SURVEY": "Add a Survey",
         "MAIN_EXPLANATION": "Create new survey with our drag & drop builder that gives you total control of each detail of your survey.",
         "SECONDARY_HEADER": "Surveys",
-        "GRID_HEADER_NAME": "Name",
-        "GRID_HEADER_DESCRIPTION": "Description",
-        "GRID_HEADER_CREATIONDATE": "Creation Date",
-        "GRID_HEADER_MODIFICATIONDATE": "Modification Date",
-        "GRID_HEADER_STATUS": "Status",
-        "GRID_HEADER_PUBLISHED": "Published"             
-    }    
+        "GRID_HEADER": {
+            "NAME": "Name",
+            "DESCRIPTION": "Description",
+            "CREATIONDATE": "Creation Date",
+            "MODIFICATIONDATE": "Modification Date",
+            "STATUS": "Status",
+            "PUBLISHED": "Published"             
+        } 
+    }   
 }

@@ -26,7 +26,7 @@
 
     <ng-container pep-main-area>
         <div class="add-on-width">
-            <div class="pageExplanation">
+            <div class="surveyExplanation">
                 <span class="body-md">{{ 'SURVEYS_MANAGER.MAIN_EXPLANATION' | translate }}</span>
             </div>
             <pep-generic-list [dataSource]="dataSource" [actions]="actions" [inline]="true" [showTopBar]="true"
@@ -38,27 +38,21 @@
             </pep-button>
         </ng-container>
     </pep-generic-list>
-            <!-- <pep-generic-list *ngIf="hasSurevy" [dataSource]="dataSource" [actions]="actions" [inline]="true" [showTopBar]="true" [showSearch]="true"
-                    [supportSorting]="true" [uuidMapping]="'Key'" [title]="'SURVEYS_MANAGER.SECONDARY_HEADER' | translate" (fieldClick)="onSurveyClicked($event)"> 
-                <ng-container right-buttons >
-                    <ng-container *ngTemplateOutlet="topBarEnd"></ng-container>
-                </ng-container>
-            </pep-generic-list> -->
-            <ng-container *ngIf="!hasSurevy">
-                <pep-top-bar class="main-top-header" [inline]="true">
-                    <div header-end-content>
-                        <ng-container *ngTemplateOutlet="topBarEnd"></ng-container>
-                    </div>
-                </pep-top-bar>
-                <div class="PagesNotFoundMsg">
-                        <div class="leaf-background">
-                            <img [src]="imagesPath + 'brand-leaf-skiny.svg'">
-                            <img [src]="imagesPath + 'brand-leaf-round.svg'">
-                        </div>
-                        <h2>{{ "SURVEYS_MANAGER.PAGES_HEADER" | translate}}</h2>
-                        <span>{{ "SURVEYS_MANAGER.NO_PAGES_MSG" | translate}}</span>
+    <!-- <ng-container *ngIf="!hasSurevy">
+        <pep-top-bar class="main-top-header" [inline]="true">
+            <div header-end-content>
+                <ng-container *ngTemplateOutlet="topBarEnd"></ng-container>
+            </div>
+        </pep-top-bar>
+        <div class="PagesNotFoundMsg">
+                <div class="leaf-background">
+                    <img [src]="imagesPath + 'brand-leaf-skiny.svg'">
+                    <img [src]="imagesPath + 'brand-leaf-round.svg'">
                 </div>
-            </ng-container>
+                <h2>{{ "SURVEYS_MANAGER.PAGES_HEADER" | translate}}</h2>
+                <span>{{ "SURVEYS_MANAGER.NO_PAGES_MSG" | translate}}</span>
+        </div>
+    </ng-container> -->
         </div>
     </ng-container>
 </pep-page-layout>
