@@ -6,6 +6,8 @@ import { IPepGenericListDataSource, IPepGenericListPager, IPepGenericListActions
 import { DataViewFieldType, GridDataViewField, Page } from '@pepperi-addons/papi-sdk';
 import { PepSelectionData } from '@pepperi-addons/ngx-lib/list';
 import { NavigationService } from "src/app/services/navigation.service";
+import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
+import { SurveysService } from "../../services/surveys.service";
 
 
 @Component({
@@ -17,17 +19,19 @@ export class ServeysManagerComponent implements OnInit {
     screenSize: PepScreenSizeType;
 
     dataSource: IPepGenericListDataSource;
-    actions: IPepGenericListActions;
+    //actions: IPepGenericListActions;
 
     addPadding = true;
-    imagesPath = '';
-    hasSurevy = true;
+    //imagesPath = '';
+    //hasSurevy = true;
 
     constructor(
         public layoutService: PepLayoutService,
         public translate: TranslateService,
         private _navigationService: NavigationService,        
         private _activatedRoute: ActivatedRoute,
+        private surveysService: SurveysService,
+        private dialog: PepDialogService,
     ) {
         this._activatedRoute.data.subscribe(data => {
             this.addPadding = data.addPadding ?? true;
@@ -41,13 +45,13 @@ export class ServeysManagerComponent implements OnInit {
     ngOnInit() {
         //
         this.dataSource = this.setDataSource();
-        this.actions = this.setActions();
+        //this.actions = this.setActions();
     }
 
     setDataSource() {
         return {
             init: async (params) => {
-                //TODO - get serveys from api
+                //TODO - get serveys from api and set the hasSurvey to true/false when get surveys
                 const serveys: any[] = [
                     {
                         Name: 'Survey 1',
@@ -77,7 +81,7 @@ export class ServeysManagerComponent implements OnInit {
                         Type: 'Grid',
                         Title: '',
                         Fields: [
-                            this.getRegularReadOnlyColumn('Name', 'Link'),
+                            this.getRegularReadOnlyColumn('Name', 'Link',),
                             this.getRegularReadOnlyColumn('Description'),
                             this.getRegularReadOnlyColumn('CreationDate', 'DateAndTime'),
                             this.getRegularReadOnlyColumn('ModificationDate', 'DateAndTime'),
@@ -99,9 +103,33 @@ export class ServeysManagerComponent implements OnInit {
         }
     }
 
-    setActions(): IPepGenericListActions {
-        return {
-            get: async (data: PepSelectionData) => {
+    // setActions(): IPepGenericListActions {
+    //     return {
+    //         get: async (data: PepSelectionData) => {
+    //             return [];
+    //         }
+    //     }
+    // }
+
+    actions: IPepGenericListActions = {        
+        get: async (data: PepSelectionData) => {
+            if (data?.rows.length === 1 ) {
+                return [{
+                        title: this.translate.instant("ACTIONS.EDIT"),
+                        handler: async (data: PepSelectionData) => {
+                            this._navigationService.navigateToSurvey(data?.rows[0]);
+                        }
+                    }, {
+                        title: this.translate.instant("ACTIONS.DELETE"),
+                        handler: async (data: PepSelectionData) => {
+                            if (data?.rows.length > 0) {
+                                this.deleteSurvey(data?.rows[0]);
+                            }
+                        }
+                    }
+                ]
+            } 
+            else {
                 return [];
             }
         }
@@ -111,19 +139,32 @@ export class ServeysManagerComponent implements OnInit {
         return {
             FieldID: columnId,
             Type: columnType,
-            Title: this.translate.instant(`SURVEYS_MANAGER.GRID_HEADER_${columnId.toUpperCase()}`),
+            Title: `SURVEYS_MANAGER.GRID_HEADER.${columnId.toUpperCase()}`,// this.translate.instant(`SURVEYS_MANAGER.GRID_HEADER_${columnId.toUpperCase()}`),
             Mandatory: false,
             ReadOnly: true
         }
     }
 
     onSurveyClicked(event) {
-        // this._router.navigate([`./addons/cf17b569-1af4-45a9-aac5-99f23cae45d8/surveys/123abc?dev=true`]);
-        this._navigationService.navigateToSurvey('123abc');
+        this._navigationService.navigateToSurvey(event.id);
     }
 
     onAddSurveyClicked() {
 
+    }
+
+    deleteSurvey(surveyID: string) {
+        const content = this.translate.instant('SURVEYS_MANAGER.DELETE_SURVEY.MSG');
+        const title = this.translate.instant('SURVEYS_MANAGER.DELETE_SURVEY.TITLE');
+        const dataMsg = new PepDialogData({title, actionsType: "cancel-delete", content});
+
+        this.dialog.openDefaultDialog(dataMsg).afterClosed().subscribe((isDeletePressed) => {
+            if (isDeletePressed) {
+                this.surveysService.deleteSurvey(this._navigationService.addonUUID, surveyID).subscribe((res) => {
+                         this.dataSource = this.setDataSource();
+                 });
+            }
+        });
     }
 
 
