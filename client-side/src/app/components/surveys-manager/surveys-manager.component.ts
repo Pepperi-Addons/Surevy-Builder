@@ -7,7 +7,7 @@ import { DataViewFieldType, GridDataViewField, Page } from '@pepperi-addons/papi
 import { PepSelectionData } from '@pepperi-addons/ngx-lib/list';
 import { NavigationService } from "src/app/services/navigation.service";
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
-import { SurveysService } from "../../services/surveys.service";
+import { SurveysService, Survey, ISurveyRowModel } from "../../services/surveys.service";
 
 
 @Component({
@@ -22,6 +22,8 @@ export class ServeysManagerComponent implements OnInit {
     //actions: IPepGenericListActions;
 
     addPadding = true;
+    totalSurveys: number = 0;
+    surveys: ISurveyRowModel[];
     //imagesPath = '';
     //hasSurevy = true;
 
@@ -52,26 +54,46 @@ export class ServeysManagerComponent implements OnInit {
         return {
             init: async (params) => {
                 //TODO - get serveys from api and set the hasSurvey to true/false when get surveys
-                const serveys: any[] = [
-                    {
-                        Name: 'Survey 1',
-                        Description: 'Survey 1 description',
-                        CreationDate: '2022-07-04T07:16:28.928Z',
-                        ModificationDate: '2022-07-04T09:00:00.928Z',
-                        Published: false
-                    },
-                    {
-                        Name: 'Survey 2',
-                        Description: 'Survey 2 description',
-                        CreationDate: '2022-08-06T08:15:30.928Z',
-                        ModificationDate: '2022-08-06T08:15:30.928Z',
-                        Published: false
-                    }
-                ]; //TEMP
+                // const serveys: any[] = [
+                //     {
+                //         Name: 'Survey 1',
+                //         Description: 'Survey 1 description',
+                //         CreationDate: '2022-07-04T07:16:28.928Z',
+                //         ModificationDate: '2022-07-04T09:00:00.928Z',
+                //         Published: false
+                //     },
+                //     {
+                //         Name: 'Survey 2',
+                //         Description: 'Survey 2 description',
+                //         CreationDate: '2022-08-06T08:15:30.928Z',
+                //         ModificationDate: '2022-08-06T08:15:30.928Z',
+                //         Published: false
+                //     }
+                // ]; 
+
+                // this.totalSurveys = 2;
+
+                let options = 'order_by=';
+
+                if (params.sorting) {
+                    options += `${params.sorting.sortBy} ${params.sorting?.isAsc ? 'ASC' : 'DESC'}`;
+                } else {
+                    options += 'Name ASC';
+                }
+                if (params.searchString?.length > 0) {
+                    options += `&where=${params.searchString}`;
+                }
+                
+                this.surveys = await this.surveysService.getSurveys(this._navigationService.addonUUID, encodeURI(options)).toPromise().then((surveys) => {
+                    return surveys; 
+                });
+
+                this.totalSurveys = this.surveys.length;
+
                 return {
 
-                    items: serveys,
-                    totalCount: serveys.length,
+                    items: this.surveys,
+                    totalCount: this.surveys.length,
                     dataView: {
                         Context: {
                             Name: '',
@@ -102,14 +124,6 @@ export class ServeysManagerComponent implements OnInit {
             }
         }
     }
-
-    // setActions(): IPepGenericListActions {
-    //     return {
-    //         get: async (data: PepSelectionData) => {
-    //             return [];
-    //         }
-    //     }
-    // }
 
     actions: IPepGenericListActions = {        
         get: async (data: PepSelectionData) => {
@@ -150,7 +164,13 @@ export class ServeysManagerComponent implements OnInit {
     }
 
     onAddSurveyClicked() {
-
+        this.surveysService.createNewSurvey(this._navigationService.addonUUID, this.totalSurveys).subscribe((survey: Survey) => {
+            if (survey) {
+                this._navigationService.navigateToSurvey(survey.Key);
+            } else {
+                // TODO: show error.
+            }
+        });
     }
 
     deleteSurvey(surveyID: string) {
