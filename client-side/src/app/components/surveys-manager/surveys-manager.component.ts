@@ -20,6 +20,8 @@ export class ServeysManagerComponent implements OnInit {
     actions: IPepGenericListActions;
 
     addPadding = true;
+    imagesPath = '';
+    hasSurevy = true;
 
     constructor(
         public layoutService: PepLayoutService,
