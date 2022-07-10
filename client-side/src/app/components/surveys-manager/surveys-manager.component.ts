@@ -6,6 +6,8 @@ import { IPepGenericListDataSource, IPepGenericListPager, IPepGenericListActions
 import { DataViewFieldType, GridDataViewField, Page } from '@pepperi-addons/papi-sdk';
 import { PepSelectionData } from '@pepperi-addons/ngx-lib/list';
 import { NavigationService } from "src/app/services/navigation.service";
+import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
+import { SurveysService } from "../../services/surveys.service";
 
 
 @Component({
@@ -28,6 +30,8 @@ export class ServeysManagerComponent implements OnInit {
         public translate: TranslateService,
         private _navigationService: NavigationService,        
         private _activatedRoute: ActivatedRoute,
+        private surveysService: SurveysService,
+        private dialog: PepDialogService,
     ) {
         this._activatedRoute.data.subscribe(data => {
             this.addPadding = data.addPadding ?? true;
@@ -119,7 +123,7 @@ export class ServeysManagerComponent implements OnInit {
                         title: this.translate.instant("ACTIONS.DELETE"),
                         handler: async (data: PepSelectionData) => {
                             if (data?.rows.length > 0) {
-                                //this.deleteSurvey(data?.rows[0]);
+                                this.deleteSurvey(data?.rows[0]);
                             }
                         }
                     }
@@ -147,6 +151,20 @@ export class ServeysManagerComponent implements OnInit {
 
     onAddSurveyClicked() {
 
+    }
+
+    deleteSurvey(surveyID: string) {
+        const content = this.translate.instant('SURVEYS_MANAGER.DELETE_SURVEY.MSG');
+        const title = this.translate.instant('SURVEYS_MANAGER.DELETE_SURVEY.TITLE');
+        const dataMsg = new PepDialogData({title, actionsType: "cancel-delete", content});
+
+        this.dialog.openDefaultDialog(dataMsg).afterClosed().subscribe((isDeletePressed) => {
+            if (isDeletePressed) {
+                this.surveysService.deleteSurvey(this._navigationService.addonUUID, surveyID).subscribe((res) => {
+                         this.dataSource = this.setDataSource();
+                 });
+            }
+        });
     }
 
 
