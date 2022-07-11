@@ -22,7 +22,7 @@ export async function remove_survey(client: Client, request: Request): Promise<a
 export async function get_surveys_data(client: Client, request: Request): Promise<any> {
     try {
         const service = new SurveyApiService(client);
-        return service.getSurveyData(request.query);
+        return service.getSurveysData(request.query);
     } catch(err) {
         throw new Error(`Failed to get surveys data. error - ${err}`);
     }

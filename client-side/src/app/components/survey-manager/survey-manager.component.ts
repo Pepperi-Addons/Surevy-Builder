@@ -1,19 +1,21 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy } from "@angular/core";
+import { Subscription } from 'rxjs';
 import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
 import { NavigationService } from '../../services/navigation.service';
+
 
 @Component({
     selector: 'survey-manager',
     templateUrl: './survey-manager.component.html',
     styleUrls: ['./survey-manager.component.scss']
 })
-export class ServeyManagerComponent implements OnInit {
+export class ServeyManagerComponent implements OnInit, OnDestroy {
     @Input() hostObject: any;
 
     @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
-
+   
     screenSize: PepScreenSizeType;
     showEditor = true;
     sectionsColumnsDropList = [];
@@ -37,25 +39,27 @@ export class ServeyManagerComponent implements OnInit {
         },
     ] //TEMP
 
+    private _subscriptions: Subscription[] = [];
+
     constructor(        
         public layoutService: PepLayoutService,
         private _surveysService: SurveysService,
         private _navigationService: NavigationService,
         public translate: TranslateService
     ) {
-        this.layoutService.onResize$.subscribe(size => {
+        this._subscriptions.push(this.layoutService.onResize$.subscribe(size => {
             this.screenSize = size;
-        });        
+        }));   
     }
 
     private subscribeEvents() {
         // Get the sections id's into sectionsColumnsDropList for the drag & drop.
-        this._surveysService.sectionsChange$.subscribe(res => {
+        this._subscriptions.push(this._surveysService.sectionsChange$.subscribe(res => {
             // Concat all results into one array.
             this.sectionsColumnsDropList = [].concat(...res.map(section => {
                 return section.Key
             }));
-        });
+        }));
     }
 
     ngOnInit() {
@@ -75,10 +79,14 @@ export class ServeyManagerComponent implements OnInit {
     }
 
     onAddSectionClicked() {
-        
+        this._surveysService.addSection();
     }
 
     onAddQuestionClicked(item) {
         console.log('onAddQuestionClicked', item);
+    }
+
+    ngOnDestroy(): void {
+        this._subscriptions.forEach(sub => sub.unsubscribe);
     }
 }

@@ -1,7 +1,7 @@
 const { shareAll, share, withModuleFederationPlugin } = require('@angular-architects/module-federation/webpack');
 const filename = 'survey_builder';
 
-module.exports = withModuleFederationPlugin({
+const webpackConfig = withModuleFederationPlugin({
     name: filename,
     filename: `${filename}.js`,
     exposes: {
@@ -12,3 +12,11 @@ module.exports = withModuleFederationPlugin({
         ...shareAll({ strictVersion: true, requiredVersion: 'auto' }),
     }
 });
+
+module.exports = {
+    ...webpackConfig,
+    output: {
+        ...webpackConfig.output,
+        uniqueName: filename,
+    },
+};

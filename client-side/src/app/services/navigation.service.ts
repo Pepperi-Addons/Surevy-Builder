@@ -42,7 +42,7 @@ export class NavigationService {
         }
     }
 
-    navigateToSurvey(surveyKey: string){
+    navigateToSurvey(surveyKey: string) {
         this.router.navigate([`./block/Surveys/${surveyKey}`], {
             relativeTo: this.route,
             queryParamsHandling: 'merge'
