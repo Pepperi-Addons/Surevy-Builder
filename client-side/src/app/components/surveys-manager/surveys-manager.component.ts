@@ -6,9 +6,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { IPepGenericListDataSource, IPepGenericListPager, IPepGenericListActions, IPepGenericListInitData, PepGenericListService } from "@pepperi-addons/ngx-composite-lib/generic-list";
 import { DataViewFieldType, GridDataViewField, Page } from '@pepperi-addons/papi-sdk';
 import { PepSelectionData } from '@pepperi-addons/ngx-lib/list';
-import { NavigationService } from "src/app/services/navigation.service";
+import { NavigationService } from "../../services/navigation.service";
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
-import { SurveysService, Survey, ISurveyRowModel } from "../../services/surveys.service";
+import { SurveysService } from "../../services/surveys.service";
+import { Survey, ISurveyRowModel } from "../../model/survey.model";
 
 
 @Component({

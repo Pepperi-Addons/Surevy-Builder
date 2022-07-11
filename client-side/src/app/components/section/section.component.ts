@@ -1,8 +1,9 @@
 import { Component, ElementRef, HostBinding, HostListener, Input, OnChanges, OnInit, QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragEnter, CdkDragExit, CdkDragStart, CdkDropList } from '@angular/cdk/drag-drop';
-import { SurveySection, SurveysService } from 'src/app/services/surveys.service';
+import { SurveysService } from '../../services/surveys.service';
 import { TranslateService } from '@ngx-translate/core';
 import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
+import { SurveySection } from "../../model/survey.model";
 
 @Component({
     selector: 'section',

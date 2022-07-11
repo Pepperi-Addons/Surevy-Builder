@@ -9,47 +9,9 @@ import { NgComponentRelation, ResourceType, AddonData } from "@pepperi-addons/pa
 import { Observable, BehaviorSubject } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
+import { ISurveyEditor, ISurveyRowModel, Survey, SurveySection, ISurveyBuilderData } from "../model/survey.model";
+
 // import * as _ from 'lodash';
-
-
-export interface Survey extends AddonData {
-    Name?: string;
-    Description?: string;
-    Sections?: SurveySection[];
-}
-
-export interface SurveySection {
-    Key: string;
-    Name?: string;
-    Title?: string;
-    Questions?: SurveyQuestion[];
-}
-export interface SurveyQuestion {
-    Key: string;
-    [key: string]: any;
-}
-
-export type SurveyRowStatusType = 'draft' | 'published';
-export interface ISurveyRowModel {
-    Key: string,
-    Name: string,
-    Description: string,
-    CreationDate: string,
-    ModificationDate: string,
-    Published: boolean,
-    Draft: boolean,
-}
-
-interface ISurveyBuilderData {
-    survey: Survey
-}
-
-export interface ISurveyEditor {
-    id: string,
-    surveyName: string,
-    surveyDescription: string,
-    
-}
 
 @Injectable({
     providedIn: 'root',
@@ -61,6 +23,13 @@ export class SurveysService {
         if (this._defaultSectionTitle === '') {
             this._defaultSectionTitle = value;
         }
+    }
+    
+    // TODO:
+    // This subject is for load the current survey editor (Usage only in edit mode).
+    private _surveyEditorSubject: BehaviorSubject<ISurveyEditor> = new BehaviorSubject<ISurveyEditor>(null);
+    get surveyEditorLoad$(): Observable<ISurveyEditor> {
+        return this._surveyEditorSubject.asObservable().pipe(distinctUntilChanged((prevSurveyEditor, nextSurveyEditor) => prevSurveyEditor?.key === nextSurveyEditor?.key));
     }
 
     // This is the sections subject (a pare from the survey object)
@@ -158,8 +127,8 @@ export class SurveysService {
         const currentSurvey = this._surveySubject.getValue();
 
         if (currentSurvey) {
-            currentSurvey.Name = surveyData.surveyName;
-            currentSurvey.Description = surveyData.surveyDescription;
+            currentSurvey.Name = surveyData.name;
+            currentSurvey.Description = surveyData.description;
 
             this.notifySurveyChange(currentSurvey);
         }

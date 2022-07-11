@@ -2,10 +2,11 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, Renderer2, ViewChild } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { CdkDragDrop  } from '@angular/cdk/drag-drop';
-import { Survey, SurveySection, SurveysService } from '../../services/surveys.service';
+import { SurveysService } from '../../services/surveys.service';
 import { TranslateService } from '@ngx-translate/core';
 import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { Survey, SurveySection } from "../../model/survey.model";
 
 export interface ISurveyBuilderHostObject {
     surveyKey: string;
