@@ -21,7 +21,8 @@
 
                     <h4>Add Items</h4>
 
-                    <pep-menu class="pep-spacing-element" [items]="menuItems" [text]="'Add a Question'" [iconName]="'arrow_down'" [sizeType]="'lg'"
+                    <pep-menu class="pep-spacing-element" [items]="menuItems" [text]="'Add a Question'"
+                        [iconName]="'arrow_down'" [sizeType]="'lg'" [classNames]="'streched'"
                         (menuItemClick)="onAddQuestionClicked($event)">
                     </pep-menu>
 
@@ -41,7 +42,8 @@
                     </pep-button>
                 </div>
                 <div>
-                    <survey-builder-internal [editMode]="showEditor" [screenSize]="screenSize" [sectionsColumnsDropList]="sectionsColumnsDropList"></survey-builder-internal>
+                    <survey-builder-internal [editMode]="showEditor" [screenSize]="screenSize"
+                        [sectionsColumnsDropList]="sectionsColumnsDropList"></survey-builder-internal>
                 </div>
             </div>
         </ng-container>

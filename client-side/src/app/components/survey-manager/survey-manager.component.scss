@@ -23,7 +23,12 @@
 }
 
 .survey-details {
-    margin-top: variables.$spacing-lg; 
+    margin-top: variables.$spacing-lg;    
+
+    ::ng-deep.menu-container button {
+        width: 100%;
+        max-width: none;
+    }
 }
 
 .main-area-container {
