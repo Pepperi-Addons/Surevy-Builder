@@ -39,6 +39,8 @@ export class ServeysManagerComponent implements OnInit {
             this.addPadding = data.addPadding ?? true;
         })
 
+        // this._navigationService.route = this._activatedRoute;
+
         this.layoutService.onResize$.subscribe(size => {
             this.screenSize = size;
         });
@@ -131,7 +133,7 @@ export class ServeysManagerComponent implements OnInit {
                 return [{
                         title: this.translate.instant("ACTIONS.EDIT"),
                         handler: async (data: PepSelectionData) => {
-                            this._navigationService.navigateToSurvey(data?.rows[0]);
+                            this._navigationService.navigateToSurvey(this._activatedRoute, data?.rows[0]);
                         }
                     }, {
                         title: this.translate.instant("ACTIONS.DELETE"),
@@ -160,13 +162,13 @@ export class ServeysManagerComponent implements OnInit {
     }
 
     onSurveyClicked(event) {
-        this._navigationService.navigateToSurvey(event.id);
+        this._navigationService.navigateToSurvey(this._activatedRoute, event.id);
     }
 
     onAddSurveyClicked() {
         this.surveysService.createNewSurvey(this._navigationService.addonUUID, this.totalSurveys).subscribe((survey: Survey) => {
             if (survey) {
-                this._navigationService.navigateToSurvey(survey.Key);
+                this._navigationService.navigateToSurvey(this._activatedRoute, survey.Key);
             } else {
                 // TODO: show error.
             }
