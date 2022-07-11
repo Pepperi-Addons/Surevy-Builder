@@ -19,7 +19,7 @@ export class NavigationService {
 
     constructor(
         private router: Router,
-        private route: ActivatedRoute
+        public route: ActivatedRoute
     ) {
         // Get the addonUUID from the root config.
         this._addonUUID = config.AddonUUID;
@@ -30,22 +30,30 @@ export class NavigationService {
         });
     }
 
-    back(): void {
+    back(route: ActivatedRoute): void {
         this.history.pop();
+        
         if (this.history.length > 0) {
-            this.router.navigateByUrl(this.history.pop());
-        } else {
-            this.router.navigate([`./settings_block/Surveys`], {
-                relativeTo: this.route,
-                queryParamsHandling: 'merge'
-            });
+            this.history.pop();
         }
+        
+        const extra = { state: { showSidebar: true} };
+        this.router.navigate(['../'], {
+            relativeTo: route,
+            queryParamsHandling: 'merge',
+            state: extra.state
+        });
     }
 
-    navigateToSurvey(surveyKey: string) {
-        this.router.navigate([`./block/Surveys/${surveyKey}`], {
-            relativeTo: this.route,
-            queryParamsHandling: 'merge'
+    navigateToSurvey(route: ActivatedRoute, surveyKey: string) {
+        debugger;
+        // this.router.navigate([`${surveyKey}`], {breadcrumbs: 'New Event'})
+        // this.route.snapshot.children
+        // this.activatedRoute.firstChild.snapshot.data
+        this.router.navigate([`${surveyKey}`], {
+            relativeTo: route,
+            queryParamsHandling: 'merge',
+            state: { showSidebar: false}
         });
     }
 }

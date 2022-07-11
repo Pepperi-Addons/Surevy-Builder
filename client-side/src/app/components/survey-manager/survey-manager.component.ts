@@ -4,6 +4,7 @@ import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
 import { NavigationService } from '../../services/navigation.service';
+import { ActivatedRoute } from "@angular/router";
 
 
 @Component({
@@ -45,6 +46,7 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
         public layoutService: PepLayoutService,
         private _surveysService: SurveysService,
         private _navigationService: NavigationService,
+        private _activatedRoute: ActivatedRoute,
         public translate: TranslateService
     ) {
         this._subscriptions.push(this.layoutService.onResize$.subscribe(size => {
@@ -75,7 +77,7 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
     }
 
     onNavigateBackFromEditor() {
-        this._navigationService.back();
+        this._navigationService.back(this._activatedRoute);
     }
 
     onAddSectionClicked() {
