@@ -10,7 +10,7 @@
                     </div>
                 </div>
                 <div class="survey-details">
-                    <pep-textbox [key]="'float'" [label]="'Survey Name'">
+                    <pep-textbox [key]="'float'" [label]="'Survey Name'" [value]="surveyEditor?.name" (valueChange)="onSurveyNameChanged($event)">
                     </pep-textbox>
 
                     <pep-textarea [key]="'description'" [label]="'Description'" [rowSpan]="2">

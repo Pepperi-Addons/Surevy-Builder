@@ -2,11 +2,8 @@ import { CdkDragDrop, CdkDragEnd, CdkDragStart, copyArrayItem, moveItemInArray, 
 import { Injectable } from "@angular/core";
 import { Params } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { PepGuid, PepHttpService, PepScreenSizeType, PepSessionService, PepUtilitiesService } from "@pepperi-addons/ngx-lib";
-import { PepRemoteLoaderOptions, PepRemoteLoaderService } from "@pepperi-addons/ngx-lib/remote-loader";
-import { IPepDraggableItem } from "@pepperi-addons/ngx-lib/draggable-items";
-import { NgComponentRelation, ResourceType, AddonData } from "@pepperi-addons/papi-sdk";
-import { Observable, BehaviorSubject } from 'rxjs';
+import { PepGuid, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
+import { Observable, BehaviorSubject, from } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, ISurveyRowModel, Survey, SurveySection, ISurveyBuilderData } from "../model/survey.model";
@@ -25,7 +22,6 @@ export class SurveysService {
         }
     }
     
-    // TODO:
     // This subject is for load the current survey editor (Usage only in edit mode).
     private _surveyEditorSubject: BehaviorSubject<ISurveyEditor> = new BehaviorSubject<ISurveyEditor>(null);
     get surveyEditorLoad$(): Observable<ISurveyEditor> {
@@ -66,23 +62,43 @@ export class SurveysService {
     }
 
     constructor(
-        // private utilitiesService: UtilitiesService,
-        private pepUtilitiesService: PepUtilitiesService,
         private translate: TranslateService,
         private sessionService: PepSessionService,
         private httpService: PepHttpService,
-        private remoteLoaderService: PepRemoteLoaderService,
         private navigationService: NavigationService,
     ) {
         this.surveyLoad$.subscribe((survey: Survey) => {
+            this.loadSurveyEditor(survey);
             this.notifySectionsChange(survey?.Sections ?? []);
-            this.loadQuestions(survey);
+            // this.loadQuestions(survey);
         });
     }
 
-    private loadQuestions(survey: Survey) {
-        // TODO:
+    private loadSurveyEditor(survey: Survey) {
+        if (survey) {
+            const surveyEditor: ISurveyEditor = {
+                key: survey?.Key,
+                name: survey?.Name,
+                description: survey?.Description,
+                active: survey?.Active,
+            };
+
+            if (survey?.ActiveDateRange) {
+                surveyEditor.activeDateRange = {
+                    from: survey.ActiveDateRange.From,
+                    to: survey.ActiveDateRange.To,
+                }
+            }
+
+            this._surveyEditorSubject.next(surveyEditor);
+        } else {
+            this._surveyEditorSubject.next(null);
+        }
     }
+
+    // private loadQuestions(survey: Survey) {
+    //     // TODO:
+    // }
 
     private notifySurveyChange(survey: Survey) {
         this._surveySubject.next(survey);
@@ -129,6 +145,17 @@ export class SurveysService {
         if (currentSurvey) {
             currentSurvey.Name = surveyData.name;
             currentSurvey.Description = surveyData.description;
+            currentSurvey.Active = surveyData.active;
+
+            // Set the active date range.
+            if (surveyData.activeDateRange) {
+                currentSurvey.ActiveDateRange = {
+                    From: surveyData.activeDateRange.from,
+                    To: surveyData.activeDateRange.to,
+                }
+            } else {
+                currentSurvey.ActiveDateRange = null;
+            }
 
             this.notifySurveyChange(currentSurvey);
         }

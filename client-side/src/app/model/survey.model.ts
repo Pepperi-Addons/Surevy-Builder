@@ -3,7 +3,14 @@ import { AddonData } from "@pepperi-addons/papi-sdk";
 export interface Survey extends AddonData {
     Name?: string;
     Description?: string;
+    Active?: boolean;
+    ActiveDateRange?: SurveyDateRange;
     Sections?: SurveySection[];
+}
+
+export interface SurveyDateRange {
+    From?: Date;
+    To?: Date;
 }
 
 export interface SurveySection {
@@ -33,9 +40,9 @@ export interface ISurveyBuilderData {
 }
 
 export interface ISurveyEditor {
-    // id: string,
     key: string,
     name: string,
     description: string,
-    
+    active?: boolean;
+    activeDateRange?: { from?: Date, to?: Date };
 }

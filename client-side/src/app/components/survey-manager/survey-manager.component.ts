@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { Subscription } from 'rxjs';
 import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
 import { NavigationService } from '../../services/navigation.service';
-import { ActivatedRoute } from "@angular/router";
+import { ISurveyEditor } from "../../model/survey.model";
 
 
 @Component({
@@ -17,9 +18,10 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
 
     @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
    
-    screenSize: PepScreenSizeType;
     showEditor = true;
+    screenSize: PepScreenSizeType;
     sectionsColumnsDropList = [];
+    surveyEditor: ISurveyEditor;
 
     businesUnitOptions: any[] = [{key: '1', value: '1'}, {key: '2', value: '2'}, {key: '3', value: '4'}]; //TEMP
     menuItems = [
@@ -52,9 +54,16 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
         this._subscriptions.push(this.layoutService.onResize$.subscribe(size => {
             this.screenSize = size;
         }));   
+        
+        // For update editor.
+        this._subscriptions.push(this._surveysService.surveyEditorLoad$.subscribe((editor) => {
+            this.surveyEditor = editor;
+        }));
     }
 
     private subscribeEvents() {
+        
+
         // Get the sections id's into sectionsColumnsDropList for the drag & drop.
         this._subscriptions.push(this._surveysService.sectionsChange$.subscribe(res => {
             // Concat all results into one array.
@@ -70,7 +79,9 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
         this.subscribeEvents();
     }
    
-    
+    ngOnDestroy(): void {
+        this._subscriptions.forEach(sub => sub.unsubscribe);
+    }
 
     onSidebarStateChange(state) {
         console.log('onSidebarStateChange', state);
@@ -88,7 +99,10 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
         console.log('onAddQuestionClicked', item);
     }
 
-    ngOnDestroy(): void {
-        this._subscriptions.forEach(sub => sub.unsubscribe);
+    onSurveyNameChanged(value) {
+        debugger;
+        this.surveyEditor.name = value;
+
+        this._surveysService.updateSurveyFromEditor(this.surveyEditor);
     }
 }
