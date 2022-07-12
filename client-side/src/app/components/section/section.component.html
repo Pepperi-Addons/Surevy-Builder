@@ -12,21 +12,15 @@
         </div>
     </div>
 
-    <!-- [ngClass]="{ 'active-question': isActive && selectedQuestion === question}" -->
-    <div #questionsWrapper class="questions-wrapper ">
-        <div [id]="sectionQuestionKeyPrefix + i" 
-            *ngFor="let question of questions; let i=index;"
-            class="section-question"
-            cdkDropList
-            [cdkDropListConnectedTo]="sectionsQuestionsDropList"
-            (cdkDropListDropped)="onQuestionDropped($event)"
-        >
-            <addon-question-builder [editable]="editable" [question]="question" [sequenceNumber]="index + '.' + (i + 1)" [isActive]="isActive && selectedQuestion === question"></addon-question-builder>
-        </div>
+    <div [id]="sectionContainerKeyPrefix" class="questions-wrapper "
+        cdkDropList
+        [cdkDropListConnectedTo]="sectionsQuestionsDropList"
+        (cdkDropListDropped)="onQuestionDropped($event)">
+        
+        <ng-container *ngFor="let question of questions; let i=index;">
+            <addon-question-builder [editable]="editable" [question]="question" [sequenceNumber]="(index + 1) + '.' + (i + 1)" 
+                [isActive]="isActive && selectedQuestion === question"
+                (questionClick)="onQuestionClicked(i)"></addon-question-builder>
+        </ng-container>
     </div>
-    
 </ng-container>
-
-
-
-<!-- this.translate.instant('SURVEY_MANAGER.SECTION_NAME_PLACEHOLDER') -->

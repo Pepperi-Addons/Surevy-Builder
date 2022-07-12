@@ -5,8 +5,8 @@ import { CdkDragDrop  } from '@angular/cdk/drag-drop';
 import { SurveysService } from '../../services/surveys.service';
 import { TranslateService } from '@ngx-translate/core';
 import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { Survey, SurveySection } from "../../model/survey.model";
+import { NavigationService } from '../../services/navigation.service';
+import { Survey, SurveyQuestion, SurveySection } from "../../model/survey.model";
 
 export interface ISurveyBuilderHostObject {
     surveyKey: string;
@@ -60,10 +60,6 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         private surveysService: SurveysService
     ) {
         this._destroyed = new Subject();
-
-        this.surveysService.selectedSectionChange$.pipe(this.getDestroyer()).subscribe((section: SurveySection) => {
-            this.selectedSection = section;
-        })
     }
 
     private getDestroyer() {
@@ -97,6 +93,12 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
             this.surveysService.surveyDataChange$.pipe(this.getDestroyer()).subscribe((survey: Survey) => {
                 this.setSurveyDataProperties(survey);
             });
+
+            if (this.editMode) {
+                this.surveysService.selectedSectionChange$.pipe(this.getDestroyer()).subscribe((section: SurveySection) => {
+                    this.selectedSection = section;
+                });
+            }
         } else {
             // TODO: Show error message key isn't supply.
         }

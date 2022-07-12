@@ -64,14 +64,11 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
     }
 
     private subscribeEvents() {
-        
 
         // Get the sections id's into sectionsQuestionsDropList for the drag & drop.
         this._subscriptions.push(this._surveysService.sectionsChange$.subscribe(res => {
             this.sectionsQuestionsDropList = [].concat(...res.map((section, sectionIndex) => {
-                return section.Questions.map((question, questionIndex) => 
-                    this._surveysService.getSectionQuestionKey(sectionIndex, questionIndex.toString())
-                )
+                return this._surveysService.getSectionContainerKey(sectionIndex.toString())
             }));
         }));
     }

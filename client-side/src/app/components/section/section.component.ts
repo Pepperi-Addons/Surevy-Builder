@@ -15,7 +15,7 @@ export class SectionComponent implements OnInit {
     @Input()
     set index(value: number) {
         this._index = value;
-        this.sectionQuestionKeyPrefix = this.surveysService.getSectionQuestionKey(value);
+        this.sectionContainerKeyPrefix = this.surveysService.getSectionContainerKey(value.toString());
     }
     get index(): number {
         return this._index;
@@ -25,7 +25,6 @@ export class SectionComponent implements OnInit {
     // @Input() description: string;
     @Input() isActive: boolean = false;
     @Input() questions: Array<SurveyQuestion>;
-    @Input() selectedQuestionIndex: number = -1;
 
     @Input() sectionsQuestionsDropList = [];
 
@@ -47,7 +46,7 @@ export class SectionComponent implements OnInit {
         return this._screenSize;
     }
 
-    protected sectionQuestionKeyPrefix = ''
+    protected sectionContainerKeyPrefix = ''
     protected selectedQuestion: SurveyQuestion = null;
 
     constructor(
@@ -61,7 +60,7 @@ export class SectionComponent implements OnInit {
         if (this.editable) {
             this.surveysService.selectedQuestionChange$.subscribe((question: SurveyQuestion) => {
                 this.selectedQuestion = question;
-            })
+            });
         }
     }
 
@@ -83,8 +82,7 @@ export class SectionComponent implements OnInit {
         this.surveysService.onSectionDragEnd(event);
     }
 
-    onQuestionClicked(event: any, questionIndex: number) {
+    onQuestionClicked(questionIndex: number) {
         this.surveysService.setSelected(this.index, questionIndex);
-        event.stopPropagation();
     }
 }

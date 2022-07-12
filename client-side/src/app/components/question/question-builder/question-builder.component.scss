@@ -7,9 +7,8 @@
     display: flex;
     gap: variables.$spacing-sm;
     padding-inline-start: variables.$spacing-sm;
-    padding-top: variables.$spacing-lg;
-    padding-bottom: variables.$spacing-lg;
-    
+    margin-top: variables.$content-margin;
+
     .question-container {
         height: 100%;
         width: 100%;

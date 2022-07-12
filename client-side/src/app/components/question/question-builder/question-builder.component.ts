@@ -25,6 +25,7 @@ export class QuestionBuilderComponent implements OnInit {
 
     @Output() dragExited: EventEmitter<CdkDragExit> = new EventEmitter();
     @Output() dragEntered: EventEmitter<CdkDragEnter> = new EventEmitter();
+    @Output() questionClick: EventEmitter<void> = new EventEmitter();
 
     constructor(
         private surveysService: SurveysService
@@ -51,5 +52,10 @@ export class QuestionBuilderComponent implements OnInit {
 
     onDragEntered(event: CdkDragEnter) {
         this.dragEntered.emit(event);
+    }
+
+    onQuestionClicked(event: any) {
+        this.questionClick.emit();
+        event.stopPropagation();
     }
 }

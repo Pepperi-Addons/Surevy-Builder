@@ -1,7 +1,6 @@
 
 <div class="question-with-sequence-container"
-    [ngClass]="{ 'editable-state': editable, 'active-question': isActive }"
-    cdkDrag [cdkDragData]="question"
+    cdkDrag
     (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)"
     (cdkDragExited)="onDragExited($event)" (cdkDragEntered)="onDragEntered($event)">
 
@@ -9,7 +8,10 @@
         <span class="body-xs " title="{{ sequenceNumber }}">{{ sequenceNumber }}</span>
     </div>
 
-    <div [ngSwitch]="question.Type" class="question-container">
+    <div [ngSwitch]="question.Type" class="question-container"
+        [ngClass]="{ 'editable-state': editable, 'active-question': isActive }"
+        (click)="onQuestionClicked($event)"
+    >
         <ng-container *ngSwitchCase="'short-text'">
             <pep-textbox [key]="'short-text'" [label]="'Short Text'" [value]="question.Value" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
         </ng-container>

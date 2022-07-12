@@ -155,12 +155,29 @@ export class SurveysService {
         document.body.style.cursor = 'unset';
     }
 
+    private getSectionByIndex(sectionIndex: string): SurveySection {
+        let currentSection = null;
+
+        // Get the section and column array by the pattern of the section column key.
+        const sectionPatternSeparator = this.getSectionContainerKey();
+        const sectionArr = sectionIndex.split(sectionPatternSeparator);
+
+        if (sectionArr.length === 2) {
+            const sections = this._sectionsSubject.getValue();
+            
+            // Get the section by the section index.
+            currentSection = sections[sectionArr[1]];
+        } 
+        
+        return currentSection;
+    }
+
     /***********************************************************************************************/
     /*                                  Public functions
     /***********************************************************************************************/
     
-    getSectionQuestionKey(sectionIndex: number, questionIndex: string = '') {
-        return `${sectionIndex}_question_${questionIndex}`;
+    getSectionContainerKey(sectionIndex: string = '') {
+        return `section_${sectionIndex}`;
     }
 
     updateSurveyFromEditor(surveyData: ISurveyEditor) {
@@ -287,12 +304,20 @@ export class SurveysService {
     }
 
     onQuestionDropped(event: CdkDragDrop<any[]>, sectionIndex: number) {
-        // TODO:
+        const sections = this._sectionsSubject.getValue();
+        const currentSection = sections[sectionIndex];
         
         // If the question moved between columns in the same section or between different sections but not in the same column.
         if (event.container.id !== event.previousContainer.id) {
+            // Get the previous section.
+            const previuosSection = this.getSectionByIndex(event.previousContainer.id);
             
+            transferArrayItem(previuosSection.Questions, currentSection.Questions, event.previousIndex, event.currentIndex);
+        } else {
+            moveItemInArray(currentSection.Questions, event.previousIndex, event.currentIndex);
         }
+
+        this.notifySectionsChange(sections);
     }
     
     onQuestionDragStart(event: CdkDragStart) {
