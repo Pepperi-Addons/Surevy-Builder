@@ -14,6 +14,8 @@ import { DateQuestionComponent } from './date-question/date-question.component';
 import { SignatureQuestionComponent } from './signature-question/signature-question.component';
 import { ImageQuestionComponent } from './image-question/image-question.component';
 import { QuestionBuilderComponent } from './question-builder/question-builder.component';
+import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
     declarations: [
@@ -32,7 +34,8 @@ import { QuestionBuilderComponent } from './question-builder/question-builder.co
         PepButtonModule,
         PepRemoteLoaderModule,
         PepDraggableItemsModule,
-        // TranslateModule.forChild()
+        PepTextboxModule,
+        TranslateModule.forChild()
     ],
     exports: [QuestionBuilderComponent]
 })

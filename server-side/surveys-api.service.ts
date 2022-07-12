@@ -83,8 +83,9 @@ export class SurveyApiService {
     }
 
     private async validateAndOverrideSurveyAccordingInterface(survey: Survey, validateSurveysLimit: boolean): Promise<Survey> {
-        this.surveysValidatorService.validateSurveyData(survey);
-
+        // Validate survey object before upsert.
+        this.surveysValidatorService.validateSurveyProperties(survey);
+        
         // Override the survey according the interface.
         return this.surveysValidatorService.getSurveyCopyAccordingInterface(survey);
     }

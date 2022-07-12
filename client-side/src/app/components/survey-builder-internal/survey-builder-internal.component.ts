@@ -1,6 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 import { Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, Renderer2, ViewChild } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, Subject, takeUntil } from "rxjs";
 import { CdkDragDrop  } from '@angular/cdk/drag-drop';
 import { SurveysService } from '../../services/surveys.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -22,7 +22,7 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     @ViewChild('sectionsCont', { static: true }) sectionsContainer: ElementRef;
 
     @Input() editMode: boolean = false;
-    @Input() sectionsColumnsDropList = [];
+    @Input() sectionsQuestionsDropList = [];
     
     // For loading the survey from the client apps.
     private _hostObject: ISurveyBuilderHostObject;
@@ -48,6 +48,9 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         return this._sectionsSubject.asObservable();
     }
 
+    protected selectedSection: SurveySection = null;
+    private readonly _destroyed: Subject<void>;
+
     constructor(
         private route: ActivatedRoute,
         private renderer: Renderer2,
@@ -56,6 +59,15 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         private layoutService: PepLayoutService,
         private surveysService: SurveysService
     ) {
+        this._destroyed = new Subject();
+
+        this.surveysService.selectedSectionChange$.pipe(this.getDestroyer()).subscribe((section: SurveySection) => {
+            this.selectedSection = section;
+        })
+    }
+
+    private getDestroyer() {
+        return takeUntil(this._destroyed);
     }
 
     private setSurveyDataProperties(survey: Survey) {
@@ -74,15 +86,15 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
             
             this.surveysService.loadSurveyBuilder(addonUUID, surveyKey, this.editMode, queryParams);
 
-            this.layoutService.onResize$.subscribe((size: PepScreenSizeType) => {
+            this.layoutService.onResize$.pipe(this.getDestroyer()).subscribe((size: PepScreenSizeType) => {
                 this.screenSize = size;
             });
 
-            this.surveysService.sectionsChange$.subscribe(res => {
-                this._sectionsSubject.next(res);
+            this.surveysService.sectionsChange$.pipe(this.getDestroyer()).subscribe((sections: SurveySection[]) => {
+                this._sectionsSubject.next(sections);
             });
 
-            this.surveysService.surveyDataChange$.subscribe((survey: Survey) => {
+            this.surveysService.surveyDataChange$.pipe(this.getDestroyer()).subscribe((survey: Survey) => {
                 this.setSurveyDataProperties(survey);
             });
         } else {
@@ -91,6 +103,9 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
+        this._destroyed.next();
+        this._destroyed.complete();
+
         this.surveysService.unloadSurveyBuilder();
     }
 

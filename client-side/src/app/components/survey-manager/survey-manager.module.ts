@@ -17,6 +17,7 @@ import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
 import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
+import { PepSnackBarModule } from '@pepperi-addons/ngx-lib/snack-bar';
 
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 
@@ -45,7 +46,6 @@ export const routes: Routes = [
     imports: [
         CommonModule,
         HttpClientModule,
-        SurveyBuilderInternalModule,
         MatIconModule,
         PepNgxLibModule,
         PepSizeDetectorModule,
@@ -57,6 +57,8 @@ export const routes: Routes = [
         PepTextareaModule,
         PepSelectModule,
         PepMenuModule,
+        PepSnackBarModule,
+        SurveyBuilderInternalModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,
