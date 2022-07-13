@@ -14,7 +14,7 @@ import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
 import { PepSideBarModule } from '@pepperi-addons/ngx-lib/side-bar';
 import { PepSizeDetectorModule } from '@pepperi-addons/ngx-lib/size-detector';
 import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
-import { PepIconRegistry, pepIconSystemClose, pepIconArrowLeftAlt, pepIconNumberPlus, pepIconArrowDown } from '@pepperi-addons/ngx-lib/icon';
+import { PepIconRegistry, pepIconSystemClose, pepIconArrowLeftAlt, pepIconNumberPlus, pepIconArrowDown, pepIconSystemBin } from '@pepperi-addons/ngx-lib/icon';
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
@@ -34,7 +34,8 @@ const pepIcons = [
     pepIconSystemClose,
     pepIconArrowLeftAlt,
     pepIconNumberPlus,
-    pepIconArrowDown    
+    pepIconArrowDown,
+    pepIconSystemBin  
 ];
 
 export const routes: Routes = [

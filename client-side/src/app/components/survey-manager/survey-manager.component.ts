@@ -190,4 +190,12 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
         this._destroy$.next();
         this._destroy$.complete();
     }
+
+    onQuestionDuplicateClick(event){
+
+    }
+
+    onQuestionDeleteClick(event){
+        
+    }
 }

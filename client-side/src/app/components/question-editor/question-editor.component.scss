@@ -1,7 +1,7 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
 
 :host {
-    display: flex;;
+    display: flex;
     flex-direction: column;
-    padding: variables.$spacing-lg;
+    padding-bottom: variables.$spacing-lg;
 }

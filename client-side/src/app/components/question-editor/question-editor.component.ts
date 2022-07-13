@@ -13,6 +13,7 @@ export class QuestionEditorComponent implements OnInit {
     @Input() questionType: SurveyQuestionType;
     @Input() question: SurveyQuestion;
    
+    forNextVersion = false;
     constructor(
         private surveysService: SurveysService
     ) { }
@@ -26,8 +27,12 @@ export class QuestionEditorComponent implements OnInit {
     }
 
     
-    onQuestionEditorFieldChanged(value) {
+    onQuestionEditorFieldChanged(event) {
         //this.surveyEditor.name = value;
         //this._surveysService.updateSurveyFromEditor(this.surveyEditor);
+    }
+
+    onShowLogicClick(event) {
+      
     }
 }

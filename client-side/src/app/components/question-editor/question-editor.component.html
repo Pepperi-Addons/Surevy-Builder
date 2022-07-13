@@ -8,4 +8,10 @@
 <pep-textarea [key]="'description'"
               [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2">
 </pep-textarea>
+<ng-container *ngIf="forNextVersion">
+<label class="title body-md">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
+<pep-button  value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
+                        styleType="regular" iconName="system_filter_2" iconPosition="end"
+                        (buttonClick)="onShowLogicClick($event)" sizeType="sm"></pep-button>
+</ng-container>
 <label class="title body-md">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>
