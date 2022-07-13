@@ -177,6 +177,7 @@ export class SurveysService {
     }
 
     updateSurveyFromEditor(surveyData: ISurveyEditor) {
+        console.log('surveyData', surveyData);
         const currentSurvey = this._surveySubject.getValue();
 
         if (currentSurvey) {
