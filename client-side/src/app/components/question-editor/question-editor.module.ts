@@ -13,8 +13,7 @@ import { PepNgxLibModule, PepAddonService } from '@pepperi-addons/ngx-lib';
 import { PepIconRegistry, pepIconSystemFilter2} from '@pepperi-addons/ngx-lib/icon';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
-import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
-import { config } from '../addon.config';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 const pepIcons = [
     pepIconSystemFilter2
@@ -33,14 +32,7 @@ const pepIcons = [
         PepDraggableItemsModule,
         PepTextboxModule,
         PepTextareaModule,
-        TranslateModule.forChild({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: (addonService: PepAddonService) => 
-                    PepAddonService.createMultiTranslateLoader(addonService, ['ngx-lib', 'ngx-composite-lib'], config.AddonUUID),
-                deps: [PepAddonService]
-            }, isolate: false
-        }),
+        TranslateModule.forChild(),
     ],
     exports: [QuestionEditorComponent]
 })

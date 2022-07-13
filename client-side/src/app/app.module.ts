@@ -12,6 +12,7 @@ import { AppRoutingModule } from './app.routes';
 // import { SurveyManagerModule } from './components/survey-manager/survey-manager.module';
 
 import { AppComponent } from './app.component';
+import { config } from './components/addon.config';
 
 @NgModule({
     declarations: [
@@ -28,7 +29,7 @@ import { AppComponent } from './app.component';
             loader: {
                 provide: TranslateLoader,
                 useFactory: (addonService: PepAddonService) => 
-                    PepAddonService.createMultiTranslateLoader(addonService, ['ngx-lib', 'ngx-composite-lib']),
+                    PepAddonService.createMultiTranslateLoader(config.AddonUUID, addonService, ['ngx-lib', 'ngx-composite-lib']),
                 deps: [PepAddonService]
             }
         })
