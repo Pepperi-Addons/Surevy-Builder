@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatRadioModule } from '@angular/material/radio'
 import { MatIconModule } from '@angular/material/icon';
 /*
 import { PepIconModule, pepIconNumberPlus, PepIconRegistry, pepIconSystemBolt, pepIconSystemClose,
@@ -17,6 +20,7 @@ import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
 import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
+import { PepDateModule } from '@pepperi-addons/ngx-lib/date';
 
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 
@@ -45,7 +49,10 @@ export const routes: Routes = [
     imports: [
         CommonModule,
         HttpClientModule,
+        FlexLayoutModule,
         SurveyBuilderInternalModule,
+        ReactiveFormsModule,
+        MatRadioModule,
         MatIconModule,
         PepNgxLibModule,
         PepSizeDetectorModule,
@@ -57,6 +64,7 @@ export const routes: Routes = [
         PepTextareaModule,
         PepSelectModule,
         PepMenuModule,
+        PepDateModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,

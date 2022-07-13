@@ -1,1 +1,6 @@
 <p>question-builder works!</p>
+<ng-container [ngSwitch]="type">
+    <ng-container *ngSwitchCase="'abc'">
+        <text-question [form]="form"></text-question>
+    </ng-container>
+</ng-container>

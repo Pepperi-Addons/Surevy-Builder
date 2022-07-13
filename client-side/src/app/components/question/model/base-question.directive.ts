@@ -1,24 +1,51 @@
 import { Directive, OnInit, OnChanges, OnDestroy, SimpleChanges, ViewContainerRef, Renderer2, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
 @Directive({})
 export abstract class BaseQuestionDirective implements OnInit, OnChanges, OnDestroy {
     private readonly _destroyed: Subject<void>;
 
-    protected _parentForm: FormGroup;
+    //@Input() formKey: string;
+
+    private _form = new FormGroup({});
     @Input()
-    set parentForm(form: FormGroup) {
-        this._parentForm = form;
-        this.updateParentForm();
+    set form(value: FormGroup) {
+        this._form = value;
+      //  this.addToParentForm();
     }
-    
-    form: FormGroup;
-    
+
+    protected get f() {
+        return this._form.controls;
+    }    
+
     constructor() {
         this._destroyed = new Subject();
     }
-    
+
+    ngOnInit(): void {
+     //   this.createForm();
+        //this.updateValidity();
+    }
+
+    /*
+    private addToParentForm() {
+        this._parentForm.setControl(this.formKey, this._form);
+    } 
+
+    private createForm() {
+        this._form = new FormGroup({
+            Key: new FormControl<string | null>(null),
+            Type: new FormControl<string | null>(null),
+            Text: new FormControl<string | null>(null),
+            Description: new FormControl<string | null>(null)
+        });
+    } */
+
+    protected addToForm(key: string, control: FormControl) {
+        this._form.setControl(key, control);        
+    }
+
     private updateValidity() {
         this.setQuestionStateAndValidators();
     }
@@ -26,26 +53,14 @@ export abstract class BaseQuestionDirective implements OnInit, OnChanges, OnDest
     protected getDestroyer() {
         return takeUntil(this._destroyed);
     }
-    
-    protected updateParentForm() {
-        // TODO:
-        // this._parentForm.setControl('questionId', this.builder.control(this.field.id));
-        
-    }
 
     // Set default validators - some childs override this.
     protected setQuestionStateAndValidators(): void {
         // TODO:
     }
-    
-    ngOnInit(): void {
-        if (this.form) {
-            this.updateValidity();
-        }
-    }
 
     ngOnChanges(changes: SimpleChanges): void {
-    
+
     }
 
     ngOnDestroy(): void {

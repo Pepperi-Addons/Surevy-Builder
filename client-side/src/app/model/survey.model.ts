@@ -19,8 +19,25 @@ export interface SurveySection {
     Title?: string;
     Questions?: SurveyQuestion[];
 }
+
+export type SurveyQuestionType = 
+    'short-text' 
+    | 'long-text' 
+    | 'miltiple-select-dropdown' 
+    | 'single-select-dropdown'
+    | 'yes-no'
+    | 'number-int'
+    | 'number-decimal'
+    | 'date'
+    | 'date-time'
+    | 'image'
+    | 'signature';
+
 export interface SurveyQuestion {
     Key: string;
+    Type: SurveyQuestionType;
+    Title?: string;
+    Description?: string;
     [key: string]: any;
 }
 

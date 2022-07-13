@@ -49,3 +49,22 @@
     } 
 
 }
+
+.radio-group {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: variables.$form-spacing;
+
+    .pep-radio-button {                     
+        &.pep-input {
+            height: 2.25rem;
+            display: flex;
+        }
+        
+        ::ng-deep label .mat-radio-label-content {
+            font-weight: normal !important;
+            font-size: variables.$fs-xs;
+        }
+        
+    }
+}

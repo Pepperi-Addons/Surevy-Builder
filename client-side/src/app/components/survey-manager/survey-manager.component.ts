@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy } from "@angular/core";
+import { FormGroup, FormArray, FormControl, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute } from "@angular/router";
-import { Subscription } from 'rxjs';
+import { MonoTypeOperatorFunction, Subject, takeUntil } from 'rxjs';
 import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
 import { NavigationService } from '../../services/navigation.service';
 import { ISurveyEditor } from "../../model/survey.model";
+import { ISurveyEditorForm } from '../../model/forms';
 
 
 @Component({
@@ -14,16 +16,31 @@ import { ISurveyEditor } from "../../model/survey.model";
     styleUrls: ['./survey-manager.component.scss']
 })
 export class ServeyManagerComponent implements OnInit, OnDestroy {
+    private readonly _destroy$: Subject<void> = new Subject();
+
     @Input() hostObject: any;
 
     @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
-   
+
+    get f() {
+        return this._form.controls;
+    }
+
+    get destroy$(): MonoTypeOperatorFunction<any> {
+        return takeUntil(this._destroy$);
+    }
+
     showEditor = true;
     screenSize: PepScreenSizeType;
+    _form = new FormGroup<ISurveyEditorForm>({
+        IsActive: new FormControl(true)
+    });
     sectionsColumnsDropList = [];
     surveyEditor: ISurveyEditor;
+    isActive = true;
+    activeDateRangeOptions: any[] = [{ key: 'Active', value: 'Active date range' }];
+    isActiveDateRangeSelected = false;
 
-    businesUnitOptions: any[] = [{key: '1', value: '1'}, {key: '2', value: '2'}, {key: '3', value: '4'}]; //TEMP
     menuItems = [
         {
             key: `question1`,
@@ -42,46 +59,50 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
         },
     ] //TEMP
 
-    private _subscriptions: Subscription[] = [];
-
-    constructor(        
+    constructor(
         public layoutService: PepLayoutService,
         private _surveysService: SurveysService,
         private _navigationService: NavigationService,
         private _activatedRoute: ActivatedRoute,
         public translate: TranslateService
     ) {
-        this._subscriptions.push(this.layoutService.onResize$.subscribe(size => {
+        this.layoutService.onResize$.pipe(this.destroy$).subscribe(size => {
             this.screenSize = size;
-        }));   
-        
+        });
+
         // For update editor.
-        this._subscriptions.push(this._surveysService.surveyEditorLoad$.subscribe((editor) => {
+        this._surveysService.surveyEditorLoad$.pipe(this.destroy$).subscribe((editor) => {
             this.surveyEditor = editor;
-        }));
+        });
     }
 
     private subscribeEvents() {
-        
-
         // Get the sections id's into sectionsColumnsDropList for the drag & drop.
-        this._subscriptions.push(this._surveysService.sectionsChange$.subscribe(res => {
+        this._surveysService.sectionsChange$.pipe(this.destroy$).subscribe(res => {
             // Concat all results into one array.
-            this.sectionsColumnsDropList = [].concat(...res.map(section => {
-                return section.Key
-            }));
-        }));
+            this.sectionsColumnsDropList = [].concat(...res.map(section => section.Key));
+        });
     }
 
     ngOnInit() {
         console.log('loading ServeyManagerComponent');
 
         this.subscribeEvents();
+        this.createForm();
     }
-   
-    ngOnDestroy(): void {
-        this._subscriptions.forEach(sub => sub.unsubscribe);
+
+    private createForm() {
+        this._form = new FormGroup<ISurveyEditorForm>({
+            Key: new FormControl(null),
+            Name: new FormControl(null),
+            Description: new FormControl(null),
+            IsActive: new FormControl(true),
+            ActiveFromDate: new FormControl(null),
+            ActiveToDate: new FormControl(null)
+        });
     }
+
+
 
     onSidebarStateChange(state) {
         console.log('onSidebarStateChange', state);
@@ -89,6 +110,19 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
 
     onNavigateBackFromEditor() {
         this._navigationService.back(this._activatedRoute);
+    }
+
+    onActiveStateChanged(state: any) {
+        console.log('onActiveStateChanged', state);
+        this.isActive = state.value === 'true';
+        if (!this.isActive) {
+            this.isActiveDateRangeSelected = null;
+        }
+    }
+
+    onActiveDateRangeChanged(val: string) {
+        console.log('onActiveDateRangeChanged', val);
+        this.isActiveDateRangeSelected = val === 'Active';
     }
 
     onAddSectionClicked() {
@@ -104,5 +138,10 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
         this.surveyEditor.name = value;
 
         this._surveysService.updateSurveyFromEditor(this.surveyEditor);
+    }
+
+    ngOnDestroy(): void {
+        this._destroy$.next();
+        this._destroy$.complete();
     }
 }
