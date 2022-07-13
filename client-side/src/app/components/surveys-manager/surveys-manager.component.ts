@@ -56,25 +56,6 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
     setDataSource() {
         return {
             init: async (params) => {
-                //TODO - get serveys from api and set the hasSurvey to true/false when get surveys
-                // const serveys: any[] = [
-                //     {
-                //         Name: 'Survey 1',
-                //         Description: 'Survey 1 description',
-                //         CreationDate: '2022-07-04T07:16:28.928Z',
-                //         ModificationDate: '2022-07-04T09:00:00.928Z',
-                //         Published: false
-                //     },
-                //     {
-                //         Name: 'Survey 2',
-                //         Description: 'Survey 2 description',
-                //         CreationDate: '2022-08-06T08:15:30.928Z',
-                //         ModificationDate: '2022-08-06T08:15:30.928Z',
-                //         Published: false
-                //     }
-                // ]; 
-
-                // this.totalSurveys = 2;
 
                 let options = 'order_by=';
 
@@ -153,7 +134,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         return {
             FieldID: columnId,
             Type: columnType,
-            Title: `SURVEYS_MANAGER.GRID_HEADER.${columnId.toUpperCase()}`,// this.translate.instant(`SURVEYS_MANAGER.GRID_HEADER_${columnId.toUpperCase()}`),
+            Title: this.translate.instant(`SURVEYS_MANAGER.GRID_HEADER.${columnId.toUpperCase()}`),
             Mandatory: false,
             ReadOnly: true
         }
