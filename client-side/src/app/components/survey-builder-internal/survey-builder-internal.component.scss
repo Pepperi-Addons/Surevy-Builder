@@ -1,5 +1,8 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
+
 :host {
     display: block;
+    padding: variables.$content-padding;
 }
 
 .sections-container {
@@ -7,6 +10,8 @@
     margin: 0 auto;
     position: relative;
     display: grid;
+    gap: variables.$content-padding;
+    max-width: 560px;
 
     .draggable-section {
         display: block;

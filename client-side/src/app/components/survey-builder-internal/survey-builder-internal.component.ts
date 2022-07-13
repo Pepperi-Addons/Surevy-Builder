@@ -1,12 +1,12 @@
 import { ActivatedRoute } from '@angular/router';
 import { Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, Renderer2, ViewChild } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, Subject, takeUntil } from "rxjs";
 import { CdkDragDrop  } from '@angular/cdk/drag-drop';
 import { SurveysService } from '../../services/surveys.service';
 import { TranslateService } from '@ngx-translate/core';
 import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { Survey, SurveySection } from "../../model/survey.model";
+import { NavigationService } from '../../services/navigation.service';
+import { Survey, SurveyQuestion, SurveySection } from "../../model/survey.model";
 
 export interface ISurveyBuilderHostObject {
     surveyKey: string;
@@ -22,7 +22,7 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     @ViewChild('sectionsCont', { static: true }) sectionsContainer: ElementRef;
 
     @Input() editMode: boolean = false;
-    @Input() sectionsColumnsDropList = [];
+    @Input() sectionsQuestionsDropList = [];
     
     // For loading the survey from the client apps.
     private _hostObject: ISurveyBuilderHostObject;
@@ -48,6 +48,9 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         return this._sectionsSubject.asObservable();
     }
 
+    protected selectedSection: SurveySection = null;
+    private readonly _destroyed: Subject<void>;
+
     constructor(
         private route: ActivatedRoute,
         private renderer: Renderer2,
@@ -56,6 +59,11 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         private layoutService: PepLayoutService,
         private surveysService: SurveysService
     ) {
+        this._destroyed = new Subject();
+    }
+
+    private getDestroyer() {
+        return takeUntil(this._destroyed);
     }
 
     private setSurveyDataProperties(survey: Survey) {
@@ -74,23 +82,32 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
             
             this.surveysService.loadSurveyBuilder(addonUUID, surveyKey, this.editMode, queryParams);
 
-            this.layoutService.onResize$.subscribe((size: PepScreenSizeType) => {
+            this.layoutService.onResize$.pipe(this.getDestroyer()).subscribe((size: PepScreenSizeType) => {
                 this.screenSize = size;
             });
 
-            this.surveysService.sectionsChange$.subscribe(res => {
-                this._sectionsSubject.next(res);
+            this.surveysService.sectionsChange$.pipe(this.getDestroyer()).subscribe((sections: SurveySection[]) => {
+                this._sectionsSubject.next(sections);
             });
 
-            this.surveysService.surveyDataChange$.subscribe((survey: Survey) => {
+            this.surveysService.surveyDataChange$.pipe(this.getDestroyer()).subscribe((survey: Survey) => {
                 this.setSurveyDataProperties(survey);
             });
+
+            if (this.editMode) {
+                this.surveysService.selectedSectionChange$.pipe(this.getDestroyer()).subscribe((section: SurveySection) => {
+                    this.selectedSection = section;
+                });
+            }
         } else {
             // TODO: Show error message key isn't supply.
         }
     }
 
     ngOnDestroy() {
+        this._destroyed.next();
+        this._destroyed.complete();
+
         this.surveysService.unloadSurveyBuilder();
     }
 

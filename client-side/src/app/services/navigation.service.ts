@@ -46,7 +46,7 @@ export class NavigationService {
     }
 
     navigateToSurvey(route: ActivatedRoute, surveyKey: string) {
-        debugger;
+        // debugger;
         // this.router.navigate([`${surveyKey}`], {breadcrumbs: 'New Event'})
         // this.route.snapshot.children
         // this.activatedRoute.firstChild.snapshot.data

@@ -3,7 +3,7 @@ import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragEnter, CdkDragExit, CdkDragSta
 import { SurveysService } from '../../services/surveys.service';
 import { TranslateService } from '@ngx-translate/core';
 import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
-import { SurveySection } from "../../model/survey.model";
+import { SurveyQuestion, SurveySection } from "../../model/survey.model";
 
 @Component({
     selector: 'section',
@@ -11,10 +11,22 @@ import { SurveySection } from "../../model/survey.model";
     styleUrls: ['./section.component.scss', './section.component.theme.scss']
 })
 export class SectionComponent implements OnInit {
-    @ViewChild('sectionContainer') sectionContainerRef: ElementRef;
-    
-    @Input() section: SurveySection;
-    @Input() sectionsColumnsDropList = [];
+    private _index = -1;
+    @Input()
+    set index(value: number) {
+        this._index = value;
+        this.sectionContainerKeyPrefix = this.surveysService.getSectionContainerKey(value.toString());
+    }
+    get index(): number {
+        return this._index;
+    }
+
+    @Input() name: string;
+    // @Input() description: string;
+    @Input() isActive: boolean = false;
+    @Input() questions: Array<SurveyQuestion>;
+
+    @Input() sectionsQuestionsDropList = [];
 
     private _editable = false;
     @Input()
@@ -34,6 +46,9 @@ export class SectionComponent implements OnInit {
         return this._screenSize;
     }
 
+    protected sectionContainerKeyPrefix = ''
+    protected selectedQuestion: SurveyQuestion = null;
+
     constructor(
         private renderer: Renderer2,
         private surveysService: SurveysService
@@ -42,8 +57,23 @@ export class SectionComponent implements OnInit {
 
    
     ngOnInit(): void {
+        if (this.editable) {
+            this.surveysService.selectedQuestionChange$.subscribe((question: SurveyQuestion) => {
+                this.selectedQuestion = question;
+            });
+        }
     }
 
+    onSectionClicked(event: any) {
+        this.surveysService.setSelected(this.index);
+        event.stopPropagation();
+    }
+
+    
+    onQuestionDropped(event: CdkDragDrop<any[]>) {
+        this.surveysService.onQuestionDropped(event, this.index);
+    }
+    
     onDragStart(event: CdkDragStart) {
         this.surveysService.onSectionDragStart(event);
     }
@@ -52,4 +82,7 @@ export class SectionComponent implements OnInit {
         this.surveysService.onSectionDragEnd(event);
     }
 
+    onQuestionClicked(questionIndex: number) {
+        this.surveysService.setSelected(this.index, questionIndex);
+    }
 }

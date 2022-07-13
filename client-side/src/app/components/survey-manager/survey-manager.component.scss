@@ -9,6 +9,7 @@
 }
 
 .right-side-bar {
+    z-index: variables.$z-index-lowest + 4;
     width: variables.$side-bar-width;
     box-shadow: functions.get-pep-shadow(shadow-md, hard);
 }
@@ -66,5 +67,9 @@
             font-size: variables.$fs-xs;
         }
         
-    }
+    }  
+}
+
+.survey-builder-wrapper {
+        
 }

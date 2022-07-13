@@ -1,10 +1,21 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
 
 .section-container {
-    position: relative;
-    display: grid;
-    height: inherit;
-    max-height: inherit;
-    min-height: variables.$draggable-item-height;
+    display: flex;
+    gap: variables.$spacing-lg;
+    height: 3rem;
+    align-items: center;
+    border-radius: variables.$border-radius-md;
+    padding-inline: variables.$spacing-sm;
 
+    .sequence-number {
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+    }
+}
+
+.questions-wrapper {
+    // display: flex;
+    // flex-flow: column;
 }

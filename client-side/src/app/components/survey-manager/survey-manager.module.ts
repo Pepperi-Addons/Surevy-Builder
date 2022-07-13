@@ -21,6 +21,7 @@ import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
 import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
 import { PepDateModule } from '@pepperi-addons/ngx-lib/date';
+import { PepSnackBarModule } from '@pepperi-addons/ngx-lib/snack-bar';
 
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 
@@ -65,6 +66,8 @@ export const routes: Routes = [
         PepSelectModule,
         PepMenuModule,
         PepDateModule,
+        PepSnackBarModule,
+        SurveyBuilderInternalModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,

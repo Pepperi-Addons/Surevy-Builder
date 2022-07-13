@@ -1,7 +1,8 @@
 
 <div #sectionsCont cdkDropListGroup class="sections-container" cdkDropList (cdkDropListDropped)="onSectionDropped($event)" >
     <section *ngFor="let section of sections$ | async; let i=index;" 
-        class="draggable-section" [sectionsColumnsDropList]="sectionsColumnsDropList" [section]="section" [screenSize]="screenSize" [editable]="editMode">
+        class="draggable-section" [sectionsQuestionsDropList]="sectionsQuestionsDropList"
+        [index]="i" [name]="section.Name" [isActive]="section === selectedSection" [questions]="section.Questions" [screenSize]="screenSize" [editable]="editMode">
     </section>
 </div>
 

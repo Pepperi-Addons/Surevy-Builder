@@ -56,15 +56,19 @@
         <ng-container pep-main-area>
             <div class="main-area-container">
                 <div class="header-container">
-                    <pep-button class="pep-spacing-element" [value]="'Preview'" [sizeType]="'sm'">
+                    <pep-button key='Preview' [value]="'ACTIONS.PREVIEW' | translate" sizeType="sm" classNames="pep-spacing-element" (buttonClick)="togglePreviewMode()"></pep-button>
+                    <pep-button key='Save' [value]="'ACTIONS.SAVE' | translate" sizeType="sm" classNames="pep-spacing-element" (buttonClick)="onSaveClick()"></pep-button>
+                    <pep-button key='Publish' [value]="'ACTIONS.PUBLISH' | translate" sizeType="sm" classNames="pep-spacing-element" styleType="strong" (buttonClick)="onPublishClick();"></pep-button>
+
+                    <!-- <pep-button class="pep-spacing-element" [value]="'Preview'" [sizeType]="'sm'">
                     </pep-button>
                     <pep-button class="pep-spacing-element" [value]="'Publish'" [sizeType]="'sm'"
                         [styleType]="'strong'">
-                    </pep-button>
+                    </pep-button> -->
                 </div>
-                <div>
+                <div class="survey-builder-wrapper" (click)="onWrapperClicked($event)">
                     <survey-builder-internal [editMode]="showEditor" [screenSize]="screenSize"
-                        [sectionsColumnsDropList]="sectionsColumnsDropList"></survey-builder-internal>
+                        [sectionsQuestionsDropList]="sectionsQuestionsDropList"></survey-builder-internal>
                 </div>
             </div>
         </ng-container>

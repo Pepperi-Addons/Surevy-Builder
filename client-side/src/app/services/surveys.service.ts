@@ -6,7 +6,7 @@ import { PepGuid, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-
 import { Observable, BehaviorSubject, from } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
-import { ISurveyEditor, ISurveyRowModel, Survey, SurveySection, ISurveyBuilderData } from "../model/survey.model";
+import { ISurveyEditor, ISurveyRowModel, Survey, SurveySection, ISurveyBuilderData, SurveyQuestion, SurveyQuestionType } from "../model/survey.model";
 
 // import * as _ from 'lodash';
 
@@ -28,10 +28,22 @@ export class SurveysService {
         return this._surveyEditorSubject.asObservable().pipe(distinctUntilChanged((prevSurveyEditor, nextSurveyEditor) => prevSurveyEditor?.key === nextSurveyEditor?.key));
     }
 
-    // This is the sections subject (a pare from the survey object)
+    // This is the sections subject
     private _sectionsSubject: BehaviorSubject<SurveySection[]> = new BehaviorSubject<SurveySection[]>([]);
     get sectionsChange$(): Observable<SurveySection[]> {
         return this._sectionsSubject.asObservable();
+    }
+
+    // This is the selected section subject
+    private _selectedSectionChangeSubject: BehaviorSubject<SurveySection> = new BehaviorSubject<SurveySection>(null);
+    get selectedSectionChange$(): Observable<SurveySection> {
+        return this._selectedSectionChangeSubject.asObservable().pipe(distinctUntilChanged());
+    }
+
+    // This is the selected question subject
+    private _selectedQuestionChangeSubject: BehaviorSubject<SurveyQuestion> = new BehaviorSubject<SurveyQuestion>(null);
+    get selectedQuestionChange$(): Observable<SurveyQuestion> {
+        return this._selectedQuestionChangeSubject.asObservable().pipe(distinctUntilChanged());
     }
 
     // This subject is for survey change.
@@ -115,6 +127,14 @@ export class SurveysService {
         }
     }
 
+    private notifySelectedSectionChange(section: SurveySection) {
+        this._selectedSectionChangeSubject.next(section);
+    }
+
+    private notifySelectedQuestionChange(question: SurveyQuestion) {
+        this._selectedQuestionChangeSubject.next(question);
+    }
+
     private getBaseUrl(addonUUID: string): string {
         // For devServer run server on localhost.
         if(this.navigationService.devServer) {
@@ -135,9 +155,30 @@ export class SurveysService {
         document.body.style.cursor = 'unset';
     }
 
+    private getSectionByIndex(sectionIndex: string): SurveySection {
+        let currentSection = null;
+
+        // Get the section and column array by the pattern of the section column key.
+        const sectionPatternSeparator = this.getSectionContainerKey();
+        const sectionArr = sectionIndex.split(sectionPatternSeparator);
+
+        if (sectionArr.length === 2) {
+            const sections = this._sectionsSubject.getValue();
+            
+            // Get the section by the section index.
+            currentSection = sections[sectionArr[1]];
+        } 
+        
+        return currentSection;
+    }
+
     /***********************************************************************************************/
     /*                                  Public functions
     /***********************************************************************************************/
+    
+    getSectionContainerKey(sectionIndex: string = '') {
+        return `section_${sectionIndex}`;
+    }
 
     updateSurveyFromEditor(surveyData: ISurveyEditor) {
         const currentSurvey = this._surveySubject.getValue();
@@ -161,13 +202,34 @@ export class SurveysService {
         }
     }
 
+    setSelected(sectionIndex: number, questionIndex: number = -1) {
+        const sections = this._sectionsSubject.getValue();
+        if (sectionIndex >= 0 && sectionIndex < sections.length) {
+            const section = sections[sectionIndex];
+            this.notifySelectedSectionChange(section);
+
+            const questions = section.Questions;
+            if (questionIndex >= 0 && questionIndex < questions.length) {
+                const question = questions[questionIndex];
+                this.notifySelectedQuestionChange(question);
+            } else {
+                this.notifySelectedQuestionChange(null);
+            }
+        } else {
+            this.notifySelectedQuestionChange(null);
+            this.notifySelectedSectionChange(null);
+        }
+    }
+
+    clearSelected() {
+        this.setSelected(-1);
+    }
+
     addSection(section: SurveySection = null) {
         // Create new section
         if (!section) {
             section = {
-                Key: PepGuid.newGuid(),
                 Name: '',
-                Title: '',
                 Questions: []
             }
         }
@@ -222,13 +284,40 @@ export class SurveysService {
         }
     }
 
-    onQuestionDropped(event: CdkDragDrop<any[]>, sectionId: string) {
-        // TODO:
+    addQuestion(questionType: SurveyQuestionType, sectionIndex = -1, questionIndex = -1) {
+        // Create new question
+        const question: SurveyQuestion = {
+            Type: questionType,
+        }
+        
+        // Get the sections.
+        const sections = this._surveySubject.getValue().Sections;
+        const currentSection = (sectionIndex >= 0 && sectionIndex < sections.length) ? sections[sectionIndex] : sections[sections.length - 1];
+        
+        if (questionIndex >= 0 && questionIndex < currentSection.Questions.length) {
+            currentSection.Questions.splice(questionIndex, 0, question);
+        } else {
+            currentSection.Questions.push(question);
+        }
+
+        this.notifySectionsChange(sections);
+    }
+
+    onQuestionDropped(event: CdkDragDrop<any[]>, sectionIndex: number) {
+        const sections = this._sectionsSubject.getValue();
+        const currentSection = sections[sectionIndex];
         
         // If the question moved between columns in the same section or between different sections but not in the same column.
         if (event.container.id !== event.previousContainer.id) {
+            // Get the previous section.
+            const previuosSection = this.getSectionByIndex(event.previousContainer.id);
             
+            transferArrayItem(previuosSection.Questions, currentSection.Questions, event.previousIndex, event.currentIndex);
+        } else {
+            moveItemInArray(currentSection.Questions, event.previousIndex, event.currentIndex);
         }
+
+        this.notifySectionsChange(sections);
     }
     
     onQuestionDragStart(event: CdkDragStart) {

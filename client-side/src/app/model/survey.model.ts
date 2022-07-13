@@ -5,7 +5,7 @@ export interface Survey extends AddonData {
     Description?: string;
     Active?: boolean;
     ActiveDateRange?: SurveyDateRange;
-    Sections?: SurveySection[];
+    Sections: SurveySection[];
 }
 
 export interface SurveyDateRange {
@@ -14,30 +14,27 @@ export interface SurveyDateRange {
 }
 
 export interface SurveySection {
-    Key: string;
+    Key?: string;
     Name?: string;
-    Title?: string;
-    Questions?: SurveyQuestion[];
+    Description?: string;
+    Questions: SurveyQuestion[];
 }
 
-export type SurveyQuestionType = 
-    'short-text' 
-    | 'long-text' 
-    | 'miltiple-select-dropdown' 
-    | 'single-select-dropdown'
-    | 'yes-no'
-    | 'number-int'
-    | 'number-decimal'
+export type SurveyQuestionType = 'short-text' | 'long-text' 
+    | 'multiple-selection-dropdown' //  | 'multiple-selection-checkboxs'
+    | 'single-selection-dropdown' // | 'single-selection-radiobuttons' 
+    | 'boolean-yes-no'
+    | 'number'
     | 'date'
-    | 'date-time'
-    | 'image'
+    | 'photo'
     | 'signature';
 
 export interface SurveyQuestion {
-    Key: string;
-    Type: SurveyQuestionType;
-    Title?: string;
+    Key?: string;
+    Name?: string;  
     Description?: string;
+    Type: SurveyQuestionType;
+    Mandatory?: boolean; 
     [key: string]: any;
 }
 

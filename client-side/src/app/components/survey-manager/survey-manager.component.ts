@@ -8,6 +8,7 @@ import { SurveysService } from "../../services/surveys.service";
 import { NavigationService } from '../../services/navigation.service';
 import { ISurveyEditor } from "../../model/survey.model";
 import { ISurveyEditorForm } from '../../model/forms';
+import { PepSnackBarData, PepSnackBarService } from "@pepperi-addons/ngx-lib/snack-bar";
 
 
 @Component({
@@ -35,7 +36,7 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
     _form = new FormGroup<ISurveyEditorForm>({
         IsActive: new FormControl(true)
     });
-    sectionsColumnsDropList = [];
+    sectionsQuestionsDropList = [];
     surveyEditor: ISurveyEditor;
     isActive = true;
     activeDateRangeOptions: any[] = [{ key: 'Active', value: 'Active date range' }];
@@ -64,6 +65,7 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
         private _surveysService: SurveysService,
         private _navigationService: NavigationService,
         private _activatedRoute: ActivatedRoute,
+        private pepSnackBarService: PepSnackBarService,
         public translate: TranslateService
     ) {
         this.layoutService.onResize$.pipe(this.destroy$).subscribe(size => {
@@ -77,10 +79,12 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
     }
 
     private subscribeEvents() {
-        // Get the sections id's into sectionsColumnsDropList for the drag & drop.
+
+        // Get the sections id's into sectionsQuestionsDropList for the drag & drop.
         this._surveysService.sectionsChange$.pipe(this.destroy$).subscribe(res => {
-            // Concat all results into one array.
-            this.sectionsColumnsDropList = [].concat(...res.map(section => section.Key));
+            this.sectionsQuestionsDropList = [].concat(...res.map((section, sectionIndex) => {
+                return this._surveysService.getSectionContainerKey(sectionIndex.toString())
+            }));
         });
     }
 
@@ -130,14 +134,51 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
     }
 
     onAddQuestionClicked(item) {
-        console.log('onAddQuestionClicked', item);
+        // console.log('onAddQuestionClicked', item);
+        this._surveysService.addQuestion('short-text');
+    }
+
+    togglePreviewMode() {
+        this.showEditor = !this.showEditor;
     }
 
     onSurveyNameChanged(value) {
-        debugger;
         this.surveyEditor.name = value;
-
         this._surveysService.updateSurveyFromEditor(this.surveyEditor);
+    }
+
+    onWrapperClicked(event: any) {
+        this._surveysService.clearSelected();
+    }
+
+    onSaveClick() {
+        this._surveysService.saveCurrentSurvey(this._navigationService.addonUUID).pipe(this.destroy$).subscribe(res => {
+            const data: PepSnackBarData = {
+                title: this.translate.instant('MESSAGES.SURVEY_SAVED'),
+                content: '',
+            }
+
+            const config = this.pepSnackBarService.getSnackBarConfig({
+                duration: 5000,
+            });
+
+            this.pepSnackBarService.openDefaultSnackBar(data, config);
+        });
+    }
+
+    onPublishClick() {
+        this._surveysService.publishCurrentSurvey(this._navigationService.addonUUID).pipe(this.destroy$).subscribe(res => {
+            const data: PepSnackBarData = {
+                title: this.translate.instant('MESSAGES.SURVEY_PUBLISHED'),
+                content: '',
+            }
+
+            const config = this.pepSnackBarService.getSnackBarConfig({
+                duration: 5000,
+            });
+
+            this.pepSnackBarService.openDefaultSnackBar(data, config);
+        });
     }
 
     ngOnDestroy(): void {

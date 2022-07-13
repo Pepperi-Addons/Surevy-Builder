@@ -1,3 +1,26 @@
-<div #sectionContainer class="section-container ">
-    Section works
-</div>
+<ng-container>
+    <div class="section-container " [ngClass]="{ 
+        'editable-state': editable, 'active-section': isActive }" 
+        (click)="onSectionClicked($event)"
+        cdkDragBoundary=".survey-builder-wrapper" cdkDrag [cdkDragData]="index" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)" 
+    >
+        <div class="pep-button sm sequence-number">
+            <span class="body-xs " title="{{ index + 1 }}">{{ index + 1 }}</span>
+        </div>
+        <div class="title-container">
+            <span class="body-sm ellipsis title" title="{{ name || ('SURVEY_MANAGER.SECTION_NAME_PLACEHOLDER' | translate)}}">{{ name || ('SURVEY_MANAGER.SECTION_NAME_PLACEHOLDER' | translate)}}</span>
+        </div>
+    </div>
+
+    <div [id]="sectionContainerKeyPrefix" class="questions-wrapper "
+        cdkDropList
+        [cdkDropListConnectedTo]="sectionsQuestionsDropList"
+        (cdkDropListDropped)="onQuestionDropped($event)">
+        
+        <ng-container *ngFor="let question of questions; let i=index;">
+            <addon-question-builder [editable]="editable" [question]="question" [sequenceNumber]="(index + 1) + '.' + (i + 1)" 
+                [isActive]="isActive && selectedQuestion === question"
+                (questionClick)="onQuestionClicked(i)"></addon-question-builder>
+        </ng-container>
+    </div>
+</ng-container>

@@ -3,17 +3,31 @@ import { AddonData } from "@pepperi-addons/papi-sdk";
 export interface Survey extends AddonData {
     Name?: string;
     Description?: string;
-    Sections?: SurveySection[];
+    Sections: SurveySection[];
 }
 
 export interface SurveySection {
-    Key: string;
+    Key?: string;
     Name?: string;
-    Title?: string;
-    Questions?: SurveyQuestion[];
+    Description?: string;
+    Questions: SurveyQuestion[];
 }
+
+export type SurveyQuestionType = 'short-text' | 'long-text' 
+    | 'multiple-selection-dropdown' //  | 'multiple-selection-checkboxs'
+    | 'single-selection-dropdown' // | 'single-selection-radiobuttons' 
+    | 'boolean-yes-no'
+    | 'number'
+    | 'date'
+    | 'photo'
+    | 'signature';
+
 export interface SurveyQuestion {
-    Key: string;
+    Key?: string;
+    Name?: string;  
+    Description?: string;
+    Type: SurveyQuestionType;
+    Mandatory?: boolean; 
     [key: string]: any;
 }
 
@@ -36,4 +50,11 @@ export const DEFAULT_BLANK_SURVEY_DATA: Survey = {
     "Name": "Name of survey",
     //  optional
     "Description": "Description of survey",
+    "Sections": [
+        {
+            "Key": "99dfd31h-2832-cf4b-k421-1fhf2299acsa",
+            "Name": "",
+            "Questions": []
+        }
+    ]
 }
