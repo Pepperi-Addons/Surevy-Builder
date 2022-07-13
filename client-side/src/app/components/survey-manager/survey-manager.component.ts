@@ -85,9 +85,10 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
             this.surveyEditor = editor;
             if (this.isActive && this.surveyEditor.activeDateRange) {
                 this.isActiveDateRangeSelected = true;    
-                this.selectedDateRangeValue = 'Active'           
-
-                //TODO
+                this.selectedDateRangeValue = 'Active';
+            } else {
+                this.isActiveDateRangeSelected = false;
+                this.selectedDateRangeValue = '';
             }
         });
 
@@ -200,6 +201,12 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
 
             this.pepSnackBarService.openDefaultSnackBar(data, config);
         });
+    }   
+
+    onQuestionDuplicateClick(event) {
+
     }
 
+    onQuestionDeleteClick(event) {}
+   
 }

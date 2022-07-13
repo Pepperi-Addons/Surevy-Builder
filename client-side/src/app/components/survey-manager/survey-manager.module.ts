@@ -14,7 +14,7 @@ import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
 import { PepSideBarModule } from '@pepperi-addons/ngx-lib/side-bar';
 import { PepSizeDetectorModule } from '@pepperi-addons/ngx-lib/size-detector';
 import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
-import { PepIconRegistry, pepIconSystemClose, pepIconArrowLeftAlt, pepIconNumberPlus, pepIconArrowDown } from '@pepperi-addons/ngx-lib/icon';
+import { PepIconRegistry, pepIconSystemClose, pepIconArrowLeftAlt, pepIconNumberPlus, pepIconArrowDown, pepIconSystemBin } from '@pepperi-addons/ngx-lib/icon';
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
@@ -27,13 +27,15 @@ import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } fr
 
 import { ServeyManagerComponent } from './survey-manager.component';
 import { SurveyBuilderInternalModule } from '../survey-builder-internal/survey-builder-internal.module';
+import { QuestionEditorModule } from '../question-editor/question-editor.module'
 import { config } from '../addon.config';
 
 const pepIcons = [
     pepIconSystemClose,
     pepIconArrowLeftAlt,
     pepIconNumberPlus,
-    pepIconArrowDown    
+    pepIconArrowDown,
+    pepIconSystemBin  
 ];
 
 export const routes: Routes = [
@@ -68,6 +70,7 @@ export const routes: Routes = [
         PepDateModule,
         PepSnackBarModule,
         SurveyBuilderInternalModule,
+        QuestionEditorModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,
