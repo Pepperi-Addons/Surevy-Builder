@@ -27,6 +27,7 @@ import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } fr
 
 import { ServeyManagerComponent } from './survey-manager.component';
 import { SurveyBuilderInternalModule } from '../survey-builder-internal/survey-builder-internal.module';
+import { QuestionEditorModule } from '../question-editor/question-editor.module'
 import { config } from '../addon.config';
 
 const pepIcons = [
@@ -68,6 +69,7 @@ export const routes: Routes = [
         PepDateModule,
         PepSnackBarModule,
         SurveyBuilderInternalModule,
+        QuestionEditorModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,

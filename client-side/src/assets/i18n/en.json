@@ -26,7 +26,19 @@
             "ACTIVE_FROM_DATE": "From Date",
             "ACTIVE_TO_DATE": "To Date",
             "ADD_SECTION": "Add a Section",
-            "ADD_QUESTION": "Add a Question"            
+            "ADD_QUESTION": "Add a Question",
+            
+            "RIGHT_SIDE": {
+                "KEY_NAME": "Key Name",
+                "QUESTION_TITLE": "Type your question here...",
+                "DESCRIPTION": "Description",
+                "QUESTION_OPTION": "Question Options",
+                "MAKE_MANDATORY": "Make Mandatory",
+                "ACTIONS": {
+                    "DUPLICATE": "Duplicate",
+                    "DELETE": "Delete"
+                }
+            }
         }
     },
     "SURVEY_MANAGER": {

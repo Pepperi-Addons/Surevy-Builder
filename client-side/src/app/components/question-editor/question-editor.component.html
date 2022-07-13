@@ -1,0 +1,10 @@
+<pep-textbox [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY_NAME' | translate"
+[placeholder]="'SURVEYS_MANAGER.SURVEY_EDITOR.NAME_PLACEHOLDER' | translate"
+[value]="" (valueChange)="onQuestionEditorFieldChanged($event)">
+</pep-textbox>
+<pep-textarea [key]="'question'"
+              [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_TITLE' | translate" [rowSpan]="2">
+</pep-textarea>
+<pep-textarea [key]="'description'"
+              [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2">
+</pep-textarea>
