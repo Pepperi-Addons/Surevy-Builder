@@ -6,7 +6,7 @@ import { SurveysService } from 'src/app/services/surveys.service';
 import { SurveyQuestion, SurveyQuestionType } from '../../../model/survey.model';
 
 @Component({
-    selector: 'question-builder',
+    selector: 'addon-question-builder',
     templateUrl: './question-builder.component.html',
     styleUrls: ['./question-builder.component.scss', './question-builder.component.theme.scss']
 })

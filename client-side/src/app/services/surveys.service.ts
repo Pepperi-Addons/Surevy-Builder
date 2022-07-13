@@ -108,10 +108,6 @@ export class SurveysService {
         }
     }
 
-    // private loadQuestions(survey: Survey) {
-    //     // TODO:
-    // }
-
     private notifySurveyChange(survey: Survey) {
         this._surveySubject.next(survey);
     }

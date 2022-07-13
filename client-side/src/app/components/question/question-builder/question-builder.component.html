@@ -8,36 +8,40 @@
         <span class="body-xs " title="{{ sequenceNumber }}">{{ sequenceNumber }}</span>
     </div>
 
-    <div [ngSwitch]="question.Type" class="question-container"
-        [ngClass]="{ 'editable-state': editable, 'active-question': isActive }"
-        (click)="onQuestionClicked($event)"
-    >
-        <ng-container *ngSwitchCase="'short-text'">
-            <pep-textbox [key]="'short-text'" [label]="'Short Text'" [value]="question.Value" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
-            <!-- <text-question [form]="form"></text-question> -->
-        </ng-container>
-        <!-- <ng-container *ngSwitchCase="'date'">
-            <pep-date-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
-                (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
-            </pep-date-filter>
-        </ng-container>
-        <ng-container *ngSwitchCase="'multi-select'">
-            <pep-multi-select-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
-                (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
-            </pep-multi-select-filter>
-        </ng-container>
-        <ng-container *ngSwitchCase="'number'">
-            <pep-number-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
-                (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
-            </pep-number-filter>
-        </ng-container>
-        <ng-container *ngSwitchCase="'text'">
-            <pep-text-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
-                (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
-            </pep-text-filter>
-        </ng-container> -->
-        <ng-container *ngSwitchDefault>
-            <span>{{ 'SURVEY_MANAGER.QUESTION_TYPE_NOT_SUPPORTED' | translate }}</span>
+    <div class="question-container" (click)="onQuestionClicked($event)" [ngClass]="{ 'editable-state': editable, 'active-question': isActive }">
+        <div class="question-title-container">
+            <span class="body-sm ellipsis title" title="{{ question.Name }}">{{ question.Name }}</span>
+        </div>
+        <div *ngIf="question?.Description?.length > 0" class="question-description-container">
+            <span class="body-sm ellipsis description" title="{{ question.Description }}">{{ question.Description }}</span>
+        </div>
+        <ng-container [ngSwitch]="question?.Type" >
+            <ng-container *ngSwitchCase="'short-text'">
+                <pep-textbox [key]="'short-text'" [label]="'Short Text'" [value]="question.Value" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
+            </ng-container>
+            <!-- <ng-container *ngSwitchCase="'date'">
+                <pep-date-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
+                    (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
+                </pep-date-filter>
+            </ng-container>
+            <ng-container *ngSwitchCase="'multi-select'">
+                <pep-multi-select-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
+                    (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
+                </pep-multi-select-filter>
+            </ng-container>
+            <ng-container *ngSwitchCase="'number'">
+                <pep-number-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
+                    (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
+                </pep-number-filter>
+            </ng-container>
+            <ng-container *ngSwitchCase="'text'">
+                <pep-text-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
+                    (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
+                </pep-text-filter>
+            </ng-container> -->
+            <ng-container *ngSwitchDefault>
+                <span>{{ 'SURVEY_MANAGER.QUESTION_TYPE_NOT_SUPPORTED' | translate }}</span>
+            </ng-container>
         </ng-container>
     </div>
 </div>

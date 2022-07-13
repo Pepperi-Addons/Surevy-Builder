@@ -147,6 +147,11 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
         this._surveysService.updateSurveyFromEditor(this.surveyEditor);
     }
 
+    onSurveyDescriptionChanged(value) {
+        this.surveyEditor.description = value;
+        this._surveysService.updateSurveyFromEditor(this.surveyEditor);
+    }
+
     onWrapperClicked(event: any) {
         this._surveysService.clearSelected();
     }
