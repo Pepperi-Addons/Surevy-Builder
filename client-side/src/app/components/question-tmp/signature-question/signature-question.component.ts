@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BaseQuestionDirective } from '../model/base-question.directive';
 
 @Component({
-    selector: 'addon-signature-question',
+    selector: 'survey-signature-question',
     templateUrl: './signature-question.component.html',
     styleUrls: ['./signature-question.component.scss']
 })

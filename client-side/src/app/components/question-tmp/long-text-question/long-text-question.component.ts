@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BaseQuestionDirective } from '../model/base-question.directive';
 
 @Component({
-    selector: 'addon-long-text-question',
+    selector: 'survey-long-text-question',
     templateUrl: './long-text-question.component.html',
     styleUrls: ['./long-text-question.component.scss']
 })

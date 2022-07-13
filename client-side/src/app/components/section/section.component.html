@@ -18,9 +18,9 @@
         (cdkDropListDropped)="onQuestionDropped($event)">
         
         <ng-container *ngFor="let question of questions; let i=index;">
-            <addon-question-builder [editable]="editable" [question]="question" [sequenceNumber]="(index + 1) + '.' + (i + 1)" 
+            <survey-question-generator [editable]="editable" [question]="question" [sequenceNumber]="(index + 1) + '.' + (i + 1)" 
                 [isActive]="isActive && selectedQuestion === question"
-                (questionClick)="onQuestionClicked(i)"></addon-question-builder>
+                (questionClick)="onQuestionClicked(i)"></survey-question-generator>
         </ng-container>
     </div>
 </ng-container>

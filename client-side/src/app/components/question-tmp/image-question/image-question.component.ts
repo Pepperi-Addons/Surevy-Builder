@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BaseQuestionDirective } from '../model/base-question.directive';
 
 @Component({
-    selector: 'addon-image-question',
+    selector: 'survey-image-question',
     templateUrl: './image-question.component.html',
     styleUrls: ['./image-question.component.scss']
 })

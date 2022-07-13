@@ -1,16 +1,16 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormArray, FormControl, UntypedFormGroup } from '@angular/forms';
-import { IQuestionForm } from '../model/forms';
+import { IQuestionForm } from '../question-tmp/model/forms';
 import { CdkDragEnd, CdkDragEnter, CdkDragExit, CdkDragStart } from '@angular/cdk/drag-drop';
 import { SurveysService } from 'src/app/services/surveys.service';
-import { SurveyQuestion, SurveyQuestionType } from '../../../model/survey.model';
+import { SurveyQuestion, SurveyQuestionType } from '../../model/survey.model';
 
 @Component({
-    selector: 'addon-question-builder',
-    templateUrl: './question-builder.component.html',
-    styleUrls: ['./question-builder.component.scss', './question-builder.component.theme.scss']
+    selector: 'survey-question-generator',
+    templateUrl: './question-generator.component.html',
+    styleUrls: ['./question-generator.component.scss', './question-generator.component.theme.scss']
 })
-export class QuestionBuilderComponent implements OnInit {
+export class QuestionGeneratorComponent implements OnInit {
     @Input() formKey: string;
 
     //private _parentForm;

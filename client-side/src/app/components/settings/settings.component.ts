@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'addon-settings',
+    selector: 'survey-settings',
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.scss']
 })

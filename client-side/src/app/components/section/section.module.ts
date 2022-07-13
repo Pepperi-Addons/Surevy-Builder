@@ -7,7 +7,7 @@ import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items
 
 import { SectionComponent } from './section.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { QuestionModule } from '../question/question.module';
+import { QuestionGeneratorModule } from '../question-generator/question-generator.module';
 
 @NgModule({
     declarations: [SectionComponent],
@@ -17,7 +17,7 @@ import { QuestionModule } from '../question/question.module';
         PepButtonModule,
         PepRemoteLoaderModule,
         PepDraggableItemsModule,
-        QuestionModule,
+        QuestionGeneratorModule,
         TranslateModule.forChild()
     ],
     exports: [SectionComponent]
