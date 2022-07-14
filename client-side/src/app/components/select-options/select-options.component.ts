@@ -3,17 +3,16 @@ import { SurveysService } from 'src/app/services/surveys.service';
 import { SurveyQuestion, SurveyQuestionType } from '../../model/survey.model';
 
 @Component({
-    selector: 'survey-question-editor',
-    templateUrl: './question-editor.component.html',
-    styleUrls: ['./question-editor.component.scss', './question-editor.component.theme.scss']
+    selector: 'question-select-options',
+    templateUrl: './select-options.component.html',
+    styleUrls: ['./select-options.component.scss', './select-options.component.theme.scss']
 })
 
-export class QuestionEditorComponent implements OnInit {
+export class QuestionSelectOptionsComponent implements OnInit {
     
-    @Input() questionType: SurveyQuestionType;
     @Input() question: SurveyQuestion;
+    @Input() id: number = 0
    
-    forNextVersion = false;
     constructor(
         private surveysService: SurveysService
     ) { }
@@ -32,15 +31,19 @@ export class QuestionEditorComponent implements OnInit {
         //this._surveysService.updateSurveyFromEditor(this.surveyEditor);
     }
 
-    onShowLogicClick(event) {
-      
-    }
-
     addNewSelectOption(event){
         //let option = new ();
         //option.id = (this.configuration?.cards.length);
 
         //this.configuration?.cards.push( card); 
         //this.updateHostObject(); 
+    }
+
+    onRemoveClick() {
+        //this.removeClick.emit({id: this.id});
+    }
+
+    onEditClick() {
+        //this.editClick.emit({id: this.id});
     }
 }

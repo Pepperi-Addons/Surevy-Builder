@@ -8,17 +8,16 @@
 <pep-textarea [key]="'description'"
               [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2">
 </pep-textarea>
+
+<question-select-options></question-select-options>
+
 <ng-container *ngIf="forNextVersion">
 <label class="title body-md">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
 <pep-button  value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
                         styleType="regular" iconName="system_filter_2" iconPosition="end"
                         (buttonClick)="onShowLogicClick($event)" sizeType="sm"></pep-button>
 </ng-container>
-<ng-container *ngIf="true || questionType == 'multiple-selection-dropdown' || questionType == 'single-selection-dropdown' then selectOptionsTemplate;"></ng-container>
 
 <label class="title body-md">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>
 <pep-checkbox class="checkbox-as-title" [value]="false" [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAKE_MANDATORY' | translate" [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged($event)"></pep-checkbox>
 
-<ng-template #selectOptionsTemplate>
-    <label class="title body-md">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TITLE" | translate}}</label>
-</ng-template>

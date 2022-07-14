@@ -46,7 +46,8 @@
                     "PLACEHOLDER_TEXT_DEFAULT": "Please select an option...",
                     "ADD_KEY": "Add Key",
                     "TYPE_YOUR_OPTION": "Type your option here...",
-                    "DEFAULT_KEY_PREFIX": "GLX-"
+                    "DEFAULT_KEY_PREFIX": "GLX-",
+                    "ADD_ITEM": "Add item to Selection"
                 }
             }
         }
