@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SurveysService } from 'src/app/services/surveys.service';
-import { SurveyQuestion, SurveyQuestionType } from '../../model/survey.model';
+import { SurveyOptionState, SurveyQuestion, SurveyQuestionType } from '../../model/survey.model';
 
 @Component({
     selector: 'question-select-options',
@@ -13,6 +13,8 @@ export class QuestionSelectOptionsComponent implements OnInit {
     @Input() question: SurveyQuestion;
     @Input() id: number = 0
    
+    optionState: SurveyOptionState = 'collapse';
+
     constructor(
         private surveysService: SurveysService
     ) { }
@@ -44,6 +46,6 @@ export class QuestionSelectOptionsComponent implements OnInit {
     }
 
     onEditClick() {
-        //this.editClick.emit({id: this.id});
+        this.optionState = this.optionState === 'collapse' ? 'expand' : 'collapse';
     }
 }

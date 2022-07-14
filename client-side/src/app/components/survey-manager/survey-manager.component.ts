@@ -49,16 +49,19 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
 
     menuItems = [
         {
+            Type: 'short-text',
             key: `question1`,
-            text: 'question 1',
+            text: 'short-text',
             iconName: 'arrow_left_alt'
         },
         {
+            Type: 'multiple-selection-dropdown',
             key: `question2`,
-            text: 'question 2',
+            text: 'multiple selection',
             iconName: 'arrow_left_alt'
         },
         {
+            Type: 'short-text',
             key: `question3`,
             text: 'question 3',
             iconName: 'arrow_left_alt'
@@ -161,8 +164,8 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         this._surveysService.addSection();
     }
 
-    onAddQuestionClicked(item) {        
-        this._surveysService.addQuestion('short-text');
+    onAddQuestionClicked(item) {  
+                this._surveysService.addQuestion(item?.source?.Type || 'short-text');
     }
 
     /*
@@ -211,6 +214,8 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
 
     }
 
-    onQuestionDeleteClick(event) {}
+    onQuestionDeleteClick(event) {
+
+    }
    
 }
