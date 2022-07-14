@@ -20,6 +20,8 @@ export interface SurveySection {
     Questions: SurveyQuestion[];
 }
 
+export type SurveyOptionState =  'collapse' | 'expand';
+
 export type SurveyQuestionType = 'short-text' | 'long-text' 
     | 'multiple-selection-dropdown' //  | 'multiple-selection-checkboxs'
     | 'single-selection-dropdown' // | 'single-selection-radiobuttons' 

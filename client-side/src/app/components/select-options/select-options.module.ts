@@ -8,24 +8,24 @@ import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
 import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items';
 
 
-import { QuestionEditorComponent } from './question-editor.component';
-import { QuestionSelectOptionsModule } from '../select-options/select-options.module';
+import { QuestionSelectOptionsComponent } from './select-options.component';
 import { PepNgxLibModule, PepAddonService } from '@pepperi-addons/ngx-lib';
-import { PepIconRegistry, pepIconSystemFilter2} from '@pepperi-addons/ngx-lib/icon';
+import { pepIconArrowDown, pepIconArrowUp, PepIconRegistry, pepIconSystemFilter2} from '@pepperi-addons/ngx-lib/icon';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepCheckboxModule } from '@pepperi-addons/ngx-lib/checkbox';
 
-import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
-import { config } from '../addon.config';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 const pepIcons = [
-    pepIconSystemFilter2
+    pepIconSystemFilter2,
+    pepIconArrowDown, 
+    pepIconArrowUp
 ];
 
 @NgModule({
     declarations: [
-        QuestionEditorComponent
+        QuestionSelectOptionsComponent
     ],
     imports: [
         CommonModule,
@@ -34,15 +34,14 @@ const pepIcons = [
         PepButtonModule,
         PepRemoteLoaderModule,
         PepDraggableItemsModule,
-        QuestionSelectOptionsModule,
         PepTextboxModule,
         PepTextareaModule,
         PepCheckboxModule,
-        TranslateModule.forChild(),
+        TranslateModule.forChild()
     ],
-    exports: [QuestionEditorComponent]
+    exports: [QuestionSelectOptionsComponent]
 })
-export class QuestionEditorModule { 
+export class QuestionSelectOptionsModule { 
 
 constructor(
     translate: TranslateService,

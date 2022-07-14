@@ -1,0 +1,36 @@
+
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions';
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins';
+
+.main-area-container {
+    background: functions.get-pep-color(color-system-primary, color-tran-10);
+
+    .header-container {
+        background: functions.get-pep-color(color-system-primary-invert, color-base);
+        box-shadow: functions.get-pep-shadow(shadow-sm, regular);
+
+        .header-title {
+            color: functions.get-pep-color(color-text, color-dimmed);
+        }
+
+        .size-limit-container {
+            @include mixins.state-weak-default();
+        }
+    }
+
+    .header-container-preview {
+        background: unset;
+        // box-shadow: unset;
+        background-color: functions.get-pep-color(color-text, color-caution);
+        
+        .preview-title,
+        .color-link {
+            color: functions.get-pep-color(color-text, color-invert);
+        }
+    }
+
+    .survey-builder-wrapper {
+        background: functions.get-pep-color(color-system-primary-invert, color-base);
+        box-shadow: functions.get-pep-shadow(shadow-md, regular);
+    }
+}

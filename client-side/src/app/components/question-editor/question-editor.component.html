@@ -1,17 +1,25 @@
-<pep-textbox [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY_NAME' | translate"
-[placeholder]="'SURVEYS_MANAGER.SURVEY_EDITOR.NAME_PLACEHOLDER' | translate"
-[value]="" (valueChange)="onQuestionEditorFieldChanged($event)">
-</pep-textbox>
-<pep-textarea [key]="'question'"
-              [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_TITLE' | translate" [rowSpan]="2">
-</pep-textarea>
-<pep-textarea [key]="'description'"
-              [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2">
-</pep-textarea>
-<ng-container *ngIf="forNextVersion">
-<label class="title body-md">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
-<pep-button  value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
-                        styleType="regular" iconName="system_filter_2" iconPosition="end"
-                        (buttonClick)="onShowLogicClick($event)" sizeType="sm"></pep-button>
+<ng-container *ngIf="question">
+    <pep-textbox [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY_NAME' | translate"
+    [placeholder]="'SURVEYS_MANAGER.SURVEY_EDITOR.NAME_PLACEHOLDER' | translate"
+    [value]="question?.Key || ''" (valueChange)="onQuestionEditorFieldChanged('Key',$event)">
+    </pep-textbox>
+    <pep-textarea [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_TITLE' | translate" [rowSpan]="1.5"
+                  (valueChange)="onQuestionEditorFieldChanged('Name',$event)">
+    </pep-textarea>
+    <pep-textarea 
+                [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2"
+                (valueChange)="onQuestionEditorFieldChanged('Description',$event)">
+    </pep-textarea>
+
+    <question-select-options></question-select-options>
+
+    <ng-container *ngIf="forNextVersion">
+    <label class="title body-md">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
+    <pep-button  value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
+                            styleType="weak" iconName="system_filter_2" iconPosition="end"
+                            (buttonClick)="onShowLogicClick($event)" sizeType="sm"></pep-button>
+    </ng-container>
+
+    <label class="title body-md">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>
+    <pep-checkbox class="checkbox-no-background" [value]="false" [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAKE_MANDATORY' | translate" [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('Mandatory',$event)"></pep-checkbox>
 </ng-container>
-<label class="title body-md">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>

@@ -1,6 +1,6 @@
 <div class="survey-container">
     <pep-page-layout [showShadow]="true">
-        <div pep-side-area>
+        <div pep-side-area *ngIf="showEditor" style="padding-inline-start: 1rem; height: inherit;">
             <pep-side-bar [ignoreResize]="true" (stateChange)="onSidebarStateChange($event)">
                 <div header-content class="side-bar-title">
                     <pep-button class="back-button" sizeType="sm" iconName="arrow_left_alt"
@@ -57,20 +57,28 @@
         </div>
         <ng-container pep-main-area>
             <div class="main-area-container">
-                <div class="header-container">
-                    <pep-button key='Preview' [value]="'ACTIONS.PREVIEW' | translate" sizeType="sm"
-                        classNames="pep-spacing-element" (buttonClick)="togglePreviewMode()"></pep-button>
-                    <pep-button key='Save' [value]="'ACTIONS.SAVE' | translate" sizeType="sm"
-                        classNames="pep-spacing-element" (buttonClick)="onSaveClick()"></pep-button>
-                    <pep-button key='Publish' [value]="'ACTIONS.PUBLISH' | translate" sizeType="sm"
-                        classNames="pep-spacing-element" styleType="strong" (buttonClick)="onPublishClick();">
-                    </pep-button>
-
-                    <!-- <pep-button class="pep-spacing-element" [value]="'Preview'" [sizeType]="'sm'">
-                    </pep-button>
-                    <pep-button class="pep-spacing-element" [value]="'Publish'" [sizeType]="'sm'"
-                        [styleType]="'strong'">
-                    </pep-button> -->
+                <div class="header-container" [ngClass]="{'header-container-preview': !showEditor }">
+                    <ng-container *ngIf="showEditor; then editorTitleTemplate; else previewTitleTemplate"></ng-container>
+                    <ng-template #editorTitleTemplate>
+                        <div></div>
+                    </ng-template>
+                    <ng-template #previewTitleTemplate>
+                        <div class="preview-title body-sm">
+                            <span>{{('SURVEY_MANAGER.PREVIEW_TITLE' | translate)}}</span>
+                        </div>
+                    </ng-template>
+    
+                    <ng-container *ngIf="showEditor; then editorButtonsTemplate; else previewButtonsTemplate"></ng-container>
+                    <ng-template #editorButtonsTemplate>
+                        <div class="header-end">
+                            <pep-button key='Preview' [value]="'ACTIONS.PREVIEW' | translate" sizeType="sm" classNames="pep-spacing-element" (buttonClick)="togglePreviewMode()"></pep-button>
+                            <pep-button key='Save' [value]="'ACTIONS.SAVE' | translate" sizeType="sm" classNames="pep-spacing-element" (buttonClick)="onSaveClick()"></pep-button>
+                            <pep-button key='Publish' [value]="'ACTIONS.PUBLISH' | translate" sizeType="sm" classNames="pep-spacing-element" styleType="strong" (buttonClick)="onPublishClick();"></pep-button>
+                        </div>
+                    </ng-template>
+                    <ng-template #previewButtonsTemplate>
+                        <a class="color-link body-sm" (click)="togglePreviewMode()" href="javascript:void(0)">{{('SURVEY_MANAGER.PREVIEW_CLICK_HERE' | translate)}}</a>    
+                    </ng-template>
                 </div>
                 <div class="survey-builder-wrapper" (click)="onWrapperClicked($event)">
                     <survey-builder-internal [editMode]="showEditor" [screenSize]="screenSize"
@@ -82,12 +90,12 @@
     <div class="right-side-bar">
         <survey-question-editor></survey-question-editor>
         <div class="pep-actions">
-            <pep-button value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}"
-                styleType="regular" iconName="number_plus" iconPosition="end"
-                (buttonClick)="onQuestionDuplicateClick($event)" sizeType="sm"></pep-button>
-            <pep-button value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}"
-                styleType="regular" iconName="system_bin" iconPosition="end" classNames="caution"
-                (buttonClick)="onQuestionDeleteClick($event)" sizeType="sm"></pep-button>
+            <pep-button  value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
+                        styleType="weak" iconName="number_plus" iconPosition="end"
+                        (buttonClick)="onQuestionDuplicateClick($event)" sizeType="md"></pep-button>
+            <pep-button  value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
+                        styleType="weak" iconName="system_bin" iconPosition="end" classNames="caution"
+                        (buttonClick)="onQuestionDeleteClick($event)" sizeType="md"></pep-button>
         </div>
     </div>
 </div>

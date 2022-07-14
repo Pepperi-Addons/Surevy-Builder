@@ -39,11 +39,22 @@
                     "ADD_LOGIC": "Add Logic",
                     "DUPLICATE": "Duplicate",
                     "DELETE": "Delete"
+                },
+                "SELECT_OPTION": {
+                    "TITLE": "Questions Options",
+                    "PLACEHOLDER_TEXT": "Placeholder Text",
+                    "PLACEHOLDER_TEXT_DEFAULT": "Please select an option...",
+                    "ADD_KEY": "Add Key",
+                    "TYPE_YOUR_OPTION": "Type your option here...",
+                    "DEFAULT_KEY_PREFIX": "GLX-",
+                    "ADD_ITEM": "Add item to Selection"
                 }
             }
         }
     },
     "SURVEY_MANAGER": {
+        "PREVIEW_TITLE": "Preview",
+        "PREVIEW_CLICK_HERE": "Click here to edit",
         "SECTION_NAME_PLACEHOLDER": "Type your section name here...",
         "QUESTION_TYPE_NOT_SUPPORTED": "This question type is not supported"
     },
