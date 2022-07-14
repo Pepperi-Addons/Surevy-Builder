@@ -7,8 +7,9 @@ export interface Survey extends AddonData {
 }
 
 export interface SurveySection {
-    Key?: string;
+    Key: string;
     Name?: string;
+    Title: string;  
     Description?: string;
     Questions: SurveyQuestion[];
 }
@@ -23,8 +24,9 @@ export type SurveyQuestionType = 'short-text' | 'long-text'
     | 'signature';
 
 export interface SurveyQuestion {
-    Key?: string;
-    Name?: string;  
+    Key: string;
+    Name?: string;
+    Title: string;  
     Description?: string;
     Type: SurveyQuestionType;
     Mandatory?: boolean; 
@@ -53,7 +55,7 @@ export const DEFAULT_BLANK_SURVEY_DATA: Survey = {
     "Sections": [
         {
             "Key": "99dfd31h-2832-cf4b-k421-1fhf2299acsa",
-            "Name": "",
+            "Title": "",
             "Questions": []
         }
     ]

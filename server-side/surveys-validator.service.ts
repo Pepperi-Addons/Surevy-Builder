@@ -62,11 +62,14 @@ export class SurveysValidatorService {
     /***********************************************************************************************/
     
     private validateSurveySectionQuestionProperties(sectionsPropertyBreadcrumb: string, question: SurveyQuestion): void {
-        // Validate Key (Optional)
-        this.validateObjectProperty(question, 'Key', sectionsPropertyBreadcrumb, true);
+        // Validate Key
+        this.validateObjectProperty(question, 'Key', sectionsPropertyBreadcrumb);
 
         // Validate Name if exist (Optional)
         this.validateObjectProperty(question, 'Name', sectionsPropertyBreadcrumb, true);
+        
+        // Validate Title if exist (Optional)
+        this.validateObjectProperty(question, 'Title', sectionsPropertyBreadcrumb);
         
         // Validate Description if exist (Optional)
         this.validateObjectProperty(question, 'Description', sectionsPropertyBreadcrumb, true);
@@ -89,11 +92,14 @@ export class SurveysValidatorService {
     private validateSurveySectionProperties(surveyPropertyBreadcrumb: string, section: SurveySection, sectionIndex: number): void {
         const sectionsPropertyBreadcrumb = `${surveyPropertyBreadcrumb} -> Sections at index ${sectionIndex}`;
 
-        // Validate Key (Optional)
-        this.validateObjectProperty(section, 'Key', sectionsPropertyBreadcrumb, true);
+        // Validate Key
+        this.validateObjectProperty(section, 'Key', sectionsPropertyBreadcrumb);
 
         // Validate Name if exist (Optional)
         this.validateObjectProperty(section, 'Name', sectionsPropertyBreadcrumb, true);
+        
+        // Validate Title if exist
+        this.validateObjectProperty(section, 'Title', sectionsPropertyBreadcrumb);
         
         // Validate Description if exist (Optional)
         this.validateObjectProperty(section, 'Description', sectionsPropertyBreadcrumb, true);
@@ -146,10 +152,11 @@ export class SurveysValidatorService {
         for (let sectionIndex = 0; sectionIndex < survey.Sections.length; sectionIndex++) {
             const currentSection = survey.Sections[sectionIndex];
             const sectionToAdd: SurveySection = {
+                Key: currentSection.Key,
+                Title: currentSection.Title,
                 Questions: []
             };
 
-            this.addOptionalPropertyIfExist(currentSection, sectionToAdd, 'Key');
             this.addOptionalPropertyIfExist(currentSection, sectionToAdd, 'Name');
             this.addOptionalPropertyIfExist(currentSection, sectionToAdd, 'Description');
             
@@ -157,10 +164,11 @@ export class SurveysValidatorService {
             for (let questionIndex = 0; questionIndex < currentSection.Questions.length; questionIndex++) {
                 const currentQuestion = currentSection.Questions[questionIndex];
                 const questionToAdd: SurveyQuestion = {
+                    Key: currentQuestion.Key,
+                    Title: currentQuestion.Title,
                     Type: currentQuestion.Type
                 };
 
-                this.addOptionalPropertyIfExist(currentSection, sectionToAdd, 'Key');
                 this.addOptionalPropertyIfExist(currentSection, sectionToAdd, 'Name');
                 this.addOptionalPropertyIfExist(currentSection, sectionToAdd, 'Description');
                 this.addOptionalPropertyIfExist(currentQuestion, questionToAdd, 'Mandatory');
