@@ -21,13 +21,18 @@ import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
 import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
 import { PepDateModule } from '@pepperi-addons/ngx-lib/date';
+import { PepCheckboxModule } from '@pepperi-addons/ngx-lib/checkbox';
 import { PepSnackBarModule } from '@pepperi-addons/ngx-lib/snack-bar';
+import { PepFieldTitleModule } from '@pepperi-addons/ngx-lib/field-title';
 
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 
-import { ServeyManagerComponent } from './survey-manager.component';
 import { SurveyBuilderInternalModule } from '../survey-builder-internal/survey-builder-internal.module';
 import { QuestionEditorModule } from '../question-editor/question-editor.module'
+
+import { ServeyManagerComponent } from './survey-manager.component';
+import { QuestionMenuComponent } from '../question-menu/question-menu.component';
+
 import { config } from '../addon.config';
 
 const pepIcons = [
@@ -48,6 +53,7 @@ export const routes: Routes = [
 @NgModule({
     declarations: [
         ServeyManagerComponent,
+        QuestionMenuComponent
     ],
     imports: [
         CommonModule,
@@ -68,7 +74,9 @@ export const routes: Routes = [
         PepSelectModule,
         PepMenuModule,
         PepDateModule,
-        PepSnackBarModule,
+        PepCheckboxModule,
+        PepSnackBarModule,     
+        PepFieldTitleModule,   
         SurveyBuilderInternalModule,
         QuestionEditorModule,
         TranslateModule.forChild({

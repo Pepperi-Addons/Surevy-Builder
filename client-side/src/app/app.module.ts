@@ -8,6 +8,8 @@ import { PepAddonService } from '@pepperi-addons/ngx-lib';
 import { TranslateModule, TranslateLoader, TranslateStore } from '@ngx-translate/core';
 import { AppRoutingModule } from './app.routes';
 
+import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
+
 // import { SurveysManagerModule } from './components/surveys-manager/surveys-manager.module';
 // import { SurveyManagerModule } from './components/survey-manager/survey-manager.module';
 
@@ -16,7 +18,7 @@ import { config } from './components/addon.config';
 
 @NgModule({
     declarations: [
-        AppComponent        
+        AppComponent    
     ],
     imports: [
         BrowserModule,
@@ -24,7 +26,8 @@ import { config } from './components/addon.config';
         HttpClientModule,
         // SurveysManagerModule,
         // SurveyManagerModule,
-        AppRoutingModule,       
+        AppRoutingModule,    
+        PepMenuModule,   
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

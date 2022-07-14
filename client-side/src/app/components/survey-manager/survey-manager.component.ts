@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
+import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
 import { NavigationService } from '../../services/navigation.service';
@@ -15,43 +15,37 @@ import { PepSnackBarData, PepSnackBarService } from "@pepperi-addons/ngx-lib/sna
     styleUrls: ['./survey-manager.component.scss', './survey-manager.component.theme.scss']
 })
 export class ServeyManagerComponent extends DestoyerDirective implements OnInit, OnDestroy {
-    get isActive() {       
+    get isActive() {
         if (this.surveyEditor) {
             return this.surveyEditor.active !== undefined ? this.surveyEditor.active : true;
         } else {
             return null;
-        } 
+        }
+    }
+
+    get isActiveDateRangeSelected() {
+        return this.isActive && this.surveyEditor && this.surveyEditor.activeDateRange;
     }
 
     get activeFromDate() {
-        if (this.surveyEditor && this.surveyEditor.activeDateRange) {
-            return this.surveyEditor.activeDateRange.from ? this.surveyEditor.activeDateRange.from : null;
-        } else {
-            return null;
-        }
+        return this.isActive && this.surveyEditor?.activeDateRange?.from ? this._utilitiesService.stringifyDate(this.surveyEditor.activeDateRange.from) : null;
     }
 
     get activeToDate() {
-        if (this.surveyEditor && this.surveyEditor.activeDateRange) {
-            return this.surveyEditor.activeDateRange.to ? this.surveyEditor.activeDateRange.to : null;
-        } else {
-            return null;
-        }
+        return this.isActive && this.surveyEditor?.activeDateRange?.to ? this._utilitiesService.stringifyDate(this.surveyEditor.activeDateRange.to) : null;
     }
 
     showEditor = true;
     screenSize: PepScreenSizeType;
     sectionsQuestionsDropList = [];
     surveyEditor: ISurveyEditor;    
-    activeDateRangeOptions: any[] = [{ key: 'Active', value: 'Active date range' }];
-    selectedDateRangeValue = '';
-    isActiveDateRangeSelected = false;
-
+    minDateValue: string = null;
+    maxDateValue: string = null;
+/*
     menuItems = [
         {
-            Type: 'short-text',
-            key: `question1`,
-            text: 'short-text',
+            key: `short-text`,
+            text: 'question 1',
             iconName: 'arrow_left_alt'
         },
         {
@@ -66,7 +60,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
             text: 'question 3',
             iconName: 'arrow_left_alt'
         },
-    ] //TEMP
+    ] */
 
 
     constructor(
@@ -75,6 +69,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         private _navigationService: NavigationService,
         private _activatedRoute: ActivatedRoute,
         private pepSnackBarService: PepSnackBarService,
+        private _utilitiesService: PepUtilitiesService,
         public translate: TranslateService
     ) {
         super();
@@ -86,13 +81,8 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         // For update editor.
         this._surveysService.surveyEditorLoad$.pipe(this.destroy$).subscribe((editor) => {
             this.surveyEditor = editor;
-            if (this.isActive && this.surveyEditor.activeDateRange) {
-                this.isActiveDateRangeSelected = true;    
-                this.selectedDateRangeValue = 'Active';
-            } else {
-                this.isActiveDateRangeSelected = false;
-                this.selectedDateRangeValue = '';
-            }
+            this.minDateValue = null;
+            this.maxDateValue = null;            
         });
 
         this._surveysService.sectionsChange$.pipe(this.destroy$).subscribe(res => {
@@ -129,52 +119,73 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         this._surveysService.updateSurveyFromEditor(this.surveyEditor);
     }
 
-    onActiveStateChanged(state: any) {
-        console.log('onActiveStateChanged', state);        
-        this.surveyEditor.active = state.value === 'true';
-        if (!this.surveyEditor.active) {
-            this.isActiveDateRangeSelected = null;
+    onActiveStateChanged(isActive: any) {        
+        this.surveyEditor.active = isActive;
+        if (!isActive) {
+            this.surveyEditor.activeDateRange = undefined;
+            this.minDateValue = null;
+            this.maxDateValue = null;               
         }
         this._surveysService.updateSurveyFromEditor(this.surveyEditor);
     }
 
-    onActiveDateRangeChanged(value: string) {        
-        this.isActiveDateRangeSelected = value === 'Active';
-        if (this.isActiveDateRangeSelected) {
-            this.surveyEditor.activeDateRange = {
-                from: undefined,
-                to: undefined
+    onActiveFromDateChanged(value: string) {        
+        if (value) {
+            if (!this.surveyEditor.activeDateRange) {
+                this.surveyEditor.activeDateRange = {
+                    from: undefined,
+                    to: undefined
+                }
             }
-        }  else {
-            this.surveyEditor.activeDateRange = undefined;
-            this._surveysService.updateSurveyFromEditor(this.surveyEditor);
-        }      
-    }
-
-    onActiveDateChanged(property: string, value: string) {        
-        this.surveyEditor.activeDateRange[property] = value;
-        //in case both dates deleted
-        if (!this.surveyEditor.activeDateRange.from && !this.surveyEditor.activeDateRange.to) {
-            this.surveyEditor.activeDateRange = undefined;
-        }
+            this.surveyEditor.activeDateRange.from = new Date(value);
+            this.minDateValue = value;
+        } else {
+            this.minDateValue = null;    
+            if (this.surveyEditor.activeDateRange.to) {
+                this.surveyEditor.activeDateRange.from = undefined;
+            } else {
+                this.surveyEditor.activeDateRange = undefined;   
+            }
+        }        
         this._surveysService.updateSurveyFromEditor(this.surveyEditor);
     }
 
+    onActiveToDateChanged(value: string) {
+        if (value) {
+            if (!this.surveyEditor.activeDateRange) {
+                this.surveyEditor.activeDateRange = {
+                    from: undefined,
+                    to: undefined
+                }
+            }
+            this.surveyEditor.activeDateRange.to = new Date(value);
+            this.maxDateValue = value;
+        } else {
+            this.maxDateValue = null;  
+            if (this.surveyEditor.activeDateRange.from) {
+                this.surveyEditor.activeDateRange.to = undefined;
+            } else {                
+                this.surveyEditor.activeDateRange = undefined;  
+            }
+        }        
+        this._surveysService.updateSurveyFromEditor(this.surveyEditor);
+    }
+    
     onAddSectionClicked() {
         this._surveysService.addSection();
     }
 
-    onAddQuestionClicked(item) {  
-                this._surveysService.addQuestion(item?.source?.Type || 'short-text');
+    /*
+    onAddQuestionClicked(item) {
+        console.log('onAddQuestionClicked', item);
+        this._surveysService.addQuestion('short-text');
     }
 
-    /*
+    
    onSurveyNameChanged(value) {
        this.surveyEditor.name = value;
        this._surveysService.updateSurveyFromEditor(this.surveyEditor);
    } */
-
-  
 
     onWrapperClicked(event: any) {
         this._surveysService.clearSelected();
@@ -208,7 +219,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
 
             this.pepSnackBarService.openDefaultSnackBar(data, config);
         });
-    }   
+    }
 
     onQuestionDuplicateClick(event) {
 

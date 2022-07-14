@@ -16,43 +16,40 @@
                     </pep-textbox>
 
                     <pep-textarea [key]="'description'" [value]="surveyEditor?.description"
-                        [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.DESCRIPTION' | translate" [rowSpan]="2"
+                        [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.DESCRIPTION' | translate" [rowSpan]="1.5"
                         (valueChange)="onSurveyPropertyChanged('description', $event)">
                     </pep-textarea>
-
-                    <mat-radio-group class="radio-group" value="{{isActive}}" (change)="onActiveStateChanged($event)">
-                        <mat-radio-button class="pep-radio-button md pep-input no-default-background" value="true">
-                            {{ 'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVE' | translate }}
-                        </mat-radio-button>
-                        <mat-radio-button class="pep-radio-button md pep-input no-default-background" value="false">
-                            {{ 'SURVEYS_MANAGER.SURVEY_EDITOR.NOT_ACTIVE' | translate }}
-                        </mat-radio-button>
-                    </mat-radio-group>
-
-                    <pep-select [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVE_DATE_RANGE_TITLE' | translate"
-                        [options]="activeDateRangeOptions" [renderTitle]="true" [emptyOption]="true"
-                        [disabled]="!isActive" (valueChange)="onActiveDateRangeChanged($event)"></pep-select>
+                   
+                    <div class="activate-container">
+                        <pep-field-title [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVATE_TITLE' | translate"
+                            xAlignment="left">
+                        </pep-field-title>
+                        <pep-checkbox key="cb1" [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVATE' | translate"
+                            [value]="isActive" [renderTitle]="false" xAlignment="left"
+                            (valueChange)="onActiveStateChanged($event)">
+                        </pep-checkbox>
+                    </div>                   
 
                     <div fxLayout="row" fxLayoutGap="1rem">
                         <pep-date fxFlex="50%" [value]="activeFromDate"
                             [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVE_FROM_DATE' | translate" [type]="'date'"
-                            [disabled]="!isActive || !isActiveDateRangeSelected"
-                            (valueChange)="onActiveDateChanged('from', $event)"></pep-date>
+                            [disabled]="!isActive" (valueChange)="onActiveFromDateChanged($event)" [maxDateValue]="maxDateValue"></pep-date>
                         <pep-date fxFlex="50%" [value]="activeToDate"
                             [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVE_TO_DATE' | translate" [type]="'date'"
-                            [disabled]="!isActive || !isActiveDateRangeSelected"
-                            (valueChange)="onActiveDateChanged('to', $event)"></pep-date>
+                            [disabled]="!isActive" (valueChange)="onActiveToDateChanged($event)" [minDateValue]="minDateValue"></pep-date>
                     </div>
 
-                    <h4>Add Items</h4>
+                    <label class="title body-xl">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.ADD_ITEM" | translate}}</label>
 
-                    <pep-menu class="pep-spacing-element" [items]="menuItems"
+                    <survey-question-menu></survey-question-menu>
+
+                    <!-- <pep-menu class="pep-spacing-element" [items]="menuItems"
                         [text]="'SURVEYS_MANAGER.SURVEY_EDITOR.ADD_QUESTION' | translate" [iconName]="'arrow_down'"
-                        [sizeType]="'lg'" [classNames]="'streched'" (menuItemClick)="onAddQuestionClicked($event)">
-                    </pep-menu>
+                        [classNames]="'streched'" (menuItemClick)="onAddQuestionClicked($event)">
+                    </pep-menu> -->
 
                     <pep-button [value]="'SURVEYS_MANAGER.SURVEY_EDITOR.ADD_SECTION' | translate" styleType="weak"
-                        styleStateType="system" sizeType="lg" iconName="number_plus" iconPosition="end"
+                        styleStateType="system" iconName="number_plus" iconPosition="end"
                         (buttonClick)="onAddSectionClicked()"></pep-button>
 
                 </div>
