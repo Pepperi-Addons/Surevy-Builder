@@ -13,6 +13,8 @@ import { PepNgxLibModule, PepAddonService } from '@pepperi-addons/ngx-lib';
 import { PepIconRegistry, pepIconSystemFilter2} from '@pepperi-addons/ngx-lib/icon';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
+import { PepCheckboxModule } from '@pepperi-addons/ngx-lib/checkbox';
+
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 import { config } from '../addon.config';
 
@@ -33,6 +35,7 @@ const pepIcons = [
         PepDraggableItemsModule,
         PepTextboxModule,
         PepTextareaModule,
+        PepCheckboxModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,

@@ -15,3 +15,4 @@
                         (buttonClick)="onShowLogicClick($event)" sizeType="sm"></pep-button>
 </ng-container>
 <label class="title body-md">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>
+<pep-checkbox  [value]="false" [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAKE_MANDATORY' | translate" [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged($event)"></pep-checkbox>
