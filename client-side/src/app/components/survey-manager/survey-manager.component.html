@@ -1,6 +1,6 @@
 <div class="survey-container">
     <pep-page-layout [showShadow]="true">
-        <div pep-side-area *ngIf="showEditor && currentEditor" style="padding-inline-start: 1rem; height: inherit;">
+        <div pep-side-area *ngIf="showEditor" style="padding-inline-start: 1rem; height: inherit;">
             <pep-side-bar [ignoreResize]="true" (stateChange)="onSidebarStateChange($event)">
                 <div header-content class="side-bar-title">
                     <pep-button class="back-button" sizeType="sm" iconName="arrow_left_alt"
