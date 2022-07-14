@@ -37,7 +37,7 @@ const pepIcons = [
         PepTextboxModule,
         PepTextareaModule,
         PepCheckboxModule,
-        TranslateModule.forChild(),
+        TranslateModule.forChild()
     ],
     exports: [QuestionSelectOptionsComponent]
 })
