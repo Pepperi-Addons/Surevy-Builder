@@ -1,7 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, Renderer2, ViewChild } from "@angular/core";
 import { BehaviorSubject, Observable, Subject, takeUntil } from "rxjs";
-import { CdkDragDrop  } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDragEnd, CdkDragStart  } from '@angular/cdk/drag-drop';
 import { SurveysService } from '../../services/surveys.service';
 import { TranslateService } from '@ngx-translate/core';
 import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
@@ -114,5 +114,12 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     onSectionDropped(event: CdkDragDrop<any[]>) {
         this.surveysService.onSectionDropped(event);
     }
+    
+    onDragStart(event: CdkDragStart) {
+        this.surveysService.onSectionDragStart(event);
+    }
 
+    onDragEnd(event: CdkDragEnd) {
+        this.surveysService.onSectionDragEnd(event);
+    }
 }

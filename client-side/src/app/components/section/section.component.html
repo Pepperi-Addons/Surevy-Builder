@@ -1,9 +1,9 @@
 <ng-container>
     <div class="section-container " [ngClass]="{ 
-        'editable-state': editable, 'active-section': isActive }" 
+        'editable-state': editable, 'active-section': isActive && selectedQuestion === null }" 
         (click)="onSectionClicked($event)"
-        cdkDragBoundary=".survey-builder-wrapper" cdkDrag [cdkDragData]="index" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)" 
-    >
+        >
+        <!-- cdkDragBoundary=".survey-builder-wrapper" cdkDrag (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)"  -->
         <div class="pep-button sm sequence-number">
             <span class="body-xs " title="{{ index + 1 }}">{{ index + 1 }}</span>
         </div>

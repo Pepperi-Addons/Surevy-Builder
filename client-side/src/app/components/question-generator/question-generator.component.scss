@@ -9,24 +9,31 @@
     padding-inline-start: variables.$spacing-sm;
     margin-top: variables.$content-margin;
 
+    // This css is only for edit mode!!!
+    &.editable-state {
+            
+        // .active-question {
+            
+        // }
+        
+        // The placeholder of the drop area when dragging a section.
+        &.cdk-drag-placeholder {
+            opacity: 0.5;
+        }
+
+        .sequence-number {
+            width: 2rem;
+            height: 2rem;
+            padding: 0;
+        }
+    }  
+
     .question-container {
+        display: grid;
         height: 100%;
         width: 100%;
         border-radius: variables.$border-radius-md;
         padding: variables.$content-padding;
         
-        // This css is only for edit mode!!!
-        // &.editable-state {
-            
-        //     &.active-question {
-                
-        //     }
-        // }  
-    }
-
-    .sequence-number {
-        width: 2rem;
-        height: 2rem;
-        padding: 0;
     }
 }

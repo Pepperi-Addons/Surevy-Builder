@@ -74,13 +74,13 @@ export class SectionComponent implements OnInit {
         this.surveysService.onQuestionDropped(event, this.index);
     }
     
-    onDragStart(event: CdkDragStart) {
-        this.surveysService.onSectionDragStart(event);
-    }
+    // onDragStart(event: CdkDragStart) {
+    //     this.surveysService.onSectionDragStart(event);
+    // }
 
-    onDragEnd(event: CdkDragEnd) {
-        this.surveysService.onSectionDragEnd(event);
-    }
+    // onDragEnd(event: CdkDragEnd) {
+    //     this.surveysService.onSectionDragEnd(event);
+    // }
 
     onQuestionClicked(questionIndex: number) {
         this.surveysService.setSelected(this.index, questionIndex);

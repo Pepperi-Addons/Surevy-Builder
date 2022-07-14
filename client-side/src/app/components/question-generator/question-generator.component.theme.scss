@@ -3,23 +3,22 @@
 
 .question-with-sequence-container {
 
+    // This css is only for edit mode.
+    &.editable-state {
+            
+        .active-question {
+            @include mixins.focus();
+        }
+
+        .sequence-number {
+            @include mixins.state-weak-default();
+        }
+    }
+
     .question-container {
         background: functions.get-pep-color(color-system-primary-invert, color-base);
         
         @include mixins.state-regular-default(true);
         box-shadow: functions.get-pep-shadow(shadow-xs, regular);
-
-        // This css is only for edit mode.
-        &.editable-state {
-            
-            &.active-question {
-                @include mixins.focus();
-            }
-            
-        }
-    }
-    
-    .sequence-number {
-        @include mixins.state-weak-default();
     }
 }

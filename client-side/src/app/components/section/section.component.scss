@@ -8,14 +8,23 @@
     border-radius: variables.$border-radius-md;
     padding-inline: variables.$spacing-sm;
 
-    .sequence-number {
-        width: 2rem;
-        height: 2rem;
-        padding: 0;
-    }
+    // This css is only for edit mode!!!
+    &.editable-state {
+            
+        // The placeholder of the drop area when dragging a section.
+        &.cdk-drag-placeholder {
+            opacity: 0.5;
+        }
+        
+        .sequence-number {
+            width: 2rem;
+            height: 2rem;
+            padding: 0;
+        }
+    }  
+
 }
 
-// .questions-wrapper {
-//     display: flex;
-//     flex-flow: column;
-// }
+.questions-wrapper {
+    min-height: 1px;
+}
