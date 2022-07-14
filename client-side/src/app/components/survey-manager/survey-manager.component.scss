@@ -35,7 +35,7 @@
 .survey-details {
     margin-top: variables.$spacing-lg;    
 
-    ::ng-deep.menu-container button {
+    ::ng-deep.streched {
         width: 100%;
         max-width: none;
     }
@@ -60,6 +60,7 @@
 
 }
 
+/*
 .radio-group {
     display: flex;
     flex-direction: row;
@@ -77,6 +78,10 @@
         }
         
     }  
+} */
+
+.activate-container {
+    margin-bottom: variables.$form-spacing;
 }
 
 .survey-builder-wrapper {
