@@ -19,10 +19,16 @@
         </div>
         <div class="actions">
             <pep-button classNames="caution" sizeType="xs" iconName="system_bin" (buttonClick)="onRemoveClick();"></pep-button>
-            <pep-button *ngIf="id != 0" sizeType="xs" iconName="arrow_down" (buttonClick)="onEditClick();"></pep-button>
-            <pep-button *ngIf="id == 0" sizeType="xs" iconName="arrow_up" (buttonClick)="onEditClick();"></pep-button>
+            <pep-button *ngIf="optionState == 'expand'" sizeType="xs" iconName="arrow_down" (buttonClick)="onEditClick();"></pep-button>
+            <pep-button *ngIf="optionState == 'collapse'" sizeType="xs" iconName="arrow_up" (buttonClick)="onEditClick();"></pep-button>
         </div>
-        <div class="editorCont">
+        <div class="editorCont" *ngIf="optionState == 'expand'">
+            <pep-textbox [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_KEY' | translate"
+                [value]="" (valueChange)="onQuestionEditorFieldChanged($event)">
+            </pep-textbox>
+            <pep-textarea [key]="'question'"
+              [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TYPE_YOUR_OPTION' | translate" [rowSpan]="1.5">
+            </pep-textarea>
         </div>
     </div>
 </ng-template>
