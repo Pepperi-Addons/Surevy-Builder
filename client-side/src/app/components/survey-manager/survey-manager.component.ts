@@ -1,13 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy } from "@angular/core";
-import { FormGroup, FormArray, FormControl, UntypedFormGroup } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { MonoTypeOperatorFunction, Subject, takeUntil } from 'rxjs';
 import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
 import { NavigationService } from '../../services/navigation.service';
 import { ISurveyEditor } from "../../model/survey.model";
-import { ISurveyEditorForm } from '../../model/forms';
+import { DestoyerDirective } from '../../model/destroyer';
 import { PepSnackBarData, PepSnackBarService } from "@pepperi-addons/ngx-lib/snack-bar";
 
 
@@ -16,30 +14,37 @@ import { PepSnackBarData, PepSnackBarService } from "@pepperi-addons/ngx-lib/sna
     templateUrl: './survey-manager.component.html',
     styleUrls: ['./survey-manager.component.scss']
 })
-export class ServeyManagerComponent implements OnInit, OnDestroy {
-    private readonly _destroy$: Subject<void> = new Subject();
-
-    @Input() hostObject: any;
-
-    @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
-
-    get f() {
-        return this._form.controls;
+export class ServeyManagerComponent extends DestoyerDirective implements OnInit, OnDestroy {
+    get isActive() {       
+        if (this.surveyEditor) {
+            return this.surveyEditor.active !== undefined ? this.surveyEditor.active : true;
+        } else {
+            return null;
+        } 
     }
 
-    get destroy$(): MonoTypeOperatorFunction<any> {
-        return takeUntil(this._destroy$);
+    get activeFromDate() {
+        if (this.surveyEditor && this.surveyEditor.activeDateRange) {
+            return this.surveyEditor.activeDateRange.from ? this.surveyEditor.activeDateRange.from : null;
+        } else {
+            return null;
+        }
+    }
+
+    get activeToDate() {
+        if (this.surveyEditor && this.surveyEditor.activeDateRange) {
+            return this.surveyEditor.activeDateRange.to ? this.surveyEditor.activeDateRange.to : null;
+        } else {
+            return null;
+        }
     }
 
     showEditor = true;
     screenSize: PepScreenSizeType;
-    _form = new FormGroup<ISurveyEditorForm>({
-        IsActive: new FormControl(true)
-    });
     sectionsQuestionsDropList = [];
-    surveyEditor: ISurveyEditor;
-    isActive = true;
+    surveyEditor: ISurveyEditor;    
     activeDateRangeOptions: any[] = [{ key: 'Active', value: 'Active date range' }];
+    selectedDateRangeValue = '';
     isActiveDateRangeSelected = false;
 
     menuItems = [
@@ -60,6 +65,7 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
         },
     ] //TEMP
 
+
     constructor(
         public layoutService: PepLayoutService,
         private _surveysService: SurveysService,
@@ -68,6 +74,8 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
         private pepSnackBarService: PepSnackBarService,
         public translate: TranslateService
     ) {
+        super();
+
         this.layoutService.onResize$.pipe(this.destroy$).subscribe(size => {
             this.screenSize = size;
         });
@@ -75,12 +83,15 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
         // For update editor.
         this._surveysService.surveyEditorLoad$.pipe(this.destroy$).subscribe((editor) => {
             this.surveyEditor = editor;
+            if (this.isActive && this.surveyEditor.activeDateRange) {
+                this.isActiveDateRangeSelected = true;    
+                this.selectedDateRangeValue = 'Active';
+            } else {
+                this.isActiveDateRangeSelected = false;
+                this.selectedDateRangeValue = '';
+            }
         });
-    }
 
-    private subscribeEvents() {
-
-        // Get the sections id's into sectionsQuestionsDropList for the drag & drop.
         this._surveysService.sectionsChange$.pipe(this.destroy$).subscribe(res => {
             this.sectionsQuestionsDropList = [].concat(...res.map((section, sectionIndex) => {
                 return this._surveysService.getSectionContainerKey(sectionIndex.toString())
@@ -88,25 +99,15 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
         });
     }
 
+
+
     ngOnInit() {
         console.log('loading ServeyManagerComponent');
-
-        this.subscribeEvents();
-        this.createForm();
     }
 
-    private createForm() {
-        this._form = new FormGroup<ISurveyEditorForm>({
-            Key: new FormControl(null),
-            Name: new FormControl(null),
-            Description: new FormControl(null),
-            IsActive: new FormControl(true),
-            ActiveFromDate: new FormControl(null),
-            ActiveToDate: new FormControl(null)
-        });
+    togglePreviewMode() {
+        this.showEditor = !this.showEditor;
     }
-
-
 
     onSidebarStateChange(state) {
         console.log('onSidebarStateChange', state);
@@ -116,41 +117,57 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
         this._navigationService.back(this._activatedRoute);
     }
 
-    onActiveStateChanged(state: any) {
-        console.log('onActiveStateChanged', state);
-        this.isActive = state.value === 'true';
-        if (!this.isActive) {
-            this.isActiveDateRangeSelected = null;
-        }
+    onSurveyPropertyChanged(property: string, value: string | boolean) {
+        this.surveyEditor[property] = value;
+        this._surveysService.updateSurveyFromEditor(this.surveyEditor);
     }
 
-    onActiveDateRangeChanged(val: string) {
-        console.log('onActiveDateRangeChanged', val);
-        this.isActiveDateRangeSelected = val === 'Active';
+    onActiveStateChanged(state: any) {
+        console.log('onActiveStateChanged', state);        
+        this.surveyEditor.active = state.value === 'true';
+        if (!this.surveyEditor.active) {
+            this.isActiveDateRangeSelected = null;
+        }
+        this._surveysService.updateSurveyFromEditor(this.surveyEditor);
+    }
+
+    onActiveDateRangeChanged(value: string) {        
+        this.isActiveDateRangeSelected = value === 'Active';
+        if (this.isActiveDateRangeSelected) {
+            this.surveyEditor.activeDateRange = {
+                from: undefined,
+                to: undefined
+            }
+        }  else {
+            this.surveyEditor.activeDateRange = undefined;
+            this._surveysService.updateSurveyFromEditor(this.surveyEditor);
+        }      
+    }
+
+    onActiveDateChanged(property: string, value: string) {        
+        this.surveyEditor.activeDateRange[property] = value;
+        //in case both dates deleted
+        if (!this.surveyEditor.activeDateRange.from && !this.surveyEditor.activeDateRange.to) {
+            this.surveyEditor.activeDateRange = undefined;
+        }
+        this._surveysService.updateSurveyFromEditor(this.surveyEditor);
     }
 
     onAddSectionClicked() {
         this._surveysService.addSection();
     }
 
-    onAddQuestionClicked(item) {
-        // console.log('onAddQuestionClicked', item);
+    onAddQuestionClicked(item) {        
         this._surveysService.addQuestion('short-text');
     }
 
-    togglePreviewMode() {
-        this.showEditor = !this.showEditor;
-    }
+    /*
+   onSurveyNameChanged(value) {
+       this.surveyEditor.name = value;
+       this._surveysService.updateSurveyFromEditor(this.surveyEditor);
+   } */
 
-    onSurveyNameChanged(value) {
-        this.surveyEditor.name = value;
-        this._surveysService.updateSurveyFromEditor(this.surveyEditor);
-    }
-
-    onSurveyDescriptionChanged(value) {
-        this.surveyEditor.description = value;
-        this._surveysService.updateSurveyFromEditor(this.surveyEditor);
-    }
+  
 
     onWrapperClicked(event: any) {
         this._surveysService.clearSelected();
@@ -184,18 +201,12 @@ export class ServeyManagerComponent implements OnInit, OnDestroy {
 
             this.pepSnackBarService.openDefaultSnackBar(data, config);
         });
-    }
+    }   
 
-    ngOnDestroy(): void {
-        this._destroy$.next();
-        this._destroy$.complete();
-    }
-
-    onQuestionDuplicateClick(event){
+    onQuestionDuplicateClick(event) {
 
     }
 
-    onQuestionDeleteClick(event){
-        
-    }
+    onQuestionDeleteClick(event) {}
+   
 }

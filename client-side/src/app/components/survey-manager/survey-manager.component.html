@@ -12,13 +12,14 @@
                 <div class="survey-details">
                     <pep-textbox [key]="'float'" [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.NAME' | translate"
                         [placeholder]="'SURVEYS_MANAGER.SURVEY_EDITOR.NAME_PLACEHOLDER' | translate"
-                        [value]="surveyEditor?.name" (valueChange)="onSurveyNameChanged($event)">
+                        [value]="surveyEditor?.name" (valueChange)="onSurveyPropertyChanged('name', $event)">
                     </pep-textbox>
 
-                    <pep-textarea [key]="'description'"
-                        [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.DESCRIPTION' | translate" [rowSpan]="2">
+                    <pep-textarea [key]="'description'" [value]="surveyEditor?.description"
+                        [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.DESCRIPTION' | translate" [rowSpan]="2"
+                        (valueChange)="onSurveyPropertyChanged('description', $event)">
                     </pep-textarea>
-                    
+
                     <mat-radio-group class="radio-group" value="{{isActive}}" (change)="onActiveStateChanged($event)">
                         <mat-radio-button class="pep-radio-button md pep-input no-default-background" value="true">
                             {{ 'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVE' | translate }}
@@ -33,10 +34,14 @@
                         [disabled]="!isActive" (valueChange)="onActiveDateRangeChanged($event)"></pep-select>
 
                     <div fxLayout="row" fxLayoutGap="1rem">
-                        <pep-date fxFlex="50%" [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVE_FROM_DATE' | translate"
-                            [type]="'date'" [disabled]="!isActive || !isActiveDateRangeSelected"></pep-date>
-                        <pep-date fxFlex="50%" [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVE_TO_DATE' | translate"
-                            [type]="'date'" [disabled]="!isActive || !isActiveDateRangeSelected"></pep-date>
+                        <pep-date fxFlex="50%" [value]="activeFromDate"
+                            [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVE_FROM_DATE' | translate" [type]="'date'"
+                            [disabled]="!isActive || !isActiveDateRangeSelected"
+                            (valueChange)="onActiveDateChanged('from', $event)"></pep-date>
+                        <pep-date fxFlex="50%" [value]="activeToDate"
+                            [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVE_TO_DATE' | translate" [type]="'date'"
+                            [disabled]="!isActive || !isActiveDateRangeSelected"
+                            (valueChange)="onActiveDateChanged('to', $event)"></pep-date>
                     </div>
 
                     <h4>Add Items</h4>
@@ -56,9 +61,13 @@
         <ng-container pep-main-area>
             <div class="main-area-container">
                 <div class="header-container">
-                    <pep-button key='Preview' [value]="'ACTIONS.PREVIEW' | translate" sizeType="sm" classNames="pep-spacing-element" (buttonClick)="togglePreviewMode()"></pep-button>
-                    <pep-button key='Save' [value]="'ACTIONS.SAVE' | translate" sizeType="sm" classNames="pep-spacing-element" (buttonClick)="onSaveClick()"></pep-button>
-                    <pep-button key='Publish' [value]="'ACTIONS.PUBLISH' | translate" sizeType="sm" classNames="pep-spacing-element" styleType="strong" (buttonClick)="onPublishClick();"></pep-button>
+                    <pep-button key='Preview' [value]="'ACTIONS.PREVIEW' | translate" sizeType="sm"
+                        classNames="pep-spacing-element" (buttonClick)="togglePreviewMode()"></pep-button>
+                    <pep-button key='Save' [value]="'ACTIONS.SAVE' | translate" sizeType="sm"
+                        classNames="pep-spacing-element" (buttonClick)="onSaveClick()"></pep-button>
+                    <pep-button key='Publish' [value]="'ACTIONS.PUBLISH' | translate" sizeType="sm"
+                        classNames="pep-spacing-element" styleType="strong" (buttonClick)="onPublishClick();">
+                    </pep-button>
 
                     <!-- <pep-button class="pep-spacing-element" [value]="'Preview'" [sizeType]="'sm'">
                     </pep-button>
