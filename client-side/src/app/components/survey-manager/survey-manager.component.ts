@@ -12,7 +12,7 @@ import { PepSnackBarData, PepSnackBarService } from "@pepperi-addons/ngx-lib/sna
 @Component({
     selector: 'survey-manager',
     templateUrl: './survey-manager.component.html',
-    styleUrls: ['./survey-manager.component.scss']
+    styleUrls: ['./survey-manager.component.scss', './survey-manager.component.theme.scss']
 })
 export class ServeyManagerComponent extends DestoyerDirective implements OnInit, OnDestroy {
     get isActive() {       

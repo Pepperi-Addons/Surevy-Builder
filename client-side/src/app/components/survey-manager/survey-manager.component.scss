@@ -55,7 +55,11 @@
         align-items: center;
         justify-content: flex-end;
         padding: 0 variables.$spacing-xs;
-        box-shadow: functions.get-pep-shadow(shadow-md, hard);
+
+        .header-end {
+            display: flex;
+            justify-content: flex-end;
+        }
     } 
 
 }
