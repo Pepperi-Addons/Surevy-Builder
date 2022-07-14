@@ -38,14 +38,7 @@ const pepIcons = [
         PepTextboxModule,
         PepTextareaModule,
         PepCheckboxModule,
-        TranslateModule.forChild({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: (addonService: PepAddonService) => 
-                    PepAddonService.createMultiTranslateLoader(addonService, ['ngx-lib', 'ngx-composite-lib'], config.AddonUUID),
-                deps: [PepAddonService]
-            }, isolate: false
-        }),
+        TranslateModule.forChild()
     ],
     exports: [QuestionSelectOptionsComponent]
 })
