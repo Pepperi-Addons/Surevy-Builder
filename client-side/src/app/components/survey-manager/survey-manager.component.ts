@@ -41,7 +41,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     surveyEditor: ISurveyEditor;    
     minDateValue: string = null;
     maxDateValue: string = null;
-
+/*
     menuItems = [
         {
             key: `short-text`,
@@ -58,7 +58,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
             text: 'question 3',
             iconName: 'arrow_left_alt'
         },
-    ] //TEMP
+    ] */
 
 
     constructor(
