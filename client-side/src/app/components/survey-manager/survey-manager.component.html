@@ -1,6 +1,6 @@
 <div class="survey-container">
     <pep-page-layout [showShadow]="true">
-        <div pep-side-area *ngIf="showEditor" style="padding-inline-start: 1rem; height: inherit;">
+        <div pep-side-area *ngIf="showEditor" >
             <pep-side-bar [ignoreResize]="true" (stateChange)="onSidebarStateChange($event)">
                 <div header-content class="side-bar-title">
                     <pep-button class="back-button" sizeType="sm" iconName="arrow_left_alt"
@@ -89,8 +89,28 @@
                 </div>
             </div>
         </ng-container>
+        <div pep-side-area-end *ngIf="showEditor" >
+            <pep-side-bar position="end" [ignoreResize]="true" (stateChange)="onSidebarEndStateChange($event)">
+                <div header-content class="side-bar-title">
+                    <div class=" title-xl ellipsis" [title]="">
+                        <span>TITLE</span>
+                    </div>
+                </div>
+                <div class="survey-details">
+                    <survey-question-editor></survey-question-editor>
+                    <div class="pep-actions">
+                        <pep-button  value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
+                                    styleType="regular" iconName="number_plus" iconPosition="end"
+                                    (buttonClick)="onQuestionDuplicateClick($event)" sizeType="sm"></pep-button>
+                        <pep-button  value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
+                                    styleType="regular" iconName="system_bin" iconPosition="end" classNames="caution"
+                                    (buttonClick)="onQuestionDeleteClick($event)" sizeType="sm"></pep-button>
+                    </div>
+                </div>
+            </pep-side-bar>
+        </div>
     </pep-page-layout>
-    <div class="right-side-bar">
+    <!-- <div class="right-side-bar">
         <survey-question-editor></survey-question-editor>
         <div class="pep-actions">
             <pep-button  value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
@@ -100,7 +120,7 @@
                         styleType="regular" iconName="system_bin" iconPosition="end" classNames="caution"
                         (buttonClick)="onQuestionDeleteClick($event)" sizeType="sm"></pep-button>
         </div>
-    </div>
+    </div> -->
 </div>
 
 <pep-size-detector></pep-size-detector>

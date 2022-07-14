@@ -14,8 +14,9 @@ export interface SurveyDateRange {
 }
 
 export interface SurveySection {
-    Key?: string;
+    Key: string;
     Name?: string;
+    Title: string;
     Description?: string;
     Questions: SurveyQuestion[];
 }
@@ -30,8 +31,9 @@ export type SurveyQuestionType = 'short-text' | 'long-text'
     | 'signature';
 
 export interface SurveyQuestion {
-    Key?: string;
-    Name?: string;  
+    Key: string;
+    Name?: string;
+    Title: string;
     Description?: string;
     Type: SurveyQuestionType;
     Mandatory?: boolean; 

@@ -35,7 +35,7 @@ const pepIcons = [
     pepIconArrowLeftAlt,
     pepIconNumberPlus,
     pepIconArrowDown,
-    pepIconSystemBin  
+    pepIconSystemBin
 ];
 
 export const routes: Routes = [

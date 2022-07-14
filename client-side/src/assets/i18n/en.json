@@ -55,7 +55,7 @@
     "SURVEY_MANAGER": {
         "PREVIEW_TITLE": "Preview",
         "PREVIEW_CLICK_HERE": "Click here to edit",
-        "SECTION_NAME_PLACEHOLDER": "Type your section name here...",
+        "SECTION_TITLE_PLACEHOLDER": "Type your section title here...",
         "QUESTION_TYPE_NOT_SUPPORTED": "This question type is not supported"
     },
     "ACTIONS": {

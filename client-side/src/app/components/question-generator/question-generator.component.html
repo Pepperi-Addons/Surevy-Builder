@@ -10,7 +10,7 @@
 
     <div class="question-container" (click)="onQuestionClicked($event)" [ngClass]="{ 'editable-state': editable, 'active-question': isActive }">
         <div class="question-title-container">
-            <span class="body-sm ellipsis title" title="{{ question.Name }}">{{ question.Name }}</span>
+            <span class="body-sm ellipsis title" title="{{ question.Title }}">{{ question.Title }}</span>
         </div>
         <div *ngIf="question?.Description?.length > 0" class="question-description-container">
             <span class="body-sm ellipsis description" title="{{ question.Description }}">{{ question.Description }}</span>

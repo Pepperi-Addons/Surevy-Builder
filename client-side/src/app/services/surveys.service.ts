@@ -35,12 +35,14 @@ export class SurveysService {
     }
 
     // This is the selected section subject
+    private _selectedSectionIndex = -1;
     private _selectedSectionChangeSubject: BehaviorSubject<SurveySection> = new BehaviorSubject<SurveySection>(null);
     get selectedSectionChange$(): Observable<SurveySection> {
         return this._selectedSectionChangeSubject.asObservable().pipe(distinctUntilChanged());
     }
 
     // This is the selected question subject
+    private _selectedQuestionIndex = -1;
     private _selectedQuestionChangeSubject: BehaviorSubject<SurveyQuestion> = new BehaviorSubject<SurveyQuestion>(null);
     get selectedQuestionChange$(): Observable<SurveyQuestion> {
         return this._selectedQuestionChangeSubject.asObservable().pipe(distinctUntilChanged());
@@ -123,11 +125,13 @@ export class SurveysService {
         }
     }
 
-    private notifySelectedSectionChange(section: SurveySection) {
+    private notifySelectedSectionChange(section: SurveySection, index: number) {
+        this._selectedSectionIndex = index;
         this._selectedSectionChangeSubject.next(section);
     }
 
-    private notifySelectedQuestionChange(question: SurveyQuestion) {
+    private notifySelectedQuestionChange(question: SurveyQuestion, index: number) {
+        this._selectedQuestionIndex = index;
         this._selectedQuestionChangeSubject.next(question);
     }
 
@@ -199,22 +203,44 @@ export class SurveysService {
         }
     }
 
+    updateSectionFromEditor(surveySection: SurveySection) {
+        const sections = this._sectionsSubject.getValue();
+
+        if (this._selectedSectionIndex >= 0 && this._selectedSectionIndex < sections.length) {
+            sections[this._selectedSectionIndex] = surveySection;
+            this.notifySectionsChange(sections);
+        }
+    }
+
+    updateQuestionFromEditor(surveyQuestion: SurveyQuestion) {
+        const sections = this._sectionsSubject.getValue();
+
+        if (this._selectedSectionIndex >= 0 && this._selectedSectionIndex < sections.length) {
+            const currentSection = sections[this._selectedSectionIndex];
+
+            if (this._selectedQuestionIndex >= 0 && this._selectedQuestionIndex < currentSection.Questions.length) {
+                currentSection.Questions[this._selectedQuestionIndex] = surveyQuestion;
+                this.notifySectionsChange(sections);
+            }
+        }
+    }
+
     setSelected(sectionIndex: number, questionIndex: number = -1) {
         const sections = this._sectionsSubject.getValue();
         if (sectionIndex >= 0 && sectionIndex < sections.length) {
             const section = sections[sectionIndex];
-            this.notifySelectedSectionChange(section);
+            this.notifySelectedSectionChange(section, sectionIndex);
 
             const questions = section.Questions;
             if (questionIndex >= 0 && questionIndex < questions.length) {
                 const question = questions[questionIndex];
-                this.notifySelectedQuestionChange(question);
+                this.notifySelectedQuestionChange(question, questionIndex);
             } else {
-                this.notifySelectedQuestionChange(null);
+                this.notifySelectedQuestionChange(null, questionIndex);
             }
         } else {
-            this.notifySelectedQuestionChange(null);
-            this.notifySelectedSectionChange(null);
+            this.notifySelectedQuestionChange(null, questionIndex);
+            this.notifySelectedSectionChange(null, sectionIndex);
         }
     }
 
@@ -226,7 +252,8 @@ export class SurveysService {
         // Create new section
         if (!section) {
             section = {
-                Name: '',
+                Key: PepGuid.newGuid(),
+                Title: '',
                 Questions: []
             }
         }
@@ -284,6 +311,8 @@ export class SurveysService {
     addQuestion(questionType: SurveyQuestionType, sectionIndex = -1, questionIndex = -1) {
         // Create new question
         const question: SurveyQuestion = {
+            Key: PepGuid.newGuid(),
+            Title: '',
             Type: questionType,
         }
         

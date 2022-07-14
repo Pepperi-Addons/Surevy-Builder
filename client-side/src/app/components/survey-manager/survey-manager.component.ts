@@ -113,6 +113,10 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         console.log('onSidebarStateChange', state);
     }
 
+    onSidebarEndStateChange(state) {
+        console.log('onSidebarEndStateChange', state);
+    }
+
     onNavigateBackFromEditor() {
         this._navigationService.back(this._activatedRoute);
     }
