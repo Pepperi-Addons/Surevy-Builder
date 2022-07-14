@@ -39,6 +39,14 @@
                     "ADD_LOGIC": "Add Logic",
                     "DUPLICATE": "Duplicate",
                     "DELETE": "Delete"
+                },
+                "SELECT_OPTION": {
+                    "TITLE": "Questions Options",
+                    "PLACEHOLDER_TEXT": "Placeholder Text",
+                    "PLACEHOLDER_TEXT_DEFAULT": "Please select an option...",
+                    "ADD_KEY": "Add Key",
+                    "TYPE_YOUR_OPTION": "Type your option here...",
+                    "DEFAULT_KEY_PREFIX": "GLX-"
                 }
             }
         }
