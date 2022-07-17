@@ -10,8 +10,10 @@
                 [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2"
                 (valueChange)="onQuestionEditorFieldChanged('Description',$event)">
     </pep-textarea>
-
-    <question-select-options></question-select-options>
+    <ng-container *ngIf="question?.Type == 'multiple-selection-drowdown' ||
+                         question?.Type == 'single-selection-dropdown'">
+        <question-select-options></question-select-options>
+    </ng-container>
 
     <ng-container *ngIf="forNextVersion">
     <label class="title body-md">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>

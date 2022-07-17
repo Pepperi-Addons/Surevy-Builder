@@ -21,6 +21,11 @@ export interface SurveySection {
     Questions: SurveyQuestion[];
 }
 
+export class SurveyQuestionOption {
+    Key: string;
+    Value?: string;
+}
+
 export type SurveyOptionState =  'collapse' | 'expand';
 
 export type SurveyQuestionType = 'short-text' | 'long-text' 

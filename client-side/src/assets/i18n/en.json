@@ -41,7 +41,7 @@
                     "DELETE": "Delete"
                 },
                 "SELECT_OPTION": {
-                    "TITLE": "Questions Options",
+                    "TITLE": "Select Options",
                     "PLACEHOLDER_TEXT": "Placeholder Text",
                     "PLACEHOLDER_TEXT_DEFAULT": "Please select an option...",
                     "ADD_KEY": "Add Key",

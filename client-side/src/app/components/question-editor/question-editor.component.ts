@@ -22,7 +22,6 @@ export class QuestionEditorComponent extends DestoyerDirective implements OnInit
         this.surveysService.selectedQuestionChange$.pipe(this.destroy$).subscribe(res => {
            if(res){
              this.question = res;
-             this.question.Key = "12345";
            }
         });
     }
