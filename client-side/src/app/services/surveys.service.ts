@@ -7,21 +7,20 @@ import { Observable, BehaviorSubject, from } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, ISurveyRowModel, Survey, SurveySection, ISurveyBuilderData, SurveyQuestion, SurveyQuestionType } from "../model/survey.model";
-
-// import * as _ from 'lodash';
+import * as _ from 'lodash';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SurveysService {
-    
+
     private _defaultSectionTitle = '';
     set defaultSectionTitle(value: string) {
         if (this._defaultSectionTitle === '') {
             this._defaultSectionTitle = value;
         }
     }
-    
+
     // This subject is for load the current survey editor (Usage only in edit mode).
     private _surveyEditorSubject: BehaviorSubject<ISurveyEditor> = new BehaviorSubject<ISurveyEditor>(null);
     get surveyEditorLoad$(): Observable<ISurveyEditor> {
@@ -119,7 +118,7 @@ export class SurveysService {
 
         if (survey) {
             survey.Sections = sections;
-            
+
             this._sectionsSubject.next(survey.Sections);
             this.notifySurveyChange(survey);
         }
@@ -137,14 +136,14 @@ export class SurveysService {
 
     private getBaseUrl(addonUUID: string): string {
         // For devServer run server on localhost.
-        if(this.navigationService.devServer) {
+        if (this.navigationService.devServer) {
             return `http://localhost:4500/internal_api`;
         } else {
             const baseUrl = this.sessionService.getPapiBaseUrl();
             return `${baseUrl}/addons/api/${addonUUID}/internal_api`;
         }
     }
-    
+
     private changeCursorOnDragStart() {
         document.body.classList.add('inheritCursors');
         document.body.style.cursor = 'grabbing';
@@ -164,18 +163,18 @@ export class SurveysService {
 
         if (sectionArr.length === 2) {
             const sections = this._sectionsSubject.getValue();
-            
+
             // Get the section by the section index.
             currentSection = sections[sectionArr[1]];
-        } 
-        
+        }
+
         return currentSection;
     }
 
     /***********************************************************************************************/
     /*                                  Public functions
     /***********************************************************************************************/
-    
+
     getSectionContainerKey(sectionIndex: string = '') {
         return `section_${sectionIndex}`;
     }
@@ -257,7 +256,7 @@ export class SurveysService {
                 Questions: []
             }
         }
-        
+
         // Add the new section to survey layout.
         const sections = this._surveySubject.getValue().Sections;
         sections.push(section);
@@ -297,7 +296,7 @@ export class SurveysService {
 
         for (let sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
             const section = sections[sectionIndex];
-            
+
             // Remove the question.
             const questionsIndex = section.Questions.findIndex(question => question?.Key === questionId);
             if (questionsIndex > -1) {
@@ -315,11 +314,11 @@ export class SurveysService {
             Title: '',
             Type: questionType,
         }
-        
+
         // Get the sections.
         const sections = this._surveySubject.getValue().Sections;
         const currentSection = (sectionIndex >= 0 && sectionIndex < sections.length) ? sections[sectionIndex] : sections[sections.length - 1];
-        
+
         if (questionIndex >= 0 && questionIndex < currentSection.Questions.length) {
             currentSection.Questions.splice(questionIndex, 0, question);
         } else {
@@ -332,12 +331,12 @@ export class SurveysService {
     onQuestionDropped(event: CdkDragDrop<any[]>, sectionIndex: number) {
         const sections = this._sectionsSubject.getValue();
         const currentSection = sections[sectionIndex];
-        
+
         // If the question moved between columns in the same section or between different sections but not in the same column.
         if (event.container.id !== event.previousContainer.id) {
             // Get the previous section.
             const previuosSection = this.getSectionByIndex(event.previousContainer.id);
-            
+
             transferArrayItem(previuosSection.Questions, currentSection.Questions, event.previousIndex, event.currentIndex);
         } else {
             moveItemInArray(currentSection.Questions, event.previousIndex, event.currentIndex);
@@ -345,7 +344,7 @@ export class SurveysService {
 
         this.notifySectionsChange(sections);
     }
-    
+
     onQuestionDragStart(event: CdkDragStart) {
         this.changeCursorOnDragStart();
         // Take the question key if exist, else take the available question key (relation key).
@@ -357,11 +356,11 @@ export class SurveysService {
         this.changeCursorOnDragEnd();
         this._draggingQuestionKey.next('');
     }
-    
+
     /**************************************************************************************/
     /*                            CPI & Server side calls.
     /**************************************************************************************/
-    
+
     // Get the surveys (distinct with the drafts)
     getSurveys(addonUUID: string, options: any): Observable<ISurveyRowModel[]> {
         // Get the surveys from the server.
@@ -371,7 +370,7 @@ export class SurveysService {
 
     createNewSurvey(addonUUID: string, totalSurveys: number = 0): Observable<Survey> {
         const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.getHttpCall(`${baseUrl}/create_survey?surveyNum=${totalSurveys+1}`);
+        return this.httpService.getHttpCall(`${baseUrl}/create_survey?surveyNum=${totalSurveys + 1}`);
     }
 
     // Delete the survey
@@ -383,7 +382,7 @@ export class SurveysService {
     loadSurveyBuilder(addonUUID: string, surveyKey: string, editable: boolean, queryParameters: Params): void {
         //  If is't not edit mode get the survey from the CPI side.
         const baseUrl = this.getBaseUrl(addonUUID);
-        
+
         if (!editable) {
             // Get the survey (sections and the questions data) from the server.
             this.httpService.getHttpCall(`${baseUrl}/get_survey_data?key=${surveyKey}`)
@@ -392,7 +391,7 @@ export class SurveysService {
                         // Load the survey.
                         this.notifySurveyChange(res.survey);
                     }
-            });
+                });
         } else { // If is't edit mode get the data of the survey and the relations from the Server side.
             // Get the survey (sections and the questions data) from the server.
             this.httpService.getHttpCall(`${baseUrl}/get_survey_builder_data?key=${surveyKey}`)
@@ -401,7 +400,7 @@ export class SurveysService {
                         // Load the survey.
                         this.notifySurveyChange(res.survey);
                     }
-            });
+                });
         }
     }
 
@@ -433,4 +432,51 @@ export class SurveysService {
         const baseUrl = this.getBaseUrl(addonUUID);
         return this.httpService.postHttpCall(`${baseUrl}/publish_survey`, body);
     }
+
+    duplicateSelectedSection() {        
+        if (this._selectedSectionIndex > -1) {
+            const sections = this._sectionsSubject.getValue();                        
+            const duplicated: SurveySection = _.cloneDeep(sections[this._selectedSectionIndex]);
+            duplicated.Key = PepGuid.newGuid();            
+            sections.push(duplicated);
+            this.notifySectionsChange(sections);
+        }
+    }
+    
+    deleteSelectedSection() {       
+        if (this._selectedSectionIndex > -1 ) {
+            const sections = this._sectionsSubject.getValue();                      
+            if (sections.length > this._selectedSectionIndex) {
+                sections.splice(this._selectedSectionIndex, 1);
+                this.notifySectionsChange(sections);
+            }
+        }
+    }
+
+    duplicateSelectedQuestion() {        
+        if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
+            const sections = this._sectionsSubject.getValue();           
+            const currentSection = sections[this._selectedSectionIndex];            
+            if (currentSection?.Questions?.length > this._selectedQuestionIndex) {                
+                const duplicated: SurveyQuestion = _.clone(currentSection.Questions[this._selectedQuestionIndex]);
+                duplicated.Key = PepGuid.newGuid();
+                currentSection.Questions.push(duplicated);
+                this.notifySectionsChange(sections);
+            }
+        }
+    }
+
+    deleteSelectedQuestion() {        
+        if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
+            const sections = this._sectionsSubject.getValue();           
+            const currentSection = sections[this._selectedSectionIndex];
+            if (currentSection?.Questions?.length > this._selectedSectionIndex) {
+                currentSection.Questions.splice(this._selectedSectionIndex, 1);
+                this.notifySectionsChange(sections);
+            }
+        }
+    }
 }
+
+
+

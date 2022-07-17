@@ -10,21 +10,21 @@
                     </div>
                 </div>
                 <div class="survey-details">
-                    <pep-textbox [key]="'float'" [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.NAME' | translate"
-                        [placeholder]="'SURVEYS_MANAGER.SURVEY_EDITOR.NAME_PLACEHOLDER' | translate"
+                    <pep-textbox [key]="'float'" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.NAME' | translate"
+                        [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.NAME_PLACEHOLDER' | translate"
                         [value]="surveyEditor?.name" (valueChange)="onSurveyPropertyChanged('name', $event)">
                     </pep-textbox>
 
                     <pep-textarea [key]="'description'" [value]="surveyEditor?.description"
-                        [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.DESCRIPTION' | translate" [rowSpan]="1.5"
+                        [label]="'SURVEY_MANAGER.SURVEY_EDITOR.DESCRIPTION' | translate" [rowSpan]="1.5"
                         (valueChange)="onSurveyPropertyChanged('description', $event)">
                     </pep-textarea>
                    
                     <div class="activate-container">
-                        <pep-field-title [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVATE_TITLE' | translate"
+                        <pep-field-title [label]="'SURVEY_MANAGER.SURVEY_EDITOR.ACTIVATE_TITLE' | translate"
                             xAlignment="left">
                         </pep-field-title>
-                        <pep-checkbox key="cb1" [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVATE' | translate"
+                        <pep-checkbox key="cb1" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.ACTIVATE' | translate"
                             [value]="isActive" [renderTitle]="false" xAlignment="left"
                             (valueChange)="onActiveStateChanged($event)">
                         </pep-checkbox>
@@ -32,23 +32,23 @@
 
                     <div fxLayout="row" fxLayoutGap="1rem">
                         <pep-date fxFlex="50%" [value]="activeFromDate"
-                            [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVE_FROM_DATE' | translate" [type]="'date'"
+                            [label]="'SURVEY_MANAGER.SURVEY_EDITOR.ACTIVE_FROM_DATE' | translate" [type]="'date'"
                             [disabled]="!isActive" (valueChange)="onActiveFromDateChanged($event)" [maxDateValue]="maxDateValue"></pep-date>
                         <pep-date fxFlex="50%" [value]="activeToDate"
-                            [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.ACTIVE_TO_DATE' | translate" [type]="'date'"
+                            [label]="'SURVEY_MANAGER.SURVEY_EDITOR.ACTIVE_TO_DATE' | translate" [type]="'date'"
                             [disabled]="!isActive" (valueChange)="onActiveToDateChanged($event)" [minDateValue]="minDateValue"></pep-date>
                     </div>
 
-                    <label class="title body-xl">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.ADD_ITEM" | translate}}</label>
+                    <label class="title body-xl">{{ "SURVEY_MANAGER.SURVEY_EDITOR.ADD_ITEM" | translate}}</label>
 
                     <survey-question-menu></survey-question-menu>
 
                     <!-- <pep-menu class="pep-spacing-element" [items]="menuItems"
-                        [text]="'SURVEYS_MANAGER.SURVEY_EDITOR.ADD_QUESTION' | translate" [iconName]="'arrow_down'"
+                        [text]="'SURVEY_MANAGER.SURVEY_EDITOR.ADD_QUESTION' | translate" [iconName]="'arrow_down'"
                         [classNames]="'streched'" (menuItemClick)="onAddQuestionClicked($event)">
                     </pep-menu> -->
 
-                    <pep-button [value]="'SURVEYS_MANAGER.SURVEY_EDITOR.ADD_SECTION' | translate" styleType="weak"
+                    <pep-button [value]="'SURVEY_MANAGER.SURVEY_EDITOR.ADD_SECTION' | translate" styleType="weak"
                         styleStateType="system" iconName="number_plus" iconPosition="end"
                         (buttonClick)="onAddSectionClicked()"></pep-button>
 
@@ -90,16 +90,16 @@
             <pep-side-bar position="end" [ignoreResize]="true" (stateChange)="onSidebarEndStateChange($event)">
                 <div header-content class="side-bar-title">
                     <div class=" title-xl ellipsis" [title]="">
-                        <span>TITLE</span>
+                        <span>TODO: TITLE</span>
                     </div>
                 </div>
                 <div class="survey-details">
                     <survey-question-editor></survey-question-editor>
                     <div class="pep-actions">
-                        <pep-button  value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
+                        <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
                                     styleType="regular" iconName="number_plus" iconPosition="end"
                                     (buttonClick)="onQuestionDuplicateClick($event)" sizeType="sm"></pep-button>
-                        <pep-button  value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
+                        <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
                                     styleType="regular" iconName="system_bin" iconPosition="end" classNames="caution"
                                     (buttonClick)="onQuestionDeleteClick($event)" sizeType="sm"></pep-button>
                     </div>
@@ -110,10 +110,10 @@
     <!-- <div class="right-side-bar">
         <survey-question-editor></survey-question-editor>
         <div class="pep-actions">
-            <pep-button  value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
+            <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
                         styleType="weak" iconName="number_plus" iconPosition="end"
                         (buttonClick)="onQuestionDuplicateClick($event)" sizeType="md"></pep-button>
-            <pep-button  value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
+            <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
                         styleType="weak" iconName="system_bin" iconPosition="end" classNames="caution"
                         (buttonClick)="onQuestionDeleteClick($event)" sizeType="md"></pep-button>
         </div>

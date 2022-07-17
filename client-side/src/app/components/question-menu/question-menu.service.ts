@@ -43,12 +43,12 @@ export class QuestionMenuService {
             {
                 key: `date`,
                 text: 'Date',
-                iconName: 'time-cal'
+                iconName: 'time_cal'
             },
             {
                 key: `number`,
                 text: 'Number',
-                iconName: 'number-decimal'
+                iconName: 'number_decimal'
             },
             {
                 key: `photo`,
@@ -58,7 +58,7 @@ export class QuestionMenuService {
             {
                 key: `signature`,
                 text: 'Signature',
-                iconName: 'system-signature'
+                iconName: 'system_signature'
             }
         ]
     }

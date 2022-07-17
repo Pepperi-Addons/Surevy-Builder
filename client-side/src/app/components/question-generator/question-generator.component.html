@@ -1,5 +1,5 @@
 
-<div class="question-with-sequence-container"
+<div class="question-with-sequence-container" [ngClass]="{ 'editable-state': editable }"
     cdkDrag
     (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)"
     (cdkDragExited)="onDragExited($event)" (cdkDragEntered)="onDragEntered($event)">
@@ -8,7 +8,7 @@
         <span class="body-xs " title="{{ sequenceNumber }}">{{ sequenceNumber }}</span>
     </div>
 
-    <div class="question-container" (click)="onQuestionClicked($event)" [ngClass]="{ 'editable-state': editable, 'active-question': isActive }">
+    <div class="question-container" (click)="onQuestionClicked($event)" [ngClass]="{ 'active-question': isActive }">
         <div class="question-title-container">
             <span class="body-sm ellipsis title" title="{{ question.Title }}">{{ question.Title }}</span>
         </div>
