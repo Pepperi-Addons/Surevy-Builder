@@ -53,7 +53,7 @@
         z-index: variables.$z-index-medium;
         height: 3rem;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: space-between;
         padding: 0 variables.$spacing-xs;
 
         .header-end {

@@ -41,7 +41,7 @@
 
                     <label class="title body-xl">{{ "SURVEY_MANAGER.SURVEY_EDITOR.ADD_ITEM" | translate}}</label>
 
-                    <survey-question-menu></survey-question-menu>
+                    <survey-question-menu (questionTypeClick)="onQuestionTypeClick($event)"></survey-question-menu>
 
                     <!-- <pep-menu class="pep-spacing-element" [items]="menuItems"
                         [text]="'SURVEY_MANAGER.SURVEY_EDITOR.ADD_QUESTION' | translate" [iconName]="'arrow_down'"

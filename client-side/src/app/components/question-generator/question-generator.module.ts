@@ -17,6 +17,7 @@ import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items
 import { QuestionGeneratorComponent } from './question-generator.component';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { TranslateModule } from '@ngx-translate/core';
+import { PepFieldTitleModule } from '@pepperi-addons/ngx-lib/field-title';
 
 @NgModule({
     declarations: [
@@ -37,6 +38,7 @@ import { TranslateModule } from '@ngx-translate/core';
         PepRemoteLoaderModule,
         PepDraggableItemsModule,
         PepTextboxModule,
+        PepFieldTitleModule,
         TranslateModule.forChild()
     ],
     exports: [QuestionGeneratorComponent]

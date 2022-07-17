@@ -11,20 +11,20 @@ import { SurveyQuestion, SurveyQuestionType } from '../../model/survey.model';
     styleUrls: ['./question-generator.component.scss', './question-generator.component.theme.scss']
 })
 export class QuestionGeneratorComponent implements OnInit {
-    @Input() formKey: string;
+    // @Input() formKey: string;
 
     //private _parentForm;
-    @Input()
-    set parentForm(value: FormGroup) {
-        // this._parentForm = value;
-        this.addToParentForm(value);
-    }
+    // @Input()
+    // set parentForm(value: FormGroup) {
+    //     // this._parentForm = value;
+    //     this.addToParentForm(value);
+    // }
 
-    get f() {
-        return this.form.controls;
-    }
+    // get f() {
+    //     return this.form.controls;
+    // }
 
-    form = new FormGroup<IQuestionForm>({});
+    // form = new FormGroup<IQuestionForm>({});
 
     type: string = 'abc'; //Temp
 
@@ -50,21 +50,21 @@ export class QuestionGeneratorComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.createForm();
+        // this.createForm();
     }
 
-    private createForm() {
-        this.form = new FormGroup<IQuestionForm>({
-            Key: new FormControl(null),
-            Type: new FormControl(null),
-            Text: new FormControl(null),
-            Description: new FormControl(null)
-        });
-    }
+    // private createForm() {
+    //     this.form = new FormGroup<IQuestionForm>({
+    //         Key: new FormControl(null),
+    //         Type: new FormControl(null),
+    //         Text: new FormControl(null),
+    //         Description: new FormControl(null)
+    //     });
+    // }
 
-    private addToParentForm(parent: FormGroup) {
-        parent.setControl(this.formKey, this.form);
-    }
+    // private addToParentForm(parent: FormGroup) {
+    //     parent.setControl(this.formKey, this.form);
+    // }
 
     onQuestionValueChanged(value: any): void {
         // TODO: implement

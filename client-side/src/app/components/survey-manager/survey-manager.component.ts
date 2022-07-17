@@ -4,7 +4,7 @@ import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@peppe
 import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
 import { NavigationService } from '../../services/navigation.service';
-import { ISurveyEditor } from "../../model/survey.model";
+import { ISurveyEditor, SurveyQuestionType } from "../../model/survey.model";
 import { DestoyerDirective } from '../../model/destroyer';
 import { PepSnackBarData, PepSnackBarService } from "@pepperi-addons/ngx-lib/snack-bar";
 
@@ -92,8 +92,6 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         });
     }
 
-
-
     ngOnInit() {
         console.log('loading ServeyManagerComponent');
     }
@@ -175,13 +173,11 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         this._surveysService.addSection();
     }
 
-    /*
-    onAddQuestionClicked(item) {
-        console.log('onAddQuestionClicked', item);
-        this._surveysService.addQuestion('short-text');
+    onQuestionTypeClick(type: SurveyQuestionType) {
+        this._surveysService.addQuestion(type);
     }
 
-    
+    /*    
    onSurveyNameChanged(value) {
        this.surveyEditor.name = value;
        this._surveysService.updateSurveyFromEditor(this.surveyEditor);

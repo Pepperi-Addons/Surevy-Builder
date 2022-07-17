@@ -1,24 +1,27 @@
 
 <div class="question-with-sequence-container" [ngClass]="{ 'editable-state': editable }"
-    cdkDrag
+    cdkDrag [cdkDragDisabled]="!editable" [cdkDragData]="question"
     (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)"
     (cdkDragExited)="onDragExited($event)" (cdkDragEntered)="onDragEntered($event)">
 
-    <div class="pep-button sm sequence-number">
+    <div *ngIf="editable" class="pep-button sm sequence-number">
         <span class="body-xs " title="{{ sequenceNumber }}">{{ sequenceNumber }}</span>
     </div>
 
     <div class="question-container" (click)="onQuestionClicked($event)" [ngClass]="{ 'active-question': isActive }">
-        <div class="question-title-container">
+        <!-- <div class="question-title-container">
             <span class="body-sm ellipsis title" title="{{ question.Title }}">{{ question.Title }}</span>
-        </div>
-        <div *ngIf="question?.Description?.length > 0" class="question-description-container">
+        </div> -->
+        <pep-field-title [label]="question.Title || 'test'" [mandatory]="question.Mandatory"
+            [maxFieldCharacters]="question.MaxFieldCharacters">
+        </pep-field-title>
+
+        <div *ngIf="question.Description?.length > 0" class="question-description-container">
             <span class="body-sm ellipsis description" title="{{ question.Description }}">{{ question.Description }}</span>
         </div>
-        <ng-container [ngSwitch]="question?.Type" >
+        <ng-container [ngSwitch]="question.Type" >
             <ng-container *ngSwitchCase="'short-text'">
-                <span>{{question?.Type}}</span>
-                <pep-textbox [key]="'short-text'" [label]="'Short Text'" [value]="question.Value" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
+                <pep-textbox [value]="question.Value" [renderTitle]="false" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
             </ng-container>
             <!-- <ng-container *ngSwitchCase="'date'">
                 <pep-date-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
