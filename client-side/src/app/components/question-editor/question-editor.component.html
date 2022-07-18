@@ -1,10 +1,10 @@
 <ng-container *ngIf="question">
     <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY_NAME' | translate"
     [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.NAME_PLACEHOLDER' | translate"
-    [value]="question?.Key || ''" (valueChange)="onQuestionEditorFieldChanged('Key',$event)">
+    [value]="question?.Name || ''" (valueChange)="onQuestionEditorFieldChanged('Name',$event)">
     </pep-textbox>
     <pep-textarea [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_TITLE' | translate" [rowSpan]="1.5"
-                  (valueChange)="onQuestionEditorFieldChanged('Name',$event)" [value]="question?.Name || ''">
+                  (valueChange)="onQuestionEditorFieldChanged('Title',$event)" [value]="question?.Title || ''">
     </pep-textarea>
     <pep-textarea 
                 [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2"

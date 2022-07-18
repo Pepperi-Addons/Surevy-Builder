@@ -9,17 +9,26 @@
     </div>
 
     <div class="question-container" (click)="onQuestionClicked($event)" [ngClass]="{ 'active-question': isActive }">
-        <div class="question-header-container">
+        <pep-field-title [label]="question.Title || 'test'" [mandatory]="question.Mandatory"
+            [maxFieldCharacters]="question.MaxFieldCharacters">
+        </pep-field-title>
+
+        <div *ngIf="question.Description?.length > 0" class="question-description-container">
+            <span class="body-sm color-dimmed ellipsis" title="{{ question.Description }}">{{ question.Description }}</span>
+        </div>
+
+        <!-- <div class="question-header-container">
             <span *ngIf="question?.Type?.length > 0" class="body-sm ellipsis title" title="{{ question.Title }}">{{ question.Type }}</span>
             <div><mat-icon *ngIf="question?.Mandatory" class="pep-spacing-element">
                 <pep-icon name="system_must"></pep-icon>
             </mat-icon><span *ngIf="question?.Name?.length > 0" class="body-sm ellipsis" title="{{ question.Name }}">{{ question.Name }}</span>
             </div>
             <span *ngIf="question?.Description?.length > 0" class="body-sm color-dimmed ellipsis" title="{{ question.Description }}">{{ question.Description }}</span>
-        </div>
+        </div> -->
+
         <ng-container [ngSwitch]="question.Type" >
             <ng-container *ngSwitchCase="'short-text'">
-                <pep-textbox [key]="'short-text'" [renderTitle]="false"  [value]="question.Value" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
+                <pep-textbox [value]="question.Value" [renderTitle]="false" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
             </ng-container>
             <!-- <ng-container *ngSwitchCase="'date'">
                 <pep-date-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
@@ -27,11 +36,7 @@
                 </pep-date-filter>
             </ng-container-->
             <ng-container *ngSwitchCase="'multiple-selection-dropdown'">
-                <pep-select
-                    value=""
-                    label="select an option"
-                    type="select" [mandatory]="question?.Mandatory" [options]="question?.OptionalValues || []" [showTitle]="false"
-                    ></pep-select>
+                MULTI SELECT
                 <!-- <pep-multi-select-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
                     (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
                 </pep-multi-select-filter> -->
@@ -47,7 +52,6 @@
                 </pep-text-filter>
             </ng-container> -->
             <ng-container *ngSwitchDefault>
-                {{question?.Type}}
                 <span>{{ 'SURVEY_MANAGER.QUESTION_TYPE_NOT_SUPPORTED' | translate }}</span>
             </ng-container>
         </ng-container>

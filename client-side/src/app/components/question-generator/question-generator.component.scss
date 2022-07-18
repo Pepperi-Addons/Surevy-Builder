@@ -42,17 +42,17 @@
         border-radius: variables.$border-radius-md;
         padding: variables.$content-padding;
         
-        .question-header-container{
-            display: flex;
-            flex-direction: column;
-            margin-bottom: variables.$spacing-md;
+        // .question-header-container{
+        //     display: flex;
+        //     flex-direction: column;
+        //     margin-bottom: variables.$spacing-md;
 
-            mat-icon{
-                height: variables.$fs-xs;
-                width: variables.$fs-xs;
-            }
+        //     mat-icon{
+        //         height: variables.$fs-xs;
+        //         width: variables.$fs-xs;
+        //     }
 
-        }
+        // }
         
     }
 }

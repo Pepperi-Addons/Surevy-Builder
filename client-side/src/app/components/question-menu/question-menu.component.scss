@@ -1,3 +1,11 @@
+:host {
+    display: grid;
+}
+
+.question-menu {
+    display: block;
+}
+
 ::ng-deep.streched {
     width: 100%;
     max-width: none;
