@@ -184,7 +184,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
    } */
 
     onWrapperClicked(event: any) {
-        this._surveysService.clearSelected();
+        //this._surveysService.clearSelected();
     }
 
     onSaveClicked() {
