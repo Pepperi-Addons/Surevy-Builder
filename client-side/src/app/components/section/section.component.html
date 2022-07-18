@@ -2,7 +2,7 @@
     cdkDrag [cdkDragDisabled]="!editable" [cdkDragData]="index" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)" 
 >
     <div class="section-container " [ngClass]="{ 'active-section': isActive && selectedQuestion === null }" 
-        (click)="onSectionClicked($event)">
+        (mousedown)="onSectionClicked($event)">
         <ng-container *ngIf="editable; then editableTitleTemplate; else runnerTitleTemplate"></ng-container>
         <ng-template #editableTitleTemplate>
             <div class="pep-button sm sequence-number" cdkDragHandle>
@@ -25,22 +25,17 @@
         (cdkDropListDropped)="onQuestionDropped($event)">
         
         <ng-container *ngFor="let question of questions; let i=index;">
-            <ng-container *ngTemplateOutlet="addButtonsTemplate; context: { showAddSection: false, questionIndex: i }"></ng-container>
-            
             <survey-question-generator [editable]="editable" [question]="question" [sequenceNumber]="(index + 1) + '.' + (i + 1)" 
                 [isActive]="isActive && selectedQuestion === question"
-                (questionClick)="onQuestionClicked(i)"></survey-question-generator>
+                (questionClick)="onQuestionClicked(i)" (addQuestionClick)="onAddQuestionClicked($event, i)"></survey-question-generator>
         </ng-container>
+        
     </div>
 
-    <ng-container *ngTemplateOutlet="addButtonsTemplate; context: {showAddSection: true}"></ng-container>
-</div>
-
-<ng-template #addButtonsTemplate let-showAddSection="showAddSection" let-questionIndex="questionIndex">
     <div *ngIf="editable" class="add-separator-container" [ngClass]="{ 'is-grabbing': isGrabbing }">
-        <pep-button *ngIf="showAddSection" class="add-button" styleType="regular" sizeType="sm" iconName="number_plus" 
+        <pep-button class="add-button" styleType="regular" sizeType="sm" iconName="number_plus" 
             [value]="'SURVEY_MANAGER.SURVEY_EDITOR.ADD_SECTION' | translate" (buttonClick)="onAddSectionClicked()"></pep-button>
 
-        <survey-question-menu class="add-button" sizeType="sm" styleType="regular" (questionTypeClick)="onAddQuestionClick($event, questionIndex)"></survey-question-menu>
+        <survey-question-menu class="add-button" sizeType="sm" styleType="regular" (questionTypeClick)="onAddQuestionClicked($event)"></survey-question-menu>
     </div>
-</ng-template>
+</div>

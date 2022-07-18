@@ -1,26 +1,26 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins';
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions';
 
-.question-with-sequence-container {
+.question-container {
+    
+    .question-with-sequence-container {
+        // This css is only for edit mode.
+        &.editable-state {
 
-    // This css is only for edit mode.
-    &.editable-state {
+            .sequence-number {
+                @include mixins.state-weak-default();
+            }
 
-        .sequence-number {
-            @include mixins.state-weak-default();
-        }
-
-        .question-container {
-            background: functions.get-pep-color(color-system-primary-invert, color-base);
+            .question-field-container {
+                background: functions.get-pep-color(color-system-primary-invert, color-base);
+                
+                @include mixins.state-regular-default(true);
+                box-shadow: functions.get-pep-shadow(shadow-xs, regular);
             
-            @include mixins.state-regular-default(true);
-            box-shadow: functions.get-pep-shadow(shadow-xs, regular);
-        
-            &.active-question {
-                @include mixins.focus();
+                &.active-question {
+                    @include mixins.focus();
+                }
             }
         }
-
     }
-    
 }

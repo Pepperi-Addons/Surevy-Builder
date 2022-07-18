@@ -410,6 +410,9 @@ export class SurveysService {
             const previuosSection = this.getSectionByIndex(event.previousContainer.id);
 
             transferArrayItem(previuosSection.Questions, currentSection.Questions, event.previousIndex, event.currentIndex);
+
+            // Update the selected index.
+            this.setSelected(sectionIndex, event.currentIndex);
         } else {
             moveItemInArray(currentSection.Questions, event.previousIndex, event.currentIndex);
         }

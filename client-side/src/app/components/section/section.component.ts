@@ -71,7 +71,8 @@ export class SectionComponent implements OnInit {
 
     onSectionClicked(event: any) {
         this.surveysService.setSelected(this.index);
-        event.stopPropagation();
+        // This is for click.
+        // event.stopPropagation();
     }
 
     onQuestionDropped(event: CdkDragDrop<any[]>) {
@@ -94,7 +95,7 @@ export class SectionComponent implements OnInit {
         this.surveysService.addSection(this.index + 1);
     }
 
-    onAddQuestionClick(type: SurveyQuestionType, questionIndex: number) {
+    onAddQuestionClicked(type: SurveyQuestionType, questionIndex: number = -1) {
         this.surveysService.addQuestion(type, this.index, questionIndex);
     }
 

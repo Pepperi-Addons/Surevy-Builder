@@ -1,4 +1,5 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
+@import '../../../mixins.scss';
 
 .section-area {
     // This css is only for edit mode!!!
@@ -22,26 +23,8 @@
         }
             
         .add-separator-container {
-            max-width: 100%;
-            height: variables.$content-margin;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: variables.$border-radius-md;
-            gap: variables.$spacing-sm;
-        
-            .add-button {
-                position: relative;
-                display: none;
-            }
-        
-            &:not(.is-grabbing) {
-                &:hover .add-button {
-                    display: block;
-                }
-            }
+            @include add-separator-container();
         }
-
     }  
 
     .section-container {
@@ -60,7 +43,7 @@
     
     // This is for ability to add question to empty section.
     .questions-wrapper {
-        min-height: 16px;
+        min-height: 1px;
     }
     
 }

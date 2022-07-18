@@ -15,8 +15,8 @@ export interface SurveySection {
 }
 
 export type SurveyQuestionType = 'short-text' | 'long-text' 
-    | 'multiple-selection-dropdown' //  | 'multiple-selection-checkboxs'
     | 'single-selection-dropdown' // | 'single-selection-radiobuttons' 
+    | 'multiple-selection-dropdown' //  | 'multiple-selection-checkboxs'
     | 'boolean-toggle'
     | 'number' | 'decimal' | 'currency' | 'percentage'
     | 'date' | 'datetime'
