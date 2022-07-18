@@ -1,0 +1,55 @@
+    <pep-side-bar position="end" [ignoreResize]="true" (stateChange)="onSidebarEndStateChange($event)">
+        <div header-content class="side-bar-title">
+            <div class=" title-xl ellipsis" [title]="">
+                <span>TODO: TITLE</span>
+            </div>
+        </div>
+        <div class="survey-details">
+            <ng-container *ngIf="surveysService.selectedItemType === 'section'; then sectionEditorTemplate; else questionEditorTemplate"></ng-container>
+
+            <div class="pep-actions" *ngIf="surveysService.selectedItemType !== 'none'">
+                <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
+                            styleType="regular" iconName="number_plus" iconPosition="end"
+                            (buttonClick)="onItemDuplicateClicked()" sizeType="sm"></pep-button>
+                <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
+                            styleType="regular" iconName="system_bin" iconPosition="end" classNames="caution"
+                            (buttonClick)="onItemDeleteClicked()" sizeType="sm"></pep-button>
+            </div>
+        </div>
+    </pep-side-bar>
+
+
+<ng-template #sectionEditorTemplate>
+    // TODO:
+</ng-template>
+
+<ng-template #questionEditorTemplate>
+    <ng-container *ngIf="surveysService.selectedItemType === 'question' && question">
+        <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY_NAME' | translate"
+            [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.NAME_PLACEHOLDER' | translate"
+            [value]="question?.Name || ''" (valueChange)="onQuestionEditorFieldChanged('Name',$event)">
+        </pep-textbox>
+        <pep-textarea [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_TITLE' | translate" [rowSpan]="1.5"
+            (valueChange)="onQuestionEditorFieldChanged('Title',$event)" [value]="question?.Title || ''">
+        </pep-textarea>
+        <pep-textarea 
+            [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2"
+            [value]="question?.Description || ''" (valueChange)="onQuestionEditorFieldChanged('Description',$event)">
+        </pep-textarea>
+        <ng-container *ngIf="question?.Type == 'multiple-selection-dropdown' ||
+                             question?.Type == 'single-selection-dropdown'">
+            <question-select-options (optionChanged)="selectOptionChanged($event)"></question-select-options>
+        </ng-container>
+    
+        <ng-container *ngIf="forNextVersion">
+        <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
+        <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
+            styleType="weak" iconName="system_filter_2" iconPosition="end"
+            (buttonClick)="onShowLogicClick($event)" sizeType="sm"></pep-button>
+        </ng-container>
+    
+        <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>
+        <pep-checkbox class="checkbox-no-background" [value]="question?.Mandatory || false" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAKE_MANDATORY' | translate" 
+            [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('Mandatory',$event)"></pep-checkbox>
+    </ng-container>
+</ng-template>

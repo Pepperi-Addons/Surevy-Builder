@@ -1,28 +1,32 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { SurveysService } from 'src/app/services/surveys.service';
-import { SurveyQuestion, SurveyQuestionOption, SurveyQuestionType } from '../../model/survey.model';
+import { SurveyQuestion, SurveyQuestionOption, SurveyQuestionType, SurveySection } from '../../model/survey.model';
 import { DestoyerDirective } from '../../model/destroyer';
 
 @Component({
-    selector: 'survey-question-editor',
-    templateUrl: './question-editor.component.html',
-    styleUrls: ['./question-editor.component.scss', './question-editor.component.theme.scss']
+    selector: 'survey-selected-item-editor',
+    templateUrl: './selected-item-editor.component.html',
+    styleUrls: ['./selected-item-editor.component.scss', './selected-item-editor.component.theme.scss']
 })
 
-export class QuestionEditorComponent extends DestoyerDirective implements OnInit, OnDestroy {
+export class SelectedItemEditorComponent extends DestoyerDirective implements OnInit, OnDestroy {
     
     question: SurveyQuestion;
-   
+    section: SurveySection;
+
     forNextVersion = false;
+    
     constructor(
-        
-        private surveysService: SurveysService
+        protected surveysService: SurveysService
     ) { 
         super();
+
+        this.surveysService.selectedSectionChange$.pipe(this.destroy$).subscribe(res => {
+            this.section = res;
+        });
+
         this.surveysService.selectedQuestionChange$.pipe(this.destroy$).subscribe(res => {
-           if(res){
-             this.question = res;
-           }
+            this.question = res;
         });
     }
 
@@ -58,11 +62,23 @@ export class QuestionEditorComponent extends DestoyerDirective implements OnInit
 
     selectOptionChanged(event){
         let options: Array<any> = [];
-            event.forEach(opt => {
-                options.push({key: opt.option.Key, value: opt.option.Value});
-            });
+        event.forEach(opt => {
+            options.push({key: opt.option.Key, value: opt.option.Value});
+        });
 
-            this.question['OptionalValues'] = options;
-            this.surveysService.updateQuestionFromEditor(this.question);
-        }
+        this.question['OptionalValues'] = options;
+        this.surveysService.updateQuestionFromEditor(this.question);
+    }
+    
+    onSidebarEndStateChange(state) {
+        console.log('onSidebarEndStateChange', state);
+    }
+
+    onItemDuplicateClicked() {
+        this.surveysService.duplicateSelectedItem();
+    }
+
+    onItemDeleteClicked() {
+        this.surveysService.deleteSelectedItem();
+    }
 }

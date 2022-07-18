@@ -17,15 +17,6 @@
             <span class="body-sm color-dimmed ellipsis" title="{{ question.Description }}">{{ question.Description }}</span>
         </div>
 
-        <!-- <div class="question-header-container">
-            <span *ngIf="question?.Type?.length > 0" class="body-sm ellipsis title" title="{{ question.Title }}">{{ question.Type }}</span>
-            <div><mat-icon *ngIf="question?.Mandatory" class="pep-spacing-element">
-                <pep-icon name="system_must"></pep-icon>
-            </mat-icon><span *ngIf="question?.Name?.length > 0" class="body-sm ellipsis" title="{{ question.Name }}">{{ question.Name }}</span>
-            </div>
-            <span *ngIf="question?.Description?.length > 0" class="body-sm color-dimmed ellipsis" title="{{ question.Description }}">{{ question.Description }}</span>
-        </div> -->
-
         <ng-container [ngSwitch]="question.Type" >
             <ng-container *ngSwitchCase="'short-text'">
                 <pep-textbox [value]="question.Value" [renderTitle]="false" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
@@ -35,11 +26,13 @@
                     (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
                 </pep-date-filter>
             </ng-container-->
+            <ng-container *ngSwitchCase="'single-selection-dropdown'">
+                <pep-select [value]="question.Value" [mandatory]="question?.Mandatory"
+                    [options]="question?.OptionalValues || []" [renderTitle]="false"></pep-select>
+            </ng-container>
             <ng-container *ngSwitchCase="'multiple-selection-dropdown'">
-                MULTI SELECT
-                <!-- <pep-multi-select-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
-                    (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
-                </pep-multi-select-filter> -->
+                <pep-select [value]="question.Value" type="multi" [mandatory]="question?.Mandatory"
+                    [options]="question?.OptionalValues || []" [renderTitle]="false"></pep-select>
             </ng-container>
             <!--ng-container *ngSwitchCase="'number'">
                 <pep-number-filter [field]="field" [filter]="filtersDataMap.get(field.id)"

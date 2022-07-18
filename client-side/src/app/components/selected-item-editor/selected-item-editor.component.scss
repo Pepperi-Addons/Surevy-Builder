@@ -1,0 +1,14 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
+
+.survey-details {
+    display: flex;
+    flex-direction: column;
+    padding: variables.$spacing-lg 0;
+
+    .pep-actions {
+        margin-top: variables.$spacing-lg;   
+        display: flex;
+        flex-direction: column;
+        gap: variables.$spacing-md;
+    }
+}
