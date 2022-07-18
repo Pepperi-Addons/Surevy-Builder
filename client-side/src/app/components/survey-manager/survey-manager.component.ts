@@ -38,29 +38,29 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     showEditor = true;
     screenSize: PepScreenSizeType;
     sectionsQuestionsDropList = [];
-    surveyEditor: ISurveyEditor;    
+    surveyEditor: ISurveyEditor;
     minDateValue: string = null;
     maxDateValue: string = null;
-/*
-    menuItems = [
-        {
-            key: `short-text`,
-            text: 'question 1',
-            iconName: 'arrow_left_alt'
-        },
-        {
-            Type: 'multiple-selection-dropdown',
-            key: `question2`,
-            text: 'multiple selection',
-            iconName: 'arrow_left_alt'
-        },
-        {
-            Type: 'short-text',
-            key: `question3`,
-            text: 'question 3',
-            iconName: 'arrow_left_alt'
-        },
-    ] */
+    /*
+        menuItems = [
+            {
+                key: `short-text`,
+                text: 'question 1',
+                iconName: 'arrow_left_alt'
+            },
+            {
+                Type: 'multiple-selection-dropdown',
+                key: `question2`,
+                text: 'multiple selection',
+                iconName: 'arrow_left_alt'
+            },
+            {
+                Type: 'short-text',
+                key: `question3`,
+                text: 'question 3',
+                iconName: 'arrow_left_alt'
+            },
+        ] */
 
 
     constructor(
@@ -82,7 +82,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         this._surveysService.surveyEditorLoad$.pipe(this.destroy$).subscribe((editor) => {
             this.surveyEditor = editor;
             this.minDateValue = null;
-            this.maxDateValue = null;            
+            this.maxDateValue = null;
         });
 
         this._surveysService.sectionsChange$.pipe(this.destroy$).subscribe(res => {
@@ -119,17 +119,17 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         this._surveysService.updateSurveyFromEditor(this.surveyEditor);
     }
 
-    onActiveStateChanged(isActive: any) {        
+    onActiveStateChanged(isActive: any) {
         this.surveyEditor.active = isActive;
         if (!isActive) {
             this.surveyEditor.activeDateRange = undefined;
             this.minDateValue = null;
-            this.maxDateValue = null;               
+            this.maxDateValue = null;
         }
         this._surveysService.updateSurveyFromEditor(this.surveyEditor);
     }
 
-    onActiveFromDateChanged(value: string) {        
+    onActiveFromDateChanged(value: string) {
         if (value) {
             if (!this.surveyEditor.activeDateRange) {
                 this.surveyEditor.activeDateRange = {
@@ -140,13 +140,13 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
             this.surveyEditor.activeDateRange.from = new Date(value);
             this.minDateValue = value;
         } else {
-            this.minDateValue = null;    
+            this.minDateValue = null;
             if (this.surveyEditor.activeDateRange.to) {
                 this.surveyEditor.activeDateRange.from = undefined;
             } else {
-                this.surveyEditor.activeDateRange = undefined;   
+                this.surveyEditor.activeDateRange = undefined;
             }
-        }        
+        }
         this._surveysService.updateSurveyFromEditor(this.surveyEditor);
     }
 
@@ -161,16 +161,16 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
             this.surveyEditor.activeDateRange.to = new Date(value);
             this.maxDateValue = value;
         } else {
-            this.maxDateValue = null;  
+            this.maxDateValue = null;
             if (this.surveyEditor.activeDateRange.from) {
                 this.surveyEditor.activeDateRange.to = undefined;
-            } else {                
-                this.surveyEditor.activeDateRange = undefined;  
+            } else {
+                this.surveyEditor.activeDateRange = undefined;
             }
-        }        
+        }
         this._surveysService.updateSurveyFromEditor(this.surveyEditor);
     }
-    
+
     onAddSectionClicked() {
         this._surveysService.addSection();
     }
@@ -191,7 +191,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         this._surveysService.clearSelected();
     }
 
-    onSaveClick() {
+    onSaveClicked() {
         this._surveysService.saveCurrentSurvey(this._navigationService.addonUUID).pipe(this.destroy$).subscribe(res => {
             const data: PepSnackBarData = {
                 title: this.translate.instant('MESSAGES.SURVEY_SAVED'),
@@ -206,7 +206,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         });
     }
 
-    onPublishClick() {
+    onPublishClicked() {
         this._surveysService.publishCurrentSurvey(this._navigationService.addonUUID).pipe(this.destroy$).subscribe(res => {
             const data: PepSnackBarData = {
                 title: this.translate.instant('MESSAGES.SURVEY_PUBLISHED'),
@@ -221,12 +221,12 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         });
     }
 
-    onQuestionDuplicateClick(event) {
-        this._surveysService.duplicateSelectedQuestion();
+    onItemDuplicateClicked() {
+        this._surveysService.duplicateSelected();
     }
 
-    onQuestionDeleteClick(event) {
-
+    onItemDeleteClicked() {
+        this._surveysService.deleteSelected();
     }
-   
+
 }

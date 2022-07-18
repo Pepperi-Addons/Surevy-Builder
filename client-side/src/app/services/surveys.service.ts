@@ -74,6 +74,11 @@ export class SurveysService {
         return this._lockScreenSubject.asObservable().pipe(distinctUntilChanged());
     }
 
+    
+    get selectedItemType(): 'section' | 'question' | null {
+        return this._selectedQuestionIndex > -1 ? 'question' : (this._selectedSectionIndex > -1 ? 'section' : null);        
+    }
+
     constructor(
         private translate: TranslateService,
         private sessionService: PepSessionService,
@@ -234,12 +239,15 @@ export class SurveysService {
             if (questionIndex >= 0 && questionIndex < questions.length) {
                 const question = questions[questionIndex];
                 this.notifySelectedQuestionChange(question, questionIndex);
+                //this._selectedItemType = 'question';
             } else {
                 this.notifySelectedQuestionChange(null, questionIndex);
+                //this._selectedItemType = 'section';
             }
         } else {
             this.notifySelectedQuestionChange(null, questionIndex);
             this.notifySelectedSectionChange(null, sectionIndex);
+           // this._selectedItemType = null;
         }
     }
 
@@ -261,6 +269,7 @@ export class SurveysService {
         const sections = this._surveySubject.getValue().Sections;
         sections.push(section);
         this.notifySectionsChange(sections);
+        //this.notifySelectedSectionChange(section, sections.length-1);
     }
 
     removeSection(sectionId: string) {
@@ -326,6 +335,7 @@ export class SurveysService {
         }
 
         this.notifySectionsChange(sections);
+        //this.notifySelectedQuestionChange(question, currentSection.Questions.length-1);
     }
 
     onQuestionDropped(event: CdkDragDrop<any[]>, sectionIndex: number) {
@@ -433,27 +443,45 @@ export class SurveysService {
         return this.httpService.postHttpCall(`${baseUrl}/publish_survey`, body);
     }
 
-    duplicateSelectedSection() {        
+    duplicateSelected() {
+        if (this.selectedItemType === 'section') {
+            this.duplicateSelectedSection();
+        } else if (this.selectedItemType === 'question') {
+            this.duplicateSelectedQuestion();
+        }
+    }
+
+    deleteSelected() {
+        if (this.selectedItemType === 'section') {
+            this.deleteSelectedSection();
+        } else if (this.selectedItemType === 'question') {
+            this.deleteSelectedQuestion();
+        }
+    }
+
+    private duplicateSelectedSection() {        
         if (this._selectedSectionIndex > -1) {
             const sections = this._sectionsSubject.getValue();                        
             const duplicated: SurveySection = _.cloneDeep(sections[this._selectedSectionIndex]);
             duplicated.Key = PepGuid.newGuid();            
             sections.push(duplicated);
             this.notifySectionsChange(sections);
+            this.notifySelectedSectionChange(duplicated, sections.length-1);
         }
     }
     
-    deleteSelectedSection() {       
+    private deleteSelectedSection() {       
         if (this._selectedSectionIndex > -1 ) {
             const sections = this._sectionsSubject.getValue();                      
             if (sections.length > this._selectedSectionIndex) {
                 sections.splice(this._selectedSectionIndex, 1);
                 this.notifySectionsChange(sections);
+                this.notifySelectedSectionChange(null, -1);
             }
         }
     }
 
-    duplicateSelectedQuestion() {        
+    private duplicateSelectedQuestion() {        
         if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
             const sections = this._sectionsSubject.getValue();           
             const currentSection = sections[this._selectedSectionIndex];            
@@ -462,17 +490,19 @@ export class SurveysService {
                 duplicated.Key = PepGuid.newGuid();
                 currentSection.Questions.push(duplicated);
                 this.notifySectionsChange(sections);
+                this.notifySelectedQuestionChange(duplicated, currentSection.Questions.length-1);
             }
         }
     }
 
-    deleteSelectedQuestion() {        
+    private deleteSelectedQuestion() {        
         if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
             const sections = this._sectionsSubject.getValue();           
             const currentSection = sections[this._selectedSectionIndex];
             if (currentSection?.Questions?.length > this._selectedSectionIndex) {
                 currentSection.Questions.splice(this._selectedSectionIndex, 1);
                 this.notifySectionsChange(sections);
+                this.notifySelectedQuestionChange(null, -1);
             }
         }
     }

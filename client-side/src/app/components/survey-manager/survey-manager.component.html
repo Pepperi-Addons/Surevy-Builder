@@ -21,9 +21,9 @@
                     </pep-textarea>
                    
                     <div class="activate-container">
-                        <pep-field-title [label]="'SURVEY_MANAGER.SURVEY_EDITOR.ACTIVATE_TITLE' | translate"
+                        <!-- <pep-field-title [label]="'SURVEY_MANAGER.SURVEY_EDITOR.ACTIVATE_TITLE' | translate"
                             xAlignment="left">
-                        </pep-field-title>
+                        </pep-field-title> -->
                         <pep-checkbox key="cb1" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.ACTIVATE' | translate"
                             [value]="isActive" [renderTitle]="false" xAlignment="left"
                             (valueChange)="onActiveStateChanged($event)">
@@ -72,8 +72,8 @@
                     <ng-template #editorButtonsTemplate>
                         <div class="header-end">
                             <pep-button key='Preview' [value]="'ACTIONS.PREVIEW' | translate" sizeType="sm" classNames="pep-spacing-element" (buttonClick)="togglePreviewMode()"></pep-button>
-                            <pep-button key='Save' [value]="'ACTIONS.SAVE' | translate" sizeType="sm" classNames="pep-spacing-element" (buttonClick)="onSaveClick()"></pep-button>
-                            <pep-button key='Publish' [value]="'ACTIONS.PUBLISH' | translate" sizeType="sm" classNames="pep-spacing-element" styleType="strong" (buttonClick)="onPublishClick();"></pep-button>
+                            <pep-button key='Save' [value]="'ACTIONS.SAVE' | translate" sizeType="sm" classNames="pep-spacing-element" (buttonClick)="onSaveClicked()"></pep-button>
+                            <pep-button key='Publish' [value]="'ACTIONS.PUBLISH' | translate" sizeType="sm" classNames="pep-spacing-element" styleType="strong" (buttonClick)="onPublishClicked();"></pep-button>
                         </div>
                     </ng-template>
                     <ng-template #previewButtonsTemplate>
@@ -98,10 +98,10 @@
                     <div class="pep-actions">
                         <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
                                     styleType="regular" iconName="number_plus" iconPosition="end"
-                                    (buttonClick)="onQuestionDuplicateClick($event)" sizeType="sm"></pep-button>
+                                    (buttonClick)="onItemDuplicateClicked()" sizeType="sm"></pep-button>
                         <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
                                     styleType="regular" iconName="system_bin" iconPosition="end" classNames="caution"
-                                    (buttonClick)="onQuestionDeleteClick($event)" sizeType="sm"></pep-button>
+                                    (buttonClick)="onItemDeleteClicked()" sizeType="sm"></pep-button>
                     </div>
                 </div>
             </pep-side-bar>
