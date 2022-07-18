@@ -36,7 +36,7 @@ export class QuestionMenuService {
                 iconName: 'arrow_left_alt'
             },
             {
-                key: `boolean-yes-no`,
+                key: `boolean-toggle`,
                 text: 'Yes/No',
                 iconName: 'arrow_left_alt'
             },

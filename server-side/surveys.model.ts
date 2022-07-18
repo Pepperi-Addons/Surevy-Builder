@@ -17,11 +17,12 @@ export interface SurveySection {
 export type SurveyQuestionType = 'short-text' | 'long-text' 
     | 'multiple-selection-dropdown' //  | 'multiple-selection-checkboxs'
     | 'single-selection-dropdown' // | 'single-selection-radiobuttons' 
-    | 'boolean-yes-no'
-    | 'number'
-    | 'date'
-    | 'photo'
-    | 'signature';
+    | 'boolean-toggle'
+    | 'number' | 'decimal' | 'currency' | 'percentage'
+    | 'date' | 'datetime'
+    // | 'photo'
+    // | 'signature'
+    ;
 
 export interface SurveyQuestion {
     Key: string;
