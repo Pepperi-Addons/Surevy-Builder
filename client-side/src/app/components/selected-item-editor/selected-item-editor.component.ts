@@ -42,10 +42,11 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     onQuestionEditorFieldChanged(key,value) {
         this.question[key] = value;
         this.surveysService.updateQuestionFromEditor(this.question);
-        // TODO - WAIT TO NEW FUNCTION FROM TOMER 
-        //this.surveysService.notifySelectedQuestionChange(this.question);
-        //this.surveysService.updateSurveyFromEditor()
-        //this._surveysService.updateSurveyFromEditor(this.surveyEditor);
+    }
+
+    onSectionEditorFieldChanged(key,value) {
+        this.section[key] = value;
+        this.surveysService.updateSectionFromEditor(this.section);
     }
 
     onShowLogicClick(event) {

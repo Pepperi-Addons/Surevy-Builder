@@ -37,6 +37,7 @@
             "ADD_QUESTION": "Add a Question",            
             "RIGHT_SIDE": {
                 "KEY_NAME": "Key Name",
+                "SECTION_NAME": "Section Name",
                 "QUESTION_TITLE": "Type your question here...",
                 "DESCRIPTION": "Description",
                 "SHOW_IF": "Show If",

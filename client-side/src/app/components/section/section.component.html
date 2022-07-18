@@ -1,7 +1,6 @@
 <div class="section-area " [ngClass]="{ 'editable-state': editable }" >
     <div class="section-container " [ngClass]="{ 'active-section': isActive && selectedQuestion === null }" 
-        (click)="onSectionClicked($event)"
-        >
+        (click)="onSectionClicked($event)">
         <ng-container *ngIf="editable; then editableTitleTemplate; else runnerTitleTemplate"></ng-container>
         <ng-template #editableTitleTemplate>
             <div class="pep-button sm sequence-number">

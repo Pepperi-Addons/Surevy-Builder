@@ -20,7 +20,18 @@
 
 
 <ng-template #sectionEditorTemplate>
-    // TODO:
+    <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY_NAME' | translate"
+            [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.NAME_PLACEHOLDER' | translate"
+            [value]="section?.Key || ''" (valueChange)="onSectionEditorFieldChanged('Key',$event)">
+    </pep-textbox>
+    <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SECTION_NAME' | translate"
+            [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.SECTION_NAME' | translate"
+            [value]="section?.Title || ''" (valueChange)="onSectionEditorFieldChanged('Title',$event)">
+    </pep-textbox>
+    <pep-textarea 
+            [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2"
+            [value]="section?.Description || ''" (valueChange)="onSectionEditorFieldChanged('Description',$event)">
+    </pep-textarea>
 </ng-template>
 
 <ng-template #questionEditorTemplate>
