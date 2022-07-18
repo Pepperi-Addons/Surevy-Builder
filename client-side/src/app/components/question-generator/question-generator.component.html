@@ -27,11 +27,11 @@
                 </pep-date-filter>
             </ng-container-->
             <ng-container *ngSwitchCase="'single-selection-dropdown'">
-                <pep-select [value]="question.Value" [mandatory]="question?.Mandatory"
+                <pep-select [value]="question.Value || ''" [mandatory]="question?.Mandatory"
                     [options]="question?.OptionalValues || []" [renderTitle]="false"></pep-select>
             </ng-container>
             <ng-container *ngSwitchCase="'multiple-selection-dropdown'">
-                <pep-select [value]="question.Value" type="multi" [mandatory]="question?.Mandatory"
+                <pep-select [value]="question.Value || ''" type="multi" [mandatory]="question?.Mandatory"
                     [options]="question?.OptionalValues || []" [renderTitle]="false"></pep-select>
             </ng-container>
             <!--ng-container *ngSwitchCase="'number'">
