@@ -41,16 +41,12 @@
 
                     <label class="title body-xl">{{ "SURVEY_MANAGER.SURVEY_EDITOR.ADD_ITEM" | translate}}</label>
 
-                    <survey-question-menu></survey-question-menu>
-
-                    <!-- <pep-menu class="pep-spacing-element" [items]="menuItems"
-                        [text]="'SURVEY_MANAGER.SURVEY_EDITOR.ADD_QUESTION' | translate" [iconName]="'arrow_down'"
-                        [classNames]="'streched'" (menuItemClick)="onAddQuestionClicked($event)">
-                    </pep-menu> -->
-
-                    <pep-button [value]="'SURVEY_MANAGER.SURVEY_EDITOR.ADD_SECTION' | translate" styleType="weak"
-                        styleStateType="system" iconName="number_plus" iconPosition="end"
-                        (buttonClick)="onAddSectionClicked()"></pep-button>
+                    <div class="pep-actions">
+                        <survey-question-menu (questionTypeClick)="onQuestionTypeClick($event)"></survey-question-menu>
+                        <pep-button [value]="'SURVEY_MANAGER.SURVEY_EDITOR.ADD_SECTION' | translate" styleType="weak"
+                            styleStateType="system" iconName="number_plus" iconPosition="end"
+                            (buttonClick)="onAddSectionClicked()"></pep-button>
+                    </div>
 
                 </div>
             </pep-side-bar>

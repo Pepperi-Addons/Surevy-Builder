@@ -7,15 +7,17 @@
     display: flex;
     gap: variables.$spacing-sm;
     padding-inline-start: variables.$spacing-sm;
-    margin-top: variables.$content-margin;
+    // margin-top: variables.$content-margin;
+    
+    // Keep the spacing when grabbing & not in edit mode cause the seperator of the add section button is not visible.
+    // &.is-grabbing,
+    &:not(.editable-state) {
+        margin-top: variables.$content-padding;
+    }
 
     // This css is only for edit mode!!!
     &.editable-state {
             
-        // .active-question {
-            
-        // }
-        
         // The placeholder of the drop area when dragging a section.
         &.cdk-drag-placeholder {
             opacity: 0.5;
@@ -26,14 +28,31 @@
             height: 2rem;
             padding: 0;
         }
+    
+        .question-container {
+            border-radius: variables.$border-radius-md;
+            padding: variables.$content-padding;
+        }
     }  
-
+    
     .question-container {
         display: grid;
         height: 100%;
         width: 100%;
         border-radius: variables.$border-radius-md;
         padding: variables.$content-padding;
+        
+        // .question-header-container{
+        //     display: flex;
+        //     flex-direction: column;
+        //     margin-bottom: variables.$spacing-md;
+
+        //     mat-icon{
+        //         height: variables.$fs-xs;
+        //         width: variables.$fs-xs;
+        //     }
+
+        // }
         
     }
 }

@@ -1,11 +1,10 @@
 
-<div #sectionsCont cdkDropListGroup class="sections-container" [ngClass]="{ 'editable-state': editMode }" cdkDropList (cdkDropListDropped)="onSectionDropped($event)" >
+<div #sectionsCont cdkDropListGroup class="sections-container" [ngClass]="{ 'editable-state': editMode, 'is-grabbing': isGrabbing }" cdkDropList (cdkDropListDropped)="onSectionDropped($event)" >
     <section *ngFor="let section of sections$ | async; let i=index;"
         class="draggable-section" [sectionsQuestionsDropList]="sectionsQuestionsDropList"
         [index]="i" [title]="section.Title" [isActive]="section === selectedSection" [questions]="section.Questions" [screenSize]="screenSize" [editable]="editMode"
-        cdkDrag (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)" 
+        cdkDrag [cdkDragDisabled]="!editMode" [cdkDragData]="i" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)" 
         >
-        <!-- cdkDragBoundary=".survey-builder-wrapper" -->
     </section>
 </div>
 

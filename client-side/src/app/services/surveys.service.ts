@@ -21,6 +21,12 @@ export class SurveysService {
         }
     }
 
+    // This subject is for is grabbing mode.
+    private _isGrabbingSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    get isGrabbingChange$(): Observable<boolean> {
+        return this._isGrabbingSubject.asObservable().pipe(distinctUntilChanged());
+    }
+
     // This subject is for load the current survey editor (Usage only in edit mode).
     private _surveyEditorSubject: BehaviorSubject<ISurveyEditor> = new BehaviorSubject<ISurveyEditor>(null);
     get surveyEditorLoad$(): Observable<ISurveyEditor> {
@@ -56,16 +62,16 @@ export class SurveysService {
         return this._surveySubject.asObservable().pipe(filter(survey => !!survey));
     }
 
-    // This subject is for edit mode when question is dragging now or not.
-    private _draggingQuestionKey: BehaviorSubject<string> = new BehaviorSubject('');
-    get draggingQuestionKey(): Observable<string> {
-        return this._draggingQuestionKey.asObservable().pipe(distinctUntilChanged());
-    }
+    // // This subject is for edit mode when question is dragging now or not.
+    // private _draggingQuestionKey: BehaviorSubject<string> = new BehaviorSubject('');
+    // get draggingQuestionKey(): Observable<string> {
+    //     return this._draggingQuestionKey.asObservable().pipe(distinctUntilChanged());
+    // }
 
     // This subject is for edit mode when section is dragging now or not.
-    private _draggingSectionKey: BehaviorSubject<string> = new BehaviorSubject('');
-    get draggingSectionKey(): Observable<string> {
-        return this._draggingSectionKey.asObservable().pipe(distinctUntilChanged());
+    private _draggingSectionIndex: BehaviorSubject<string> = new BehaviorSubject('');
+    get draggingSectionIndex(): Observable<string> {
+        return this._draggingSectionIndex.asObservable().pipe(distinctUntilChanged());
     }
 
     // This subject is for lock or unlock the screen (Usage only in edit mode).
@@ -152,11 +158,13 @@ export class SurveysService {
     private changeCursorOnDragStart() {
         document.body.classList.add('inheritCursors');
         document.body.style.cursor = 'grabbing';
+        this._isGrabbingSubject.next(true);
     }
 
     private changeCursorOnDragEnd() {
         document.body.classList.remove('inheritCursors');
         document.body.style.cursor = 'unset';
+        this._isGrabbingSubject.next(false);
     }
 
     private getSectionByIndex(sectionIndex: string): SurveySection {
@@ -255,7 +263,7 @@ export class SurveysService {
         this.setSelected(-1);
     }
 
-    addSection(section: SurveySection = null) {
+    addSection(sectionIndex: number = -1, section: SurveySection = null) {
         // Create new section
         if (!section) {
             section = {
@@ -265,23 +273,29 @@ export class SurveysService {
             }
         }
 
-        // Add the new section to survey layout.
+        // Get the sections.
         const sections = this._surveySubject.getValue().Sections;
-        sections.push(section);
+
+        if (sectionIndex >= 0 && sectionIndex < sections.length) {
+            sections.splice(sectionIndex, 0, section);
+        } else {
+            sections.push(section);
+        }
+
         this.notifySectionsChange(sections);
         //this.notifySelectedSectionChange(section, sections.length-1);
     }
 
-    removeSection(sectionId: string) {
-        const sections = this._sectionsSubject.getValue();
-        const index = sections.findIndex(section => section.Key === sectionId);
+    // removeSection(sectionId: string) {
+    //     const sections = this._sectionsSubject.getValue();
+    //     const index = sections.findIndex(section => section.Key === sectionId);
 
-        // Remove section.
-        if (index > -1) {
-            sections.splice(index, 1);
-            this.notifySectionsChange(sections);
-        }
-    }
+    //     // Remove section.
+    //     if (index > -1) {
+    //         sections.splice(index, 1);
+    //         this.notifySectionsChange(sections);
+    //     }
+    // }
 
     onSectionDropped(event: CdkDragDrop<any[]>) {
         const sections = this._sectionsSubject.getValue();
@@ -291,30 +305,30 @@ export class SurveysService {
 
     onSectionDragStart(event: CdkDragStart) {
         this.changeCursorOnDragStart();
-        this._draggingSectionKey.next(event.source.data);
+        this._draggingSectionIndex.next(event.source.data);
     }
 
     onSectionDragEnd(event: CdkDragEnd) {
         this.changeCursorOnDragEnd();
-        this._draggingSectionKey.next('');
+        this._draggingSectionIndex.next('');
     }
 
-    removeQuestion(questionId: string) {
-        // Remove the question from section.
-        const sections = this._sectionsSubject.getValue();
+    // removeQuestion(questionId: string) {
+    //     // Remove the question from section.
+    //     const sections = this._sectionsSubject.getValue();
 
-        for (let sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
-            const section = sections[sectionIndex];
+    //     for (let sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
+    //         const section = sections[sectionIndex];
 
-            // Remove the question.
-            const questionsIndex = section.Questions.findIndex(question => question?.Key === questionId);
-            if (questionsIndex > -1) {
-                section.Questions.splice(questionsIndex, 1);
-                this.notifySectionsChange(sections);
-                return;
-            }
-        }
-    }
+    //         // Remove the question.
+    //         const questionsIndex = section.Questions.findIndex(question => question?.Key === questionId);
+    //         if (questionsIndex > -1) {
+    //             section.Questions.splice(questionsIndex, 1);
+    //             this.notifySectionsChange(sections);
+    //             return;
+    //         }
+    //     }
+    // }
 
     addQuestion(questionType: SurveyQuestionType, sectionIndex = -1, questionIndex = -1) {
         // Create new question
@@ -357,14 +371,10 @@ export class SurveysService {
 
     onQuestionDragStart(event: CdkDragStart) {
         this.changeCursorOnDragStart();
-        // Take the question key if exist, else take the available question key (relation key).
-        const questionKey = event.source.data?.QuestionKey || event.source.data?.Key;
-        this._draggingQuestionKey.next(questionKey);
     }
 
     onQuestionDragEnd(event: CdkDragEnd) {
         this.changeCursorOnDragEnd();
-        this._draggingQuestionKey.next('');
     }
 
     /**************************************************************************************/

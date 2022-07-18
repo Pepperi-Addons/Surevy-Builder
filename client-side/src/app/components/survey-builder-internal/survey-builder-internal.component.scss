@@ -10,9 +10,15 @@
     margin: 0 auto;
     position: relative;
     display: grid;
-    gap: variables.$content-padding;
+    // gap: variables.$content-padding;
     max-width: 560px;
 
+    // Keep the spacing when grabbing & not in edit mode cause the seperator of the add section button is not visible.
+    // &.is-grabbing,
+    &:not(.editable-state) {
+        gap: variables.$content-padding;
+    }
+    
     // This css is only for edit mode!!!
     &.editable-state {
             

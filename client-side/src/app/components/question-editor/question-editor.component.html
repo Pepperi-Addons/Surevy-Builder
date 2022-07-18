@@ -1,17 +1,19 @@
 <ng-container *ngIf="question">
     <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY_NAME' | translate"
     [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.NAME_PLACEHOLDER' | translate"
-    [value]="question?.Key || ''" (valueChange)="onQuestionEditorFieldChanged('Key',$event)">
+    [value]="question?.Name || ''" (valueChange)="onQuestionEditorFieldChanged('Name',$event)">
     </pep-textbox>
     <pep-textarea [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_TITLE' | translate" [rowSpan]="1.5"
-                  (valueChange)="onQuestionEditorFieldChanged('Name',$event)">
+                  (valueChange)="onQuestionEditorFieldChanged('Title',$event)" [value]="question?.Title || ''">
     </pep-textarea>
     <pep-textarea 
                 [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2"
-                (valueChange)="onQuestionEditorFieldChanged('Description',$event)">
+                [value]="question?.Description || ''" (valueChange)="onQuestionEditorFieldChanged('Description',$event)">
     </pep-textarea>
-
-    <question-select-options></question-select-options>
+    <ng-container *ngIf="question?.Type == 'multiple-selection-dropdown' ||
+                         question?.Type == 'single-selection-dropdown'">
+        <question-select-options (optionChanged)="selectOptionChanged($event)"></question-select-options>
+    </ng-container>
 
     <ng-container *ngIf="forNextVersion">
     <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
@@ -21,5 +23,5 @@
     </ng-container>
 
     <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>
-    <pep-checkbox class="checkbox-no-background" [value]="false" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAKE_MANDATORY' | translate" [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('Mandatory',$event)"></pep-checkbox>
+    <pep-checkbox class="checkbox-no-background" [value]="question?.Mandatory || false" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAKE_MANDATORY' | translate" [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('Mandatory',$event)"></pep-checkbox>
 </ng-container>

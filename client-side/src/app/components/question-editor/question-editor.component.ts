@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { SurveysService } from 'src/app/services/surveys.service';
-import { SurveyQuestion, SurveyQuestionType } from '../../model/survey.model';
+import { SurveyQuestion, SurveyQuestionOption, SurveyQuestionType } from '../../model/survey.model';
 import { DestoyerDirective } from '../../model/destroyer';
 
 @Component({
@@ -22,7 +22,6 @@ export class QuestionEditorComponent extends DestoyerDirective implements OnInit
         this.surveysService.selectedQuestionChange$.pipe(this.destroy$).subscribe(res => {
            if(res){
              this.question = res;
-             this.question.Key = "12345";
            }
         });
     }
@@ -38,6 +37,7 @@ export class QuestionEditorComponent extends DestoyerDirective implements OnInit
     
     onQuestionEditorFieldChanged(key,value) {
         this.question[key] = value;
+        this.surveysService.updateQuestionFromEditor(this.question);
         // TODO - WAIT TO NEW FUNCTION FROM TOMER 
         //this.surveysService.notifySelectedQuestionChange(this.question);
         //this.surveysService.updateSurveyFromEditor()
@@ -55,4 +55,14 @@ export class QuestionEditorComponent extends DestoyerDirective implements OnInit
         //this.configuration?.cards.push( card); 
         //this.updateHostObject(); 
     }
+
+    selectOptionChanged(event){
+        let options: Array<any> = [];
+            event.forEach(opt => {
+                options.push({key: opt.option.Key, value: opt.option.Value});
+            });
+
+            this.question['OptionalValues'] = options;
+            this.surveysService.updateQuestionFromEditor(this.question);
+        }
 }

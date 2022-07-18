@@ -48,6 +48,7 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         return this._sectionsSubject.asObservable();
     }
 
+    protected isGrabbing = false;
     protected selectedSection: SurveySection = null;
     private readonly _destroyed: Subject<void>;
 
@@ -85,18 +86,22 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
             this.layoutService.onResize$.pipe(this.getDestroyer()).subscribe((size: PepScreenSizeType) => {
                 this.screenSize = size;
             });
-
-            this.surveysService.sectionsChange$.pipe(this.getDestroyer()).subscribe((sections: SurveySection[]) => {
-                this._sectionsSubject.next(sections);
-            });
-
-            this.surveysService.surveyDataChange$.pipe(this.getDestroyer()).subscribe((survey: Survey) => {
-                this.setSurveyDataProperties(survey);
-            });
-
+            
             if (this.editMode) {
+                this.surveysService.sectionsChange$.pipe(this.getDestroyer()).subscribe((sections: SurveySection[]) => {
+                    this._sectionsSubject.next(sections);
+                });
+    
+                this.surveysService.surveyDataChange$.pipe(this.getDestroyer()).subscribe((survey: Survey) => {
+                    this.setSurveyDataProperties(survey);
+                });
+
                 this.surveysService.selectedSectionChange$.pipe(this.getDestroyer()).subscribe((section: SurveySection) => {
                     this.selectedSection = section;
+                });
+
+                this.surveysService.isGrabbingChange$.pipe(this.getDestroyer()).subscribe((value: boolean) => {
+                    this.isGrabbing = value;
                 });
             }
         } else {

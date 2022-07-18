@@ -3,9 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
+import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
 import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
 import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items';
+import { PepIconModule,PepIconRegistry, pepIconSystemMust} from '@pepperi-addons/ngx-lib/icon';
+import { MatIconModule } from '@angular/material/icon';
 
+const pepIcons = [
+    pepIconSystemMust
+];
 // import { SelectQuestionComponent } from '../question-tmp/select-question/select-question.component';
 // import { ShortTextQuestionComponent } from '../question-tmp/text-question/text-question.component';
 // import { LongTextQuestionComponent } from '../question-tmp/long-text-question/long-text-question.component';
@@ -17,6 +23,7 @@ import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items
 import { QuestionGeneratorComponent } from './question-generator.component';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { TranslateModule } from '@ngx-translate/core';
+import { PepFieldTitleModule } from '@pepperi-addons/ngx-lib/field-title';
 
 @NgModule({
     declarations: [
@@ -34,11 +41,22 @@ import { TranslateModule } from '@ngx-translate/core';
         ReactiveFormsModule,
         DragDropModule,
         PepButtonModule,
+        PepSelectModule,
         PepRemoteLoaderModule,
         PepDraggableItemsModule,
         PepTextboxModule,
+        PepIconModule,
+        MatIconModule,
+        PepFieldTitleModule,
         TranslateModule.forChild()
     ],
     exports: [QuestionGeneratorComponent]
 })
-export class QuestionGeneratorModule { }
+export class QuestionGeneratorModule { 
+    constructor(
+        private pepIconRegistry: PepIconRegistry,
+        ) {
+            this.pepIconRegistry.registerIcons(pepIcons);
+        }
+}
+

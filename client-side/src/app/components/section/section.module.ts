@@ -8,6 +8,8 @@ import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items
 import { SectionComponent } from './section.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { QuestionGeneratorModule } from '../question-generator/question-generator.module';
+import { QuestionMenuModule } from '../question-menu/question-menu.module';
+import { PepSeparatorModule } from '@pepperi-addons/ngx-lib/separator';
 
 @NgModule({
     declarations: [SectionComponent],
@@ -17,7 +19,9 @@ import { QuestionGeneratorModule } from '../question-generator/question-generato
         PepButtonModule,
         PepRemoteLoaderModule,
         PepDraggableItemsModule,
+        PepSeparatorModule,
         QuestionGeneratorModule,
+        QuestionMenuModule,
         TranslateModule.forChild()
     ],
     exports: [SectionComponent]
