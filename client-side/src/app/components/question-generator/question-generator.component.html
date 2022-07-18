@@ -28,15 +28,10 @@
             </ng-container-->
             <ng-container *ngSwitchCase="'multiple-selection-dropdown'">
                 <pep-select
-  value="test1"
-  label="select an option"
-  type="select"
-  [mandatory]="false"
-  [disabled]="false"
-  xAlignment="left"
-  [options]="[]"
-  [showTitle]="false"
-></pep-select>
+                    value=""
+                    label="select an option"
+                    type="select" [mandatory]="question?.Mandatory" [options]="question?.OptionalValues || []" [showTitle]="false"
+                    ></pep-select>
                 <!-- <pep-multi-select-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
                     (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
                 </pep-multi-select-filter> -->

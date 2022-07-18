@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { SurveysService } from 'src/app/services/surveys.service';
-import { SurveyQuestion, SurveyQuestionType } from '../../model/survey.model';
+import { SurveyQuestion, SurveyQuestionOption, SurveyQuestionType } from '../../model/survey.model';
 import { DestoyerDirective } from '../../model/destroyer';
 
 @Component({
@@ -57,6 +57,12 @@ export class QuestionEditorComponent extends DestoyerDirective implements OnInit
     }
 
     selectOptionChanged(event){
-        debugger;
-    }
+        let options: Array<any> = [];
+            event.forEach(opt => {
+                options.push({key: opt.option.Key, value: opt.option.Value});
+            });
+
+            this.question['OptionalValues'] = options;
+            this.surveysService.updateQuestionFromEditor(this.question);
+        }
 }

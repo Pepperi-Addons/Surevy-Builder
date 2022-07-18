@@ -1,6 +1,6 @@
-<label class="title body-md">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TITLE" | translate}}</label>
-<pep-textbox [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT' | translate"
-             [placeholder]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT_DEFAULT' | translate"
+<label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TITLE" | translate}}</label>
+<pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT' | translate"
+             [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT_DEFAULT' | translate"
              (valueChange)="onQuestionEditorFieldChanged($event)">
 </pep-textbox>
 
@@ -8,7 +8,7 @@
     <ng-container [ngTemplateOutlet]="selectOptionsTemplate" [ngTemplateOutletContext]="{opt:opt}"></ng-container>
 </ng-container>
 
- <pep-button class="add-content-button" value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_ITEM' | translate}}" styleType="regular" iconName="number_plus" iconPosition="end"
+ <pep-button class="add-content-button" value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_ITEM' | translate}}" styleType="regular" iconName="number_plus" iconPosition="end"
              (buttonClick)="addNewSelectOption($event)"></pep-button>
 
 <ng-template #selectOptionsTemplate let-opt='opt'>
@@ -26,11 +26,11 @@
             <pep-button *ngIf="opt?.state == 'collapse'" sizeType="xs" iconName="arrow_up" (buttonClick)="onEditClick(opt);"></pep-button>
         </div>
         <div class="editorCont" *ngIf="opt.state == 'expand'">
-            <pep-textbox [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_KEY' | translate"
+            <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_KEY' | translate"
                 [value]="opt.option.Key" (valueChange)="onQuestionOptionChanged('Key',$event,opt)">
             </pep-textbox>
             <pep-textarea [key]="'question'" (valueChange)="onQuestionOptionChanged('Value',$event,opt)" [value]="opt.option.Value"
-              [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TYPE_YOUR_OPTION' | translate" [rowSpan]="1.5">
+              [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TYPE_YOUR_OPTION' | translate" [rowSpan]="1.5">
             </pep-textarea>
         </div>
     </div>
