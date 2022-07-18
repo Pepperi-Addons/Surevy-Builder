@@ -22,7 +22,7 @@
 <ng-template #sectionEditorTemplate>
     <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY_NAME' | translate"
             [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.NAME_PLACEHOLDER' | translate"
-            [value]="section?.Key || ''" (valueChange)="onSectionEditorFieldChanged('Key',$event)">
+            [value]="section?.Name || ''" (valueChange)="onSectionEditorFieldChanged('Name',$event)">
     </pep-textbox>
     <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SECTION_NAME' | translate"
             [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.SECTION_NAME' | translate"
