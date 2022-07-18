@@ -11,8 +11,8 @@ import { DestoyerDirective } from '../../model/destroyer';
 
 export class SelectedItemEditorComponent extends DestoyerDirective implements OnInit, OnDestroy {
     
-    question: SurveyQuestion;
-    section: SurveySection;
+    question: SurveyQuestion = null;
+    section: SurveySection = null;
 
     forNextVersion = false;
     

@@ -93,8 +93,17 @@ export class SurveysService {
         this.surveyLoad$.subscribe((survey: Survey) => {
             this.loadSurveyEditor(survey);
             this.notifySectionsChange(survey?.Sections ?? []);
+            this.setSelected(0);
             // this.loadQuestions(survey);
         });
+    }
+
+    private getNewSection() {
+        return {
+            Key: PepGuid.newGuid(),
+            Title: this.translate.instant("SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER"),
+            Questions: []
+        };
     }
 
     private loadSurveyEditor(survey: Survey) {
@@ -128,6 +137,11 @@ export class SurveysService {
 
         if (survey) {
             survey.Sections = sections;
+
+            if (sections.length === 0) {
+                const section = this.getNewSection();
+                survey.Sections.push(section);
+            }
 
             this._sectionsSubject.next(survey.Sections);
             this.notifySurveyChange(survey);
@@ -317,11 +331,7 @@ export class SurveysService {
     addSection(sectionIndex: number = -1, section: SurveySection = null) {
         // Create new section
         if (!section) {
-            section = {
-                Key: PepGuid.newGuid(),
-                Title: this.translate.instant("SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER"),
-                Questions: []
-            }
+            section = this.getNewSection();
         }
 
         // Get the sections.
