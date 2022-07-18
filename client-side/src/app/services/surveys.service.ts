@@ -316,7 +316,7 @@ export class SurveysService {
         if (!section) {
             section = {
                 Key: PepGuid.newGuid(),
-                Title: '',
+                Title: this.translate.instant("SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER"),
                 Questions: []
             }
         }
@@ -382,7 +382,7 @@ export class SurveysService {
         // Create new question
         const question: SurveyQuestion = {
             Key: PepGuid.newGuid(),
-            Title: '',
+            Title: this.translate.instant("SURVEY_MANAGER.QUESTION_TITLE_PLACEHOLDER"),
             Type: questionType,
         }
 
