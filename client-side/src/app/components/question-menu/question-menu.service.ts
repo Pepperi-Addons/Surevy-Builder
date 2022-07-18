@@ -28,7 +28,7 @@ export class QuestionMenuService {
             {
                 key: `multiple-selection-dropdown`,
                 text: 'Multiple Selection Dropdown',
-                iconName: 'arrow_left_alt'
+                iconName: 'system_ok'
             },
             {
                 key: `single-selection-dropdown`,
@@ -43,12 +43,12 @@ export class QuestionMenuService {
             {
                 key: `date`,
                 text: 'Date',
-                iconName: 'arrow_left_alt'
+                iconName: 'time_cal'
             },
             {
                 key: `number`,
                 text: 'Number',
-                iconName: 'arrow_left_alt'
+                iconName: 'number_decimal'
             },
             {
                 key: `photo`,
@@ -58,7 +58,7 @@ export class QuestionMenuService {
             {
                 key: `signature`,
                 text: 'Signature',
-                iconName: 'arrow_left_alt'
+                iconName: 'system_signature'
             }
         ]
     }

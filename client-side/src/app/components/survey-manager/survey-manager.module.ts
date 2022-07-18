@@ -29,9 +29,9 @@ import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } fr
 
 import { SurveyBuilderInternalModule } from '../survey-builder-internal/survey-builder-internal.module';
 import { QuestionEditorModule } from '../question-editor/question-editor.module'
+import { QuestionMenuModule } from '../question-menu/question-menu.module';
 
 import { ServeyManagerComponent } from './survey-manager.component';
-import { QuestionMenuComponent } from '../question-menu/question-menu.component';
 
 import { config } from '../addon.config';
 
@@ -52,8 +52,7 @@ export const routes: Routes = [
 
 @NgModule({
     declarations: [
-        ServeyManagerComponent,
-        QuestionMenuComponent
+        ServeyManagerComponent        
     ],
     imports: [
         CommonModule,
@@ -79,6 +78,7 @@ export const routes: Routes = [
         PepFieldTitleModule,   
         SurveyBuilderInternalModule,
         QuestionEditorModule,
+        QuestionMenuModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,

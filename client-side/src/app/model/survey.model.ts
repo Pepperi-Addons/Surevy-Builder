@@ -48,7 +48,7 @@ export interface SurveyQuestion {
     Title: string;
     Description?: string;
     Type: SurveyQuestionType;
-    Mandatory?: boolean; 
+    Mandatory?: boolean;
     [key: string]: any;
 }
 

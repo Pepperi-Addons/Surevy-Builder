@@ -1,10 +1,10 @@
 
 <div class="question-with-sequence-container" [ngClass]="{ 'editable-state': editable }"
-    cdkDrag
+    cdkDrag [cdkDragDisabled]="!editable" [cdkDragData]="question"
     (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)"
     (cdkDragExited)="onDragExited($event)" (cdkDragEntered)="onDragEntered($event)">
 
-    <div class="pep-button sm sequence-number">
+    <div *ngIf="editable" class="pep-button sm sequence-number">
         <span class="body-xs " title="{{ sequenceNumber }}">{{ sequenceNumber }}</span>
     </div>
 
@@ -17,7 +17,7 @@
             </div>
             <span *ngIf="question?.Description?.length > 0" class="body-sm color-dimmed ellipsis" title="{{ question.Description }}">{{ question.Description }}</span>
         </div>
-        <ng-container [ngSwitch]="question?.Type" >
+        <ng-container [ngSwitch]="question.Type" >
             <ng-container *ngSwitchCase="'short-text'">
                 <pep-textbox [key]="'short-text'" [renderTitle]="false"  [value]="question.Value" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
             </ng-container>

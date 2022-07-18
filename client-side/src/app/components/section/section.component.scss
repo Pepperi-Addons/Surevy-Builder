@@ -1,30 +1,59 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
 
-.section-container {
-    display: flex;
-    gap: variables.$spacing-lg;
-    height: 3rem;
-    align-items: center;
-    border-radius: variables.$border-radius-md;
-    padding-inline: variables.$spacing-sm;
-
+.section-area {
     // This css is only for edit mode!!!
     &.editable-state {
+        .section-container {
+            // The placeholder of the drop area when dragging a section.
+            &.cdk-drag-placeholder {
+                opacity: 0.5;
+            }
             
-        // The placeholder of the drop area when dragging a section.
-        &.cdk-drag-placeholder {
-            opacity: 0.5;
+            .sequence-number {
+                width: 2rem;
+                height: 2rem;
+                padding: 0;
+            }
         }
+            
+        .add-separator-container {
+            max-width: 100%;
+            height: variables.$content-margin;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: variables.$border-radius-md;
+            gap: variables.$spacing-sm;
         
-        .sequence-number {
-            width: 2rem;
-            height: 2rem;
-            padding: 0;
+            .add-button {
+                position: relative;
+                display: none;
+            }
+        
+            &:not(.is-grabbing) {
+                &:hover .add-button {
+                    display: block;
+                }
+            }
         }
     }  
 
-}
+    .section-container {
+        display: flex;
+        gap: variables.$spacing-lg;
+        height: 3rem;
+        align-items: center;
+        border-radius: variables.$border-radius-md;
+        padding-inline: variables.$spacing-sm;
 
-.questions-wrapper {
-    min-height: 1px;
+        .title-container {
+            width: 100%;
+        }
+    }
+    
+    // This is for ability to add question to empty section.
+    .questions-wrapper {
+        min-height: 1px;
+    }
+    
 }

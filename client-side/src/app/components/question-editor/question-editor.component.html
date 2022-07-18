@@ -1,6 +1,6 @@
 <ng-container *ngIf="question">
-    <pep-textbox [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY_NAME' | translate"
-    [placeholder]="'SURVEYS_MANAGER.SURVEY_EDITOR.NAME_PLACEHOLDER' | translate"
+    <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY_NAME' | translate"
+    [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.NAME_PLACEHOLDER' | translate"
     [value]="question?.Key || ''" (valueChange)="onQuestionEditorFieldChanged('Key',$event)">
     </pep-textbox>
     <pep-textarea [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_TITLE' | translate" [rowSpan]="1.5"
@@ -16,8 +16,8 @@
     </ng-container>
 
     <ng-container *ngIf="forNextVersion">
-    <label class="title body-md">{{ "SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
-    <pep-button  value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
+    <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
+    <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
                             styleType="weak" iconName="system_filter_2" iconPosition="end"
                             (buttonClick)="onShowLogicClick($event)" sizeType="sm"></pep-button>
     </ng-container>

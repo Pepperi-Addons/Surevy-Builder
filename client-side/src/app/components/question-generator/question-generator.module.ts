@@ -23,6 +23,7 @@ const pepIcons = [
 import { QuestionGeneratorComponent } from './question-generator.component';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { TranslateModule } from '@ngx-translate/core';
+import { PepFieldTitleModule } from '@pepperi-addons/ngx-lib/field-title';
 
 @NgModule({
     declarations: [
@@ -46,6 +47,7 @@ import { TranslateModule } from '@ngx-translate/core';
         PepTextboxModule,
         PepIconModule,
         MatIconModule,
+        PepFieldTitleModule,
         TranslateModule.forChild()
     ],
     exports: [QuestionGeneratorComponent]

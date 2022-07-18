@@ -3,7 +3,7 @@ import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragEnter, CdkDragExit, CdkDragSta
 import { SurveysService } from '../../services/surveys.service';
 import { TranslateService } from '@ngx-translate/core';
 import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
-import { SurveyQuestion, SurveySection } from "../../model/survey.model";
+import { SurveyQuestion, SurveyQuestionType, SurveySection } from "../../model/survey.model";
 
 @Component({
     selector: 'section',
@@ -48,6 +48,7 @@ export class SectionComponent implements OnInit {
 
     protected sectionContainerKeyPrefix = ''
     protected selectedQuestion: SurveyQuestion = null;
+    protected isGrabbing = false;
 
     constructor(
         private renderer: Renderer2,
@@ -61,6 +62,10 @@ export class SectionComponent implements OnInit {
             this.surveysService.selectedQuestionChange$.subscribe((question: SurveyQuestion) => {
                 this.selectedQuestion = question;
             });
+
+            this.surveysService.isGrabbingChange$.subscribe((value: boolean) => {
+                this.isGrabbing = value;
+            });
         }
     }
 
@@ -69,7 +74,6 @@ export class SectionComponent implements OnInit {
         event.stopPropagation();
     }
 
-    
     onQuestionDropped(event: CdkDragDrop<any[]>) {
         this.surveysService.onQuestionDropped(event, this.index);
     }
@@ -85,4 +89,13 @@ export class SectionComponent implements OnInit {
     onQuestionClicked(questionIndex: number) {
         this.surveysService.setSelected(this.index, questionIndex);
     }
+    
+    onAddSectionClicked() {
+        this.surveysService.addSection(this.index + 1);
+    }
+
+    onAddQuestionClick(type: SurveyQuestionType, questionIndex: number) {
+        this.surveysService.addQuestion(type, this.index, questionIndex);
+    }
+
 }
