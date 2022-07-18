@@ -14,7 +14,6 @@
     max-width: 560px;
 
     // Keep the spacing when grabbing & not in edit mode cause the seperator of the add section button is not visible.
-    // &.is-grabbing,
     &:not(.editable-state) {
         gap: variables.$content-padding;
     }
@@ -22,13 +21,5 @@
     // This css is only for edit mode!!!
     &.editable-state {
             
-        // The placeholder of the drop area when dragging a section.
-        .cdk-drag-placeholder {
-            opacity: 0.5;
-        }
-
-        .draggable-section {
-            display: block;
-        }
     }
 }

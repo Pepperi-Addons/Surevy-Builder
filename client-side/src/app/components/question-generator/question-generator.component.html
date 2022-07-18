@@ -4,7 +4,7 @@
     (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)"
     (cdkDragExited)="onDragExited($event)" (cdkDragEntered)="onDragEntered($event)">
 
-    <div *ngIf="editable" class="pep-button sm sequence-number">
+    <div *ngIf="editable" class="pep-button sm sequence-number" cdkDragHandle>
         <span class="body-xs " title="{{ sequenceNumber }}">{{ sequenceNumber }}</span>
     </div>
 
@@ -14,7 +14,7 @@
         </pep-field-title>
 
         <div *ngIf="question.Description?.length > 0" class="question-description-container">
-            <span class="body-sm color-dimmed ellipsis" title="{{ question.Description }}">{{ question.Description }}</span>
+            <span class="body-xs color-dimmed ellipsis" title="{{ question.Description }}">{{ question.Description }}</span>
         </div>
 
         <ng-container [ngSwitch]="question.Type" >

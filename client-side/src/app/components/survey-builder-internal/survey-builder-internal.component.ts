@@ -119,12 +119,4 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     onSectionDropped(event: CdkDragDrop<any[]>) {
         this.surveysService.onSectionDropped(event);
     }
-    
-    onDragStart(event: CdkDragStart) {
-        this.surveysService.onSectionDragStart(event);
-    }
-
-    onDragEnd(event: CdkDragEnd) {
-        this.surveysService.onSectionDragEnd(event);
-    }
 }

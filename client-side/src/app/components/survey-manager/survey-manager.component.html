@@ -1,5 +1,5 @@
 <div class="survey-container">
-    <pep-page-layout [showShadow]="true">
+    <pep-page-layout [showShadow]="showEditor">
         <div pep-side-area *ngIf="showEditor" >
             <pep-side-bar [ignoreResize]="true" (stateChange)="onSidebarStateChange($event)">
                 <div header-content class="side-bar-title">

@@ -32,6 +32,7 @@
         .question-container {
             border-radius: variables.$border-radius-md;
             padding: variables.$content-padding;
+            gap: variables.$spacing-sm;
         }
     }  
     
@@ -39,20 +40,11 @@
         display: grid;
         height: 100%;
         width: 100%;
-        border-radius: variables.$border-radius-md;
-        padding: variables.$content-padding;
-        
-        // .question-header-container{
-        //     display: flex;
-        //     flex-direction: column;
-        //     margin-bottom: variables.$spacing-md;
 
-        //     mat-icon{
-        //         height: variables.$fs-xs;
-        //         width: variables.$fs-xs;
-        //     }
-
-        // }
-        
+        .question-description-container {
+            display: flex;
+            align-items: baseline;
+            height: variables.$form-field-title-height;
+        }
     }
 }
