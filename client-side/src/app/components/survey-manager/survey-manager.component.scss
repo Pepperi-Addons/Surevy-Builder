@@ -1,6 +1,14 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions';
 
+.add-padding {
+    padding-inline: variables.$content-padding;
+
+    @media (max-width: variables.$screen-max-size-xs) {
+        padding-inline: 0;
+    }
+}
+
 .survey-container {
     display: grid;
     grid-template-columns: 1fr auto;

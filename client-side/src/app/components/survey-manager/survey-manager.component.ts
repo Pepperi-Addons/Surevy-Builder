@@ -217,12 +217,5 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         });
     }
 
-    onItemDuplicateClicked() {
-        this._surveysService.duplicateSelected();
-    }
-
-    onItemDeleteClicked() {
-        this._surveysService.deleteSelected();
-    }
 
 }

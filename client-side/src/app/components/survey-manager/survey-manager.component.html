@@ -1,5 +1,5 @@
 <div class="survey-container">
-    <pep-page-layout [showShadow]="true">
+    <pep-page-layout [showShadow]="showEditor">
         <div pep-side-area *ngIf="showEditor" >
             <pep-side-bar [ignoreResize]="true" (stateChange)="onSidebarStateChange($event)">
                 <div header-content class="side-bar-title">
@@ -82,38 +82,10 @@
                 </div>
             </div>
         </ng-container>
-        <div pep-side-area-end *ngIf="showEditor" >
-            <pep-side-bar position="end" [ignoreResize]="true" (stateChange)="onSidebarEndStateChange($event)">
-                <div header-content class="side-bar-title">
-                    <div class=" title-xl ellipsis" [title]="">
-                        <span>TODO: TITLE</span>
-                    </div>
-                </div>
-                <div class="survey-details">
-                    <survey-question-editor></survey-question-editor>
-                    <div class="pep-actions">
-                        <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
-                                    styleType="regular" iconName="number_plus" iconPosition="end"
-                                    (buttonClick)="onItemDuplicateClicked()" sizeType="sm"></pep-button>
-                        <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
-                                    styleType="regular" iconName="system_bin" iconPosition="end" classNames="caution"
-                                    (buttonClick)="onItemDeleteClicked()" sizeType="sm"></pep-button>
-                    </div>
-                </div>
-            </pep-side-bar>
+        <div pep-side-area-end *ngIf="showEditor">
+            <survey-selected-item-editor></survey-selected-item-editor>
         </div>
     </pep-page-layout>
-    <!-- <div class="right-side-bar">
-        <survey-question-editor></survey-question-editor>
-        <div class="pep-actions">
-            <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
-                        styleType="weak" iconName="number_plus" iconPosition="end"
-                        (buttonClick)="onQuestionDuplicateClick($event)" sizeType="md"></pep-button>
-            <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
-                        styleType="weak" iconName="system_bin" iconPosition="end" classNames="caution"
-                        (buttonClick)="onQuestionDeleteClick($event)" sizeType="md"></pep-button>
-        </div>
-    </div> -->
 </div>
 
 <pep-size-detector></pep-size-detector>

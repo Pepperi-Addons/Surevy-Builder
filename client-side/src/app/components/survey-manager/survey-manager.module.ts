@@ -28,7 +28,7 @@ import { PepFieldTitleModule } from '@pepperi-addons/ngx-lib/field-title';
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 
 import { SurveyBuilderInternalModule } from '../survey-builder-internal/survey-builder-internal.module';
-import { QuestionEditorModule } from '../question-editor/question-editor.module'
+import { SelectedItemEditorModule } from '../selected-item-editor/selected-item-editor.module'
 import { QuestionMenuModule } from '../question-menu/question-menu.module';
 
 import { ServeyManagerComponent } from './survey-manager.component';
@@ -77,7 +77,7 @@ export const routes: Routes = [
         PepSnackBarModule,     
         PepFieldTitleModule,   
         SurveyBuilderInternalModule,
-        QuestionEditorModule,
+        SelectedItemEditorModule,
         QuestionMenuModule,
         TranslateModule.forChild({
             loader: {

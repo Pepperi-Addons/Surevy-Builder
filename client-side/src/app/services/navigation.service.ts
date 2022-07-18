@@ -52,7 +52,7 @@ export class NavigationService {
         this.router.navigate([`${surveyKey}`], {
             relativeTo: route,
             queryParamsHandling: 'merge',
-            state: { showSidebar: false}
+            state: { showSidebar: false, addPadding: false}
         });
     }
 }

@@ -79,9 +79,9 @@ export class SurveysService {
     get lockScreenChange$(): Observable<boolean> {
         return this._lockScreenSubject.asObservable().pipe(distinctUntilChanged());
     }
-
-    get selectedItemType(): 'section' | 'question' | null {
-        return this._selectedQuestionIndex > -1 ? 'question' : (this._selectedSectionIndex > -1 ? 'section' : null);
+    
+    get selectedItemType(): 'section' | 'question' | 'none' {
+        return this._selectedQuestionIndex > -1 ? 'question' : (this._selectedSectionIndex > -1 ? 'section' : 'none');        
     }
 
     constructor(
@@ -182,6 +182,61 @@ export class SurveysService {
 
         return currentSection;
     }
+   
+    private duplicateSelectedSection() {
+        if (this._selectedSectionIndex > -1) {
+            const sections = this._sectionsSubject.getValue();
+            const duplicated: SurveySection = _.cloneDeep(sections[this._selectedSectionIndex]);
+            duplicated.Key = PepGuid.newGuid();
+            const newSelectedIndex = this._selectedSectionIndex > -1 && this._selectedSectionIndex < sections.length ?
+                this._selectedSectionIndex + 1 : sections.length;
+            sections.splice(newSelectedIndex, 0, duplicated);
+            this.notifySectionsChange(sections);
+            this.notifySelectedSectionChange(duplicated, newSelectedIndex);
+        }
+    }
+        
+    private deleteSelectedSection() {
+        if (this._selectedSectionIndex > -1) {
+            const sections = this._sectionsSubject.getValue();
+            if (sections.length > 1 && sections.length > this._selectedSectionIndex) {
+                sections.splice(this._selectedSectionIndex, 1);
+                this.notifySectionsChange(sections);
+                const newSelectedIndex = this._selectedSectionIndex === 0 ? 0 : this._selectedSectionIndex - 1;
+                this.notifySelectedSectionChange(sections[newSelectedIndex], newSelectedIndex);
+            }
+        }
+    }
+    
+    private duplicateSelectedQuestion() {
+        if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
+            const sections = this._sectionsSubject.getValue();
+            const currentSection = sections[this._selectedSectionIndex];
+            if (currentSection?.Questions?.length > this._selectedQuestionIndex) {
+                const duplicated: SurveyQuestion = _.clone(currentSection.Questions[this._selectedQuestionIndex]);
+                duplicated.Key = PepGuid.newGuid();                
+                const newSelectedIndex = this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ? 
+                    this._selectedQuestionIndex + 1 : currentSection.Questions.length;                                               
+                currentSection.Questions.splice(newSelectedIndex, 0, duplicated);
+                this.notifySectionsChange(sections);
+                this.notifySelectedQuestionChange(duplicated, newSelectedIndex);
+            }
+        }
+    }
+        
+    private deleteSelectedQuestion() {
+        if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
+            const sections = this._sectionsSubject.getValue();
+            const currentSection = sections[this._selectedSectionIndex];
+            if (currentSection?.Questions?.length > this._selectedQuestionIndex) {                
+                const newSelectedIndex = this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ? 
+                    (this._selectedQuestionIndex === 0 && currentSection.Questions.length > 1 ? 0 : this._selectedQuestionIndex - 1) : -1;                                      
+                currentSection.Questions.splice(this._selectedQuestionIndex, 1);
+                this.notifySectionsChange(sections);
+                this.notifySelectedQuestionChange(newSelectedIndex > -1 ? currentSection.Questions[newSelectedIndex] : null, newSelectedIndex);
+            }
+        }
+    }
 
     /***********************************************************************************************/
     /*                                  Public functions
@@ -264,7 +319,7 @@ export class SurveysService {
         if (!section) {
             section = {
                 Key: PepGuid.newGuid(),
-                Title: '',
+                Title: this.translate.instant("SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER"),
                 Questions: []
             }
         }
@@ -329,7 +384,7 @@ export class SurveysService {
         // Create new question
         const question: SurveyQuestion = {
             Key: PepGuid.newGuid(),
-            Title: '',
+            Title: this.translate.instant("SURVEY_MANAGER.QUESTION_TITLE_PLACEHOLDER"),
             Type: questionType,
         }
 
@@ -446,7 +501,7 @@ export class SurveysService {
         return this.httpService.postHttpCall(`${baseUrl}/publish_survey`, body);
     }
 
-    duplicateSelected() {
+    duplicateSelectedItem() {
         if (this.selectedItemType === 'section') {
             this.duplicateSelectedSection();
         } else if (this.selectedItemType === 'question') {
@@ -454,68 +509,14 @@ export class SurveysService {
         }
     }
 
-    deleteSelected() {
+    deleteSelectedItem() {
         if (this.selectedItemType === 'section') {
             this.deleteSelectedSection();
         } else if (this.selectedItemType === 'question') {
             this.deleteSelectedQuestion();
         }
     }
-
-    private duplicateSelectedSection() {
-        if (this._selectedSectionIndex > -1) {
-            const sections = this._sectionsSubject.getValue();
-            const duplicated: SurveySection = _.cloneDeep(sections[this._selectedSectionIndex]);
-            duplicated.Key = PepGuid.newGuid();
-            const newSelectedIndex = this._selectedSectionIndex > -1 && this._selectedSectionIndex < sections.length ?
-                this._selectedSectionIndex + 1 : sections.length;
-            sections.splice(newSelectedIndex, 0, duplicated);
-            this.notifySectionsChange(sections);
-            this.notifySelectedSectionChange(duplicated, newSelectedIndex);
-        }
-    }
-
-    private deleteSelectedSection() {
-        if (this._selectedSectionIndex > -1) {
-            const sections = this._sectionsSubject.getValue();
-            if (sections.length > 1 && sections.length > this._selectedSectionIndex) {
-                sections.splice(this._selectedSectionIndex, 1);
-                this.notifySectionsChange(sections);
-                const newSelectedIndex = this._selectedSectionIndex === 0 ? 0 : this._selectedSectionIndex - 1;
-                this.notifySelectedSectionChange(sections[newSelectedIndex], newSelectedIndex);
-            }
-        }
-    }
-
-    private duplicateSelectedQuestion() {
-        if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
-            const sections = this._sectionsSubject.getValue();
-            const currentSection = sections[this._selectedSectionIndex];
-            if (currentSection?.Questions?.length > this._selectedQuestionIndex) {
-                const duplicated: SurveyQuestion = _.clone(currentSection.Questions[this._selectedQuestionIndex]);
-                duplicated.Key = PepGuid.newGuid();                
-                const newSelectedIndex = this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ? 
-                    this._selectedQuestionIndex + 1 : currentSection.Questions.length;                                               
-                currentSection.Questions.splice(newSelectedIndex, 0, duplicated);
-                this.notifySectionsChange(sections);
-                this.notifySelectedQuestionChange(duplicated, newSelectedIndex);
-            }
-        }
-    }
-
-    private deleteSelectedQuestion() {
-        if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
-            const sections = this._sectionsSubject.getValue();
-            const currentSection = sections[this._selectedSectionIndex];
-            if (currentSection?.Questions?.length > this._selectedQuestionIndex) {                
-                const newSelectedIndex = this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ? 
-                    (this._selectedQuestionIndex === 0 && currentSection.Questions.length > 1 ? 0 : this._selectedQuestionIndex - 1) : -1;                                      
-                currentSection.Questions.splice(this._selectedQuestionIndex, 1);
-                this.notifySectionsChange(sections);
-                this.notifySelectedQuestionChange(newSelectedIndex > -1 ? currentSection.Questions[newSelectedIndex] : null, newSelectedIndex);
-            }
-        }
-    }
+    
 }
 
 

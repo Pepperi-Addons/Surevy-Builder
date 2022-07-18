@@ -68,7 +68,7 @@ export class SurveysValidatorService {
         // Validate Name if exist (Optional)
         this.validateObjectProperty(question, 'Name', sectionsPropertyBreadcrumb, true);
         
-        // Validate Title if exist (Optional)
+        // Validate Title if exist
         this.validateObjectProperty(question, 'Title', sectionsPropertyBreadcrumb);
         
         // Validate Description if exist (Optional)
@@ -169,8 +169,8 @@ export class SurveysValidatorService {
                     Type: currentQuestion.Type
                 };
 
-                this.addOptionalPropertyIfExist(currentSection, sectionToAdd, 'Name');
-                this.addOptionalPropertyIfExist(currentSection, sectionToAdd, 'Description');
+                this.addOptionalPropertyIfExist(currentQuestion, questionToAdd, 'Name');
+                this.addOptionalPropertyIfExist(currentQuestion, questionToAdd, 'Description');
                 this.addOptionalPropertyIfExist(currentQuestion, questionToAdd, 'Mandatory');
 
                 sectionToAdd.Questions.push(questionToAdd);

@@ -3,6 +3,11 @@
 .section-area {
     // This css is only for edit mode!!!
     &.editable-state {
+        // The placeholder of the drop area when dragging a section.
+        &.cdk-drag-placeholder {
+            opacity: 0.5;
+        }
+
         .section-container {
             // The placeholder of the drop area when dragging a section.
             &.cdk-drag-placeholder {
@@ -36,6 +41,7 @@
                 }
             }
         }
+
     }  
 
     .section-container {
@@ -48,12 +54,13 @@
 
         .title-container {
             width: 100%;
+            display: grid;
         }
     }
     
     // This is for ability to add question to empty section.
     .questions-wrapper {
-        min-height: 1px;
+        min-height: 16px;
     }
     
 }

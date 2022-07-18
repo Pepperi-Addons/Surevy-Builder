@@ -1,10 +1,7 @@
-
-<div #sectionsCont cdkDropListGroup class="sections-container" [ngClass]="{ 'editable-state': editMode, 'is-grabbing': isGrabbing }" cdkDropList (cdkDropListDropped)="onSectionDropped($event)" >
+<div #sectionsCont [ngClass]="{ 'editable-state': editMode, 'is-grabbing': isGrabbing }" cdkDropListGroup class="sections-container" cdkDropList (cdkDropListDropped)="onSectionDropped($event)" >
     <section *ngFor="let section of sections$ | async; let i=index;"
-        class="draggable-section" [sectionsQuestionsDropList]="sectionsQuestionsDropList"
-        [index]="i" [title]="section.Title" [isActive]="section === selectedSection" [questions]="section.Questions" [screenSize]="screenSize" [editable]="editMode"
-        cdkDrag [cdkDragDisabled]="!editMode" [cdkDragData]="i" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)" 
+        [sectionsQuestionsDropList]="sectionsQuestionsDropList" [index]="i" [title]="section.Title" [isActive]="section === selectedSection"
+        [questions]="section.Questions" [screenSize]="screenSize" [editable]="editMode"
         >
     </section>
 </div>
-
