@@ -37,6 +37,7 @@ export class QuestionEditorComponent extends DestoyerDirective implements OnInit
     
     onQuestionEditorFieldChanged(key,value) {
         this.question[key] = value;
+        this.surveysService.updateQuestionFromEditor(this.question);
         // TODO - WAIT TO NEW FUNCTION FROM TOMER 
         //this.surveysService.notifySelectedQuestionChange(this.question);
         //this.surveysService.updateSurveyFromEditor()
@@ -53,5 +54,9 @@ export class QuestionEditorComponent extends DestoyerDirective implements OnInit
 
         //this.configuration?.cards.push( card); 
         //this.updateHostObject(); 
+    }
+
+    selectOptionChanged(event){
+        debugger;
     }
 }

@@ -1,7 +1,19 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SurveysService } from 'src/app/services/surveys.service';
-import { SurveyOptionState, SurveyQuestion, SurveyQuestionType } from '../../model/survey.model';
+import { SurveyOptionState, SurveyQuestion, SurveyQuestionOption} from '../../model/survey.model';
 
+class selectOption{
+    state: SurveyOptionState; 
+    id: number;
+    option: SurveyQuestionOption;
+
+    constructor(state,id,option) { 
+        this.id = id || 0;
+        this.state = state || 'collapse';
+        this.option = option || new SurveyQuestionOption('','');
+    }
+}
+    
 @Component({
     selector: 'question-select-options',
     templateUrl: './select-options.component.html',
@@ -10,16 +22,31 @@ import { SurveyOptionState, SurveyQuestion, SurveyQuestionType } from '../../mod
 
 export class QuestionSelectOptionsComponent implements OnInit {
     
-    @Input() question: SurveyQuestion;
-    @Input() id: number = 0
-   
-    optionState: SurveyOptionState = 'collapse';
+    @Input() optionalValues: Array<SurveyQuestionOption> = [];
 
+    @Output() optionChanged: EventEmitter<any> = new EventEmitter();
+
+    selectOptions: Array<selectOption> = [];
+    
     constructor(
         private surveysService: SurveysService
     ) { }
 
     ngOnInit(): void {
+
+        this.optionalValues.forEach((optVal, index) => {
+            const optSel = new SurveyQuestionOption('','');
+            
+            const opt = new selectOption('collapse',this.selectOptions.length,optSel);
+            this.selectOptions.push(opt);
+
+        });
+
+        if(this.selectOptions.length == 0) {
+            this.addNewSelectOption(null);
+            
+        }
+
         
     }
 
@@ -27,25 +54,36 @@ export class QuestionSelectOptionsComponent implements OnInit {
         // TODO: implement
     }
 
-    
+    onQuestionOptionChanged(key, value ,event) {
+        event.option[key] = value;
+        this.optionChanged.emit(this.selectOptions);
+        
+    }
+
     onQuestionEditorFieldChanged(event) {
         //this.surveyEditor.name = value;
         //this._surveysService.updateSurveyFromEditor(this.surveyEditor);
     }
 
     addNewSelectOption(event){
-        //let option = new ();
-        //option.id = (this.configuration?.cards.length);
-
-        //this.configuration?.cards.push( card); 
-        //this.updateHostObject(); 
+        const optSel = new SurveyQuestionOption('','');
+        const opt = new selectOption('collapse',this.selectOptions.length,optSel);
+        this.selectOptions.push(opt);
+        this.optionChanged.emit(this.selectOptions);
     }
 
-    onRemoveClick() {
-        //this.removeClick.emit({id: this.id});
+    onRemoveClick(option) {
+        const index = this.selectOptions.findIndex(opt => opt.id === option.id);
+
+        this.selectOptions.splice(index, 1);
+        this.selectOptions.forEach(function(opt, index) {opt.id = index; });
+
+        this.optionChanged.emit(this.selectOptions);
+
+        
     }
 
-    onEditClick() {
-        this.optionState = this.optionState === 'collapse' ? 'expand' : 'collapse';
+    onEditClick(option) {
+        option['state'] = option['state'] === 'collapse' ? 'expand' : 'collapse';
     }
 }

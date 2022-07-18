@@ -24,6 +24,11 @@ export interface SurveySection {
 export class SurveyQuestionOption {
     Key: string;
     Value?: string;
+
+    constructor(key,value) { 
+        this.Key = key || '';
+        this.Value = value || '';
+    }
 }
 
 export type SurveyOptionState =  'collapse' | 'expand';

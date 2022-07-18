@@ -3,30 +3,33 @@
              [placeholder]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT_DEFAULT' | translate"
              (valueChange)="onQuestionEditorFieldChanged($event)">
 </pep-textbox>
-<ng-container [ngTemplateOutlet]="selectOptionsTemplate"></ng-container>
+
+<ng-container *ngFor="let opt of selectOptions; let i=index;">
+    <ng-container [ngTemplateOutlet]="selectOptionsTemplate" [ngTemplateOutletContext]="{opt:opt}"></ng-container>
+</ng-container>
 
  <pep-button class="add-content-button" value="{{'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_ITEM' | translate}}" styleType="regular" iconName="number_plus" iconPosition="end"
              (buttonClick)="addNewSelectOption($event)"></pep-button>
 
-<ng-template #selectOptionsTemplate>
+<ng-template #selectOptionsTemplate let-opt='opt'>
     <div class="select-option-container">
         <div>
             <pep-button classNames="lock-events" sizeType="xs" iconName="system_move"></pep-button>
         </div>
         <div  class="title-container">
-            <span class="body-sm ellipsis">{{id + 1}}.&nbsp;</span>
-            <span class="body-sm color-link bold ellipsis" title="{{Avner}">Avner</span>
+            <span class="body-sm ellipsis">{{opt?.id + 1}}.&nbsp;</span>
+            <span class="body-sm color-link bold ellipsis" title="opt?.option?.Value}">{{opt?.option?.Key}}</span>
         </div>
         <div class="actions">
-            <pep-button classNames="caution" sizeType="xs" iconName="system_bin" (buttonClick)="onRemoveClick();"></pep-button>
-            <pep-button *ngIf="optionState == 'expand'" sizeType="xs" iconName="arrow_down" (buttonClick)="onEditClick();"></pep-button>
-            <pep-button *ngIf="optionState == 'collapse'" sizeType="xs" iconName="arrow_up" (buttonClick)="onEditClick();"></pep-button>
+            <pep-button classNames="caution" sizeType="xs" iconName="system_bin" (buttonClick)="onRemoveClick(opt);"></pep-button>
+            <pep-button *ngIf="opt?.state == 'expand'" sizeType="xs" iconName="arrow_down" (buttonClick)="onEditClick(opt);"></pep-button>
+            <pep-button *ngIf="opt?.state == 'collapse'" sizeType="xs" iconName="arrow_up" (buttonClick)="onEditClick(opt);"></pep-button>
         </div>
-        <div class="editorCont" *ngIf="optionState == 'expand'">
+        <div class="editorCont" *ngIf="opt.state == 'expand'">
             <pep-textbox [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_KEY' | translate"
-                [value]="" (valueChange)="onQuestionEditorFieldChanged($event)">
+                [value]="opt.option.Key" (valueChange)="onQuestionOptionChanged('Key',$event,opt)">
             </pep-textbox>
-            <pep-textarea [key]="'question'"
+            <pep-textarea [key]="'question'" (valueChange)="onQuestionOptionChanged('Value',$event,opt)" [value]="opt.option.Value"
               [label]="'SURVEYS_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TYPE_YOUR_OPTION' | translate" [rowSpan]="1.5">
             </pep-textarea>
         </div>

@@ -26,12 +26,12 @@ export class QuestionMenuService {
                 iconName: 'arrow_left_alt'
             },
             {
-                key: `multiple-selection-drowdown`,
+                key: `multiple-selection-dropdown`,
                 text: 'Multiple Selection Dropdown',
                 iconName: 'arrow_left_alt'
             },
             {
-                key: `single-selection-drowdown`,
+                key: `single-selection-dropdown`,
                 text: 'Single Selection Dropdown',
                 iconName: 'arrow_left_alt'
             },
