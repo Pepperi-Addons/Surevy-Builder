@@ -277,16 +277,16 @@ export class SurveysService {
         this.notifySectionsChange(sections);
     }
 
-    removeSection(sectionId: string) {
-        const sections = this._sectionsSubject.getValue();
-        const index = sections.findIndex(section => section.Key === sectionId);
+    // removeSection(sectionId: string) {
+    //     const sections = this._sectionsSubject.getValue();
+    //     const index = sections.findIndex(section => section.Key === sectionId);
 
-        // Remove section.
-        if (index > -1) {
-            sections.splice(index, 1);
-            this.notifySectionsChange(sections);
-        }
-    }
+    //     // Remove section.
+    //     if (index > -1) {
+    //         sections.splice(index, 1);
+    //         this.notifySectionsChange(sections);
+    //     }
+    // }
 
     onSectionDropped(event: CdkDragDrop<any[]>) {
         const sections = this._sectionsSubject.getValue();
@@ -304,22 +304,22 @@ export class SurveysService {
         this._draggingSectionIndex.next('');
     }
 
-    removeQuestion(questionId: string) {
-        // Remove the question from section.
-        const sections = this._sectionsSubject.getValue();
+    // removeQuestion(questionId: string) {
+    //     // Remove the question from section.
+    //     const sections = this._sectionsSubject.getValue();
 
-        for (let sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
-            const section = sections[sectionIndex];
+    //     for (let sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
+    //         const section = sections[sectionIndex];
 
-            // Remove the question.
-            const questionsIndex = section.Questions.findIndex(question => question?.Key === questionId);
-            if (questionsIndex > -1) {
-                section.Questions.splice(questionsIndex, 1);
-                this.notifySectionsChange(sections);
-                return;
-            }
-        }
-    }
+    //         // Remove the question.
+    //         const questionsIndex = section.Questions.findIndex(question => question?.Key === questionId);
+    //         if (questionsIndex > -1) {
+    //             section.Questions.splice(questionsIndex, 1);
+    //             this.notifySectionsChange(sections);
+    //             return;
+    //         }
+    //     }
+    // }
 
     addQuestion(questionType: SurveyQuestionType, sectionIndex = -1, questionIndex = -1) {
         // Create new question
@@ -361,14 +361,10 @@ export class SurveysService {
 
     onQuestionDragStart(event: CdkDragStart) {
         this.changeCursorOnDragStart();
-        // // Take the question key.
-        // const questionKey = event.source.data?.Key;
-        // this._draggingQuestionKey.next(questionKey);
     }
 
     onQuestionDragEnd(event: CdkDragEnd) {
         this.changeCursorOnDragEnd();
-        // this._draggingQuestionKey.next('');
     }
 
     /**************************************************************************************/

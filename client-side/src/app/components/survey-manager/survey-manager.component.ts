@@ -222,7 +222,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     }
 
     onQuestionDeleteClick(event) {
-
+        this._surveysService.deleteSelectedQuestion();
     }
    
 }
