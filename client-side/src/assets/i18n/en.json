@@ -22,6 +22,7 @@
         "PREVIEW_CLICK_HERE": "Click here to edit",
         "SECTION_TITLE_PLACEHOLDER": "Type your section title here...",
         "QUESTION_TYPE_NOT_SUPPORTED": "This question type is not supported",
+        "QUESTION_TITLE_PLACEHOLDER": "Type your question in the side panel",
         "SURVEY_EDITOR": {
             "NAME": "Survey Name",
             "NAME_PLACEHOLDER": "Name of the survey",

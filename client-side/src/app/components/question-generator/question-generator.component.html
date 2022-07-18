@@ -9,7 +9,7 @@
     </div>
 
     <div class="question-container" (click)="onQuestionClicked($event)" [ngClass]="{ 'active-question': isActive }">
-        <pep-field-title [label]="question.Title || 'test'" [mandatory]="question.Mandatory"
+        <pep-field-title [label]="question.Title" [mandatory]="question.Mandatory"
             [maxFieldCharacters]="question.MaxFieldCharacters">
         </pep-field-title>
 
