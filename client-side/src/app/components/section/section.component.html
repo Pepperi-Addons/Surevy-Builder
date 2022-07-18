@@ -1,15 +1,17 @@
-<div class="section-area " [ngClass]="{ 'editable-state': editable }" >
+<div class="section-area " [ngClass]="{ 'editable-state': editable }" 
+    cdkDrag [cdkDragDisabled]="!editable" [cdkDragData]="index" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)" 
+>
     <div class="section-container " [ngClass]="{ 'active-section': isActive && selectedQuestion === null }" 
         (click)="onSectionClicked($event)"
         >
         <ng-container *ngIf="editable; then editableTitleTemplate; else runnerTitleTemplate"></ng-container>
         <ng-template #editableTitleTemplate>
-            <div class="pep-button sm sequence-number">
+            <div class="pep-button sm sequence-number" cdkDragHandle>
                 <span class="body-xs " title="{{ index + 1 }}">{{ index + 1 }}</span>
             </div>
     
             <div class="title-container">
-                <span class="body-sm ellipsis title" 
+                <span class="body-xs ellipsis title" 
                     title="{{ title || ('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER' | translate)}}">{{ title || ('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER' | translate)}}</span>
             </div>
         </ng-template>
