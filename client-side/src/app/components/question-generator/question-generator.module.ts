@@ -14,6 +14,7 @@ import { PepIconModule,PepIconRegistry, pepIconSystemMust} from '@pepperi-addons
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepFieldTitleModule } from '@pepperi-addons/ngx-lib/field-title';
 import { QuestionMenuModule } from '../question-menu/question-menu.module';
+import { YesNoQuestionModule } from '../yes-no-question/yes-no-question.module';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepDateModule } from '@pepperi-addons/ngx-lib/date';
 
@@ -21,19 +22,18 @@ const pepIcons = [
     pepIconSystemMust
 ];
 
-import { YesNoQuestionComponent } from './yes-no-question/yes-no-question.component';
+import { YesNoQuestionComponent } from '../yes-no-question/yes-no-question.component';
 import { QuestionGeneratorComponent } from './question-generator.component';
 
 @NgModule({
     declarations: [
-        YesNoQuestionComponent,
         QuestionGeneratorComponent
     ],
     imports: [
         CommonModule,
         ReactiveFormsModule,
         DragDropModule,
-        PepButtonModule,
+        PepButtonModule,        
         PepSelectModule,
         PepRemoteLoaderModule,
         PepDraggableItemsModule,
@@ -44,6 +44,7 @@ import { QuestionGeneratorComponent } from './question-generator.component';
         MatIconModule,
         PepFieldTitleModule,
         QuestionMenuModule,
+        YesNoQuestionModule,
         TranslateModule.forChild()
     ],
     exports: [QuestionGeneratorComponent]
