@@ -1,50 +1,53 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
+@import '../../../mixins.scss';
 
-// :host {
-// }
-
-.question-with-sequence-container {
-    display: flex;
-    gap: variables.$spacing-sm;
-    padding-inline-start: variables.$spacing-sm;
-    // margin-top: variables.$content-margin;
+.question-container {
+    // The placeholder of the drop area when dragging a section.
+    &.cdk-drag-placeholder {
+        opacity: 0.5;
+    }
     
-    // Keep the spacing when grabbing & not in edit mode cause the seperator of the add section button is not visible.
-    // &.is-grabbing,
-    &:not(.editable-state) {
-        margin-top: variables.$content-padding;
+    .add-separator-container {
+        @include add-separator-container();
     }
 
-    // This css is only for edit mode!!!
-    &.editable-state {
+    .question-with-sequence-container {
+        display: flex;
+        gap: variables.$spacing-sm;
+        padding-inline-start: variables.$spacing-sm;
+        // margin-top: variables.$content-margin;
+        
+        // Keep the spacing when grabbing & not in edit mode cause the seperator of the add section button is not visible.
+        &:not(.editable-state) {
+            margin-top: variables.$content-padding;
+        }
+
+        // This css is only for edit mode!!!
+        &.editable-state {
             
-        // The placeholder of the drop area when dragging a section.
-        &.cdk-drag-placeholder {
-            opacity: 0.5;
-        }
+            .sequence-number {
+                width: 2rem;
+                height: 2rem;
+                padding: 0;
+            }
+        
+            .question-field-container {
+                border-radius: variables.$border-radius-md;
+                padding: variables.$content-padding;
+                gap: variables.$spacing-sm;
+            }
+        }  
+        
+        .question-field-container {
+            display: grid;
+            height: 100%;
+            width: 100%;
 
-        .sequence-number {
-            width: 2rem;
-            height: 2rem;
-            padding: 0;
-        }
-    
-        .question-container {
-            border-radius: variables.$border-radius-md;
-            padding: variables.$content-padding;
-            gap: variables.$spacing-sm;
-        }
-    }  
-    
-    .question-container {
-        display: grid;
-        height: 100%;
-        width: 100%;
-
-        .question-description-container {
-            display: flex;
-            align-items: baseline;
-            height: variables.$form-field-title-height;
+            .question-description-container {
+                display: flex;
+                align-items: baseline;
+                height: variables.$form-field-title-height;
+            }
         }
     }
 }

@@ -37,6 +37,7 @@
             "ADD_SECTION": "Add a Section",
             "ADD_QUESTION": "Add a Question",            
             "RIGHT_SIDE": {
+                "SECTION_HEADER": "Section",
                 "KEY_NAME": "Key Name",
                 "SECTION_NAME": "Section Name",
                 "QUESTION_TITLE": "Type your question here...",

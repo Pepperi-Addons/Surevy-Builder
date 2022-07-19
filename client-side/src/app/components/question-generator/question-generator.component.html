@@ -1,52 +1,66 @@
-
-<div class="question-with-sequence-container" [ngClass]="{ 'editable-state': editable }"
+<div class="question-container"
     cdkDrag [cdkDragDisabled]="!editable" [cdkDragData]="question"
     (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)"
-    (cdkDragExited)="onDragExited($event)" (cdkDragEntered)="onDragEntered($event)">
-
-    <div *ngIf="editable" class="pep-button sm sequence-number" cdkDragHandle>
-        <span class="body-xs " title="{{ sequenceNumber }}">{{ sequenceNumber }}</span>
+    >
+    <div *ngIf="editable" class="add-separator-container" [ngClass]="{ 'is-grabbing': isGrabbing  }">
+        <survey-question-menu class="add-button" sizeType="sm" styleType="regular" (questionTypeClick)="onAddQuestionClicked($event)"></survey-question-menu>
     </div>
 
-    <div class="question-container" (click)="onQuestionClicked($event)" [ngClass]="{ 'active-question': isActive }">
-        <pep-field-title [label]="question.Title" [mandatory]="question.Mandatory"
-            [maxFieldCharacters]="question.MaxFieldCharacters">
-        </pep-field-title>
-
-        <div *ngIf="question.Description?.length > 0" class="question-description-container">
-            <span class="body-xs color-dimmed ellipsis" title="{{ question.Description }}">{{ question.Description }}</span>
+    <div class="question-with-sequence-container" [ngClass]="{ 'editable-state': editable }">
+        <div *ngIf="editable" class="pep-button sm sequence-number" cdkDragHandle (mousedown)="onQuestionClicked($event)">
+            <span class="body-xs " title="{{ sequenceNumber }}">{{ sequenceNumber }}</span>
         </div>
 
-        <ng-container [ngSwitch]="question.Type" >
-            <ng-container *ngSwitchCase="'short-text'">
-                <pep-textbox [value]="question.Value" [renderTitle]="false" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
+        <div class="question-field-container" (mousedown)="onQuestionClicked($event)" [ngClass]="{ 'active-question': isActive }">
+            <pep-field-title [label]="question.Title" [mandatory]="question.Mandatory"
+                [maxFieldCharacters]="question.MaxFieldCharacters">
+            </pep-field-title>
+
+            <div *ngIf="question.Description?.length > 0" class="question-description-container">
+                <span class="body-xs color-dimmed ellipsis" title="{{ question.Description }}">{{ question.Description }}</span>
+            </div>
+
+            <ng-container [ngSwitch]="question.Type" >
+                <ng-container *ngSwitchCase="'short-text'">
+                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
+                </ng-container>
+                <ng-container *ngSwitchCase="'long-text'">
+                    <pep-textarea [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [rowSpan]="2" (valueChange)="onQuestionValueChanged($event)"></pep-textarea>
+                </ng-container>
+                <ng-container *ngSwitchCase="'single-selection-dropdown'">
+                    <pep-select [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
+                        [options]="question?.OptionalValues" (valueChange)="onQuestionValueChanged($event)"></pep-select>
+                </ng-container>
+                <ng-container *ngSwitchCase="'multiple-selection-dropdown'">
+                    <pep-select [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" type="multi"
+                        [options]="question?.OptionalValues" (valueChange)="onQuestionValueChanged($event)"></pep-select>
+                </ng-container>
+                <ng-container *ngSwitchCase="'boolean-toggle'">
+                    <!-- TODO: -->
+                    <survey-yes-no-question></survey-yes-no-question>
+                </ng-container>
+                <ng-container *ngSwitchCase="'number'">
+                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" type="int" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
+                </ng-container>
+                <ng-container *ngSwitchCase="'decimal'">
+                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" type="real" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
+                </ng-container>
+                <ng-container *ngSwitchCase="'currency'">
+                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" type="currency" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
+                </ng-container>
+                <ng-container *ngSwitchCase="'percentage'">
+                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" type="percentage" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
+                </ng-container>
+                <ng-container *ngSwitchCase="'date'">
+                    <pep-date [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" type="date" (valueChange)="onQuestionValueChanged($event)"></pep-date>
+                </ng-container>
+                <ng-container *ngSwitchCase="'datetime'">
+                    <pep-date [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" type="datetime" (valueChange)="onQuestionValueChanged($event)"></pep-date>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                    <span>{{ 'SURVEY_MANAGER.QUESTION_TYPE_NOT_SUPPORTED' | translate }}</span>
+                </ng-container>
             </ng-container>
-            <!-- <ng-container *ngSwitchCase="'date'">
-                <pep-date-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
-                    (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
-                </pep-date-filter>
-            </ng-container-->
-            <ng-container *ngSwitchCase="'single-selection-dropdown'">
-                <pep-select [value]="question.Value" [mandatory]="question?.Mandatory"
-                    [options]="question?.OptionalValues || []" [renderTitle]="false"></pep-select>
-            </ng-container>
-            <ng-container *ngSwitchCase="'multiple-selection-dropdown'">
-                <pep-select [value]="question.Value" type="multi" [mandatory]="question?.Mandatory"
-                    [options]="question?.OptionalValues || []" [renderTitle]="false"></pep-select>
-            </ng-container>
-            <!--ng-container *ngSwitchCase="'number'">
-                <pep-number-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
-                    (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
-                </pep-number-filter>
-            </ng-container>
-            <ng-container *ngSwitchCase="'text'">
-                <pep-text-filter [field]="field" [filter]="filtersDataMap.get(field.id)"
-                    (filterChange)="onFilterChange(field, $event)" (filterClear)="onFilterClear(field)">
-                </pep-text-filter>
-            </ng-container> -->
-            <ng-container *ngSwitchDefault>
-                <span>{{ 'SURVEY_MANAGER.QUESTION_TYPE_NOT_SUPPORTED' | translate }}</span>
-            </ng-container>
-        </ng-container>
+        </div>
     </div>
 </div>

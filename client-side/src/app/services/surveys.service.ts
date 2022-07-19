@@ -79,7 +79,6 @@ export class SurveysService {
     get lockScreenChange$(): Observable<boolean> {
         return this._lockScreenSubject.asObservable().pipe(distinctUntilChanged());
     }
-
     
     get selectedItemType(): 'section' | 'question' | 'none' {
         return this._selectedQuestionIndex > -1 ? 'question' : (this._selectedSectionIndex > -1 ? 'section' : 'none');        
@@ -94,8 +93,17 @@ export class SurveysService {
         this.surveyLoad$.subscribe((survey: Survey) => {
             this.loadSurveyEditor(survey);
             this.notifySectionsChange(survey?.Sections ?? []);
+            this.setSelected(0);
             // this.loadQuestions(survey);
         });
+    }
+
+    private getNewSection() {
+        return {
+            Key: PepGuid.newGuid(),
+            Title: this.translate.instant("SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER"),
+            Questions: []
+        };
     }
 
     private loadSurveyEditor(survey: Survey) {
@@ -129,6 +137,11 @@ export class SurveysService {
 
         if (survey) {
             survey.Sections = sections;
+
+            if (sections.length === 0) {
+                const section = this.getNewSection();
+                survey.Sections.push(section);
+            }
 
             this._sectionsSubject.next(survey.Sections);
             this.notifySurveyChange(survey);
@@ -183,51 +196,58 @@ export class SurveysService {
 
         return currentSection;
     }
-
-    private duplicateSelectedSection() {        
+   
+    private duplicateSelectedSection() {
         if (this._selectedSectionIndex > -1) {
-            const sections = this._sectionsSubject.getValue();                        
+            const sections = this._sectionsSubject.getValue();
             const duplicated: SurveySection = _.cloneDeep(sections[this._selectedSectionIndex]);
-            duplicated.Key = PepGuid.newGuid();            
-            sections.push(duplicated);
+            duplicated.Key = PepGuid.newGuid();
+            const newSelectedIndex = this._selectedSectionIndex > -1 && this._selectedSectionIndex < sections.length ?
+                this._selectedSectionIndex + 1 : sections.length;
+            sections.splice(newSelectedIndex, 0, duplicated);
             this.notifySectionsChange(sections);
-            this.notifySelectedSectionChange(duplicated, sections.length-1);
+            this.notifySelectedSectionChange(duplicated, newSelectedIndex);
+        }
+    }
+        
+    private deleteSelectedSection() {
+        if (this._selectedSectionIndex > -1) {
+            const sections = this._sectionsSubject.getValue();
+            if (sections.length > 1 && sections.length > this._selectedSectionIndex) {
+                sections.splice(this._selectedSectionIndex, 1);
+                this.notifySectionsChange(sections);
+                const newSelectedIndex = this._selectedSectionIndex === 0 ? 0 : this._selectedSectionIndex - 1;
+                this.notifySelectedSectionChange(sections[newSelectedIndex], newSelectedIndex);
+            }
         }
     }
     
-    private deleteSelectedSection() {       
-        if (this._selectedSectionIndex > -1 ) {
-            const sections = this._sectionsSubject.getValue();                      
-            if (sections.length > this._selectedSectionIndex) {
-                sections.splice(this._selectedSectionIndex, 1);
-                this.notifySectionsChange(sections);
-                this.notifySelectedSectionChange(null, -1);
-            }
-        }
-    }
-
-    private duplicateSelectedQuestion() {        
+    private duplicateSelectedQuestion() {
         if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
-            const sections = this._sectionsSubject.getValue();           
-            const currentSection = sections[this._selectedSectionIndex];            
-            if (currentSection?.Questions?.length > this._selectedQuestionIndex) {                
-                const duplicated: SurveyQuestion = _.clone(currentSection.Questions[this._selectedQuestionIndex]);
-                duplicated.Key = PepGuid.newGuid();
-                currentSection.Questions.push(duplicated);
-                this.notifySectionsChange(sections);
-                this.notifySelectedQuestionChange(duplicated, currentSection.Questions.length-1);
-            }
-        }
-    }
-
-    private deleteSelectedQuestion() {        
-        if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
-            const sections = this._sectionsSubject.getValue();           
+            const sections = this._sectionsSubject.getValue();
             const currentSection = sections[this._selectedSectionIndex];
-            if (currentSection?.Questions?.length > this._selectedSectionIndex) {
-                currentSection.Questions.splice(this._selectedSectionIndex, 1);
+            if (currentSection?.Questions?.length > this._selectedQuestionIndex) {
+                const duplicated: SurveyQuestion = _.clone(currentSection.Questions[this._selectedQuestionIndex]);
+                duplicated.Key = PepGuid.newGuid();                
+                const newSelectedIndex = this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ? 
+                    this._selectedQuestionIndex + 1 : currentSection.Questions.length;                                               
+                currentSection.Questions.splice(newSelectedIndex, 0, duplicated);
                 this.notifySectionsChange(sections);
-                this.notifySelectedQuestionChange(null, -1);
+                this.notifySelectedQuestionChange(duplicated, newSelectedIndex);
+            }
+        }
+    }
+        
+    private deleteSelectedQuestion() {
+        if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
+            const sections = this._sectionsSubject.getValue();
+            const currentSection = sections[this._selectedSectionIndex];
+            if (currentSection?.Questions?.length > this._selectedQuestionIndex) {                
+                const newSelectedIndex = this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ? 
+                    (this._selectedQuestionIndex === 0 && currentSection.Questions.length > 1 ? 0 : this._selectedQuestionIndex - 1) : -1;                                      
+                currentSection.Questions.splice(this._selectedQuestionIndex, 1);
+                this.notifySectionsChange(sections);
+                this.notifySelectedQuestionChange(newSelectedIndex > -1 ? currentSection.Questions[newSelectedIndex] : null, newSelectedIndex);
             }
         }
     }
@@ -295,15 +315,12 @@ export class SurveysService {
             if (questionIndex >= 0 && questionIndex < questions.length) {
                 const question = questions[questionIndex];
                 this.notifySelectedQuestionChange(question, questionIndex);
-                //this._selectedItemType = 'question';
             } else {
                 this.notifySelectedQuestionChange(null, questionIndex);
-                //this._selectedItemType = 'section';
             }
         } else {
             this.notifySelectedQuestionChange(null, questionIndex);
             this.notifySelectedSectionChange(null, sectionIndex);
-           // this._selectedItemType = null;
         }
     }
 
@@ -314,24 +331,19 @@ export class SurveysService {
     addSection(sectionIndex: number = -1, section: SurveySection = null) {
         // Create new section
         if (!section) {
-            section = {
-                Key: PepGuid.newGuid(),
-                Title: this.translate.instant("SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER"),
-                Questions: []
-            }
+            section = this.getNewSection();
         }
 
         // Get the sections.
         const sections = this._surveySubject.getValue().Sections;
 
-        if (sectionIndex >= 0 && sectionIndex < sections.length) {
-            sections.splice(sectionIndex, 0, section);
-        } else {
-            sections.push(section);
-        }
+        const newSelectedIndex = sectionIndex > -1 && sectionIndex < sections.length ? sectionIndex :
+            (this._selectedSectionIndex > -1 && this._selectedSectionIndex < sections.length ? this._selectedSectionIndex + 1 : sections.length);
+        sections.splice(newSelectedIndex, 0, section);
 
         this.notifySectionsChange(sections);
-        //this.notifySelectedSectionChange(section, sections.length-1);
+        this.notifySelectedSectionChange(section, newSelectedIndex);
+        this.notifySelectedQuestionChange(null, -1);
     }
 
     // removeSection(sectionId: string) {
@@ -388,16 +400,14 @@ export class SurveysService {
 
         // Get the sections.
         const sections = this._surveySubject.getValue().Sections;
-        const currentSection = (sectionIndex >= 0 && sectionIndex < sections.length) ? sections[sectionIndex] : sections[sections.length - 1];
+        const currentSection = (sectionIndex > -1 && sectionIndex < sections.length) ? sections[sectionIndex] : sections[this._selectedSectionIndex];
 
-        if (questionIndex >= 0 && questionIndex < currentSection.Questions.length) {
-            currentSection.Questions.splice(questionIndex, 0, question);
-        } else {
-            currentSection.Questions.push(question);
-        }
+        const newSelectedIndex = questionIndex > -1 && questionIndex < currentSection.Questions.length ? questionIndex :
+            (this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ? this._selectedQuestionIndex + 1 : currentSection.Questions.length);
+        currentSection.Questions.splice(newSelectedIndex, 0, question);
 
         this.notifySectionsChange(sections);
-        //this.notifySelectedQuestionChange(question, currentSection.Questions.length-1);
+        this.notifySelectedQuestionChange(question, newSelectedIndex);
     }
 
     onQuestionDropped(event: CdkDragDrop<any[]>, sectionIndex: number) {
@@ -410,6 +420,9 @@ export class SurveysService {
             const previuosSection = this.getSectionByIndex(event.previousContainer.id);
 
             transferArrayItem(previuosSection.Questions, currentSection.Questions, event.previousIndex, event.currentIndex);
+
+            // Update the selected index.
+            this.setSelected(sectionIndex, event.currentIndex);
         } else {
             moveItemInArray(currentSection.Questions, event.previousIndex, event.currentIndex);
         }
@@ -516,6 +529,7 @@ export class SurveysService {
             this.deleteSelectedQuestion();
         }
     }
+    
 }
 
 

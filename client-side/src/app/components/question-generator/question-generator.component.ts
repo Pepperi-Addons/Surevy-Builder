@@ -1,7 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormArray, FormControl, UntypedFormGroup } from '@angular/forms';
-import { IQuestionForm } from '../question-tmp/model/forms';
-import { CdkDragEnd, CdkDragEnter, CdkDragExit, CdkDragStart } from '@angular/cdk/drag-drop';
+import { CdkDragEnd, CdkDragStart } from '@angular/cdk/drag-drop';
 import { SurveysService } from 'src/app/services/surveys.service';
 import { SurveyQuestion, SurveyQuestionType } from '../../model/survey.model';
 
@@ -11,23 +9,6 @@ import { SurveyQuestion, SurveyQuestionType } from '../../model/survey.model';
     styleUrls: ['./question-generator.component.scss', './question-generator.component.theme.scss']
 })
 export class QuestionGeneratorComponent implements OnInit {
-    // @Input() formKey: string;
-
-    //private _parentForm;
-    // @Input()
-    // set parentForm(value: FormGroup) {
-    //     // this._parentForm = value;
-    //     this.addToParentForm(value);
-    // }
-
-    // get f() {
-    //     return this.form.controls;
-    // }
-
-    // form = new FormGroup<IQuestionForm>({});
-
-    type: string = 'abc'; //Temp
-
     @Input() question: SurveyQuestion;
     @Input() sequenceNumber: string;
     @Input() isActive: boolean = false;
@@ -41,35 +22,23 @@ export class QuestionGeneratorComponent implements OnInit {
         return this._editable;
     }
 
-    @Output() dragExited: EventEmitter<CdkDragExit> = new EventEmitter();
-    @Output() dragEntered: EventEmitter<CdkDragEnter> = new EventEmitter();
     @Output() questionClick: EventEmitter<void> = new EventEmitter();
+    @Output() addQuestionClick: EventEmitter<SurveyQuestionType> = new EventEmitter();
+
+    protected isGrabbing = false;
 
     constructor(
         private surveysService: SurveysService
     ) { }
 
     ngOnInit(): void {
-        // this.createForm();
+        if (this.editable) {
+            this.surveysService.isGrabbingChange$.subscribe((value: boolean) => {
+                this.isGrabbing = value;
+            });
+        }
     }
 
-    // private createForm() {
-    //     this.form = new FormGroup<IQuestionForm>({
-    //         Key: new FormControl(null),
-    //         Type: new FormControl(null),
-    //         Text: new FormControl(null),
-    //         Description: new FormControl(null)
-    //     });
-    // }
-
-    // private addToParentForm(parent: FormGroup) {
-    //     parent.setControl(this.formKey, this.form);
-    // }
-
-    onQuestionValueChanged(value: any): void {
-        // TODO: implement
-    }
-    
     onDragStart(event: CdkDragStart) {
         this.surveysService.onQuestionDragStart(event);
     }
@@ -78,16 +47,18 @@ export class QuestionGeneratorComponent implements OnInit {
         this.surveysService.onQuestionDragEnd(event);
     }
 
-    onDragExited(event: CdkDragExit) {
-        this.dragExited.emit(event);
-    }
-
-    onDragEntered(event: CdkDragEnter) {
-        this.dragEntered.emit(event);
-    }
-
     onQuestionClicked(event: any) {
         this.questionClick.emit();
-        event.stopPropagation();
+        // This is for click.
+        // event.stopPropagation();
     }
+
+    onAddQuestionClicked(type: SurveyQuestionType) {
+        this.addQuestionClick.emit(type);
+    }
+    
+    onQuestionValueChanged(value: any): void {
+        // TODO: implement
+    }
+    
 }
