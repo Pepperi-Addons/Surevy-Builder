@@ -33,6 +33,7 @@
             "ACTIVE_FROM_DATE": "Start Date",
             "ACTIVE_TO_DATE": "End Date",
             "ADD_ITEM": "Add Items",
+            "SECTION": "Section",
             "ADD_SECTION": "Add a Section",
             "ADD_QUESTION": "Add a Question",            
             "RIGHT_SIDE": {

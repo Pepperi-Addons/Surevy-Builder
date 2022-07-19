@@ -30,14 +30,22 @@
     .section-container {
         display: flex;
         gap: variables.$spacing-lg;
-        height: 3rem;
-        align-items: center;
+        min-height: 3rem;
         border-radius: variables.$border-radius-md;
-        padding-inline: variables.$spacing-sm;
+        padding: variables.$spacing-sm;
 
+        .title-description-cont{
+            margin-top: variables.$spacing-xs;
+            width: 100%;
+        }
+            
         .title-container {
             width: 100%;
             display: grid;
+        }
+
+        .description-container{
+            white-space: inherit;
         }
     }
     

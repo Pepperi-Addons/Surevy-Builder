@@ -1,6 +1,6 @@
 <div #sectionsCont [ngClass]="{ 'editable-state': editMode }" cdkDropListGroup class="sections-container" cdkDropList (cdkDropListDropped)="onSectionDropped($event)" >
     <section *ngFor="let section of sections$ | async; let i=index;"
-        [sectionsQuestionsDropList]="sectionsQuestionsDropList" [index]="i" [title]="section.Title" [isActive]="section === selectedSection"
+        [sectionsQuestionsDropList]="sectionsQuestionsDropList" [index]="i" [title]="section.Title" [description]="section.Description" [isActive]="section === selectedSection"
         [questions]="section.Questions" [screenSize]="screenSize" [editable]="editMode"
         >
     </section>
