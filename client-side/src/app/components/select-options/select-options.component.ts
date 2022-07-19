@@ -22,9 +22,12 @@ class selectOption{
 
 export class QuestionSelectOptionsComponent implements OnInit {
     
-    @Input() optionalValues: Array<SurveyQuestionOption> = [];
+    @Input() question: SurveyQuestion;
+    // @Input() OptionalValues: Array<SurveyQuestionOption> = [];
 
     @Output() optionChanged: EventEmitter<any> = new EventEmitter();
+    @Output() questionValueChanged: EventEmitter<any> = new EventEmitter<any>();
+    
 
     selectOptions: Array<selectOption> = [];
     
@@ -34,12 +37,11 @@ export class QuestionSelectOptionsComponent implements OnInit {
 
     ngOnInit(): void {
 
-        this.optionalValues.forEach((optVal, index) => {
-            const optSel = new SurveyQuestionOption('','');
+        this.question?.OptionalValues?.forEach((optVal, index) => {
+            const optSel = new SurveyQuestionOption(optVal.key,optVal.value);
             
             const opt = new selectOption('collapse',this.selectOptions.length,optSel);
             this.selectOptions.push(opt);
-
         });
 
         if(this.selectOptions.length == 0) {
@@ -60,7 +62,8 @@ export class QuestionSelectOptionsComponent implements OnInit {
         
     }
 
-    onQuestionEditorFieldChanged(event) {
+    onQuestionEditorFieldChanged(key, event) {
+        this.questionValueChanged.emit({key: key,value: event});
         //this.surveyEditor.name = value;
         //this._surveysService.updateSurveyFromEditor(this.surveyEditor);
     }
@@ -70,6 +73,7 @@ export class QuestionSelectOptionsComponent implements OnInit {
         const opt = new selectOption('collapse',this.selectOptions.length,optSel);
         this.selectOptions.push(opt);
         this.optionChanged.emit(this.selectOptions);
+        
     }
 
     onRemoveClick(option) {

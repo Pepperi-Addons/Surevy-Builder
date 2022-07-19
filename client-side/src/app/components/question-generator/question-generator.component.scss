@@ -47,6 +47,10 @@
                 display: flex;
                 align-items: baseline;
                 height: variables.$form-field-title-height;
+
+                span{
+                    white-space: inherit;
+                }
             }
         }
     }

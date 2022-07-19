@@ -1,7 +1,8 @@
 <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TITLE" | translate}}</label>
 <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT' | translate"
+             [value]="question?.placeHolderText || ''"
              [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT_DEFAULT' | translate"
-             (valueChange)="onQuestionEditorFieldChanged($event)">
+             (valueChange)="onQuestionEditorFieldChanged('placeHolderText',$event)">
 </pep-textbox>
 
 <ng-container *ngFor="let opt of selectOptions; let i=index;">
@@ -18,7 +19,7 @@
         </div>
         <div  class="title-container">
             <span class="body-sm ellipsis">{{opt?.id + 1}}.&nbsp;</span>
-            <span class="body-sm color-link bold ellipsis" title="opt?.option?.Value}">{{opt?.option?.Key}}</span>
+            <span class="body-sm color-link bold ellipsis" title="opt?.option?.key}">{{opt?.option?.key}}</span>
         </div>
         <div class="actions">
             <pep-button classNames="caution" sizeType="xs" iconName="system_bin" (buttonClick)="onRemoveClick(opt);"></pep-button>
@@ -27,9 +28,9 @@
         </div>
         <div class="editorCont" *ngIf="opt.state == 'expand'">
             <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_KEY' | translate"
-                [value]="opt.option.Key" (valueChange)="onQuestionOptionChanged('Key',$event,opt)">
+                [value]="opt.option.key" (valueChange)="onQuestionOptionChanged('key',$event,opt)">
             </pep-textbox>
-            <pep-textarea [key]="'question'" (valueChange)="onQuestionOptionChanged('Value',$event,opt)" [value]="opt.option.Value"
+            <pep-textarea [key]="'question'" (valueChange)="onQuestionOptionChanged('value',$event,opt)" [value]="opt.option.value"
               [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TYPE_YOUR_OPTION' | translate" [rowSpan]="1.5">
             </pep-textarea>
         </div>

@@ -49,7 +49,7 @@
         </pep-textarea>
         <ng-container *ngIf="question?.Type == 'multiple-selection-dropdown' ||
                              question?.Type == 'single-selection-dropdown'">
-            <question-select-options (optionChanged)="selectOptionChanged($event)"></question-select-options>
+            <question-select-options [question]="question" (questionValueChanged)="onSelectQuestionFieldChanged($event)" (optionChanged)="selectOptionChanged($event)"></question-select-options>
         </ng-container>
     
         <ng-container *ngIf="forNextVersion">
@@ -60,7 +60,7 @@
         </ng-container>
     
         <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>
-        <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAX_CHARACTERS' | translate"
+        <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAX_CHARACTERS' | translate" [type]="'int'"
             [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAX_CHARACTERS_PLACEHOLDER' | translate"
             [value]="question?.MaxCharacters || ''" (valueChange)="onQuestionEditorFieldChanged('MaxCharacters',$event)">
         </pep-textbox>
