@@ -44,6 +44,8 @@
                 "DESCRIPTION": "Description",
                 "SHOW_IF": "Show If",
                 "QUESTION_OPTION": "Question Options",
+                "MAX_CHARACTERS": "Max Characters",
+                "MAX_CHARACTERS_PLACEHOLDER": "Empty for no max",
                 "MAKE_MANDATORY": "Make Mandatory",
                 "ACTIONS": {
                     "ADD_LOGIC": "Add Logic",
