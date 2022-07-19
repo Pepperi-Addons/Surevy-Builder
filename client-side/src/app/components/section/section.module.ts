@@ -4,7 +4,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
 import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items';
-
+import { PepFieldTitleModule } from '@pepperi-addons/ngx-lib/field-title';
 import { SectionComponent } from './section.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { QuestionGeneratorModule } from '../question-generator/question-generator.module';
@@ -20,6 +20,7 @@ import { PepSeparatorModule } from '@pepperi-addons/ngx-lib/separator';
         PepRemoteLoaderModule,
         PepDraggableItemsModule,
         PepSeparatorModule,
+        PepFieldTitleModule,
         QuestionGeneratorModule,
         QuestionMenuModule,
         TranslateModule.forChild()

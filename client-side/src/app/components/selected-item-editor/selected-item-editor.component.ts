@@ -44,6 +44,10 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
         this.surveysService.updateQuestionFromEditor(this.question);
     }
 
+    onSelectQuestionFieldChanged(event){
+        this.onQuestionEditorFieldChanged(event.key, event.value);
+    }
+
     onSectionEditorFieldChanged(key,value) {
         this.section[key] = value;
         this.surveysService.updateSectionFromEditor(this.section);
@@ -64,7 +68,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     selectOptionChanged(event){
         let options: Array<any> = [];
         event.forEach(opt => {
-            options.push({key: opt.option.Key, value: opt.option.Value});
+            options.push({key: opt.option.key, value: opt.option.value});
         });
 
         this.question['OptionalValues'] = options;

@@ -25,6 +25,7 @@
             <ng-container [ngSwitch]="question.Type">
                 <ng-container *ngSwitchCase="'short-text'">
                     <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
+                        [maxFieldCharacters]="question?.MaxCharacters?.length > 0 ? question.MaxCharacters : 'undefined'"
                         (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
                 </ng-container>
                 <ng-container *ngSwitchCase="'long-text'">

@@ -22,12 +22,12 @@ export interface SurveySection {
 }
 
 export class SurveyQuestionOption {
-    Key: string;
-    Value?: string;
+    key: string;
+    value?: string;
 
     constructor(key,value) { 
-        this.Key = key || '';
-        this.Value = value || '';
+        this.key = key || '';
+        this.value = value || '';
     }
 }
 

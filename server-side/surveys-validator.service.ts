@@ -84,7 +84,6 @@ export class SurveysValidatorService {
         //     throw new Error(this.getWrongTypeError(sectionsPropertyBreadcrumb, 'Type', `value from [${SurveyQuestionType}]`));
         // }
 
-
         // Validate Mandatory if exist (Optional)
         this.validateObjectProperty(question, 'Mandatory', sectionsPropertyBreadcrumb, true, 'boolean');
     }
@@ -154,28 +153,12 @@ export class SurveysValidatorService {
             const sectionToAdd: SurveySection = {
                 Key: currentSection.Key,
                 Title: currentSection.Title,
-                Questions: []
+                Questions: currentSection.Questions // Add all questions properties.
             };
 
             this.addOptionalPropertyIfExist(currentSection, sectionToAdd, 'Name');
             this.addOptionalPropertyIfExist(currentSection, sectionToAdd, 'Description');
             
-            // Add questions specific properties.
-            for (let questionIndex = 0; questionIndex < currentSection.Questions.length; questionIndex++) {
-                const currentQuestion = currentSection.Questions[questionIndex];
-                const questionToAdd: SurveyQuestion = {
-                    Key: currentQuestion.Key,
-                    Title: currentQuestion.Title,
-                    Type: currentQuestion.Type
-                };
-
-                this.addOptionalPropertyIfExist(currentQuestion, questionToAdd, 'Name');
-                this.addOptionalPropertyIfExist(currentQuestion, questionToAdd, 'Description');
-                this.addOptionalPropertyIfExist(currentQuestion, questionToAdd, 'Mandatory');
-
-                sectionToAdd.Questions.push(questionToAdd);
-            }
-
             res.Sections.push(sectionToAdd);
         } 
         
