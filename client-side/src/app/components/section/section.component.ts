@@ -22,7 +22,8 @@ export class SectionComponent implements OnInit {
     }
 
     @Input() title: string;
-    // @Input() description: string;
+    @Input() description: string;
+    
     @Input() isActive: boolean = false;
     @Input() questions: Array<SurveyQuestion>;
 
