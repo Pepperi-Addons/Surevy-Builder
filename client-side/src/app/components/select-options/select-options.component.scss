@@ -5,6 +5,9 @@
     margin-bottom: ngx-variables.$spacing-lg;
 }
 
+.add-content-button{
+    margin-bottom: ngx-variables.$spacing-lg;
+}
 .select-option-container {
     min-height: 2.5rem;
     width: 100%;
@@ -14,7 +17,7 @@
     padding-top: ngx-variables.$spacing-sm;
     border-radius: ngx-variables.$border-radius-md;
     padding-inline: ngx-variables.$spacing-sm;
-    margin-bottom: ngx-variables.$spacing-md;
+    margin-bottom: ngx-variables.$spacing-sm;
     @include ngx-mixins.state-regular-default(true);
     
     .actions {
@@ -44,3 +47,4 @@
 
 
 }
+
