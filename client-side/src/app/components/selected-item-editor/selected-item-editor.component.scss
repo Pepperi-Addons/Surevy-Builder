@@ -1,4 +1,9 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
+@import '../../../mixins.scss';
+
+pep-side-bar {
+    @include side-bar-title();
+}
 
 .survey-details {
     display: flex;

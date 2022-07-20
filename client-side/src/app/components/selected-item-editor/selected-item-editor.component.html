@@ -1,22 +1,22 @@
-    <pep-side-bar position="end" [ignoreResize]="true" (stateChange)="onSidebarEndStateChange($event)">
-        <div header-content class="side-bar-title">
-            <div class=" title-xl ellipsis" [title]="">
-                <span>{{question?.Type || ('SURVEY_MANAGER.SURVEY_EDITOR.SECTION' | translate) }}</span>
-            </div>
+<pep-side-bar position="end" [ignoreResize]="true" (stateChange)="onSidebarEndStateChange($event)">
+    <div header-content class="side-bar-title ellipsis">
+        <div class=" title-xl ellipsis" [title]="">
+            <span>{{question?.Type || ('SURVEY_MANAGER.SURVEY_EDITOR.SECTION' | translate) }}</span>
         </div>
-        <div class="survey-details">
-            <ng-container *ngIf="surveysService.selectedItemType === 'section'; then sectionEditorTemplate; else questionEditorTemplate"></ng-container>
+    </div>
+    <div class="survey-details">
+        <ng-container *ngIf="surveysService.selectedItemType === 'section'; then sectionEditorTemplate; else questionEditorTemplate"></ng-container>
 
-            <div class="pep-actions" *ngIf="surveysService.selectedItemType !== 'none'">
-                <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
-                            iconName="number_plus" iconPosition="end"
-                            (buttonClick)="onItemDuplicateClicked()"></pep-button>
-                <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
-                            iconName="system_bin" iconPosition="end" classNames="caution"
-                            (buttonClick)="onItemDeleteClicked()"></pep-button>
-            </div>
+        <div class="pep-actions" *ngIf="surveysService.selectedItemType !== 'none'">
+            <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
+                        iconName="number_plus" iconPosition="end"
+                        (buttonClick)="onItemDuplicateClicked()"></pep-button>
+            <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
+                        iconName="system_bin" iconPosition="end" classNames="caution"
+                        (buttonClick)="onItemDeleteClicked()"></pep-button>
         </div>
-    </pep-side-bar>
+    </div>
+</pep-side-bar>
 
 
 <ng-template #sectionEditorTemplate>

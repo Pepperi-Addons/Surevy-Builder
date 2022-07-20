@@ -2,7 +2,7 @@
     <pep-page-layout [showShadow]="showEditor">
         <div pep-side-area *ngIf="showEditor" >
             <pep-side-bar [ignoreResize]="true" (stateChange)="onSidebarStateChange($event)">
-                <div header-content class="side-bar-title">
+                <div header-content class="side-bar-title ellipsis">
                     <pep-button class="back-button" sizeType="sm" iconName="arrow_left_alt"
                         (buttonClick)="onNavigateBackFromEditor();"></pep-button>
                     <div class=" title-xl ellipsis" [title]="'survey builder'">
