@@ -34,12 +34,12 @@
                 </ng-container>
                 <ng-container *ngSwitchCase="'single-selection-dropdown'">
                     <pep-select [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
-                        [options]="question?.OptionalValues" (valueChange)="onQuestionValueChanged($event)">
+                        [options]="question?.OptionalValues" (valueChange)="onQuestionValueChanged($event)" [emptyOption]="question?.AddNoneOption">
                     </pep-select>
                 </ng-container>
                 <ng-container *ngSwitchCase="'multiple-selection-dropdown'">
                     <pep-select [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
-                        type="multi" [options]="question?.OptionalValues"
+                        type="multi" [options]="question?.OptionalValues" [emptyOption]="question?.AddNoneOption"
                         (valueChange)="onQuestionValueChanged($event)"></pep-select>
                 </ng-container>
                 <ng-container *ngSwitchCase="'boolean-toggle'">
