@@ -128,6 +128,19 @@ export class SurveysValidatorService {
         // Validate Description if exist (Optional)
         this.validateObjectProperty(survey, 'Description', surveyPropertyBreadcrumb, true);
         
+        // Validate Active if exist
+        this.validateObjectProperty(survey, 'Active', surveyPropertyBreadcrumb, false, 'boolean');
+
+        // Validate ActiveDateRange if exist (Optional)
+        this.validateObjectProperty(survey, 'ActiveDateRange', surveyPropertyBreadcrumb, true, 'object');
+        if (survey.ActiveDateRange) {
+            // Validate From if exist (Optional)
+            this.validateObjectProperty(survey.ActiveDateRange, 'From', surveyPropertyBreadcrumb, true);
+            
+            // Validate To if exist (Optional)
+            this.validateObjectProperty(survey.ActiveDateRange, 'To', surveyPropertyBreadcrumb, true);
+        }
+
         // Validate Sections
         this.validateArrayProperty(survey, 'Sections', surveyPropertyBreadcrumb);
         for (let index = 0; index < survey.Sections.length; index++) {
@@ -138,14 +151,16 @@ export class SurveysValidatorService {
     getSurveyCopyAccordingInterface(survey: Survey): Survey {
         // Init with the mandatories properties.
         let res: Survey = {
+            Name: survey.Name,
+            Active: survey.Active,
             Sections: []
         };
 
         this.addOptionalPropertyIfExist(survey, res, 'Hidden');
         this.addOptionalPropertyIfExist(survey, res, 'CreationDateTime');
         this.addOptionalPropertyIfExist(survey, res, 'Key');
-        this.addOptionalPropertyIfExist(survey, res, 'Name');
         this.addOptionalPropertyIfExist(survey, res, 'Description');
+        this.addOptionalPropertyIfExist(survey, res, 'ActiveDateRange');
 
         // Add sections specific properties.
         for (let sectionIndex = 0; sectionIndex < survey.Sections.length; sectionIndex++) {

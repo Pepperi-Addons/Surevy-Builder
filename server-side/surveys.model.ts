@@ -1,9 +1,16 @@
 import { AddonData } from "@pepperi-addons/papi-sdk";
 
 export interface Survey extends AddonData {
-    Name?: string;
+    Name: string;
     Description?: string;
+    Active: boolean;
+    ActiveDateRange?: SurveyDateRange;
     Sections: SurveySection[];
+}
+
+export interface SurveyDateRange {
+    From?: Date;
+    To?: Date;
 }
 
 export interface SurveySection {
@@ -38,10 +45,11 @@ export interface SurveyRowProjection {
     Key?: string,
     Name?: string,
     Description?: string,
-    CreationDate?: string,
-    ModificationDate?: string,
-    Published: boolean,
+    Active: boolean,
+    ActiveDateRange?: SurveyDateRange,
     Draft: boolean
+    Published: boolean,
+    ModificationDate?: string,
 }
 
 
@@ -53,6 +61,7 @@ export const DEFAULT_BLANK_SURVEY_DATA: Survey = {
     "Name": "Name of survey",
     //  optional
     "Description": "Description of survey",
+    "Active": true,
     "Sections": [
         {
             "Key": "99dfd31h-2832-cf4b-k421-1fhf2299acsa",

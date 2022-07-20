@@ -9,11 +9,11 @@
 
             <div class="pep-actions" *ngIf="surveysService.selectedItemType !== 'none'">
                 <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
-                            styleType="regular" iconName="number_plus" iconPosition="end"
-                            (buttonClick)="onItemDuplicateClicked()" sizeType="sm"></pep-button>
+                            iconName="number_plus" iconPosition="end"
+                            (buttonClick)="onItemDuplicateClicked()"></pep-button>
                 <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
-                            styleType="regular" iconName="system_bin" iconPosition="end" classNames="caution"
-                            (buttonClick)="onItemDeleteClicked()" sizeType="sm"></pep-button>
+                            iconName="system_bin" iconPosition="end" classNames="caution"
+                            (buttonClick)="onItemDeleteClicked()"></pep-button>
             </div>
         </div>
     </pep-side-bar>

@@ -34,6 +34,8 @@ import { QuestionMenuModule } from '../question-menu/question-menu.module';
 import { ServeyManagerComponent } from './survey-manager.component';
 
 import { config } from '../addon.config';
+import { SurveysService } from 'src/app/services/surveys.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 const pepIcons = [
     pepIconSystemClose,
@@ -91,7 +93,10 @@ export const routes: Routes = [
     ],
     exports:[ServeyManagerComponent],
     providers: [
-        TranslateStore       
+        TranslateStore,
+        // When loading this module from route we need to add this here (because only this module is loading).
+        SurveysService,
+        NavigationService
     ]
 })
 export class SurveyManagerModule {

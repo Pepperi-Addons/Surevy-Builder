@@ -20,16 +20,11 @@
                         (valueChange)="onSurveyPropertyChanged('description', $event)">
                     </pep-textarea>
                    
-                    <div class="activate-container">
-                        <!-- <pep-field-title [label]="'SURVEY_MANAGER.SURVEY_EDITOR.ACTIVATE_TITLE' | translate"
-                            xAlignment="left">
-                        </pep-field-title> -->
-                        <pep-checkbox key="cb1" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.ACTIVATE' | translate"
-                            [value]="isActive" [renderTitle]="false" xAlignment="left"
-                            (valueChange)="onActiveStateChanged($event)">
-                        </pep-checkbox>
-                    </div>                   
-
+                    <pep-checkbox class="checkbox-as-title" key="cb1" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.ACTIVATE' | translate"
+                        [value]="isActive" [renderTitle]="false" xAlignment="left"
+                        (valueChange)="onActiveStateChanged($event)">
+                    </pep-checkbox>
+                    
                     <div fxLayout="row" fxLayoutGap="1rem">
                         <pep-date fxFlex="50%" [value]="activeFromDate"
                             [label]="'SURVEY_MANAGER.SURVEY_EDITOR.ACTIVE_FROM_DATE' | translate" [type]="'date'"
