@@ -16,17 +16,6 @@
     width: 100%;
 }
 
-// .right-side-bar {
-//     z-index: variables.$z-index-lowest + 4;
-//     width: variables.$side-bar-width;
-//     box-shadow: functions.get-pep-shadow(shadow-md, hard);
-//     display: flex;;
-//     flex-direction: column;
-//     padding: variables.$spacing-lg;
-
-//     
-// }
-
 .side-bar-title {
     display: flex;
     padding-top: variables.$spacing-sm; 
@@ -73,31 +62,3 @@
     } 
 
 }
-
-/*
-.radio-group {
-    display: flex;
-    flex-direction: row;
-    margin-bottom: variables.$form-spacing;
-
-    .pep-radio-button {                     
-        &.pep-input {
-            height: 2.25rem;
-            display: flex;
-        }
-        
-        ::ng-deep label .mat-radio-label-content {
-            font-weight: normal !important;
-            font-size: variables.$fs-xs;
-        }
-        
-    }  
-} */
-
-.activate-container {
-    margin-bottom: variables.$form-spacing;
-}
-
-// .survey-builder-wrapper {
-        
-// }

@@ -86,16 +86,21 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                         Fields: [
                             this.getRegularReadOnlyColumn('Name', 'Link',),
                             this.getRegularReadOnlyColumn('Description'),
-                            this.getRegularReadOnlyColumn('CreationDate', 'DateAndTime'),
-                            this.getRegularReadOnlyColumn('ModificationDate', 'DateAndTime'),
+                            this.getRegularReadOnlyColumn('Active', 'Boolean'),
+                            this.getRegularReadOnlyColumn('DateRange'),
+                            this.getRegularReadOnlyColumn('Draft', 'Boolean'),
                             this.getRegularReadOnlyColumn('Published', 'Boolean'),
+                            //this.getRegularReadOnlyColumn('CreationDate', 'DateAndTime'),
+                            this.getRegularReadOnlyColumn('ModificationDate', 'DateAndTime'),
                             // this.getRegularReadOnlyColumn('Status')
                         ],
                         Columns: [
                             { Width: 20 },
                             { Width: 25 },
+                            { Width: 10 },
                             { Width: 20 },
-                            { Width: 20 },
+                            { Width: 10 },
+                            { Width: 10 },
                             { Width: 15 }
                         ],
                         FrozenColumnsCount: 0,

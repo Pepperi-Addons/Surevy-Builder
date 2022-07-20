@@ -209,10 +209,11 @@ export class SurveyApiService {
                     Key: survey.Key,
                     Name: survey.Name,
                     Description: survey.Description,
-                    CreationDate: survey.CreationDateTime,
-                    ModificationDate: survey.ModificationDateTime,
+                    Active: survey.Active,
+                    ActiveDateRange: survey.ActiveDateRange,
+                    Draft: isDraft,
                     Published: isPublished,
-                    Draft: isDraft
+                    ModificationDate: survey.ModificationDateTime,
                 };
 
                 return prp;

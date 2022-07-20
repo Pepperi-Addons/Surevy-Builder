@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
+import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
 import { NavigationService } from '../../services/navigation.service';
@@ -16,8 +16,8 @@ import { PepSnackBarData, PepSnackBarService } from "@pepperi-addons/ngx-lib/sna
 })
 export class ServeyManagerComponent extends DestoyerDirective implements OnInit, OnDestroy {
     get isActive() {
-        if (this.surveyEditor) {
-            return this.surveyEditor.active !== undefined ? this.surveyEditor.active : true;
+        if (this.surveyEditor) {            
+            return this.surveyEditor.active !== undefined ? this.surveyEditor.active : false;
         } else {
             return null;
         }
@@ -28,11 +28,11 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     }
 
     get activeFromDate() {
-        return this.isActive && this.surveyEditor?.activeDateRange?.from ? this._utilitiesService.stringifyDate(this.surveyEditor.activeDateRange.from) : null;
+        return this.isActive && this.surveyEditor?.activeDateRange?.from ? this.surveyEditor.activeDateRange.from : null;
     }
 
     get activeToDate() {
-        return this.isActive && this.surveyEditor?.activeDateRange?.to ? this._utilitiesService.stringifyDate(this.surveyEditor.activeDateRange.to) : null;
+        return this.isActive && this.surveyEditor?.activeDateRange?.to ? this.surveyEditor.activeDateRange.to : null;
     }
 
     showEditor = true;
@@ -47,8 +47,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         private _surveysService: SurveysService,
         private _navigationService: NavigationService,
         private _activatedRoute: ActivatedRoute,
-        private pepSnackBarService: PepSnackBarService,
-        private _utilitiesService: PepUtilitiesService,
+        private pepSnackBarService: PepSnackBarService,        
         public translate: TranslateService
     ) {
         super();
@@ -114,7 +113,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
                     to: undefined
                 }
             }
-            this.surveyEditor.activeDateRange.from = new Date(value);
+            this.surveyEditor.activeDateRange.from = value;
             this.minDateValue = value;
         } else {
             this.minDateValue = null;
@@ -135,7 +134,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
                     to: undefined
                 }
             }
-            this.surveyEditor.activeDateRange.to = new Date(value);
+            this.surveyEditor.activeDateRange.to = value;
             this.maxDateValue = value;
         } else {
             this.maxDateValue = null;

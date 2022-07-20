@@ -9,8 +9,8 @@ export interface Survey extends AddonData {
 }
 
 export interface SurveyDateRange {
-    From?: Date;
-    To?: Date;
+    From?: string;
+    To?: string;
 }
 
 export interface SurveySection {
@@ -21,17 +21,7 @@ export interface SurveySection {
     Questions: SurveyQuestion[];
 }
 
-export class SurveyQuestionOption {
-    key: string;
-    value?: string;
-
-    constructor(key,value) { 
-        this.key = key || '';
-        this.value = value || '';
-    }
-}
-
-export type SurveyOptionState =  'collapse' | 'expand';
+export type SurveyOptionStateType =  'collapse' | 'expand';
 
 export type SurveyQuestionType = 'short-text' | 'long-text' 
     | 'single-selection-dropdown' // | 'single-selection-radiobuttons' 
@@ -58,10 +48,11 @@ export interface ISurveyRowModel {
     Key: string,
     Name: string,
     Description: string,
-    CreationDate: string,
-    ModificationDate: string,
+    Active: boolean,
+    ActiveDateRange: SurveyDateRange,
+    Draft: boolean
     Published: boolean,
-    Draft: boolean,
+    ModificationDate: string,
 }
 
 export interface ISurveyBuilderData {
@@ -73,5 +64,5 @@ export interface ISurveyEditor {
     name: string,
     description: string,
     active?: boolean;
-    activeDateRange?: { from?: Date, to?: Date };
+    activeDateRange?: { from?: string, to?: string };
 }

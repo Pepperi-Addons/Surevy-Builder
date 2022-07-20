@@ -21,6 +21,8 @@ import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } fr
 
 import { ServeysManagerComponent } from './surveys-manager.component';
 import { config } from '../addon.config';
+import { SurveysService } from 'src/app/services/surveys.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 const pepIcons = [
     pepIconSystemClose,
@@ -65,7 +67,10 @@ export const routes: Routes = [
     ],
     exports:[ServeysManagerComponent],
     providers: [
-        TranslateStore       
+        TranslateStore,
+        // When loading this module from route we need to add this here (because only this module is loading).
+        SurveysService,
+        NavigationService
     ]
 })
 export class SurveysManagerModule {

@@ -2,7 +2,7 @@ import { CdkDragDrop, CdkDragEnd, CdkDragStart, copyArrayItem, moveItemInArray, 
 import { Injectable } from "@angular/core";
 import { Params } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { PepGuid, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
+import { PepGuid, PepHttpService, PepSessionService, PepUtilitiesService } from "@pepperi-addons/ngx-lib";
 import { Observable, BehaviorSubject, from } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
@@ -89,6 +89,7 @@ export class SurveysService {
         private sessionService: PepSessionService,
         private httpService: PepHttpService,
         private navigationService: NavigationService,
+        private utilitiesService: PepUtilitiesService,
     ) {
         this.surveyLoad$.subscribe((survey: Survey) => {
             this.loadSurveyEditor(survey);

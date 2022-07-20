@@ -9,11 +9,11 @@
 
             <div class="pep-actions" *ngIf="surveysService.selectedItemType !== 'none'">
                 <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
-                            styleType="regular" iconName="number_plus" iconPosition="end"
-                            (buttonClick)="onItemDuplicateClicked()" sizeType="sm"></pep-button>
+                            iconName="number_plus" iconPosition="end"
+                            (buttonClick)="onItemDuplicateClicked()"></pep-button>
                 <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
-                            styleType="regular" iconName="system_bin" iconPosition="end" classNames="caution"
-                            (buttonClick)="onItemDeleteClicked()" sizeType="sm"></pep-button>
+                            iconName="system_bin" iconPosition="end" classNames="caution"
+                            (buttonClick)="onItemDeleteClicked()"></pep-button>
             </div>
         </div>
     </pep-side-bar>
@@ -47,23 +47,38 @@
             [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2"
             [value]="question?.Description || ''" (valueChange)="onQuestionEditorFieldChanged('Description',$event)">
         </pep-textarea>
+        
         <ng-container *ngIf="question?.Type == 'multiple-selection-dropdown' ||
                              question?.Type == 'single-selection-dropdown'">
             <question-select-options [question]="question" (questionValueChanged)="onSelectQuestionFieldChanged($event)" (optionChanged)="selectOptionChanged($event)"></question-select-options>
         </ng-container>
+
+        <ng-container *ngIf="question?.Type == 'boolean-toggle'">
+            <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.TITLE" | translate}}</label>
+            <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.TRUE' | translate" [mandatory]="'true'"
+                         [value]="question?.True || ''" (valueChange)="onQuestionEditorFieldChanged('True',$event)">
+            </pep-textbox>
+            <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.FALSE' | translate" [mandatory]="'true'"
+                         [value]="question?.False || ''" (valueChange)="onQuestionEditorFieldChanged('False',$event)">
+        </pep-textbox>
+        </ng-container>
+
     
-        <ng-container *ngIf="forNextVersion">
+        <!-- <ng-container *ngIf="forNextVersion">
         <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
         <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
             styleType="weak" iconName="system_filter_2" iconPosition="end"
             (buttonClick)="onShowLogicClick($event)" sizeType="sm"></pep-button>
-        </ng-container>
+        </ng-container> -->
     
         <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>
-        <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAX_CHARACTERS' | translate" [type]="'int'"
+        
+        <pep-textbox *ngIf="question?.Type === 'short-text' && question?.Type === 'long-text'"
+            [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAX_CHARACTERS' | translate" [type]="'int'"
             [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAX_CHARACTERS_PLACEHOLDER' | translate"
             [value]="question?.MaxCharacters || ''" (valueChange)="onQuestionEditorFieldChanged('MaxCharacters',$event)">
         </pep-textbox>
+       
         <pep-checkbox class="checkbox-no-background" [value]="question?.Mandatory || false" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAKE_MANDATORY' | translate" 
             [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('Mandatory',$event)"></pep-checkbox>
     </ng-container>
