@@ -1,16 +1,17 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { IPepOption } from '@pepperi-addons/ngx-lib';
 import { SurveysService } from 'src/app/services/surveys.service';
-import { SurveyOptionState, SurveyQuestion, SurveyQuestionOption} from '../../model/survey.model';
+import { SurveyOptionStateType, SurveyQuestion } from '../../model/survey.model';
 
-class selectOption{
-    state: SurveyOptionState; 
+class SelectOption {
+    state: SurveyOptionStateType; 
     id: number;
-    option: SurveyQuestionOption;
+    option: IPepOption;
 
-    constructor(state,id,option) { 
+    constructor(state: SurveyOptionStateType, id: number, option: IPepOption) { 
         this.id = id || 0;
         this.state = state || 'collapse';
-        this.option = option || new SurveyQuestionOption('','');
+        this.option = option || { key: '', value: '' };
     }
 }
     
@@ -23,13 +24,12 @@ class selectOption{
 export class QuestionSelectOptionsComponent implements OnInit {
     
     @Input() question: SurveyQuestion;
-    // @Input() OptionalValues: Array<SurveyQuestionOption> = [];
-
+    
     @Output() optionChanged: EventEmitter<any> = new EventEmitter();
     @Output() questionValueChanged: EventEmitter<any> = new EventEmitter<any>();
     
 
-    selectOptions: Array<selectOption> = [];
+    selectOptions: Array<SelectOption> = [];
     
     constructor(
         private surveysService: SurveysService
@@ -38,9 +38,9 @@ export class QuestionSelectOptionsComponent implements OnInit {
     ngOnInit(): void {
 
         this.question?.OptionalValues?.forEach((optVal, index) => {
-            const optSel = new SurveyQuestionOption(optVal.key,optVal.value);
+            const optSel: IPepOption = { key: optVal.key, value: optVal.value };
             
-            const opt = new selectOption('collapse',this.selectOptions.length,optSel);
+            const opt = new SelectOption('collapse',this.selectOptions.length, optSel);
             this.selectOptions.push(opt);
         });
 
@@ -69,8 +69,8 @@ export class QuestionSelectOptionsComponent implements OnInit {
     }
 
     addNewSelectOption(event){
-        const optSel = new SurveyQuestionOption('','');
-        const opt = new selectOption('collapse',this.selectOptions.length,optSel);
+        const optSel = { key: '', value: '' };
+        const opt = new SelectOption('collapse',this.selectOptions.length,optSel);
         this.selectOptions.push(opt);
         this.optionChanged.emit(this.selectOptions);
         
