@@ -60,10 +60,13 @@
         </ng-container>
     
         <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>
-        <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAX_CHARACTERS' | translate" [type]="'int'"
+        
+        <pep-textbox *ngIf="question?.Type !== 'multiple-selection-dropdown' && question?.Type !== 'single-selection-dropdown'"
+            [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAX_CHARACTERS' | translate" [type]="'int'"
             [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAX_CHARACTERS_PLACEHOLDER' | translate"
             [value]="question?.MaxCharacters || ''" (valueChange)="onQuestionEditorFieldChanged('MaxCharacters',$event)">
         </pep-textbox>
+       
         <pep-checkbox class="checkbox-no-background" [value]="question?.Mandatory || false" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAKE_MANDATORY' | translate" 
             [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('Mandatory',$event)"></pep-checkbox>
     </ng-container>

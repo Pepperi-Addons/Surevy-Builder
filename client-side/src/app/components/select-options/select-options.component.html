@@ -1,16 +1,21 @@
 <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TITLE" | translate}}</label>
+
+<div class="options-container">
+    <ng-container *ngFor="let opt of selectOptions; let i=index;" [ngTemplateOutlet]="selectOptionsTemplate" [ngTemplateOutletContext]="{opt:opt}"></ng-container>
+</div>
+
+ <pep-button class="add-content-button" value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_ITEM' | translate}}" styleType="regular" iconName="number_plus" iconPosition="end"
+             (buttonClick)="addNewSelectOption($event)"></pep-button>
+
 <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT' | translate"
              [value]="question?.placeHolderText || ''"
              [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT_DEFAULT' | translate"
              (valueChange)="onQuestionEditorFieldChanged('placeHolderText',$event)">
 </pep-textbox>
 
-<ng-container *ngFor="let opt of selectOptions; let i=index;">
-    <ng-container [ngTemplateOutlet]="selectOptionsTemplate" [ngTemplateOutletContext]="{opt:opt}"></ng-container>
-</ng-container>
-
- <pep-button class="add-content-button" value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_ITEM' | translate}}" styleType="regular" iconName="number_plus" iconPosition="end"
-             (buttonClick)="addNewSelectOption($event)"></pep-button>
+<pep-checkbox class="checkbox-no-background" [value]="question?.AddNoneOption || false" 
+              [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ADD_NONE_OPTION' | translate" 
+              [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('AddNoneOption',$event)"></pep-checkbox>
 
 <ng-template #selectOptionsTemplate let-opt='opt'>
     <div class="select-option-container">

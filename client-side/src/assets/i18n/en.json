@@ -47,6 +47,7 @@
                 "MAX_CHARACTERS": "Max Characters",
                 "MAX_CHARACTERS_PLACEHOLDER": "Empty for no max",
                 "MAKE_MANDATORY": "Make Mandatory",
+                "ADD_NONE_OPTION": "Add \"None\" option",
                 "ACTIONS": {
                     "ADD_LOGIC": "Add Logic",
                     "DUPLICATE": "Duplicate",
