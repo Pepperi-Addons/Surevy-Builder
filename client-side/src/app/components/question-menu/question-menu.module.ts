@@ -40,7 +40,7 @@ const pepIcons = [
         PepMenuModule,
         TranslateModule.forChild(),
     ],
-    exports: [QuestionMenuComponent]   
+    exports: [QuestionMenuComponent]
 })
 export class QuestionMenuModule {
     constructor(private pepIconRegistry: PepIconRegistry) {

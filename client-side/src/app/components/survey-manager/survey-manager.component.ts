@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
+import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
 import { NavigationService } from '../../services/navigation.service';
@@ -16,8 +16,8 @@ import { PepSnackBarData, PepSnackBarService } from "@pepperi-addons/ngx-lib/sna
 })
 export class ServeyManagerComponent extends DestoyerDirective implements OnInit, OnDestroy {
     get isActive() {
-        if (this.surveyEditor) {
-            return this.surveyEditor.active !== undefined ? this.surveyEditor.active : true;
+        if (this.surveyEditor) {            
+            return this.surveyEditor.active !== undefined ? this.surveyEditor.active : false;
         } else {
             return null;
         }
@@ -40,36 +40,14 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     sectionsQuestionsDropList = [];
     surveyEditor: ISurveyEditor;
     minDateValue: string = null;
-    maxDateValue: string = null;
-    /*
-        menuItems = [
-            {
-                key: `short-text`,
-                text: 'question 1',
-                iconName: 'arrow_left_alt'
-            },
-            {
-                Type: 'multiple-selection-dropdown',
-                key: `question2`,
-                text: 'multiple selection',
-                iconName: 'arrow_left_alt'
-            },
-            {
-                Type: 'short-text',
-                key: `question3`,
-                text: 'question 3',
-                iconName: 'arrow_left_alt'
-            },
-        ] */
-
+    maxDateValue: string = null;    
 
     constructor(
         public layoutService: PepLayoutService,
         private _surveysService: SurveysService,
         private _navigationService: NavigationService,
         private _activatedRoute: ActivatedRoute,
-        private pepSnackBarService: PepSnackBarService,
-        private _utilitiesService: PepUtilitiesService,
+        private pepSnackBarService: PepSnackBarService,        
         public translate: TranslateService
     ) {
         super();
