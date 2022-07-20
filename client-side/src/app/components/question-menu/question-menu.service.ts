@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { TranslateService } from '@ngx-translate/core';
 import { PepMenuItem } from '@pepperi-addons/ngx-lib/menu';
 
 @Injectable()
@@ -9,8 +10,10 @@ export class QuestionMenuService {
         return this._menuItems;
     }
 
-    constructor() {
+    constructor(private _translate: TranslateService) {
         this.loadMenuItems();
+        
+        this.AsyncTrans('', () => {});
     }    
 
     loadMenuItems() {
@@ -18,48 +21,68 @@ export class QuestionMenuService {
             {
                 key: `short-text`,
                 text: 'Short Text',
-                iconName: 'arrow_left_alt'
+                iconName: 'text_short_text'
             },
             {
                 key: `long-text`,
                 text: 'Long Text',
-                iconName: 'arrow_left_alt'
+                iconName: 'text_long_text'
             },
             {
                 key: `multiple-selection-dropdown`,
-                text: 'Multiple Selection Dropdown',
+                text: 'Multiple Select',
                 iconName: 'system_ok'
             },
             {
                 key: `single-selection-dropdown`,
-                text: 'Single Selection Dropdown',
-                iconName: 'arrow_left_alt'
+                text: 'Single Select',
+                iconName: 'system_radio_btn'
             },
             {
                 key: `boolean-toggle`,
                 text: 'Yes/No',
-                iconName: 'arrow_left_alt'
+                iconName: 'system_boolean'
+            },           
+            {
+                key: `number`,
+                text: 'Number',
+                iconName: 'number_number'
             },
+            {
+                key: `decimal`,
+                text: 'Decimal',
+                iconName: 'number_decimal'
+            },           
+            {
+                key: `currency`,
+                text: 'Currency',
+                iconName: 'number_coins'
+            },
+            {
+                key: `percentage`,
+                text: 'Percentage',
+                iconName: 'number_percent'
+            },  
             {
                 key: `date`,
                 text: 'Date',
                 iconName: 'time_cal'
             },
             {
-                key: `number`,
-                text: 'Number',
-                iconName: 'number_decimal'
-            },
-            {
-                key: `photo`,
-                text: 'Photo',
-                iconName: 'arrow_left_alt'
-            },
-            {
-                key: `signature`,
-                text: 'Signature',
-                iconName: 'system_signature'
+                key: `datetime`,
+                text: 'Date Time',
+                iconName: 'time_datetime'
             }
         ]
+    }
+
+    AsyncTrans(key: string, callback) {        
+        this._translate.get('QUESTION_MENU.LONG_TEXT').subscribe(text => {
+            callback({
+                key: `short-text`,
+                text: text,
+                iconName: 'text_short_text'
+            });
+        });
     }
 }

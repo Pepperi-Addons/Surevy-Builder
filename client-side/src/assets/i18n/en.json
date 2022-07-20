@@ -83,5 +83,20 @@
         "SURVEY_SAVED": "Survey Saved",
         "SURVEY_PUBLISHED": "Survey Saved and Published",
         "SURVEY_RESTORED": "Survey Restored"
+    },
+    "QUESTION_MENU": {
+        "SHORT_TEXT": "Short Text",
+        "LONG_TEXT": "Long Text",
+        "MULTIPLE_SELECTION_DROPDOWN": "Multiple Select",
+        "SINGLE_SELECTION_DROPDOWN": "Single Select",
+        "BOOLEAN_TOGGLE": "Yes/No",
+        "NUMBER": "Number",
+        "DECIMAL": "Decimal",
+        "CURRENCY": "Currency",
+        "PERCENTAGE": "Percentage",
+        "DATE": "Date",
+        "DATE_TIME": "Date Time"
+        
+
     }
 }
