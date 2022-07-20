@@ -9,6 +9,20 @@ export class YesNoQuestionService {
         return this._questionItems;
     }
 
+    set yesTitle(val: string) {
+        const item = this._questionItems.find(item => item.key === 'true');
+        if (item) {
+            item.value = val;
+        }
+    }
+
+    set noTitle(val: string) {
+        const item = this._questionItems.find(item => item.key === 'false');
+        if (item) {
+            item.value = val;
+        }
+    }
+
     constructor() {
         this.loadMenuItems();
     }    

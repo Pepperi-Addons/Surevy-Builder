@@ -20,7 +20,7 @@ export class QuestionMenuService {
         this._menuItems = [
             {
                 key: `short-text`,
-                text: 'Short Text',
+                text: this._translate.instant('QUESTION_MENU.LONG_TEXT'),
                 iconName: 'text_short_text'
             },
             {

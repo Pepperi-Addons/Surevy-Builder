@@ -40,28 +40,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     sectionsQuestionsDropList = [];
     surveyEditor: ISurveyEditor;
     minDateValue: string = null;
-    maxDateValue: string = null;
-    /*
-        menuItems = [
-            {
-                key: `short-text`,
-                text: 'question 1',
-                iconName: 'arrow_left_alt'
-            },
-            {
-                Type: 'multiple-selection-dropdown',
-                key: `question2`,
-                text: 'multiple selection',
-                iconName: 'arrow_left_alt'
-            },
-            {
-                Type: 'short-text',
-                key: `question3`,
-                text: 'question 3',
-                iconName: 'arrow_left_alt'
-            },
-        ] */
-
+    maxDateValue: string = null;    
 
     constructor(
         public layoutService: PepLayoutService,
