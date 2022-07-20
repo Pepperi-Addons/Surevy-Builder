@@ -13,7 +13,7 @@
              (valueChange)="onQuestionEditorFieldChanged('placeHolderText',$event)">
 </pep-textbox>
 
-<pep-checkbox class="checkbox-no-background" [value]="question?.AddNoneOption || false" 
+<pep-checkbox *ngIf="question?.Type === 'single-selection-dropdown'" class="checkbox-no-background" [value]="question?.AddNoneOption || false" 
               [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ADD_NONE_OPTION' | translate" 
               [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('AddNoneOption',$event)"></pep-checkbox>
 
