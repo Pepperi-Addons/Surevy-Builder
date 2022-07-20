@@ -33,10 +33,15 @@
         max-width: none;
     }
 
+    .title {
+        margin: 0;
+    }
+
     .pep-actions{
+        margin-top: variables.$spacing-sm;   
         display: flex;
         flex-direction: column;
-        gap: variables.$spacing-md;
+        gap: variables.$spacing-sm;
     }
 }
 

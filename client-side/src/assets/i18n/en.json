@@ -47,6 +47,7 @@
                 "DESCRIPTION": "Description",
                 "SHOW_IF": "Show If",
                 "QUESTION_OPTION": "Question Options",
+                "SECTION_OPTION": "Section Options",
                 "MAX_CHARACTERS": "Max Characters",
                 "MAX_CHARACTERS_PLACEHOLDER": "Empty for no max",
                 "MAKE_MANDATORY": "Make Mandatory",

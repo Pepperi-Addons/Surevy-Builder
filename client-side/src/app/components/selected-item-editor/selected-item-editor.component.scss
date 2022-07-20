@@ -5,10 +5,18 @@
     flex-direction: column;
     padding: variables.$spacing-lg 0;
 
+    .title {
+        margin: 0;
+    }
+
+    .checkbox-no-background {
+        margin-top: variables.$spacing-xs;
+    }
+
     .pep-actions {
-        margin-top: variables.$spacing-lg;   
+        margin-top: variables.$spacing-sm;   
         display: flex;
         flex-direction: column;
-        gap: variables.$spacing-md;
+        gap: variables.$spacing-sm;
     }
 }

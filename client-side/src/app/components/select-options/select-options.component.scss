@@ -1,9 +1,10 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables' as ngx-variables;
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as ngx-functions;
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
-:host {
-    margin-bottom: ngx-variables.$spacing-lg;
-}
+
+// :host {
+//     margin-bottom: ngx-variables.$spacing-lg;
+// }
 
 .add-content-button{
     margin-bottom: ngx-variables.$spacing-lg;
