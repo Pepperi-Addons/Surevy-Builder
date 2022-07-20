@@ -28,11 +28,11 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     }
 
     get activeFromDate() {
-        return this.isActive && this.surveyEditor?.activeDateRange?.from ? this._utilitiesService.stringifyDate(this.surveyEditor.activeDateRange.from) : null;
+        return this.isActive && this.surveyEditor?.activeDateRange?.from ? this.surveyEditor.activeDateRange.from : null;
     }
 
     get activeToDate() {
-        return this.isActive && this.surveyEditor?.activeDateRange?.to ? this._utilitiesService.stringifyDate(this.surveyEditor.activeDateRange.to) : null;
+        return this.isActive && this.surveyEditor?.activeDateRange?.to ? this.surveyEditor.activeDateRange.to : null;
     }
 
     showEditor = true;
@@ -135,7 +135,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
                     to: undefined
                 }
             }
-            this.surveyEditor.activeDateRange.from = new Date(value);
+            this.surveyEditor.activeDateRange.from = value;
             this.minDateValue = value;
         } else {
             this.minDateValue = null;
@@ -156,7 +156,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
                     to: undefined
                 }
             }
-            this.surveyEditor.activeDateRange.to = new Date(value);
+            this.surveyEditor.activeDateRange.to = value;
             this.maxDateValue = value;
         } else {
             this.maxDateValue = null;

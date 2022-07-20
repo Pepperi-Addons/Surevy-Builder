@@ -9,8 +9,8 @@ export interface Survey extends AddonData {
 }
 
 export interface SurveyDateRange {
-    From?: Date;
-    To?: Date;
+    From?: string;
+    To?: string;
 }
 
 export interface SurveySection {
