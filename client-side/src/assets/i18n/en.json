@@ -40,6 +40,20 @@
             "ADD_SECTION": "Add a Section",
             "ADD_QUESTION": "Add a Question",            
             "RIGHT_SIDE": {
+                "TYPES":{
+                    "SECTION": "Section",
+                    "SHORT_TEXT": "Short Text",
+                    "LONG_TEXT": "Long Text",
+                    "SINGLE_SELECT": "Single Select",
+                    "MULTI_SELECT": "Multi Select",
+                    "BOOLEAN": "Boolean",
+                    "NUMBER": "Number",
+                    "DECIMAL": "Decimal",
+                    "CURRENCY": "Currency",
+                    "PRECENTAGE": "Percentage",
+                    "DATE": "Date",
+                    "DATE_TIME": "Date Time"
+                },
                 "SECTION_HEADER": "Section",
                 "KEY_NAME": "Key Name",
                 "SECTION_NAME": "Section Name",
