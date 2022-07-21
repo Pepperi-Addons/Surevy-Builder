@@ -44,7 +44,7 @@
                         (valueChange)="onQuestionValueChanged($event)"></pep-select>
                 </ng-container>
                 <ng-container *ngSwitchCase="'boolean-toggle'">
-                    <survey-yes-no-question [value]="question.Value" [mandatory]="question?.Mandatory"
+                    <survey-yes-no-question [value]="question.Value" [mandatory]="question?.Mandatory" [yesTitle]="question?.True || null" [noTitle]="question?.False || ''"
                         (valueChange)="onQuestionValueChanged($event)"></survey-yes-no-question>
                 </ng-container>
                 <ng-container *ngSwitchCase="'number'">
@@ -52,7 +52,7 @@
                         type="int" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
                 </ng-container>
                 <ng-container *ngSwitchCase="'decimal'">
-                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
+                    <pep-textbox [minFractionDigits]="question?.Value" [maxFractionDigits]="question?.Value" [value]="" [mandatory]="question?.Mandatory" [renderTitle]="false"
                         type="real" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
                 </ng-container>
                 <ng-container *ngSwitchCase="'currency'">
