@@ -64,7 +64,17 @@
                          [value]="question?.False || ''" (valueChange)="onQuestionEditorFieldChanged('False',$event)">
         </pep-textbox>
         </ng-container>
-
+        <ng-container *ngIf="question?.Type == 'decimal'">
+            <pep-slider [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DECIMAL.NUMBER_AFTER' | translate" 
+                   [hint]="question?.Value?.toString() || '0'" 
+                   [minValue]="1" 
+                   [maxValue]="15"
+                   [disabled]="false" 
+                   [value]="question?.Value"
+                   [background]="'RGBA(0,0,0,50%)'"
+                   (inputChange)="onQuestionEditorFieldChanged('Value',$event)">
+           </pep-slider>
+        </ng-container>
     
         <!-- <ng-container *ngIf="forNextVersion">
         <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>

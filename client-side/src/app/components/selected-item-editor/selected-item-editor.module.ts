@@ -4,13 +4,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
-
 import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items';
-
-
 import { SelectedItemEditorComponent } from './selected-item-editor.component';
 import { QuestionSelectOptionsModule } from '../select-options/select-options.module';
 import { PepNgxLibModule, PepAddonService } from '@pepperi-addons/ngx-lib';
+import { PepSliderModule } from '@pepperi-addons/ngx-lib/slider';
 import { PepIconRegistry, pepIconSystemFilter2} from '@pepperi-addons/ngx-lib/icon';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
@@ -36,6 +34,7 @@ const pepIcons = [
         PepDraggableItemsModule,
         QuestionSelectOptionsModule,
         PepTextboxModule,
+        PepSliderModule,
         PepTextareaModule,
         PepCheckboxModule,
         PepSideBarModule,

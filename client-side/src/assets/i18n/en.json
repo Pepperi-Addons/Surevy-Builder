@@ -70,6 +70,9 @@
                     "TITLE": "Boolean Options",
                     "TRUE": "True",
                     "FALSE": "False"
+                },
+                "DECIMAL":{
+                    "NUMBER_AFTER": "Numbers after the dot"
                 }
             }
         }
