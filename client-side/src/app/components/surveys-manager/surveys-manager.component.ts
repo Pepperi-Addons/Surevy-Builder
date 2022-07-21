@@ -117,7 +117,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                 return [{
                         title: this.translate.instant("ACTIONS.EDIT"),
                         handler: async (data: PepSelectionData) => {
-                            this._navigationService.navigateToSurvey(this._activatedRoute, data?.rows[0]);
+                            this._navigationService.navigateToSurvey(data?.rows[0]);
                         }
                     }, {
                         title: this.translate.instant("ACTIONS.DELETE"),
@@ -146,13 +146,13 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
     }
 
     onSurveyClicked(event) {
-        this._navigationService.navigateToSurvey(this._activatedRoute, event.id);
+        this._navigationService.navigateToSurvey(event.id);
     }
 
     onAddSurveyClicked() {
         this.surveysService.createNewSurvey(this._navigationService.addonUUID, this.totalSurveys).pipe(first()).subscribe((survey: Survey) => {
             if (survey) {
-                this._navigationService.navigateToSurvey(this._activatedRoute, survey.Key);
+                this._navigationService.navigateToSurvey(survey.Key);
             } else {
                 // TODO: show error.
             }

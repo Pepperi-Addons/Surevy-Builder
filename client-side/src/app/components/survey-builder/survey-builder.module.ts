@@ -13,7 +13,8 @@ import { SurveyBuilderComponent} from './index';
 export const routes: Routes = [
     {
         path: '',
-        component: SurveyBuilderComponent
+        component: SurveyBuilderComponent,
+        data: { showSidebar: false, addPadding: false}
     }
 ];
 

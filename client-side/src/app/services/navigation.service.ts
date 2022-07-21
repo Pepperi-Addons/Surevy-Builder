@@ -30,23 +30,31 @@ export class NavigationService {
         });
     }
 
-    back(route: ActivatedRoute): Promise<boolean> {
+    private getCurrentRoute(route: ActivatedRoute) {
+        return {
+            ...route,
+            ...route.children.reduce((acc, child) =>
+            ({ ...this.getCurrentRoute(child), ...acc }), {}) 
+        };
+    }
+
+    back(): Promise<boolean> {
         this.history.pop();
         
         if (this.history.length > 0) {
             this.history.pop();
         }
         
+        const route: ActivatedRoute = this.getCurrentRoute(this.route);
         return this.router.navigate(['../'], {
             relativeTo: route,
             queryParamsHandling: 'merge'
         });
     }
 
-    navigateToSurvey(route: ActivatedRoute, surveyKey: string): Promise<boolean> {
-        // this.router.navigate([`${surveyKey}`], {breadcrumbs: 'New Event'})
-        // this.route.snapshot.children
-        // this.activatedRoute.firstChild.snapshot.data
+    navigateToSurvey(surveyKey: string): Promise<boolean> {
+        const route: ActivatedRoute = this.getCurrentRoute(this.route);
+        
         return this.router.navigate([`${surveyKey}`], {
             relativeTo: route,
             queryParamsHandling: 'merge'

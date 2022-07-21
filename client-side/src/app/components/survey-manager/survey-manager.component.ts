@@ -47,8 +47,6 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         public layoutService: PepLayoutService,
         private _surveysService: SurveysService,
         private _navigationService: NavigationService,
-        private router: Router,
-        private _activatedRoute: ActivatedRoute,
         private pepSnackBarService: PepSnackBarService,        
         public translate: TranslateService
     ) {
@@ -89,7 +87,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     }
 
     onNavigateBackFromEditor() {
-        this._navigationService.back(this._activatedRoute);
+        this._navigationService.back();
     }
 
     onSurveyPropertyChanged(property: string, value: string | boolean) {
