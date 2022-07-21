@@ -82,31 +82,16 @@ export const routes: Routes = [
         SurveyBuilderInternalModule,
         SelectedItemEditorModule,
         QuestionMenuModule,
-        TranslateModule.forChild({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: (addonService: PepAddonService) => 
-                    PepAddonService.createMultiTranslateLoader(config.AddonUUID, addonService, ['ngx-lib', 'ngx-composite-lib']),
-                deps: [PepAddonService]
-            }, isolate: false
-        }),
+        TranslateModule.forChild(),
         RouterModule.forChild(routes)
     ],
     exports:[ServeyManagerComponent],
-    providers: [
-        TranslateStore,
-        // When loading this module from route we need to add this here (because only this module is loading).
-        SurveysService,
-        NavigationService
-    ]
+    
 })
 export class SurveyManagerModule {
     constructor(
-        translate: TranslateService,
-        private pepIconRegistry: PepIconRegistry,
-        private pepAddonService: PepAddonService
+        private pepIconRegistry: PepIconRegistry
     ) {
-        this.pepAddonService.setDefaultTranslateLang(translate);
         this.pepIconRegistry.registerIcons(pepIcons);
     }
 }
