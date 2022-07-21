@@ -10,7 +10,24 @@ import { PepButton,IPepButtonClickEvent } from '@pepperi-addons/ngx-lib/button';
 })
 export class YesNoQuestionComponent implements OnInit {
     @Input() value: '';
-    @Input() mandatory = false;
+
+    _mandatory = false;
+    @Input() 
+    set mandatory(val: boolean) {        
+        this._mandatory == val;
+    }
+    get mandatory() {
+        return this._mandatory;
+    }
+    @Input() 
+    set yesTitle(val: string) {
+        this._yesNoQuestionService.yesTitle = val;
+    }
+    
+    @Input()
+    set noTitle(val: string) {
+        this._yesNoQuestionService.noTitle = val;
+    }
 
     @Output() valueChange = new EventEmitter<string>();
     
@@ -25,8 +42,8 @@ export class YesNoQuestionComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    onButtonClicked(button: PepButton) {            
-        this.valueChange.emit(button.key === 'none' ? null : button.key);
+    onButtonClicked(button: PepButton) {                   
+        this.valueChange.emit(button === null ? null : button.key);
     }
 
 }

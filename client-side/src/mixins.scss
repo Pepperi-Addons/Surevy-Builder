@@ -3,6 +3,15 @@
 //**************************************************************************
 // This file contains all mixins.
 //**************************************************************************
+@mixin add-padding() {
+    .add-padding {
+        padding-inline: variables.$content-padding;
+
+        @media (max-width: variables.$screen-max-size-xs) {
+            padding-inline: 0;
+        }
+    }
+}
 
 @mixin add-separator-container() {
     
@@ -22,6 +31,17 @@
     &:not(.is-grabbing) {
         &:hover .add-button {
             display: block;
+        }
+    }
+}
+
+@mixin side-bar-title() {
+    .side-bar-title {
+        display: flex;
+        padding-top: variables.$spacing-sm; 
+        
+        .back-button {
+            margin-inline-end: variables.$spacing-sm;
         }
     }
 }
