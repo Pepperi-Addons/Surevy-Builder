@@ -48,7 +48,8 @@ const pepIcons = [
 export const routes: Routes = [
     {
         path: '',
-        component: ServeyManagerComponent
+        component: ServeyManagerComponent,
+        data: { showSidebar: false, addPadding: false}
     }
 ];
 
