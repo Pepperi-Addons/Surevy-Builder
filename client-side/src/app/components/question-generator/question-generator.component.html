@@ -44,7 +44,7 @@
                         (valueChange)="onQuestionValueChanged($event)"></pep-select>
                 </ng-container>
                 <ng-container *ngSwitchCase="'boolean-toggle'">
-                    <survey-yes-no-question [value]="question.Value" [mandatory]="question?.Mandatory"
+                    <survey-yes-no-question [value]="question.Value" [mandatory]="question?.Mandatory" [yesTitle]="question?.True || null" [noTitle]="question?.False || ''"
                         (valueChange)="onQuestionValueChanged($event)"></survey-yes-no-question>
                 </ng-container>
                 <ng-container *ngSwitchCase="'number'">
