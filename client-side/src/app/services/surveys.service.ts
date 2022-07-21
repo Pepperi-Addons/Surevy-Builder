@@ -99,10 +99,12 @@ export class SurveysService {
         });
     }
 
-    private getNewSection() {
+    private  getNewSection() {
+        const title = this.translate.get('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER');
+
         return {
             Key: PepGuid.newGuid(),
-            Title: this.translate.instant("SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER"),
+            Title: title.toString() || '',
             Questions: []
         };
     }
@@ -393,22 +395,25 @@ export class SurveysService {
 
     addQuestion(questionType: SurveyQuestionType, sectionIndex = -1, questionIndex = -1) {
         // Create new question
-        const question: SurveyQuestion = {
-            Key: PepGuid.newGuid(),
-            Title: this.translate.instant("SURVEY_MANAGER.QUESTION_TITLE_PLACEHOLDER"),
-            Type: questionType,
-        }
+        const title = this.translate.get('SURVEY_MANAGER.QUESTION_TITLE_PLACEHOLDER').subscribe((title:string) => {
+        
+            const question: SurveyQuestion = {
+                Key: PepGuid.newGuid(),
+                Title: title.toString() || '',
+                Type: questionType,
+            }
 
-        // Get the sections.
-        const sections = this._surveySubject.getValue().Sections;
-        const currentSection = (sectionIndex > -1 && sectionIndex < sections.length) ? sections[sectionIndex] : sections[this._selectedSectionIndex];
+            // Get the sections.
+            const sections = this._surveySubject.getValue().Sections;
+            const currentSection = (sectionIndex > -1 && sectionIndex < sections.length) ? sections[sectionIndex] : sections[this._selectedSectionIndex];
 
-        const newSelectedIndex = questionIndex > -1 && questionIndex < currentSection.Questions.length ? questionIndex :
-            (this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ? this._selectedQuestionIndex + 1 : currentSection.Questions.length);
-        currentSection.Questions.splice(newSelectedIndex, 0, question);
+            const newSelectedIndex = questionIndex > -1 && questionIndex < currentSection.Questions.length ? questionIndex :
+                (this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ? this._selectedQuestionIndex + 1 : currentSection.Questions.length);
+            currentSection.Questions.splice(newSelectedIndex, 0, question);
 
-        this.notifySectionsChange(sections);
-        this.notifySelectedQuestionChange(question, newSelectedIndex);
+            this.notifySectionsChange(sections);
+            this.notifySelectedQuestionChange(question, newSelectedIndex);
+        });
     }
 
     onQuestionDropped(event: CdkDragDrop<any[]>, sectionIndex: number) {

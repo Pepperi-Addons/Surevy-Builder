@@ -75,7 +75,7 @@
     
         <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>
         
-        <pep-textbox *ngIf="question?.Type === 'short-text' && question?.Type === 'long-text'"
+        <pep-textbox *ngIf="question?.Type === 'short-text' || question?.Type === 'long-text'"
             [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAX_CHARACTERS' | translate" [type]="'int'"
             [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAX_CHARACTERS_PLACEHOLDER' | translate"
             [value]="question?.MaxCharacters || ''" (valueChange)="onQuestionEditorFieldChanged('MaxCharacters',$event)">
