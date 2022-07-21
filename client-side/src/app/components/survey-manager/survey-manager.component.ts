@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from "@angular/router";
 import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
@@ -7,6 +7,7 @@ import { NavigationService } from '../../services/navigation.service';
 import { ISurveyEditor, SurveyQuestionType } from "../../model/survey.model";
 import { DestoyerDirective } from '../../model/destroyer';
 import { PepSnackBarData, PepSnackBarService } from "@pepperi-addons/ngx-lib/snack-bar";
+import { filter } from "rxjs";
 
 
 @Component({
@@ -46,6 +47,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         public layoutService: PepLayoutService,
         private _surveysService: SurveysService,
         private _navigationService: NavigationService,
+        private router: Router,
         private _activatedRoute: ActivatedRoute,
         private pepSnackBarService: PepSnackBarService,        
         public translate: TranslateService

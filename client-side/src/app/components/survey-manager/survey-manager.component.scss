@@ -2,19 +2,28 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions';
 @import '../../../mixins.scss';
 
+:host {
+    height: inherit;
+}
+
 .survey-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    height: 100%;
+    width: 100%;
+
     @include add-padding();
 
     pep-side-bar {
         @include side-bar-title();
     }
 
-    .survey-container {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        height: 100%;
-        width: 100%;
-    }
+    // .survey-container {
+    //     display: grid;
+    //     grid-template-columns: 1fr auto;
+    //     height: 100%;
+    //     width: 100%;
+    // }
 
     // .side-bar-title {
     //     display: flex;

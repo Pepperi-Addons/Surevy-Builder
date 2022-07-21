@@ -19,7 +19,7 @@ export class NavigationService {
 
     constructor(
         private router: Router,
-        public route: ActivatedRoute
+        private route: ActivatedRoute
     ) {
         // Get the addonUUID from the root config.
         this._addonUUID = config.AddonUUID;
@@ -30,29 +30,26 @@ export class NavigationService {
         });
     }
 
-    back(route: ActivatedRoute): void {
+    back(route: ActivatedRoute): Promise<boolean> {
         this.history.pop();
         
         if (this.history.length > 0) {
             this.history.pop();
         }
         
-        const extra = { state: { showSidebar: true} };
-        this.router.navigate(['../'], {
+        return this.router.navigate(['../'], {
             relativeTo: route,
-            queryParamsHandling: 'merge',
-            state: extra.state
+            queryParamsHandling: 'merge'
         });
     }
 
-    navigateToSurvey(route: ActivatedRoute, surveyKey: string) {
+    navigateToSurvey(route: ActivatedRoute, surveyKey: string): Promise<boolean> {
         // this.router.navigate([`${surveyKey}`], {breadcrumbs: 'New Event'})
         // this.route.snapshot.children
         // this.activatedRoute.firstChild.snapshot.data
-        this.router.navigate([`${surveyKey}`], {
+        return this.router.navigate([`${surveyKey}`], {
             relativeTo: route,
-            queryParamsHandling: 'merge',
-            state: { showSidebar: false, addPadding: false}
+            queryParamsHandling: 'merge'
         });
     }
 }
