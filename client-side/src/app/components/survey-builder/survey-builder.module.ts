@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
-import { PepAddonService } from '@pepperi-addons/ngx-lib';
+import { PepAddonService, PepNgxLibModule } from '@pepperi-addons/ngx-lib';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { SurveysService } from 'src/app/services/surveys.service';
 import { config } from '../addon.config';
@@ -24,6 +24,7 @@ export const routes: Routes = [
     ],
     imports: [
         CommonModule,
+        PepNgxLibModule,
         SurveyBuilderInternalModule,
         TranslateModule.forChild({
             loader: {
