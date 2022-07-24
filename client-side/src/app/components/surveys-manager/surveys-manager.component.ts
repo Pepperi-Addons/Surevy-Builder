@@ -70,6 +70,11 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                 
                 this.surveys = await firstValueFrom(this.surveysService.getSurveys(this._navigationService.addonUUID, encodeURI(options)));
 
+                this.surveys.forEach(sur => {
+                    sur['DateRange'] = sur?.ActiveDateRange != null ? (sur.ActiveDateRange.To +'-'+ sur.ActiveDateRange.From) : '';
+
+                });
+                
                 this.totalSurveys = this.surveys.length;
 
                 return {
