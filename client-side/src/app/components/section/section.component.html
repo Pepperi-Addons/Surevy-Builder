@@ -18,13 +18,13 @@
         <ng-template #runnerTitleTemplate>
             <!-- <pep-separator class="title-container" [label]="title || ('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER' | translate)"></pep-separator> -->
             <div class="title-description-cont pep-border-bottom" [ngStyle]="{'padding-bottom': description?.length > 0 ? '.5rem' : '0'}">
-                <label class="body-md title">{{title}}</label> 
+                <label class="body-2xl title">{{title}}</label> 
 
                 <ng-container *ngIf="description?.length > 0">
                     <br/>
-                    <span class="body-xs color-dimmed description-container" title="{{ description }}">{{ description }}</span>
+                    <span class="body-sm color-dimmed description-container" title="{{ description }}">{{ description }}</span>
                 </ng-container>
-        </div>
+            </div>
         </ng-template>
     </div>
 
