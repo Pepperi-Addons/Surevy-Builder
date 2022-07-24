@@ -18,7 +18,7 @@
                 </pep-field-title>
 
                 <div *ngIf="question.Description?.length > 0" class="question-description-container">
-                    <span class="body-xs color-dimmed ellipsis" title="{{ question.Description }}">{{ question.Description }}</span>
+                    <span class="body-xs color-dimmed" title="{{ question.Description }}">{{ question.Description }}</span>
                 </div>
             </ng-template>
             <ng-template #runnerTitleTemplate>
@@ -27,7 +27,7 @@
                 </pep-field-title>
 
                 <div *ngIf="question.Description?.length > 0" class="question-description-container">
-                    <span class="body-sm color-dimmed ellipsis" title="{{ question.Description }}">{{ question.Description }}</span>
+                    <span class="body-sm color-dimmed" title="{{ question.Description }}">{{ question.Description }}</span>
                 </div>
             </ng-template>
             

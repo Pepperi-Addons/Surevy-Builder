@@ -1,28 +1,28 @@
 <div class="section-area " [ngClass]="{ 'editable-state': editable }" 
     cdkDrag [cdkDragDisabled]="!editable" [cdkDragData]="index" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)" 
 >
+<!-- [ngStyle]="{'align-items': description?.length > 0 ? 'flex-start' : 'center'}"  -->
     <div class="section-container " [ngClass]="{ 'active-section': isActive && selectedQuestion === null }"
-         [ngStyle]="{'align-items': description?.length > 0 ? 'flex-start' : 'center'}" 
         (mousedown)="onSectionClicked($event)">
         <ng-container *ngIf="editable; then editableTitleTemplate; else runnerTitleTemplate"></ng-container>
         <ng-template #editableTitleTemplate>
             <survey-sequence-number cdkDragHandle [value]="index + 1"></survey-sequence-number>
     
-            <div class="title-description-cont">
+            <div class="titles-container">
                 <pep-field-title [label]="title"></pep-field-title> 
                 <ng-container *ngIf="description?.length > 0">
-                    <span class="body-xs color-dimmed description-container" title="{{ description }}">{{ description }}</span>
+                    <span class="body-xs color-dimmed" title="{{ description }}">{{ description }}</span>
                 </ng-container>
             </div>
         </ng-template>
         <ng-template #runnerTitleTemplate>
             <!-- <pep-separator class="title-container" [label]="title || ('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER' | translate)"></pep-separator> -->
-            <div class="title-description-cont pep-border-bottom" [ngStyle]="{'padding-bottom': description?.length > 0 ? '.5rem' : '0'}">
+            <!-- [ngStyle]="{'padding-bottom': description?.length > 0 ? '.5rem' : '0'}" -->
+            <div class="titles-container pep-border-bottom" >
                 <label class="body-2xl title">{{title}}</label> 
-
                 <ng-container *ngIf="description?.length > 0">
-                    <br/>
-                    <span class="body-sm color-dimmed description-container" title="{{ description }}">{{ description }}</span>
+                    <!-- <br/> -->
+                    <span class="body-sm color-dimmed" title="{{ description }}">{{ description }}</span>
                 </ng-container>
             </div>
         </ng-template>

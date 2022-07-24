@@ -10,6 +10,8 @@
         }
 
         .section-container {
+            padding: variables.$spacing-sm;
+
             // The placeholder of the drop area when dragging a section.
             &.cdk-drag-placeholder {
                 opacity: 0.5;
@@ -27,25 +29,30 @@
         }
     }  
 
+    &:not(.editable-state) {
+        .section-container {
+            padding: variables.$spacing-lg variables.$spacing-sm 0;
+
+            .titles-container {
+                padding-bottom: variables.$spacing-sm;
+            }
+        }
+    }
+
     .section-container {
         display: flex;
         gap: variables.$spacing-lg;
         min-height: 3rem;
         border-radius: variables.$border-radius-md;
-        padding: variables.$spacing-sm;
+        // padding: variables.$spacing-sm;
 
-        .title-description-cont{
-            margin-top: variables.$spacing-xs;
+        .titles-container {
+            align-self: center;
             width: 100%;
-        }
-            
-        .title-container {
-            width: 100%;
-            display: grid;
-        }
 
-        .description-container{
-            white-space: inherit;
+            .title {
+                display: block;
+            }
         }
     }
     
