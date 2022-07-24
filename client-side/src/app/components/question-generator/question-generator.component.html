@@ -1,15 +1,12 @@
 <div class="question-container" cdkDrag [cdkDragDisabled]="!editable" [cdkDragData]="question"
     (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)">
-    <div *ngIf="editable" class="add-separator-container" [ngClass]="{ 'is-grabbing': isGrabbing  }">
-        <survey-question-menu class="add-button" sizeType="sm" styleType="regular"
+    <div *ngIf="editable" class="add-separator-container" [ngClass]="{ 'is-grabbing': isGrabbing, 'state-open': isQuestionTypeMenuOpen }">
+        <survey-question-menu class="add-button" sizeType="sm" styleType="regular" (onStateChange)="onStateChange($event)"
             (questionTypeClick)="onAddQuestionClicked($event)"></survey-question-menu>
     </div>
 
     <div class="question-with-sequence-container" [ngClass]="{ 'editable-state': editable }">
-        <div *ngIf="editable" class="pep-button sm sequence-number" cdkDragHandle
-            (mousedown)="onQuestionClicked($event)">
-            <span class="body-xs " title="{{ sequenceNumber }}">{{ sequenceNumber }}</span>
-        </div>
+        <survey-sequence-number *ngIf="editable" cdkDragHandle [value]="sequenceNumber" (mousedown)="onQuestionClicked($event)" ></survey-sequence-number>
 
         <div class="question-field-container" (mousedown)="onQuestionClicked($event)"
             [ngClass]="{ 'active-question': isActive }">

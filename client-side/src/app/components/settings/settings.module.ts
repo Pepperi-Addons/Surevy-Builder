@@ -16,7 +16,6 @@ import { config } from '../addon.config';
     imports: [
         CommonModule,
         PepNgxLibModule,
-        SettingsRoutingModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,
@@ -25,6 +24,7 @@ import { config } from '../addon.config';
                 deps: [PepAddonService]
             }, isolate: false
         }),
+        SettingsRoutingModule,
     ],
     providers: [
         TranslateStore,

@@ -4,12 +4,9 @@
 .question-container {
     
     .question-with-sequence-container {
+        
         // This css is only for edit mode.
         &.editable-state {
-
-            .sequence-number {
-                @include mixins.state-weak-default();
-            }
 
             .question-field-container {
                 background: functions.get-pep-color(color-system-primary-invert, color-base);

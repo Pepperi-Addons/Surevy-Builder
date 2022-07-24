@@ -4,6 +4,7 @@ import { SurveysService } from '../../services/surveys.service';
 import { TranslateService } from '@ngx-translate/core';
 import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { SurveyQuestion, SurveyQuestionType, SurveySection } from "../../model/survey.model";
+import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
 
 @Component({
     selector: 'section',
@@ -50,6 +51,7 @@ export class SectionComponent implements OnInit {
     protected sectionContainerKeyPrefix = ''
     protected selectedQuestion: SurveyQuestion = null;
     protected isGrabbing = false;
+    protected isQuestionTypeMenuOpen = false;
 
     constructor(
         private renderer: Renderer2,
@@ -99,5 +101,7 @@ export class SectionComponent implements OnInit {
     onAddQuestionClicked(type: SurveyQuestionType, questionIndex: number = -1) {
         this.surveysService.addQuestion(type, this.index, questionIndex);
     }
-
+    onStateChange(event: IPepMenuStateChangeEvent) {
+        this.isQuestionTypeMenuOpen = event.state === 'visible';
+    }
 }

@@ -24,12 +24,7 @@
 
         // This css is only for edit mode!!!
         &.editable-state {
-            
-            .sequence-number {
-                width: 2rem;
-                height: 2rem;
-                padding: 0;
-            }
+            @include sequence-number();
         
             .question-field-container {
                 border-radius: variables.$border-radius-md;

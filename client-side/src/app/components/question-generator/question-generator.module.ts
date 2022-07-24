@@ -24,6 +24,7 @@ const pepIcons = [
 
 import { YesNoQuestionComponent } from '../yes-no-question/yes-no-question.component';
 import { QuestionGeneratorComponent } from './question-generator.component';
+import { SequenceNumberModule } from '../sequence-number/sequence-number.module';
 
 @NgModule({
     declarations: [
@@ -45,6 +46,7 @@ import { QuestionGeneratorComponent } from './question-generator.component';
         PepFieldTitleModule,
         QuestionMenuModule,
         YesNoQuestionModule,
+        SequenceNumberModule,
         TranslateModule.forChild()
     ],
     exports: [QuestionGeneratorComponent]

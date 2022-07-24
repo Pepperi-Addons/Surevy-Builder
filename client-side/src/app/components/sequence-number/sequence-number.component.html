@@ -1,0 +1,7 @@
+<div class="pep-button sm sequence-number"
+    (mouseenter)="onSequenceNumberMouseEnter()" (mouseleave)="onSequenceNumberMouseLeave()">
+    <span *ngIf="!isHoverOnSequenceNumber" class="body-xs " title="{{ value }}">{{ value }}</span>
+    <mat-icon *ngIf="isHoverOnSequenceNumber">
+        <pep-icon name="system_move"></pep-icon>
+    </mat-icon>
+</div>

@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CdkDragEnd, CdkDragStart } from '@angular/cdk/drag-drop';
 import { SurveysService } from 'src/app/services/surveys.service';
 import { SurveyQuestion, SurveyQuestionType } from '../../model/survey.model';
+import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
 
 @Component({
     selector: 'survey-question-generator',
@@ -26,6 +27,7 @@ export class QuestionGeneratorComponent implements OnInit {
     @Output() addQuestionClick: EventEmitter<SurveyQuestionType> = new EventEmitter();
 
     protected isGrabbing = false;
+    protected isQuestionTypeMenuOpen = false;
 
     constructor(
         private surveysService: SurveysService
@@ -61,4 +63,8 @@ export class QuestionGeneratorComponent implements OnInit {
         // TODO: implement        
     }
     
+    onStateChange(event: IPepMenuStateChangeEvent) {
+        this.isQuestionTypeMenuOpen = event.state === 'visible';
+        console.log('onStateChange', event);
+    }
 }

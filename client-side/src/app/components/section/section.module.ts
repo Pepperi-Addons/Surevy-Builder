@@ -10,6 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { QuestionGeneratorModule } from '../question-generator/question-generator.module';
 import { QuestionMenuModule } from '../question-menu/question-menu.module';
 import { PepSeparatorModule } from '@pepperi-addons/ngx-lib/separator';
+import { SequenceNumberModule } from '../sequence-number/sequence-number.module';
 
 @NgModule({
     declarations: [SectionComponent],
@@ -23,6 +24,7 @@ import { PepSeparatorModule } from '@pepperi-addons/ngx-lib/separator';
         PepFieldTitleModule,
         QuestionGeneratorModule,
         QuestionMenuModule,
+        SequenceNumberModule,
         TranslateModule.forChild()
     ],
     exports: [SectionComponent]

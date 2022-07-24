@@ -1,0 +1,6 @@
+
+@import '../../../mixins.scss';
+
+:host {
+    @include sequence-number();
+}

@@ -6,18 +6,14 @@
         (mousedown)="onSectionClicked($event)">
         <ng-container *ngIf="editable; then editableTitleTemplate; else runnerTitleTemplate"></ng-container>
         <ng-template #editableTitleTemplate>
-            <div class="pep-button sm sequence-number" cdkDragHandle>
-                <span class="body-xs " title="{{ index + 1 }}">{{ index + 1 }}</span>
-            </div>
+            <survey-sequence-number cdkDragHandle [value]="index + 1"></survey-sequence-number>
     
             <div class="title-description-cont">
-                <pep-field-title [label]="title">
-                </pep-field-title> 
-
+                <pep-field-title [label]="title"></pep-field-title> 
                 <ng-container *ngIf="description?.length > 0">
                     <span class="body-xs color-dimmed description-container" title="{{ description }}">{{ description }}</span>
                 </ng-container>
-        </div>
+            </div>
         </ng-template>
         <ng-template #runnerTitleTemplate>
             <!-- <pep-separator class="title-container" [label]="title || ('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER' | translate)"></pep-separator> -->
@@ -45,10 +41,11 @@
         
     </div>
 
-    <div *ngIf="editable" class="add-separator-container" [ngClass]="{ 'is-grabbing': isGrabbing }">
+    <div *ngIf="editable" class="add-separator-container" [ngClass]="{ 'is-grabbing': isGrabbing, 'state-open': isQuestionTypeMenuOpen  }">
         <pep-button class="add-button" styleType="regular" sizeType="sm" iconName="number_plus" 
             [value]="'SURVEY_MANAGER.SURVEY_EDITOR.ADD_SECTION' | translate" (buttonClick)="onAddSectionClicked()"></pep-button>
 
-        <survey-question-menu class="add-button" sizeType="sm" styleType="regular" (questionTypeClick)="onAddQuestionClicked($event)"></survey-question-menu>
+        <survey-question-menu class="add-button" sizeType="sm" styleType="regular" (questionTypeClick)="onAddQuestionClicked($event)"
+            (onStateChange)="onStateChange($event)"></survey-question-menu>
     </div>
 </div>
