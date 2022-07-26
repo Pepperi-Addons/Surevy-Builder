@@ -452,7 +452,7 @@ export class SurveysService {
     getSurveys(addonUUID: string, options: any): Observable<ISurveyRowModel[]> {
         // Get the surveys from the server.
         const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.getHttpCall(`${baseUrl}/get_surveys_data?${options}`);
+        return this.httpService.getHttpCall(`${baseUrl}/get_surveys_data`);//?${options}`);
     }
 
     createNewSurvey(addonUUID: string, totalSurveys: number = 0): Observable<Survey> {
