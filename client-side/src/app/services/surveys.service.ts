@@ -135,13 +135,13 @@ export class SurveysService {
         this._surveySubject.next(survey);
     }
 
-    private notifySectionsChange(sections: SurveySection[]) {
+    private notifySectionsChange(sections: SurveySection[], addDefualtSection = true) {
         const survey = this._surveySubject.getValue();
 
         if (survey) {
             survey.Sections = sections;
 
-            if (sections.length === 0) {
+            if (addDefualtSection && sections.length === 0) {
                 const section = this.getNewSection();
                 survey.Sections.push(section);
             }
@@ -452,7 +452,7 @@ export class SurveysService {
     getSurveys(addonUUID: string, options: any): Observable<ISurveyRowModel[]> {
         // Get the surveys from the server.
         const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.getHttpCall(`${baseUrl}/get_surveys_data`);//?${options}`);
+        return this.httpService.getHttpCall(`${baseUrl}/get_surveys_data?${options}`);
     }
 
     createNewSurvey(addonUUID: string, totalSurveys: number = 0): Observable<Survey> {
@@ -492,7 +492,7 @@ export class SurveysService {
     }
 
     unloadSurveyBuilder() {
-        this.notifySectionsChange([]);
+        this.notifySectionsChange([], false);
         this.notifySurveyChange(null);
     }
 

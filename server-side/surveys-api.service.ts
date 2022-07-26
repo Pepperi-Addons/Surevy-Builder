@@ -265,7 +265,7 @@ export class SurveyApiService {
             const arr = await Promise.all(dataPromises).then(res => res);
 
             res = {
-                survey: arr.length > 0 ? arr[1] : survey, // Get the publish survey if exist in the array cause we populate it only if the draft is hidden or not exist.
+                survey: arr.length > 0 ? arr[0] : survey, // Get the publish survey if exist in the array cause we populate it only if the draft is hidden or not exist.
             }
         }
 
