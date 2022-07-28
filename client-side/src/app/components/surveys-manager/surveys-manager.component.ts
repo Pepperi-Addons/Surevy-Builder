@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild } from "@angular/core";
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router'
 import { first, Subscription, firstValueFrom } from 'rxjs';
-import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
+import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { IPepGenericListDataSource, IPepGenericListPager, IPepGenericListActions, IPepGenericListInitData, PepGenericListService } from "@pepperi-addons/ngx-composite-lib/generic-list";
 import { DataViewFieldType, GridDataViewField, Page } from '@pepperi-addons/papi-sdk';
@@ -9,13 +9,24 @@ import { PepSelectionData } from '@pepperi-addons/ngx-lib/list';
 import { NavigationService } from "../../services/navigation.service";
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { SurveysService } from "../../services/surveys.service";
-import { Survey, ISurveyRowModel } from "../../model/survey.model";
+import { Survey, ISurveyRowModel, MY_DATE_FORMATS, MomentUtcDateAdapter, MomentUtcDateTimeAdapter } from "../../model/survey.model";
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from "@angular/material/core";
+import { getCalture } from "@pepperi-addons/ngx-lib/date";
+import { DatetimeAdapter, MAT_DATETIME_FORMATS } from '@mat-datetimepicker/core';
 
+import { utc } from "moment";
 
 @Component({
     selector: 'surveys-manager',
     templateUrl: './surveys-manager.component.html',
-    styleUrls: ['./surveys-manager.component.scss']
+    styleUrls: ['./surveys-manager.component.scss'],
+    providers: [
+        { provide: MAT_DATE_LOCALE, useFactory: getCalture, deps:[PepLayoutService] },
+        { provide: DateAdapter, useClass: MomentUtcDateAdapter },
+        { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
+        { provide: DatetimeAdapter, useClass: MomentUtcDateTimeAdapter },
+        { provide: MAT_DATETIME_FORMATS, useValue: MY_DATE_FORMATS },
+    ],
 })
 export class ServeysManagerComponent implements OnInit, OnDestroy {
     screenSize: PepScreenSizeType;
@@ -37,6 +48,8 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         private _activatedRoute: ActivatedRoute,
         private surveysService: SurveysService,
         private dialog: PepDialogService,
+        private adapter: DateAdapter<any>,
+        private utilitiesService: PepUtilitiesService,
     ) {
         this._subscriptions.push(this._activatedRoute.data.subscribe(data => {
             this.addPadding = data.addPadding ?? true;
@@ -53,6 +66,19 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         //this.actions = this.setActions();
     }
 
+    formatDate(value,isDateTime){
+        const parseDate = this.utilitiesService.parseDate(value, isDateTime);
+        const dateModel = utc(parseDate);
+
+        if (dateModel === null || !dateModel.isValid()) {
+            return '';
+        } else {
+            const format = isDateTime
+                ? MY_DATE_FORMATS.display.datetimeInput
+                : MY_DATE_FORMATS.display.dateInput;
+            return this.adapter.format(dateModel, format);
+        }
+    }
     setDataSource() {
         return {
             init: async (params) => {
@@ -71,8 +97,16 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                 this.surveys = await firstValueFrom(this.surveysService.getSurveys(this._navigationService.addonUUID, encodeURI(options)));
 
                 this.surveys.forEach(sur => {
-                    sur['DateRange'] = sur?.ActiveDateRange != null ? (sur.ActiveDateRange.To +'-'+ sur.ActiveDateRange.From) : '';
+                    let fromDate = '';
+                    if(sur?.ActiveDateRange != null && sur?.ActiveDateRange.From != null){
+                        fromDate = this.formatDate(sur.ActiveDateRange.From,false);
+                    }
+                    let toDate = '';
+                    if(sur?.ActiveDateRange != null && sur?.ActiveDateRange.To != null){
+                        toDate = this.formatDate(sur.ActiveDateRange.To,false);
+                    }
 
+                    sur['DateRange'] = fromDate.length || toDate.length ? fromDate +' - ' + toDate : '';
                 });
                 
                 this.totalSurveys = this.surveys.length;
@@ -102,11 +136,11 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                         Columns: [
                             { Width: 20 },
                             { Width: 25 },
+                            { Width: 8 },
+                            { Width: 24 },
+                            { Width: 6 },
                             { Width: 10 },
-                            { Width: 20 },
-                            { Width: 10 },
-                            { Width: 10 },
-                            { Width: 15 }
+                            { Width: 17 }
                         ],
                         FrozenColumnsCount: 0,
                         MinimumColumnWidth: 0
