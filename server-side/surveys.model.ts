@@ -58,13 +58,13 @@ export interface ISurveyBuilderData {
 }
 
 export const DEFAULT_BLANK_SURVEY_DATA: Survey = {
-    "Name": "Name of survey",
+    "Name": "",
     //  optional
-    "Description": "Description of survey",
+    "Description": "",
     "Active": true,
     "Sections": [
         {
-            "Key": "99dfd31h-2832-cf4b-k421-1fhf2299acsa",
+            "Key": "",
             "Title": "",
             "Questions": []
         }

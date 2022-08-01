@@ -145,6 +145,10 @@ export class SurveyApiService {
         survey.Name = `${survey.Name} ${surveyNum}`;
         survey.Description = `${survey.Description} ${surveyNum}`;
 
+        if (survey.Sections.length === 1) {
+            survey.Sections[0].Key = uuidv4();
+        }
+
         survey.Key = '';
         return this.upsertSurveyInternal(survey, DRAFT_SURVEYS_TABLE_NAME);
     }
