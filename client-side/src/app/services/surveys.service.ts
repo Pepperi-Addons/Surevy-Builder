@@ -90,6 +90,7 @@ export class SurveysService {
         private httpService: PepHttpService,
         private navigationService: NavigationService
     ) {
+
         this.surveyLoad$.subscribe((survey: Survey) => {
             this.loadSurveyEditor(survey);
             this.notifySectionsChange(survey?.Sections ?? []);
@@ -99,13 +100,19 @@ export class SurveysService {
     }
 
     private  getNewSection() {
-        const title = this.translate.get('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER');
+        
+        let section: SurveySection = null;
 
-        return {
-            Key: PepGuid.newGuid(),
-            Title: title.toString() || '',
-            Questions: []
-        };
+        this.translate.get('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER').subscribe((res: string) => {
+            section = {
+                Key: PepGuid.newGuid(),
+                Title: res,
+                Questions: []
+            };
+        }); 
+
+        return section;
+        
     }
 
     private loadSurveyEditor(survey: Survey) {
@@ -397,6 +404,7 @@ export class SurveysService {
         const title = this.translate.get('SURVEY_MANAGER.QUESTION_TITLE_PLACEHOLDER').subscribe((title:string) => {
         
             const question: SurveyQuestion = {
+                Name: PepGuid.newGuid(),
                 Key: PepGuid.newGuid(),
                 Title: title.toString() || '',
                 Type: questionType,
