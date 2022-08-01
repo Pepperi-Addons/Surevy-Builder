@@ -1,3 +1,7 @@
+import { Inject, Injectable, Optional } from "@angular/core";
+import { MomentDateAdapter } from "@angular/material-moment-adapter";
+import { MAT_DATE_LOCALE } from "@angular/material/core";
+import { MomentDatetimeAdapter } from "@mat-datetimepicker/moment";
 import { AddonData } from "@pepperi-addons/papi-sdk";
 
 export interface Survey extends AddonData {
@@ -66,3 +70,37 @@ export interface ISurveyEditor {
     active?: boolean;
     activeDateRange?: { from?: string, to?: string };
 }
+
+@Injectable()
+export class MomentUtcDateTimeAdapter extends MomentDatetimeAdapter {
+    constructor(@Optional() @Inject(MAT_DATE_LOCALE) dateLocale: string) {
+        super(dateLocale, { strict: false, useUtc: false }, new MomentUtcDateAdapter(dateLocale));
+    }
+}
+
+@Injectable()
+export class MomentUtcDateAdapter extends MomentDateAdapter {
+    constructor(@Optional() @Inject(MAT_DATE_LOCALE) dateLocale: string) {
+        super(dateLocale);
+    }
+}
+
+
+export const MY_DATE_FORMATS = {
+    parse: {
+        dateInput: 'L',
+        monthInput: 'MMMM',
+        timeInput: 'LT',
+        datetimeInput: 'L LT',
+    },
+    display: {
+        dateInput: 'L',
+        monthInput: 'MMMM',
+        timeInput: 'LT',
+        datetimeInput: 'L LT',
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: 'LL',
+        monthYearA11yLabel: 'MMMM YYYY',
+        popupHeaderDateLabel: 'ddd, DD MMM',
+    },
+};

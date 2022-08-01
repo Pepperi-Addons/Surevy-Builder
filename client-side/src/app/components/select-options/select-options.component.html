@@ -28,8 +28,8 @@
         </div>
         <div class="actions">
             <pep-button classNames="caution" sizeType="xs" iconName="system_bin" (buttonClick)="onRemoveClick(opt);"></pep-button>
-            <pep-button *ngIf="opt?.state == 'expand'" sizeType="xs" iconName="arrow_down" (buttonClick)="onEditClick(opt);"></pep-button>
-            <pep-button *ngIf="opt?.state == 'collapse'" sizeType="xs" iconName="arrow_up" (buttonClick)="onEditClick(opt);"></pep-button>
+            <pep-button *ngIf="opt?.state == 'expand'" sizeType="xs" iconName="arrow_up" (buttonClick)="onEditClick(opt);"></pep-button>
+            <pep-button *ngIf="opt?.state == 'collapse'" sizeType="xs" iconName="arrow_down" (buttonClick)="onEditClick(opt);"></pep-button>
         </div>
         <div class="editorCont" *ngIf="opt.state == 'expand'">
             <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_KEY' | translate"

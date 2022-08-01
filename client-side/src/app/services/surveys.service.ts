@@ -2,7 +2,7 @@ import { CdkDragDrop, CdkDragEnd, CdkDragStart, copyArrayItem, moveItemInArray, 
 import { Injectable } from "@angular/core";
 import { Params } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { PepGuid, PepHttpService, PepSessionService, PepUtilitiesService } from "@pepperi-addons/ngx-lib";
+import { PepGuid, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
 import { Observable, BehaviorSubject, from } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
@@ -88,9 +88,9 @@ export class SurveysService {
         private translate: TranslateService,
         private sessionService: PepSessionService,
         private httpService: PepHttpService,
-        private navigationService: NavigationService,
-        private utilitiesService: PepUtilitiesService,
+        private navigationService: NavigationService
     ) {
+
         this.surveyLoad$.subscribe((survey: Survey) => {
             this.loadSurveyEditor(survey);
             this.notifySectionsChange(survey?.Sections ?? []);
@@ -100,13 +100,19 @@ export class SurveysService {
     }
 
     private  getNewSection() {
-        const title = this.translate.get('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER');
+        
+        let section: SurveySection = null;
 
-        return {
-            Key: PepGuid.newGuid(),
-            Title: title.toString() || '',
-            Questions: []
-        };
+        this.translate.get('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER').subscribe((res: string) => {
+            section = {
+                Key: PepGuid.newGuid(),
+                Title: res,
+                Questions: []
+            };
+        }); 
+
+        return section;
+        
     }
 
     private loadSurveyEditor(survey: Survey) {
@@ -398,6 +404,7 @@ export class SurveysService {
         const title = this.translate.get('SURVEY_MANAGER.QUESTION_TITLE_PLACEHOLDER').subscribe((title:string) => {
         
             const question: SurveyQuestion = {
+                Name: PepGuid.newGuid(),
                 Key: PepGuid.newGuid(),
                 Title: title.toString() || '',
                 Type: questionType,
@@ -535,7 +542,6 @@ export class SurveysService {
             this.deleteSelectedQuestion();
         }
     }
-    
 }
 
 
