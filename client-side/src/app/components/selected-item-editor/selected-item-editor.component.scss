@@ -15,7 +15,9 @@ pep-side-bar {
     }
 
     .checkbox-no-background {
-        margin-top: variables.$spacing-xs;
+        &.withPadding{
+            padding-top: variables.$spacing-sm;
+        }
     }
 
     .pep-actions {

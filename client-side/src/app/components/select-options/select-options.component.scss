@@ -46,6 +46,11 @@
         }
     }
 
+}
 
+.checkbox-no-background {
+    &.withPaddingBot{
+        padding-bottom: ngx-variables.$spacing-sm;
+    }
 }
 
