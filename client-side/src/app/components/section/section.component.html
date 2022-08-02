@@ -6,7 +6,7 @@
         <ng-template #editableTitleTemplate>
             <survey-sequence-number cdkDragHandle [value]="index + 1"></survey-sequence-number>
             <div class="titles-container">
-                <pep-field-title [label]="title"></pep-field-title> 
+                <pep-field-title [label]="title !== '' ? title : ('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER' | translate)"></pep-field-title> 
                 <span *ngIf="description?.length > 0" class="body-xs color-dimmed" title="{{ description }}">{{ description }}</span>
             </div>
         </ng-template>

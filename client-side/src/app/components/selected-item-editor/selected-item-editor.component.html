@@ -62,7 +62,7 @@
             [value]="section?.Name || ''" (valueChange)="onSectionEditorFieldChanged('Name',$event)">
     </pep-textbox>
     <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SECTION_NAME' | translate"
-            [value]="section?.Title || ''" (valueChange)="onSectionEditorFieldChanged('Title',$event)">
+            [value]="section?.Title || ('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER' | translate)" (valueChange)="onSectionEditorFieldChanged('Title',$event)">
     </pep-textbox>
     <pep-textarea 
             [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2"
