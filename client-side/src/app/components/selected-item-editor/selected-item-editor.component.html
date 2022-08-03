@@ -47,7 +47,7 @@
 
         <div class="pep-actions" *ngIf="surveysService.selectedItemType !== 'none'">
             <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
-                        iconName="number_plus" iconPosition="end"
+                        iconName="system_copy" iconPosition="end"
                         (buttonClick)="onItemDuplicateClicked()"></pep-button>
             <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
                         iconName="system_bin" iconPosition="end" classNames="caution"
@@ -102,8 +102,8 @@
         <ng-container *ngIf="question?.Type == 'decimal'">
             <pep-slider [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DECIMAL.NUMBER_AFTER' | translate" 
                    [hint]="question?.Value?.toString() || '0'" 
-                   [minValue]="1" 
-                   [maxValue]="15"
+                   [minValue]="0" 
+                   [maxValue]="6"
                    [disabled]="false" 
                    [value]="question?.Value"
                    [background]="'RGBA(0,0,0,50%)'"

@@ -20,6 +20,10 @@ pep-side-bar {
         }
     }
 
+    pep-slider{
+        margin: variables.$spacing-xs 0 variables.$spacing-lg;
+    }
+
     .pep-actions {
         margin-top: variables.$spacing-sm;   
         display: flex;

@@ -4,10 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
-
 import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items';
-
-
 import { QuestionSelectOptionsComponent } from './select-options.component';
 import { PepNgxLibModule, PepAddonService } from '@pepperi-addons/ngx-lib';
 import { pepIconArrowDown, pepIconArrowUp, PepIconRegistry, pepIconSystemFilter2} from '@pepperi-addons/ngx-lib/icon';

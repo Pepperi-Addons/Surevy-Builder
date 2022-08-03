@@ -5,7 +5,7 @@
         <ng-container *ngIf="editable; then editableTitleTemplate; else runnerTitleTemplate"></ng-container>
         <ng-template #editableTitleTemplate>
             <survey-sequence-number cdkDragHandle [value]="index + 1"></survey-sequence-number>
-            <div class="titles-container">
+            <div class="titles-container" [ngClass]="{'withDesc': description?.length > 0 }">
                 <pep-field-title [label]="title !== '' ? title : ('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER' | translate)"></pep-field-title> 
                 <span *ngIf="description?.length > 0" class="body-xs color-dimmed" title="{{ description }}">{{ description }}</span>
             </div>
@@ -17,7 +17,7 @@
             </div>
         </ng-template>
     </div>
-
+    
     <div [id]="sectionContainerKeyPrefix" class="questions-wrapper "
         cdkDropList
         [cdkDropListConnectedTo]="sectionsQuestionsDropList"

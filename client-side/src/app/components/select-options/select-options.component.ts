@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { IPepOption } from '@pepperi-addons/ngx-lib';
 import { SurveysService } from 'src/app/services/surveys.service';
 import { SurveyOptionStateType, SurveyQuestion } from '../../model/survey.model';
+import { CdkDragDrop, CdkDragEnd, CdkDragStart, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
 class SelectOption {
     state: SurveyOptionStateType; 
@@ -30,7 +31,8 @@ export class QuestionSelectOptionsComponent implements OnInit {
     
 
     selectOptions: Array<SelectOption> = [];
-    
+    optionsDropList = [];
+
     constructor(
         private surveysService: SurveysService
     ) { }
@@ -89,5 +91,20 @@ export class QuestionSelectOptionsComponent implements OnInit {
 
     onEditClick(option) {
         option['state'] = option['state'] === 'collapse' ? 'expand' : 'collapse';
+    }
+
+    drop(event: CdkDragDrop<string[]>) {
+        if (event.previousContainer === event.container) {
+             moveItemInArray(this.selectOptions, event.previousIndex, event.currentIndex);
+             this.optionChanged.emit(this.selectOptions);
+        } 
+    }
+
+    onDragStart(event: CdkDragStart) {
+        this.surveysService.onSectionDragStart(event);
+    }
+
+    onDragEnd(event: CdkDragEnd) {
+        this.surveysService.onSectionDragEnd(event);
     }
 }

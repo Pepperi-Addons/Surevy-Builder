@@ -6,8 +6,33 @@
              (valueChange)="onQuestionEditorFieldChanged('placeHolderText',$event)">
 </pep-textbox>
 
-<div class="options-container">
-    <ng-container *ngFor="let opt of selectOptions; let i=index;" [ngTemplateOutlet]="selectOptionsTemplate" [ngTemplateOutletContext]="{opt:opt}"></ng-container>
+<div class="options-container" (cdkDropListDropped)="drop($event)"  cdkDropList>
+    <div  *ngFor="let opt of selectOptions; let i=index;">
+        <div class="select-option-container" cdkDrag [cdkDragData]="opt?.id" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)">
+            <div>
+                <pep-button classNames="lock-events" sizeType="xs" iconName="system_move"></pep-button>
+            </div>
+            <div  class="title-container">
+                <span class="body-sm ellipsis">{{opt?.id + 1}}.&nbsp;</span>
+                <span class="body-sm color-link bold ellipsis" title="opt?.option?.key}">{{opt?.option?.key}}</span>
+            </div>
+            <div class="actions">
+                <pep-button classNames="caution" sizeType="xs" iconName="system_bin" (buttonClick)="onRemoveClick(opt);"></pep-button>
+                <pep-button *ngIf="opt?.state == 'expand'" sizeType="xs" iconName="arrow_up" (buttonClick)="onEditClick(opt);"></pep-button>
+                <pep-button *ngIf="opt?.state == 'collapse'" sizeType="xs" iconName="arrow_down" (buttonClick)="onEditClick(opt);"></pep-button>
+            </div>
+            <div class="editorCont" *ngIf="opt.state == 'expand'">
+                <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_KEY' | translate"
+                    [value]="opt.option.key" (valueChange)="onQuestionOptionChanged('key',$event,opt)" [mandatory]="true">
+                </pep-textbox>
+                <pep-textarea [key]="'question'" (valueChange)="onQuestionOptionChanged('value',$event,opt)" 
+                  [value]="opt.option.value" [mandatory]="true" [rowSpan]="1.5"
+                  [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TYPE_YOUR_OPTION' | translate">
+                </pep-textarea>
+            </div>
+        </div>
+    </div>
+    <!-- <ng-container [ngTemplateOutlet]="selectOptionsTemplate" [ngTemplateOutletContext]="{opt:opt}"></ng-container> -->
 </div>
 
 <pep-checkbox *ngIf="question?.Type === 'single-selection-dropdown'" class="checkbox-no-background withPaddingBot" [value]="question?.AddNoneOption || false" 
@@ -17,27 +42,6 @@
  <pep-button class="add-content-button" value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_ITEM' | translate}}" styleType="regular" iconName="number_plus" iconPosition="end"
              (buttonClick)="addNewSelectOption($event)"></pep-button>
 
-<ng-template #selectOptionsTemplate let-opt='opt'>
-    <div class="select-option-container">
-        <div>
-            <pep-button classNames="lock-events" sizeType="xs" iconName="system_move"></pep-button>
-        </div>
-        <div  class="title-container">
-            <span class="body-sm ellipsis">{{opt?.id + 1}}.&nbsp;</span>
-            <span class="body-sm color-link bold ellipsis" title="opt?.option?.key}">{{opt?.option?.key}}</span>
-        </div>
-        <div class="actions">
-            <pep-button classNames="caution" sizeType="xs" iconName="system_bin" (buttonClick)="onRemoveClick(opt);"></pep-button>
-            <pep-button *ngIf="opt?.state == 'expand'" sizeType="xs" iconName="arrow_up" (buttonClick)="onEditClick(opt);"></pep-button>
-            <pep-button *ngIf="opt?.state == 'collapse'" sizeType="xs" iconName="arrow_down" (buttonClick)="onEditClick(opt);"></pep-button>
-        </div>
-        <div class="editorCont" *ngIf="opt.state == 'expand'">
-            <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_KEY' | translate"
-                [value]="opt.option.key" (valueChange)="onQuestionOptionChanged('key',$event,opt)">
-            </pep-textbox>
-            <pep-textarea [key]="'question'" (valueChange)="onQuestionOptionChanged('value',$event,opt)" [value]="opt.option.value"
-              [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TYPE_YOUR_OPTION' | translate" [rowSpan]="1.5">
-            </pep-textarea>
-        </div>
-    </div>
-</ng-template>
+<!-- <ng-template #selectOptionsTemplate let-opt='opt'>
+  
+</ng-template> -->
