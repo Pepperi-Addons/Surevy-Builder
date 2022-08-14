@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from "@angular/router";
-import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
+import { PepAddonService, PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
 import { NavigationService } from '../../services/navigation.service';
@@ -45,12 +45,15 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
 
     constructor(
         public layoutService: PepLayoutService,
+        private pepAddonService: PepAddonService,
         private _surveysService: SurveysService,
         private _navigationService: NavigationService,
         private pepSnackBarService: PepSnackBarService,        
         public translate: TranslateService
     ) {
         super();
+
+        this.pepAddonService.setShellRouterData({ showSidebar: false, addPadding: false});
 
         this.layoutService.onResize$.pipe(this.destroy$).subscribe(size => {
             this.screenSize = size;

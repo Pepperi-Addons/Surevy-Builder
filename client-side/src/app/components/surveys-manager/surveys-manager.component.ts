@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild } from "@angular/core";
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router'
 import { first, Subscription, firstValueFrom } from 'rxjs';
-import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
+import { PepAddonService, PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { IPepGenericListDataSource, IPepGenericListPager, IPepGenericListActions, IPepGenericListInitData, PepGenericListService } from "@pepperi-addons/ngx-composite-lib/generic-list";
 import { DataViewFieldType, GridDataViewField, Page } from '@pepperi-addons/papi-sdk';
@@ -43,6 +43,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
 
     constructor(
         public layoutService: PepLayoutService,
+        private pepAddonService: PepAddonService,
         public translate: TranslateService,
         private _navigationService: NavigationService,        
         private _activatedRoute: ActivatedRoute,
@@ -51,6 +52,8 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         private adapter: DateAdapter<any>,
         private utilitiesService: PepUtilitiesService,
     ) {
+        this.pepAddonService.setShellRouterData({ showSidebar: true, addPadding: true});
+        
         this._subscriptions.push(this._activatedRoute.data.subscribe(data => {
             this.addPadding = data.addPadding ?? true;
         }));

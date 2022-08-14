@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { PepAddonService } from "@pepperi-addons/ngx-lib";
 
 @Component({
     selector: 'survey-builder',
@@ -11,8 +12,10 @@ export class SurveyBuilderComponent implements OnInit {
     
     editMode: boolean = false;
 
-    constructor() {
-        //
+    constructor(
+        private pepAddonService: PepAddonService
+    ) {
+        this.pepAddonService.setShellRouterData({ showSidebar: false, addPadding: false});
     }
 
     ngOnInit() {
