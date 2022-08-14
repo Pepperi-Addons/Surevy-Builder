@@ -5,8 +5,7 @@ const webpackConfig = withModuleFederationPlugin({
     name: filename,
     filename: `${filename}.js`,
     exposes: {
-        './SettingsModule': './src/app/components/settings/index.ts',
-        './SurveyBuilderModule': './src/app/components/survey-builder/index.ts'
+        './WebComponents': './src/bootstrap.ts',
     },
     shared: {
         ...shareAll({ strictVersion: true, requiredVersion: 'auto' }),

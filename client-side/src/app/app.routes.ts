@@ -10,29 +10,15 @@ export class EmptyRouteComponent { }
 
 const routes: Routes = [
     {
-        path: `settings/:addonUUID`,
-        children: [
-            {
-                path: '**',
-                loadChildren: () => import('./components/surveys-manager/surveys-manager.module').then(m => m.SurveysManagerModule)
-            },
-        ]
-    },
-    {
-        path: `addons/:addonUUID`,
-        children: [
-           {
-                path: '',
-                loadChildren: () => import('./components/survey-manager/survey-manager.module').then(m => m.SurveyManagerModule)
-            }
-        ]
+        path: '',
+        loadChildren: () => import('./components/settings/settings.module').then(m => m.SettingsModule),
     },
     {   path: '**', component: EmptyRouteComponent }
 ];
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })
+        RouterModule.forRoot(routes)
     ],
     exports: [RouterModule]
 })

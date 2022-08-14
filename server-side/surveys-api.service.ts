@@ -59,6 +59,7 @@ export class SurveyApiService {
         const addonBlockRelation: Relation = {
             RelationName: "SettingsBlock",
             GroupName: 'Surveys',
+            SlugName: 'surveys',
             Name: 'Surveys',
             Description: 'Survey Builder (Beta)',
             Type: "NgComponent",
@@ -67,6 +68,8 @@ export class SurveyApiService {
             AddonRelativeURL: bundleFileName,
             ComponentName: `${blockName}Component`,
             ModuleName: `${blockName}Module`,
+            ElementsModule: 'WebComponents',
+            ElementName: `settings-element-${this.addonUUID}`,
         }; 
         
         this.upsertRelation(addonBlockRelation);
