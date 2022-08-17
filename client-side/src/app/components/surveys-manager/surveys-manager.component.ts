@@ -34,7 +34,6 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
     dataSource: IPepGenericListDataSource;
     //actions: IPepGenericListActions;
 
-    addPadding = true;
     totalSurveys: number = 0;
     surveys: ISurveyRowModel[];
     //imagesPath = '';
@@ -53,11 +52,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         private utilitiesService: PepUtilitiesService,
     ) {
         this.pepAddonService.setShellRouterData({ showSidebar: true, addPadding: true});
-        
-        this._subscriptions.push(this._activatedRoute.data.subscribe(data => {
-            this.addPadding = data.addPadding ?? true;
-        }));
-
+       
         this._subscriptions.push(this.layoutService.onResize$.subscribe(size => {
             this.screenSize = size;
         }));
