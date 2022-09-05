@@ -15,7 +15,7 @@ import { SurveyManagerModule } from './components/survey-manager/survey-manager.
 
 import { AppComponent } from './app.component';
 import { config } from './components/addon.config';
-import { SettingsComponent } from './components/settings';
+import { SettingsComponent, SettingsModule } from './components/settings';
 import { SurveyBuilderComponent } from './components/survey-builder';
 
 @NgModule({
@@ -26,6 +26,7 @@ import { SurveyBuilderComponent } from './components/survey-builder';
         BrowserModule,
         BrowserAnimationsModule,
         HttpClientModule,
+        SettingsModule,
         SurveysManagerModule,
         SurveyManagerModule,
         AppRoutingModule,    
