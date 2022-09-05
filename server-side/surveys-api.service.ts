@@ -52,15 +52,37 @@ export class SurveyApiService {
     private upsertRelation(relation): Promise<any> {
         return this.papiClient.post('/addons/data/relations', relation);
     }
+    
+    private upsertAddonBlockRelation() {
+        const name = 'Surveys';
+        const blockName = 'SurveyBuilder';
+
+        const addonBlockRelation: Relation = {
+            RelationName: "AddonBlock",
+            Name: name,
+            Description: `${name} addon block`,
+            Type: "NgComponent",
+            SubType: "NG14",
+            AddonUUID: this.addonUUID,
+            AddonRelativeURL: bundleFileName,
+            ComponentName: `${blockName}Component`,
+            ModuleName: `${blockName}Module`,
+            ElementsModule: 'WebComponents',
+            ElementName: `survey-element-${this.addonUUID}`,
+        }; 
+        
+        this.upsertRelation(addonBlockRelation);
+    }
 
     private upsertSettingsRelation() {
         const blockName = 'Settings';
+        const name = 'Surveys';
 
         const addonBlockRelation: Relation = {
             RelationName: "SettingsBlock",
-            GroupName: 'Surveys',
+            GroupName: name,
             SlugName: 'surveys',
-            Name: 'Surveys',
+            Name: name,
             Description: 'Survey Builder (Beta)',
             Type: "NgComponent",
             SubType: "NG14",
@@ -129,6 +151,7 @@ export class SurveyApiService {
             this.createSurveyTablesSchemes();
         }
 
+        this.upsertAddonBlockRelation();
         this.upsertSettingsRelation();
     }
 

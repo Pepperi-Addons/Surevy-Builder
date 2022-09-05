@@ -58,6 +58,6 @@ export class AppModule implements DoBootstrap {
 
     ngDoBootstrap() {
         this.pepAddonService.defineCustomElement(`settings-element-${config.AddonUUID}`, SettingsComponent, this.injector);
-        // this.pepAddonService.defineCustomElement(`survey-element-${config.AddonUUID}`, SurveyBuilderComponent, this.injector);
+        this.pepAddonService.defineCustomElement(`survey-element-${config.AddonUUID}`, SurveyBuilderComponent, this.injector);
     }
 }
