@@ -28,8 +28,8 @@
         "typescript": "~3.8.0"
     },
     "dependencies": {
-        "@pepperi-addons/debug-server": "*",
-        "@pepperi-addons/papi-sdk": "*",
+        "@pepperi-addons/debug-server": "0.0.32",
+        "@pepperi-addons/papi-sdk": "^1.39.9",
         "@types/uuid": "^8.3.4",
         "uuid": "^8.3.2"
     }

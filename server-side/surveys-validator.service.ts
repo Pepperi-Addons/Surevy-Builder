@@ -8,6 +8,10 @@ export class SurveysValidatorService {
         return `${objectBreadcrumb} -> ${propertyName} is missing.`;
     }
     
+    private getNotValueError(objectBreadcrumb: string, propertyName: string): string {
+        return `${objectBreadcrumb} -> ${propertyName} is empty.`;
+    }
+    
     private getWrongTypeError(objectBreadcrumb: string, propertyName: string, typeName: string): string {
         return `${objectBreadcrumb} -> ${propertyName} should be ${typeName}.`;
     }
@@ -24,6 +28,8 @@ export class SurveysValidatorService {
                 throw new Error(this.getNotExistError(propertyBreadcrumb, propName));
             } else if (typeof objectToValidate[propName] !== objectType) {
                 throw new Error(this.getWrongTypeError(propertyBreadcrumb, propName, objectType));
+            } else if (objectToValidate[propName].toString().length === 0) {
+                // throw new Error(this.getNotValueError(propertyBreadcrumb, propName));
             }
         } else {
             if (objectToValidate.hasOwnProperty(propName)) {
