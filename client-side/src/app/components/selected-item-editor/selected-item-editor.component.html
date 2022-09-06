@@ -58,7 +58,7 @@
 
 
 <ng-template #sectionEditorTemplate>
-    <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY' | translate" [mandatory]="true" [disabled]="true"
+    <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY' | translate" [mandatory]="true"
             [value]="section?.Key || ''" (valueChange)="onSectionEditorFieldChanged('Name',$event)">
     </pep-textbox>
     <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SECTION_NAME' | translate" [mandatory]="true"
@@ -74,7 +74,7 @@
 
 <ng-template #questionEditorTemplate>
     <ng-container *ngIf="surveysService.selectedItemType === 'question' && question">
-        <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY' | translate" [mandatory]="true" [disabled]="true"
+        <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY' | translate" [mandatory]="true"
             [value]="question?.Key || ''" (valueChange)="onQuestionEditorFieldChanged('Name',$event)">
         </pep-textbox>
         <pep-textarea [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_TITLE' | translate" [rowSpan]="1.5" [mandatory]="true"
