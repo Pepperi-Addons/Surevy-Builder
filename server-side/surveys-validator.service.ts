@@ -8,7 +8,7 @@ export class SurveysValidatorService {
         return `${objectBreadcrumb} -> ${propertyName} is missing.`;
     }
     
-    private getNotValueError(objectBreadcrumb: string, propertyName: string): string {
+    private getEmptyValueError(objectBreadcrumb: string, propertyName: string): string {
         return `${objectBreadcrumb} -> ${propertyName} is empty.`;
     }
     
@@ -29,7 +29,7 @@ export class SurveysValidatorService {
             } else if (typeof objectToValidate[propName] !== objectType) {
                 throw new Error(this.getWrongTypeError(propertyBreadcrumb, propName, objectType));
             } else if (objectToValidate[propName].toString().length === 0) {
-                // throw new Error(this.getNotValueError(propertyBreadcrumb, propName));
+                throw new Error(this.getEmptyValueError(propertyBreadcrumb, propName));
             }
         } else {
             if (objectToValidate.hasOwnProperty(propName)) {
@@ -128,8 +128,8 @@ export class SurveysValidatorService {
         // Validate Hidden if exist (Optional)
         this.validateObjectProperty(survey, 'Hidden', surveyPropertyBreadcrumb, true, 'boolean');
 
-        // Validate Name if exist (Optional)
-        this.validateObjectProperty(survey, 'Name', surveyPropertyBreadcrumb, true);
+        // Validate Name if exist
+        this.validateObjectProperty(survey, 'Name', surveyPropertyBreadcrumb);
         
         // Validate Description if exist (Optional)
         this.validateObjectProperty(survey, 'Description', surveyPropertyBreadcrumb, true);

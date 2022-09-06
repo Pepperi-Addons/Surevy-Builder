@@ -10,7 +10,7 @@
                     </div>
                 </div>
                 <div class="survey-details">
-                    <pep-textbox [key]="'float'" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.NAME' | translate"
+                    <pep-textbox [key]="'float'" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.NAME' | translate" [mandatory]="true"
                         [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.NAME_PLACEHOLDER' | translate"
                         [value]="surveyEditor?.name" (valueChange)="onSurveyPropertyChanged('name', $event)">
                     </pep-textbox>

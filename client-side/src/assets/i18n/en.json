@@ -55,6 +55,7 @@
                     "DATE_TIME": "Date Time"
                 },
                 "SECTION_HEADER": "Section",
+                "KEY": "Key",
                 "KEY_NAME": "Key Name",
                 "SECTION_NAME": "Section Name",
                 "QUESTION_TITLE": "Type your question here...",
