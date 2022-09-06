@@ -6,7 +6,7 @@ import { PepGuid, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-
 import { Observable, BehaviorSubject, from } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
-import { ISurveyEditor, ISurveyRowModel, Survey, SurveySection, ISurveyBuilderData, SurveyQuestion, SurveyQuestionType, ISurveyValidator } from "../model/survey.model";
+import { ISurveyEditor, ISurveyRowModel, Survey, SurveySection, ISurveyBuilderData, SurveyQuestion, SurveyQuestionType, SurveyObjValidator } from "../model/survey.model";
 import * as _ from 'lodash';
 
 @Injectable({
@@ -14,7 +14,7 @@ import * as _ from 'lodash';
 })
 export class SurveysService {
 
-    public mandaitoryfields: Array<ISurveyValidator>;
+    public mandaitoryfields: Array<SurveyObjValidator>;
     private _defaultSectionTitle = '';
     set defaultSectionTitle(value: string) {
         if (this._defaultSectionTitle === '') {
@@ -546,10 +546,11 @@ export class SurveysService {
             case 'multiple-selection-dropdown':{
                 question.OptionalValues.forEach((opt, optIndex) => {
                     if(opt.key.trim() == ''){
-                        this.mandaitoryfields.push({type: 'select option', field: 'Key', index: secIndex.toString() + '/' + quesIndex.toString() + '/' + optIndex.toString(), error: 'can not be empty'});
+                        this.mandaitoryfields.push( (new SurveyObjValidator('select option','Key', `${secIndex.toString()}.${quesIndex.toString()}.${optIndex.toString()}`,'field is required')));
+                        
                     }
                     if(opt.value.trim() == ''){
-                        this.mandaitoryfields.push({type: 'select option', field: 'Value', index: secIndex.toString() + '/' + quesIndex.toString() + '/' + optIndex.toString(), error: 'can not be empty'});
+                        this.mandaitoryfields.push( new SurveyObjValidator('select option','Value', `${secIndex.toString()}.${quesIndex.toString()}.${optIndex.toString()}`,'field is required'));
                     }
                 });
                 break;
@@ -559,13 +560,15 @@ export class SurveysService {
 
     nameAndTitleValidator(obj, secIndex, quesIndex = 0){
         const type = "Type" in obj ? 'question' : 'section';
-       
+       debugger;
         if(obj.Name.trim() == ''){
-            this.mandaitoryfields.push({type: type, field: 'Name', index: type == 'section' ? secIndex.toString() : secIndex.toString() + '/' + quesIndex.toString() , error: 'can not be empty'});
+            this.mandaitoryfields.push( new SurveyObjValidator(type,'Key',type == 'section' ? `${secIndex.toString()}` : `${secIndex.toString()}.${quesIndex.toString()}`,'field is required'));
         }
+
         if(obj.Title.trim() == ''){
-            this.mandaitoryfields.push({type: type, field: 'Title', index: type == 'section' ? secIndex.toString() : secIndex.toString() + '/' + quesIndex.toString() , error: 'can not be empty'});
+            this.mandaitoryfields.push( (new SurveyObjValidator(type,'Title', type == 'section' ? `${secIndex.toString()}` :  `${secIndex.toString()}.${quesIndex.toString()}`,'field is required')));
         }
+        debugger;
     }
     // Publish the current survey.
     publishCurrentSurvey(addonUUID: string): Observable<Survey> {

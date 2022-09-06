@@ -63,11 +63,19 @@ export interface ISurveyBuilderData {
     survey: Survey
 }
 
-export interface ISurveyValidator {
-    type: String, 
-    field: String, 
-    index: String, 
-    error: String
+@Injectable()
+export class SurveyObjValidator {
+    type: String;
+    field: String;
+    index: String;
+    error: String;
+
+    constructor(type: String = '', field: String = '', index: String = '', error: String = '') {
+        this.type = type || '';
+        this.field = field || '';
+        this.index = index || '';
+        this.error = error || '';
+    }
 }
 
 export interface ISurveyEditor {

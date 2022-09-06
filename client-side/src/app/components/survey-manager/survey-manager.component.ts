@@ -189,7 +189,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
 
             let content = '';
             this._surveysService.mandaitoryfields.forEach(field => {
-                content +=  `${field.type}${field.index} ${field.field} Error:${(field.error)}`;
+                content +=  `${field.type} ${field.index} ${field.field} <b style="color:Red">${(field.error)}. </b>`;
             });
             const data: PepSnackBarData = {
                 title: this.translate.instant('MESSAGES.SURVEY_SAVE_FAILED'),
