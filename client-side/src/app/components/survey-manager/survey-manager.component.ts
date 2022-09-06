@@ -169,18 +169,39 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     }
 
     onSaveClicked() {
-        this._surveysService.saveCurrentSurvey(this._navigationService.addonUUID).pipe(this.destroy$).subscribe(res => {
+        //validate mandatory fields
+        if(this._surveysService.validateSurvey()){
+            this._surveysService.saveCurrentSurvey(this._navigationService.addonUUID).pipe(this.destroy$).subscribe(res => {
+                const data: PepSnackBarData = {
+                    title: this.translate.instant('MESSAGES.SURVEY_SAVED'),
+                    content: '',
+                }
+
+                const config = this.pepSnackBarService.getSnackBarConfig({
+                    duration: 5000,
+                });
+
+                this.pepSnackBarService.openDefaultSnackBar(data, config);
+            });
+        }
+        else{
+            //validation failed 
+
+            let content = '';
+            this._surveysService.mandaitoryfields.forEach(field => {
+                content +=  `${field.type}${field.index} ${field.field} Error:${(field.error)}`;
+            });
             const data: PepSnackBarData = {
-                title: this.translate.instant('MESSAGES.SURVEY_SAVED'),
-                content: '',
+                title: this.translate.instant('MESSAGES.SURVEY_SAVE_FAILED'),
+                content: content
             }
 
             const config = this.pepSnackBarService.getSnackBarConfig({
-                duration: 5000,
+                duration: 50000,
             });
 
             this.pepSnackBarService.openDefaultSnackBar(data, config);
-        });
+        }
     }
 
     onPublishClicked() {

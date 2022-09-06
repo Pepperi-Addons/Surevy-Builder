@@ -1,12 +1,12 @@
 import { CdkDragDrop, CdkDragEnd, CdkDragStart, copyArrayItem, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
-import { Injectable } from "@angular/core";
+import { Injectable, ɵɵresolveBody } from "@angular/core";
 import { Params } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { PepGuid, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
 import { Observable, BehaviorSubject, from } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
-import { ISurveyEditor, ISurveyRowModel, Survey, SurveySection, ISurveyBuilderData, SurveyQuestion, SurveyQuestionType } from "../model/survey.model";
+import { ISurveyEditor, ISurveyRowModel, Survey, SurveySection, ISurveyBuilderData, SurveyQuestion, SurveyQuestionType, ISurveyValidator } from "../model/survey.model";
 import * as _ from 'lodash';
 
 @Injectable({
@@ -14,6 +14,7 @@ import * as _ from 'lodash';
 })
 export class SurveysService {
 
+    public mandaitoryfields: Array<ISurveyValidator>;
     private _defaultSectionTitle = '';
     set defaultSectionTitle(value: string) {
         if (this._defaultSectionTitle === '') {
@@ -514,11 +515,58 @@ export class SurveysService {
     // Save the current survey in drafts.
     saveCurrentSurvey(addonUUID: string): Observable<Survey> {
         const survey: Survey = this._surveySubject.getValue();
-        const body = JSON.stringify(survey);
-        const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
+            const body = JSON.stringify(survey);
+            const baseUrl = this.getBaseUrl(addonUUID);
+            return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
     }
 
+    validateSurvey(): boolean{
+        const survey: Survey = this._surveySubject.getValue();
+        this.mandaitoryfields = [];
+        const mandetoryFieldsArr = ['multiple-selection-dropdown','boolean-toggle']
+        survey.Sections.forEach((section,secIndex) => {
+            //Checking the name & Title of the section
+            this.nameAndTitleValidator(section, secIndex);
+            
+            section.Questions.forEach((question,quesIndex) => {
+                //Checking the name & Title of the section
+               this.nameAndTitleValidator(question, secIndex, quesIndex);
+                //Check if question type has mandatory fields
+               if(mandetoryFieldsArr.includes(question.Type)){
+                    this.checkQuestionMandatoryFields(question,secIndex, quesIndex);
+               }
+            });
+        });
+
+        return this.mandaitoryfields.length ? false : true;
+    }
+
+    checkQuestionMandatoryFields(question: SurveyQuestion, secIndex, quesIndex){
+        switch(question.Type){
+            case 'multiple-selection-dropdown':{
+                question.OptionalValues.forEach((opt, optIndex) => {
+                    if(opt.key.trim() == ''){
+                        this.mandaitoryfields.push({type: 'select option', field: 'Key', index: secIndex.toString() + '/' + quesIndex.toString() + '/' + optIndex.toString(), error: 'can not be empty'});
+                    }
+                    if(opt.value.trim() == ''){
+                        this.mandaitoryfields.push({type: 'select option', field: 'Value', index: secIndex.toString() + '/' + quesIndex.toString() + '/' + optIndex.toString(), error: 'can not be empty'});
+                    }
+                });
+                break;
+            }
+        }
+    }
+
+    nameAndTitleValidator(obj, secIndex, quesIndex = 0){
+        const type = "Type" in obj ? 'question' : 'section';
+       
+        if(obj.Name.trim() == ''){
+            this.mandaitoryfields.push({type: type, field: 'Name', index: type == 'section' ? secIndex.toString() : secIndex.toString() + '/' + quesIndex.toString() , error: 'can not be empty'});
+        }
+        if(obj.Title.trim() == ''){
+            this.mandaitoryfields.push({type: type, field: 'Title', index: type == 'section' ? secIndex.toString() : secIndex.toString() + '/' + quesIndex.toString() , error: 'can not be empty'});
+        }
+    }
     // Publish the current survey.
     publishCurrentSurvey(addonUUID: string): Observable<Survey> {
         const survey: Survey = this._surveySubject.getValue();
