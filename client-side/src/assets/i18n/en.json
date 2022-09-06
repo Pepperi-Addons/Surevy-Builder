@@ -108,6 +108,7 @@
         "TITLE_NOTICE": "Notice",
         "OPERATION_SUCCESS": "Operation success.",
         "SURVEY_SAVED": "Survey Saved",
+        "SURVEY_SAVE_FAILED": "Survey save Failed",
         "SURVEY_PUBLISHED": "Survey Saved and Published",
         "SURVEY_RESTORED": "Survey Restored"
     },

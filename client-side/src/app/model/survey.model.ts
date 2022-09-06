@@ -63,6 +63,13 @@ export interface ISurveyBuilderData {
     survey: Survey
 }
 
+export interface ISurveyValidator {
+    type: String, 
+    field: String, 
+    index: String, 
+    error: String
+}
+
 export interface ISurveyEditor {
     key: string,
     name: string,
