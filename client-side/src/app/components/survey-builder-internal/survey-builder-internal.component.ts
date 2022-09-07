@@ -119,4 +119,8 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     onSectionDropped(event: CdkDragDrop<any[]>) {
         this.surveysService.onSectionDropped(event);
     }
+
+    isValidSection(index){
+        return this.surveysService?.failedOnValidation?.includes('section'+(index+1));
+    }
 }

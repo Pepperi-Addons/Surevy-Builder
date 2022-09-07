@@ -1,7 +1,7 @@
 <div class="section-area " [ngClass]="{ 'editable-state': editable }" 
     cdkDrag [cdkDragDisabled]="!editable" [cdkDragData]="index" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)" 
 >
-    <div class="section-container " [ngClass]="{ 'active-section': isActive && selectedQuestion === null, 'error-in-section': hasError }" (mousedown)="onSectionClicked($event)">
+    <div class="section-container " [ngClass]="{ 'active-section': isActive && selectedQuestion === null, 'error-in-section': hasError }"  (mousedown)="onSectionClicked($event)">
         <ng-container *ngIf="editable; then editableTitleTemplate; else runnerTitleTemplate"></ng-container>
         <ng-template #editableTitleTemplate>
             <survey-sequence-number cdkDragHandle [value]="index + 1"></survey-sequence-number>
@@ -25,7 +25,7 @@
         
         <ng-container *ngFor="let question of questions; let i=index;">
             <survey-question-generator [editable]="editable" [question]="question" [sequenceNumber]="(index + 1) + '.' + (i + 1)" 
-                [isActive]="isActive && selectedQuestion === question"
+                [isActive]="isActive && selectedQuestion === question" 
                 (questionClick)="onQuestionClicked(i)" (addQuestionClick)="onAddQuestionClicked($event, i)"></survey-question-generator>
         </ng-container>
         
