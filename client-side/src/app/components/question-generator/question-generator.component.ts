@@ -33,7 +33,7 @@ export class QuestionGeneratorComponent implements OnInit {
     constructor(
         private surveysService: SurveysService
     ) { }
-
+    
     ngOnInit(): void {
         if (this.editable) {
             this.surveysService.isGrabbingChange$.subscribe((value: boolean) => {
@@ -67,5 +67,9 @@ export class QuestionGeneratorComponent implements OnInit {
     onStateChange(event: IPepMenuStateChangeEvent) {
         this.isQuestionTypeMenuOpen = event.state === 'visible';
         console.log('onStateChange', event);
+    }
+
+    isValidQuestion(){
+        return !this.surveysService?.failedOnValidation?.includes('question'+this.sequenceNumber);
     }
 }

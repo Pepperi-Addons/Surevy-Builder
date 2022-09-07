@@ -113,6 +113,16 @@
         "SURVEY_PUBLISHED": "Survey Saved and Published",
         "SURVEY_RESTORED": "Survey Restored"
     },
+
+    "VALIDATION": {
+        "FAILED_MSG": "Validation failed",
+        "KEY_MISSING": "Key is missing",
+        "NAME_MISSING": "Name is missing",
+        "QUESTION_MISSING": "Question is missing",
+        "VALUE_MISSING": "Value is missing",
+        "USING_SAME_KEY": "are using the same key"
+    },
+
     "QUESTION_MENU": {
         "SHORT_TEXT": "Short Text",
         "LONG_TEXT": "Long Text",

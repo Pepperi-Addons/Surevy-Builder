@@ -186,21 +186,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         }
         else{
             //validation failed 
-
-            let content = '';
-            this._surveysService.mandaitoryfields.forEach(field => {
-                content +=  `${field.type} ${field.index} ${field.field} <b style="color:Red">${(field.error)}. </b>`;
-            });
-            const data: PepSnackBarData = {
-                title: this.translate.instant('MESSAGES.SURVEY_SAVE_FAILED'),
-                content: content
-            }
-
-            const config = this.pepSnackBarService.getSnackBarConfig({
-                duration: 50000,
-            });
-
-            this.pepSnackBarService.openDefaultSnackBar(data, config);
+            this._surveysService.showValidationInfo();
         }
     }
 
