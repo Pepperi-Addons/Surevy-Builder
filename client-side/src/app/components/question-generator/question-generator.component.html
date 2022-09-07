@@ -9,7 +9,7 @@
         <survey-sequence-number *ngIf="editable" cdkDragHandle [value]="sequenceNumber" (mousedown)="onQuestionClicked($event)" ></survey-sequence-number>
 
         <div class="question-field-container" (mousedown)="onQuestionClicked($event)" 
-            [ngClass]="[isActive ? 'active-question' : '', isValidQuestion() == false ? 'not-valid-question' : '' ]">
+            [ngClass]="[isActive ? 'active-question' : '', isValidQuestion() == false ? 'error-in-question' : '' ]">
 
             <pep-field-title [label]="question.Title" [mandatory]="question.Mandatory" [fontBodyType]="editable ? 'xs' : 'md'"
                 [maxFieldCharacters]="question.MaxFieldCharacters">

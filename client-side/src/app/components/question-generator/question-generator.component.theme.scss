@@ -26,10 +26,6 @@
                         @include error-border(true);
                     }
                 }
-
-                &.not-valid-question{
-                    border: 2px solid Red;
-                }
             }
         }
     }
