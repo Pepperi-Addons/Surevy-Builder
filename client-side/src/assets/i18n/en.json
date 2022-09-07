@@ -57,6 +57,7 @@
                 "SECTION_HEADER": "Section",
                 "KEY": "Key",
                 "KEY_NAME": "Key Name",
+                "SECTION_TITLE": "Section Title",
                 "SECTION_NAME": "Section Name",
                 "QUESTION_TITLE": "Type your question here...",
                 "DESCRIPTION": "Description",

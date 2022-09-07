@@ -111,6 +111,9 @@ export class SurveyApiService {
         // Validate survey object before upsert.
         this.surveysValidatorService.validateSurveyProperties(survey);
         
+        // Validate survey data.
+        this.surveysValidatorService.validateSurveyData(survey);
+
         // Override the survey according the interface.
         return this.surveysValidatorService.getSurveyCopyAccordingInterface(survey);
     }

@@ -560,15 +560,15 @@ export class SurveysService {
 
     nameAndTitleValidator(obj, secIndex, quesIndex = 0){
         const type = "Type" in obj ? 'question' : 'section';
-       debugger;
-        if(obj.Name.trim() == ''){
+       
+        if(obj.Key?.trim() == ''){
             this.mandaitoryfields.push( new SurveyObjValidator(type,'Key',type == 'section' ? `${secIndex.toString()}` : `${secIndex.toString()}.${quesIndex.toString()}`,'field is required'));
         }
 
-        if(obj.Title.trim() == ''){
+        if(obj.Title?.trim() == ''){
             this.mandaitoryfields.push( (new SurveyObjValidator(type,'Title', type == 'section' ? `${secIndex.toString()}` :  `${secIndex.toString()}.${quesIndex.toString()}`,'field is required')));
         }
-        debugger;
+        
     }
     // Publish the current survey.
     publishCurrentSurvey(addonUUID: string): Observable<Survey> {

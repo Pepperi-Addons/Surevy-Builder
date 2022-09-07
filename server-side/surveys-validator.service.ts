@@ -117,6 +117,9 @@ export class SurveysValidatorService {
         }
     }
 
+    /***********************************************************************************************/
+    /*                                  Public functions
+    /***********************************************************************************************/
 
     // Validate the survey and throw error if not valid.
     validateSurveyProperties(survey: Survey): void {
@@ -154,6 +157,36 @@ export class SurveysValidatorService {
         }
     }
     
+    validateSurveyData(survey: Survey) {
+        // Validate sections and questions.
+        const sectionsKeys = new Map<string, string>();
+        const questionsKeys = new Map<string, string>();
+
+        // Go for all sections and check for uniqe key
+        for (let sectionIndex = 0; sectionIndex < survey.Sections?.length; sectionIndex++) {
+            const section = survey.Sections[sectionIndex];
+            
+            // Validate if the section key is not already exist.
+            if (!sectionsKeys.has(section.Key)) {
+                sectionsKeys.set(section.Key, section.Key);
+            } else {
+                throw new Error(`Section with Key ${section.Key} already exists.`);
+            }
+
+            // Go for all questions and check for uniqe key
+            for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
+                const question = section.Questions[questionIndex];
+                
+                // Validate if the question key is not already exist.
+                if (!questionsKeys.has(question.Key)) {
+                    questionsKeys.set(question.Key, question.Key);
+                } else {
+                    throw new Error(`Question with Key ${question.Key} already exists.`);
+                }
+            }
+        }
+    }
+
     getSurveyCopyAccordingInterface(survey: Survey): Survey {
         // Init with the mandatories properties.
         let res: Survey = {
