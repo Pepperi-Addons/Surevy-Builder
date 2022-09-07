@@ -13,7 +13,8 @@ export class QuestionGeneratorComponent implements OnInit {
     @Input() question: SurveyQuestion;
     @Input() sequenceNumber: string;
     @Input() isActive: boolean = false;
-    
+    @Input() hasError: boolean = false;
+
     private _editable = false;
     @Input()
     set editable(value: boolean) {
