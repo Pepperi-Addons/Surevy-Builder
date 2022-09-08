@@ -548,15 +548,18 @@ export class SurveysService {
     }
 
     checkQuestionMandatoryFields(question: SurveyQuestion, secIndex, quesIndex){
+        secIndex++;
+        quesIndex++;
         switch(question.Type){
             case 'multiple-selection-dropdown':{
                 question.OptionalValues.forEach((opt, optIndex) => {
+                    const index = `${secIndex.toString()}.${quesIndex.toString()}`; // .${(optIndex+1).toString()}
                     if(opt.key.trim() == ''){
-                        this.mandaitoryfields.push( (new SurveyObjValidator('select option','Key', `${secIndex.toString()}.${quesIndex.toString()}.${optIndex.toString()}`,this.translate.instant('VALIDATION.KEY_MISSING'))));
+                        this.mandaitoryfields.push( (new SurveyObjValidator('question','Key', index ,this.translate.instant('VALIDATION.KEY_MISSING'))));
                         
                     }
                     if(opt.value.trim() == ''){
-                        this.mandaitoryfields.push( new SurveyObjValidator('select option','Value', `${secIndex.toString()}.${quesIndex.toString()}.${optIndex.toString()}`,this.translate.instant('VALIDATION.VALUE_MISSING')));
+                        this.mandaitoryfields.push( new SurveyObjValidator('question','Value', index ,this.translate.instant('VALIDATION.VALUE_MISSING')));
                     }
                 });
                 break;
@@ -565,16 +568,17 @@ export class SurveysService {
     }
 
     keyAndTitleValidator(obj, secIndex, quesIndex = 1){
-        const type = "Type" in obj ? 'question' : 'section';
         secIndex ++;
         quesIndex ++;
+        const type = "Type" in obj ? 'question' : 'section';
+        const index = type == 'section' ? `${secIndex.toString()}` : `${secIndex.toString()}.${quesIndex.toString()}`;
 
         if(obj.Key.trim() == ''){
-            this.mandaitoryfields.push( new SurveyObjValidator(type,'Key',type == 'section' ? `${secIndex.toString()}` : `${secIndex.toString()}.${quesIndex.toString()}`,this.translate.instant('VALIDATION.KEY_MISSING')));
+            this.mandaitoryfields.push( new SurveyObjValidator(type,'Key', index, this.translate.instant('VALIDATION.KEY_MISSING')));
         }
 
         if(obj.Title.trim() == ''){
-            this.mandaitoryfields.push( (new SurveyObjValidator(type,'Title', type == 'section' ? `${secIndex.toString()}` :  `${secIndex.toString()}.${quesIndex.toString()}`,type == 'section' ? this.translate.instant('VALIDATION.NAME_MISSING') : this.translate.instant('VALIDATION.QUESTION_MISSING'))));
+            this.mandaitoryfields.push( (new SurveyObjValidator(type,'Title', index, type == 'section' ? this.translate.instant('VALIDATION.NAME_MISSING') : this.translate.instant('VALIDATION.QUESTION_MISSING'))));
         }
     }
 
@@ -582,8 +586,10 @@ export class SurveysService {
         
         let content = '';
         
-        this.mandaitoryfields.forEach((field,index) => {
-                this.failedOnValidation.push((field.type)+(field.index));
+        this.mandaitoryfields.forEach((field,index) => { 
+                if(!this.failedOnValidation.includes((field.type)+(field.index))){
+                    this.failedOnValidation.push((field.type)+(field.index));
+                }
                 content +=  `${field.type} ${field.index} ${(field.error)}.`;
                 content += index < (this.mandaitoryfields.length - 1) ? '</br>' : '';
         });

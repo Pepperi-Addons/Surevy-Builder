@@ -61,6 +61,10 @@ export class QuestionSelectOptionsComponent implements OnInit {
     onQuestionOptionChanged(key, value ,event) {
         event.option[key] = value;
         this.optionChanged.emit(this.selectOptions);
+
+        if(!this.surveysService.validateSurvey()){
+            this.surveysService.showValidationInfo();
+          }
         
     }
 
