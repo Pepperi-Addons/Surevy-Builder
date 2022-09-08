@@ -3,6 +3,7 @@ import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from "@angular/rou
 import { PepAddonService, PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
+import { ValidationService } from '../../services/validation.service';
 import { NavigationService } from '../../services/navigation.service';
 import { ISurveyEditor, SurveyQuestionType } from "../../model/survey.model";
 import { DestoyerDirective } from '../../model/destroyer';
@@ -47,6 +48,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         public layoutService: PepLayoutService,
         private pepAddonService: PepAddonService,
         private _surveysService: SurveysService,
+        private validationService: ValidationService,
         private _navigationService: NavigationService,
         private pepSnackBarService: PepSnackBarService,        
         public translate: TranslateService
@@ -170,7 +172,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
 
     onSaveClicked() {
         //validate mandatory fields
-        if(this._surveysService.validateSurvey()){
+        if(this.validationService.validateSurvey()){
             this._surveysService.saveCurrentSurvey(this._navigationService.addonUUID).pipe(this.destroy$).subscribe(res => {
                 const data: PepSnackBarData = {
                     title: this.translate.instant('MESSAGES.SURVEY_SAVED'),
@@ -186,7 +188,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         }
         else{
             //validation failed 
-            this._surveysService.showValidationInfo();
+            this.validationService.showValidationInfo();
         }
     }
 

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { SurveysService } from 'src/app/services/surveys.service';
+import { ValidationService } from 'src/app/services/validation.service';
 import { SurveyQuestion, SurveySection } from '../../model/survey.model';
 import { DestoyerDirective } from '../../model/destroyer';
 
@@ -17,7 +18,8 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     forNextVersion = false;
     
     constructor(
-        protected surveysService: SurveysService
+        protected surveysService: SurveysService,
+        private validationService: ValidationService
     ) { 
         super();
 
@@ -45,8 +47,8 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
         this.surveysService.updateQuestionFromEditor(this.question);
 
         if(key == 'Key' || key == 'Title'){
-            if(!this.surveysService.validateSurvey(key,value, oldValue)){
-              this.surveysService.showValidationInfo();
+            if(!this.validationService.validateSurvey(key,value, oldValue)){
+              this.validationService.showValidationInfo();
             }
          }
     }
@@ -61,8 +63,8 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
         this.surveysService.updateSectionFromEditor(this.section);
         
         if(key == 'Key' || key == 'Title'){
-           if(!this.surveysService.validateSurvey(key,value, oldValue)){
-             this.surveysService.showValidationInfo();
+           if(!this.validationService.validateSurvey(key,value, oldValue)){
+             this.validationService.showValidationInfo();
            }
         }
         

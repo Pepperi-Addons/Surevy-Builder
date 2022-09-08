@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { IPepOption } from '@pepperi-addons/ngx-lib';
 import { SurveysService } from 'src/app/services/surveys.service';
+import { ValidationService } from 'src/app/services/validation.service';
 import { SurveyOptionStateType, SurveyQuestion } from '../../model/survey.model';
 import { CdkDragDrop, CdkDragEnd, CdkDragStart, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
@@ -34,7 +35,8 @@ export class QuestionSelectOptionsComponent implements OnInit {
     optionsDropList = [];
 
     constructor(
-        private surveysService: SurveysService
+        private surveysService: SurveysService,
+        private validationService: ValidationService
     ) { }
 
     ngOnInit(): void {
@@ -62,8 +64,8 @@ export class QuestionSelectOptionsComponent implements OnInit {
         event.option[key] = value;
         this.optionChanged.emit(this.selectOptions);
 
-        if(!this.surveysService.validateSurvey()){
-            this.surveysService.showValidationInfo();
+        if(!this.validationService.validateSurvey()){
+            this.validationService.showValidationInfo();
           }
         
     }
