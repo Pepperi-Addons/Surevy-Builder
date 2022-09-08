@@ -1,6 +1,8 @@
 <div class="section-area " [ngClass]="{ 'editable-state': editable }" 
     cdkDrag [cdkDragDisabled]="!editable" [cdkDragData]="index" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)" 
 >
+    <survey-show-if-badge *ngIf="editable" [showIf]="showIf"></survey-show-if-badge>
+
     <div class="section-container " [ngClass]="{ 'active-section': isActive && selectedQuestion === null, 'error-in-section': hasError }"  (mousedown)="onSectionClicked($event)">
         <ng-container *ngIf="editable; then editableTitleTemplate; else runnerTitleTemplate"></ng-container>
         <ng-template #editableTitleTemplate>

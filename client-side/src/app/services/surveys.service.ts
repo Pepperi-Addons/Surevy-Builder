@@ -6,7 +6,8 @@ import { PepGuid, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-
 import { Observable, BehaviorSubject, from } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
-import { ISurveyEditor, ISurveyRowModel, Survey, SurveySection, ISurveyBuilderData, SurveyQuestion, SurveyQuestionType, SurveyObjValidator } from "../model/survey.model";
+import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
+import { SurveyRowProjection, Survey, SurveySection, ISurveyBuilderData, SurveyQuestion, SurveyQuestionType } from 'shared';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import * as _ from 'lodash';
 
@@ -461,7 +462,7 @@ export class SurveysService {
     /**************************************************************************************/
 
     // Get the surveys (distinct with the drafts)
-    getSurveys(addonUUID: string, options: any): Observable<ISurveyRowModel[]> {
+    getSurveys(addonUUID: string, options: any): Observable<SurveyRowProjection[]> {
         // Get the surveys from the server.
         const baseUrl = this.getBaseUrl(addonUUID);
         return this.httpService.getHttpCall(`${baseUrl}/get_surveys_data?${options}`);

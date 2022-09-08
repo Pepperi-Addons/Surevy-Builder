@@ -28,5 +28,9 @@
                 @include mixins.state-weak-default();
             }
         }
+
+        .show-if-badge {
+            @include show-if-badge();
+        }
     }
 }

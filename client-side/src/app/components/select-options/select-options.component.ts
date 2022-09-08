@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { IPepOption } from '@pepperi-addons/ngx-lib';
 import { SurveysService } from 'src/app/services/surveys.service';
-import { SurveyOptionStateType, SurveyQuestion } from '../../model/survey.model';
+import { SurveyOptionStateType } from '../../model/survey.model';
+import { SurveyQuestion } from 'shared';
 import { CdkDragDrop, CdkDragEnd, CdkDragStart, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
 class SelectOption {

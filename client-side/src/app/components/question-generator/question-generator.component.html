@@ -6,11 +6,14 @@
     </div>
 
     <div class="question-with-sequence-container" [ngClass]="{ 'editable-state': editable }">
+        <survey-show-if-badge *ngIf="editable" [showIf]="question.ShowIf"></survey-show-if-badge>
+        
         <survey-sequence-number *ngIf="editable" cdkDragHandle [value]="sequenceNumber" (mousedown)="onQuestionClicked($event)" ></survey-sequence-number>
 
-        <div class="question-field-container" (mousedown)="onQuestionClicked($event)" 
-            [ngClass]="[isActive ? 'active-question' : '', isValidQuestion() == false ? 'error-in-question' : '' ]">
+        <div class="question-field-container " (mousedown)="onQuestionClicked($event)" 
+            [ngClass]="{ 'active-question': isActive, 'error-in-question': isValidQuestion() == false }">
 
+            
             <pep-field-title [label]="question.Title" [mandatory]="question.Mandatory" [fontBodyType]="editable ? 'xs' : 'md'"
                 [maxFieldCharacters]="question.MaxFieldCharacters">
             </pep-field-title>

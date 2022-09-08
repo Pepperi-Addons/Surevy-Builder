@@ -11,6 +11,7 @@ import { QuestionGeneratorModule } from '../question-generator/question-generato
 import { QuestionMenuModule } from '../question-menu/question-menu.module';
 import { PepSeparatorModule } from '@pepperi-addons/ngx-lib/separator';
 import { SequenceNumberModule } from '../sequence-number/sequence-number.module';
+import { ShowIfBadgeModule } from '../show-if-badge/show-if-badge.module';
 
 @NgModule({
     declarations: [SectionComponent],
@@ -25,6 +26,7 @@ import { SequenceNumberModule } from '../sequence-number/sequence-number.module'
         QuestionGeneratorModule,
         QuestionMenuModule,
         SequenceNumberModule,
+        ShowIfBadgeModule,
         TranslateModule.forChild()
     ],
     exports: [SectionComponent]

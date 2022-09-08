@@ -6,7 +6,7 @@ import { SurveysService } from '../../services/surveys.service';
 import { TranslateService } from '@ngx-translate/core';
 import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
 import { NavigationService } from '../../services/navigation.service';
-import { Survey, SurveyQuestion, SurveySection } from "../../model/survey.model";
+import { Survey, SurveyQuestion, SurveySection } from "shared";
 
 export interface ISurveyBuilderHostObject {
     surveyKey: string;

@@ -1,13 +1,12 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from "@angular/router";
 import { PepAddonService, PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
 import { NavigationService } from '../../services/navigation.service';
-import { ISurveyEditor, SurveyQuestionType } from "../../model/survey.model";
+import { ISurveyEditor } from "../../model/survey.model";
+import { SurveyQuestionType } from "shared";
 import { DestoyerDirective } from '../../model/destroyer';
 import { PepSnackBarData, PepSnackBarService } from "@pepperi-addons/ngx-lib/snack-bar";
-import { filter } from "rxjs";
 
 
 @Component({

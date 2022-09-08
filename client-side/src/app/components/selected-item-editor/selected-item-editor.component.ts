@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { SurveysService } from 'src/app/services/surveys.service';
-import { SurveyQuestion, SurveySection } from '../../model/survey.model';
+import { SurveyQuestion, SurveySection } from 'shared';
 import { DestoyerDirective } from '../../model/destroyer';
 
 @Component({
