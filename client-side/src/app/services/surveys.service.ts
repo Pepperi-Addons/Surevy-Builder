@@ -17,8 +17,7 @@ import * as _ from 'lodash';
 })
 export class SurveysService {
 
-    public mandaitoryfields: Array<SurveyObjValidator>;
-    public failedOnValidation: Array<string> = [];
+    
     private _defaultSectionTitle = '';
     set defaultSectionTitle(value: string) {
         if (this._defaultSectionTitle === '') {
@@ -105,6 +104,9 @@ export class SurveysService {
         });
     }
 
+    public getSurvey(): Survey {
+        return this._surveySubject.getValue();
+    }
     private  getNewSection() {
         
         let section: SurveySection = null;
@@ -525,81 +527,7 @@ export class SurveysService {
             return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
     }
 
-    validateSurvey(): boolean{
-        this.failedOnValidation = [];
-         //TODO: NEED TO CHECK FOR DUPLICATE KEYS AND THROW ERROR WHEN NEED
-        const survey: Survey = this._surveySubject.getValue();
-        this.mandaitoryfields = [];
-        const mandetoryFieldsArr = ['multiple-selection-dropdown','boolean-toggle']
-        survey.Sections.forEach((section,secIndex) => {
-            //Checking the name & Title of the section
-            this.keyAndTitleValidator(section, secIndex);
-            
-            section.Questions.forEach((question,quesIndex) => {
-                //Checking the name & Title of the section
-               this.keyAndTitleValidator(question, secIndex, quesIndex);
-                //Check if question type has mandatory fields
-               if(mandetoryFieldsArr.includes(question.Type)){
-                    this.checkQuestionMandatoryFields(question,secIndex, quesIndex);
-               }
-            });
-        });
-
-        return this.mandaitoryfields.length ? false : true;
-    }
-
-    checkQuestionMandatoryFields(question: SurveyQuestion, secIndex, quesIndex){
-        secIndex++;
-        quesIndex++;
-        switch(question.Type){
-            case 'multiple-selection-dropdown':{
-                question.OptionalValues.forEach((opt, optIndex) => {
-                    const index = `${secIndex.toString()}.${quesIndex.toString()}`; // .${(optIndex+1).toString()}
-                    if(opt.key.trim() == ''){
-                        this.mandaitoryfields.push( (new SurveyObjValidator('question','Key', index ,this.translate.instant('VALIDATION.KEY_MISSING'))));
-                        
-                    }
-                    if(opt.value.trim() == ''){
-                        this.mandaitoryfields.push( new SurveyObjValidator('question','Value', index ,this.translate.instant('VALIDATION.VALUE_MISSING')));
-                    }
-                });
-                break;
-            }
-        }
-    }
-
-    keyAndTitleValidator(obj, secIndex, quesIndex = 1){
-        secIndex ++;
-        quesIndex ++;
-        const type = "Type" in obj ? 'question' : 'section';
-        const index = type == 'section' ? `${secIndex.toString()}` : `${secIndex.toString()}.${quesIndex.toString()}`;
-
-        if(obj.Key.trim() == ''){
-            this.mandaitoryfields.push( new SurveyObjValidator(type,'Key', index, this.translate.instant('VALIDATION.KEY_MISSING')));
-        }
-
-        if(obj.Title.trim() == ''){
-            this.mandaitoryfields.push( (new SurveyObjValidator(type,'Title', index, type == 'section' ? this.translate.instant('VALIDATION.NAME_MISSING') : this.translate.instant('VALIDATION.QUESTION_MISSING'))));
-        }
-    }
-
-    showValidationInfo(){
-        
-        let content = '';
-        
-        this.mandaitoryfields.forEach((field,index) => { 
-                if(!this.failedOnValidation.includes((field.type)+(field.index))){
-                    this.failedOnValidation.push((field.type)+(field.index));
-                }
-                content +=  `${field.type} ${field.index} ${(field.error)}.`;
-                content += index < (this.mandaitoryfields.length - 1) ? '</br>' : '';
-        });
-       
-        const title = this.translate.instant('VALIDATION.FAILED_MSG');
-        const dataMsg = new PepDialogData({title, actionsType: "close", content});
-
-        this.dialog.openDefaultDialog(dataMsg);
-    }
+  
 
     // Publish the current survey.
     publishCurrentSurvey(addonUUID: string): Observable<Survey> {

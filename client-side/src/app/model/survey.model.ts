@@ -13,12 +13,14 @@ export class SurveyObjValidator {
     field: string;
     index: string;
     error: string;
+    hidden: boolean;
 
-    constructor(Type: string, Field = '', Index = '', Error = '') {
-        this.type = Type || '',
-        this.field = Field || '';
-        this.index = Index || '';
-        this.error = Error || '';
+    constructor(Type = '', Field = '', Index = '', Error = '', Hidden = false) {
+        this.type = Type,
+        this.field = Field;
+        this.index = Index;
+        this.error = Error;
+        this.hidden = Hidden;
     }
 }
 

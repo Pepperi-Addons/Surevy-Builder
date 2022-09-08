@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CdkDragEnd, CdkDragStart } from '@angular/cdk/drag-drop';
 import { SurveysService } from 'src/app/services/surveys.service';
+import { ValidationService } from 'src/app/services/validation.service';
 import { SurveyQuestion, SurveyQuestionType } from 'shared';
 import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
-import { PepLayoutService } from '@pepperi-addons/ngx-lib';
 
 @Component({
     selector: 'survey-question-generator',
@@ -31,14 +31,10 @@ export class QuestionGeneratorComponent implements OnInit {
     protected isGrabbing = false;
     protected isQuestionTypeMenuOpen = false;
 
-    protected isRtl = false;
-
     constructor(
-        protected layoutService: PepLayoutService,
-        private surveysService: SurveysService
-    ) {
-        this.isRtl = this.layoutService.isRtl();
-    }
+        private surveysService: SurveysService,
+        private validationService: ValidationService
+    ) { }
     
     ngOnInit(): void {
         if (this.editable) {
@@ -76,6 +72,6 @@ export class QuestionGeneratorComponent implements OnInit {
     }
 
     isValidQuestion(){
-        return !this.surveysService?.failedOnValidation?.includes('question'+this.sequenceNumber);
+        return !this.validationService?.failedOnValidation?.includes('question'+this.sequenceNumber);
     }
 }

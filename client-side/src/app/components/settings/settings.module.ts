@@ -9,6 +9,7 @@ import { SurveysService } from '../../services/surveys.service';
 import { NavigationService } from '../../services/navigation.service';
 
 import { config } from '../addon.config';
+import { ValidationService } from 'src/app/services/validation.service';
 @NgModule({
     declarations: [
         SettingsComponent
@@ -30,7 +31,8 @@ import { config } from '../addon.config';
         TranslateStore,
         // When loading this module from route we need to add this here (because only this module is loading).
         SurveysService,
-        NavigationService
+        ValidationService,
+        NavigationService,
     ]
 })
 export class SettingsModule {
