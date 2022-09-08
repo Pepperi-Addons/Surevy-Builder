@@ -27,7 +27,7 @@ export class ValidationService {
         private surveysService: SurveysService
     ) {}
 
-    validateSurvey(fieldKey: string = '',key: string = '', oldKey: string = ''): boolean{
+    validateSurvey(): boolean{
         this.failedOnValidation = [];
         
         const survey: Survey = this.surveysService.getSurvey();
@@ -49,21 +49,26 @@ export class ValidationService {
             });
         });
 
-        const dupArr = this.keysValidation.filter(field => field.key === key) || [];
-        if(dupArr.length > 1){
-            const dupKeys = dupArr.map( field => field.index ).join(' & ') || ''; 
-            
-            //push hidden objects just for the coloring in red. 
-            dupArr.forEach( obj => {
-                this.mandaitoryfields.push( (new SurveyObjValidator(obj.type,'Key', obj.index ,'',true)));
-            });
 
-            /*const msg = `${this.translate.instant('VALIDATION.UNIQUE_KEY_ERROR')}</br>
-                         Questions ${dupKeys} ${this.translate.instant('VALIDATION.USING_SAME_KEY')}</br>
-                         ${this.translate.instant('VALIDATION.UNIQUE_KEY_ERROR2')}`;*/
-            const msg = `Questions ${dupKeys} ${this.translate.instant('VALIDATION.USING_SAME_KEY')}`;
-            this.mandaitoryfields.push( (new SurveyObjValidator('question','Key', dupKeys ,msg)));
-        }
+        const duplicateIds = this.keysValidation.map(v => v.key)
+                                                .filter((v, i, vIds) => vIds.indexOf(v) === i)
+        const duplicates = this.keysValidation.filter(obj => duplicateIds.includes(obj.key));
+        
+        duplicateIds.forEach( dupKey => {
+            const dupArr = duplicates.filter(field => field.key === dupKey) || [];
+            
+            if(dupArr.length > 1){
+                    const dupKeys = dupArr.map( field => field.index ).join(' & ') || ''; 
+                    
+                    //push hidden objects just for the coloring in red. 
+                    dupArr.forEach( obj => {
+                        this.mandaitoryfields.push( (new SurveyObjValidator(obj.type,'Key', obj.index ,'',true)));
+                    });
+        
+                    const msg = `Questions ${dupKeys} ${this.translate.instant('VALIDATION.USING_SAME_KEY')}`;
+                    this.mandaitoryfields.push( (new SurveyObjValidator('question','Key', dupKeys ,msg)));
+                }
+        });
 
         return this.mandaitoryfields.length ? false : true;
     }

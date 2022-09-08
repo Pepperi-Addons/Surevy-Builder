@@ -47,7 +47,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
         this.surveysService.updateQuestionFromEditor(this.question);
 
         if(key == 'Key' || key == 'Title'){
-            if(!this.validationService.validateSurvey(key,value, oldValue)){
+            if(!this.validationService.validateSurvey()){
               this.validationService.showValidationInfo();
             }
          }
@@ -63,7 +63,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
         this.surveysService.updateSectionFromEditor(this.section);
         
         if(key == 'Key' || key == 'Title'){
-           if(!this.validationService.validateSurvey(key,value, oldValue)){
+           if(!this.validationService.validateSurvey()){
              this.validationService.showValidationInfo();
            }
         }
