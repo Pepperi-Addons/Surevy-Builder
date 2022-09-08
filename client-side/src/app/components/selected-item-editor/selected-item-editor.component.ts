@@ -40,11 +40,12 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
 
     
     onQuestionEditorFieldChanged(key,value) {
+        const oldValue = this.question[key];
         this.question[key] = value;
         this.surveysService.updateQuestionFromEditor(this.question);
 
         if(key == 'Key' || key == 'Title'){
-            if(!this.surveysService.validateSurvey()){
+            if(!this.surveysService.validateSurvey(key,value, oldValue)){
               this.surveysService.showValidationInfo();
             }
          }
@@ -55,11 +56,12 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     }
 
     onSectionEditorFieldChanged(key,value) {
+        const oldValue = this.section[key];
         this.section[key] = value;
         this.surveysService.updateSectionFromEditor(this.section);
         
         if(key == 'Key' || key == 'Title'){
-           if(!this.surveysService.validateSurvey()){
+           if(!this.surveysService.validateSurvey(key,value, oldValue)){
              this.surveysService.showValidationInfo();
            }
         }

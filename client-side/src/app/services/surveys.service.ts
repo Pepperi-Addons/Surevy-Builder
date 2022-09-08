@@ -18,6 +18,7 @@ export class SurveysService {
 
     public mandaitoryfields: Array<SurveyObjValidator>;
     public failedOnValidation: Array<string> = [];
+    private keysValidation = [];
     private _defaultSectionTitle = '';
     set defaultSectionTitle(value: string) {
         if (this._defaultSectionTitle === '') {
@@ -524,12 +525,14 @@ export class SurveysService {
             return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
     }
 
-    validateSurvey(): boolean{
+    validateSurvey(fieldKey: string = '',key: string = '', oldKey: string = ''): boolean{
         this.failedOnValidation = [];
-         //TODO: NEED TO CHECK FOR DUPLICATE KEYS AND THROW ERROR WHEN NEED
+        
         const survey: Survey = this._surveySubject.getValue();
-        this.mandaitoryfields = [];
-        const mandetoryFieldsArr = ['multiple-selection-dropdown','boolean-toggle']
+        this.mandaitoryfields =  [];
+        this.keysValidation = [];
+        const mandetoryFieldsArr = ['multiple-selection-dropdown','boolean-toggle'];
+
         survey.Sections.forEach((section,secIndex) => {
             //Checking the name & Title of the section
             this.keyAndTitleValidator(section, secIndex);
@@ -544,6 +547,22 @@ export class SurveysService {
             });
         });
 
+        const dupArr = this.keysValidation.filter(field => field.key === key) || [];
+        if(dupArr.length > 1){
+            const dupKeys = dupArr.map( field => field.index ).join(' & ') || ''; 
+            
+            //push hidden objects just for the coloring in red. 
+            dupArr.forEach( obj => {
+                this.mandaitoryfields.push( (new SurveyObjValidator(obj.type,'Key', obj.index ,'',true)));
+            });
+
+            /*const msg = `${this.translate.instant('VALIDATION.UNIQUE_KEY_ERROR')}</br>
+                         Questions ${dupKeys} ${this.translate.instant('VALIDATION.USING_SAME_KEY')}</br>
+                         ${this.translate.instant('VALIDATION.UNIQUE_KEY_ERROR2')}`;*/
+            const msg = `Questions ${dupKeys} ${this.translate.instant('VALIDATION.USING_SAME_KEY')}`;
+            this.mandaitoryfields.push( (new SurveyObjValidator('question','Key', dupKeys ,msg)));
+        }
+
         return this.mandaitoryfields.length ? false : true;
     }
 
@@ -555,11 +574,13 @@ export class SurveysService {
                 question.OptionalValues.forEach((opt, optIndex) => {
                     const index = `${secIndex.toString()}.${quesIndex.toString()}`; // .${(optIndex+1).toString()}
                     if(opt.key.trim() == ''){
-                        this.mandaitoryfields.push( (new SurveyObjValidator('question','Key', index ,this.translate.instant('VALIDATION.KEY_MISSING'))));
+                        const msg = `'question' ${index} ${this.translate.instant('VALIDATION.KEY_MISSING')}`;
+                        this.mandaitoryfields.push( (new SurveyObjValidator('question','Key', index , msg)));
                         
                     }
                     if(opt.value.trim() == ''){
-                        this.mandaitoryfields.push( new SurveyObjValidator('question','Value', index ,this.translate.instant('VALIDATION.VALUE_MISSING')));
+                        const msg = `'question' ${index} ${this.translate.instant('VALIDATION.VALUE_MISSING')}`;
+                        this.mandaitoryfields.push( new SurveyObjValidator('question','Value', index , msg));
                     }
                 });
                 break;
@@ -572,13 +593,18 @@ export class SurveysService {
         quesIndex ++;
         const type = "Type" in obj ? 'question' : 'section';
         const index = type == 'section' ? `${secIndex.toString()}` : `${secIndex.toString()}.${quesIndex.toString()}`;
-
+        
+        // add key with index to array for duplicate keys validation
+        this.keysValidation.push({key: obj.Key, index: index, type: type});
+        
         if(obj.Key.trim() == ''){
-            this.mandaitoryfields.push( new SurveyObjValidator(type,'Key', index, this.translate.instant('VALIDATION.KEY_MISSING')));
+            const msg = `${type} ${index} ${this.translate.instant('VALIDATION.KEY_MISSING')}`;
+            this.mandaitoryfields.push( new SurveyObjValidator(type,'Key', index, msg));
         }
 
         if(obj.Title.trim() == ''){
-            this.mandaitoryfields.push( (new SurveyObjValidator(type,'Title', index, type == 'section' ? this.translate.instant('VALIDATION.NAME_MISSING') : this.translate.instant('VALIDATION.QUESTION_MISSING'))));
+            const msg = `${type} ${index} ${type == 'section' ? this.translate.instant('VALIDATION.NAME_MISSING') : this.translate.instant('VALIDATION.QUESTION_MISSING')}`;
+            this.mandaitoryfields.push( (new SurveyObjValidator(type,'Title', index, msg)));
         }
     }
 
@@ -590,8 +616,10 @@ export class SurveysService {
                 if(!this.failedOnValidation.includes((field.type)+(field.index))){
                     this.failedOnValidation.push((field.type)+(field.index));
                 }
-                content +=  `${field.type} ${field.index} ${(field.error)}.`;
-                content += index < (this.mandaitoryfields.length - 1) ? '</br>' : '';
+                if(!field.hidden){
+                    content +=  `${(field.error)}.${index < (this.mandaitoryfields.length - 1) ? '</br>' : ''}`;
+
+                }
         });
        
         const title = this.translate.instant('VALIDATION.FAILED_MSG');
