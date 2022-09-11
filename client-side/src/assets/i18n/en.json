@@ -120,7 +120,7 @@
         "NAME_MISSING": "Name is missing",
         "QUESTION_MISSING": "Question is missing",
         "VALUE_MISSING": "Value is missing",
-        "USING_SAME_KEY": "are using the same key",
+        "USING_SAME_KEY": "Keys must be unique",
         "UNIQUE_KEY_ERROR": "Can’t save survey for a unique key error",
         "UNIQUE_KEY_ERROR2": "Please use a unique key value"
     },

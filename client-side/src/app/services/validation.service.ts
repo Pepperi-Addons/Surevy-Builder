@@ -60,13 +60,15 @@ export class ValidationService {
             
             if(dupArr.length > 1){
                     const dupKeys = dupArr.map( field => field.index ).join(' & ') || ''; 
-                    
+                    let text = '';
                     //push hidden objects just for the coloring in red. 
-                    dupArr.forEach( obj => {
+                    dupArr.forEach( (obj,index) => {
+                        let type = obj.type.charAt(0).toUpperCase() + obj.type.slice(1);
+                        text += `${type} ${obj.index} `+ (index < dupArr.length -1 ? '& ' : '');
                         this.mandaitoryfields.push( (new SurveyObjValidator(obj.type,'Key', obj.index ,'',true)));
                     });
         
-                    const msg = `Questions ${dupKeys} ${this.translate.instant('VALIDATION.USING_SAME_KEY')}`;
+                    const msg = `${text} ${this.translate.instant('VALIDATION.USING_SAME_KEY')}`;
                     this.mandaitoryfields.push( (new SurveyObjValidator('question','Key', dupKeys ,msg)));
                 }
         });
