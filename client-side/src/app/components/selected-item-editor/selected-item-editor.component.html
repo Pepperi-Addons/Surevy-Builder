@@ -68,6 +68,10 @@
             [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2"
             [value]="section?.Description || ''" (valueChange)="onSectionEditorFieldChanged('Description',$event)">
     </pep-textarea>
+    <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
+    <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
+                        iconName="system_copy" iconPosition="end"
+                        (buttonClick)="openShowIfDialog()"></pep-button>
 
     <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SECTION_OPTION" | translate}}</label>
 </ng-template>
