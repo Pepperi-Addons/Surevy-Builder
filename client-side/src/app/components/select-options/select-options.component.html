@@ -1,7 +1,7 @@
 <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TITLE" | translate}}</label>
 
 <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT' | translate"
-             [value]="question?.placeHolderText || ''"
+             [value]="_question?.placeHolderText || ''"
              [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT_DEFAULT' | translate"
              (valueChange)="onQuestionEditorFieldChanged('placeHolderText',$event)">
 </pep-textbox>
@@ -35,7 +35,7 @@
     <!-- <ng-container [ngTemplateOutlet]="selectOptionsTemplate" [ngTemplateOutletContext]="{opt:opt}"></ng-container> -->
 </div>
 
-<pep-checkbox *ngIf="question?.Type === 'single-selection-dropdown'" class="checkbox-no-background withPaddingBot" [value]="question?.AddNoneOption || false" 
+<pep-checkbox *ngIf="_question?.Type === 'single-selection-dropdown'" class="checkbox-no-background withPaddingBot" [value]="_question?.AddNoneOption || false" 
               [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ADD_NONE_OPTION' | translate" 
               [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('AddNoneOption',$event)"></pep-checkbox>
 

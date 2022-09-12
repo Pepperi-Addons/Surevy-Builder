@@ -26,8 +26,14 @@ class SelectOption {
 
 export class QuestionSelectOptionsComponent implements OnInit {
     
-    @Input() question: SurveyQuestion;
-    
+    public _question: SurveyQuestion;
+
+    @Input()
+    set question(value: SurveyQuestion) {
+        this._question = value;
+        this.setOptionalValues();
+    }
+
     @Output() optionChanged: EventEmitter<any> = new EventEmitter();
     @Output() questionValueChanged: EventEmitter<any> = new EventEmitter<any>();
     
@@ -41,8 +47,13 @@ export class QuestionSelectOptionsComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+      
+       
+    }
 
-        this.question?.OptionalValues?.forEach((optVal, index) => {
+    setOptionalValues(){
+        this.selectOptions = [];
+        this._question?.OptionalValues?.forEach((optVal, index) => {
             const optSel: IPepOption = { key: optVal.key, value: optVal.value };
             
             const opt = new SelectOption('collapse',this.selectOptions.length, optSel);
@@ -53,10 +64,7 @@ export class QuestionSelectOptionsComponent implements OnInit {
             this.addNewSelectOption(null);
             
         }
-
-        
     }
-
     onQuestionValueChanged(value: any): void {
         // TODO: implement
     }
