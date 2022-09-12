@@ -31,6 +31,7 @@
         "@pepperi-addons/debug-server": "0.0.32",
         "@pepperi-addons/papi-sdk": "^1.39.9",
         "@types/uuid": "^8.3.4",
+        "shared": "file:../shared",
         "uuid": "^8.3.2"
     }
 }

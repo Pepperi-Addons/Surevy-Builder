@@ -6,7 +6,8 @@ import { PepGuid, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-
 import { Observable, BehaviorSubject, from } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
-import { ISurveyEditor, ISurveyRowModel, Survey, SurveySection, ISurveyBuilderData, SurveyQuestion, SurveyQuestionType, SurveyObjValidator } from "../model/survey.model";
+import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
+import { SurveyRowProjection, Survey, SurveySection, ISurveyBuilderData, SurveyQuestion, SurveyQuestionType } from 'shared';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { PepQueryBuilderComponent, IPepQueryBuilderField } from "@pepperi-addons/ngx-lib/query-builder";
 import { ShowIfDialogComponent } from '../components/dialogs/show-if-dialog/show-if-dialog.component';
@@ -19,8 +20,7 @@ import * as _ from 'lodash';
 })
 export class SurveysService {
 
-    public mandaitoryfields: Array<SurveyObjValidator>;
-    public failedOnValidation: Array<string> = [];
+    
     private _defaultSectionTitle = '';
     set defaultSectionTitle(value: string) {
         if (this._defaultSectionTitle === '') {
@@ -105,10 +105,13 @@ export class SurveysService {
             this.setSelected(0);
             // this.loadQuestions(survey);
         });
+    }    
+
+    public getSurvey(): Survey {
+        return this._surveySubject.getValue();
     }
-
-    private getNewSection() {
-
+    private  getNewSection() {
+        
         let section: SurveySection = null;
 
         this.translate.get('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER').subscribe((res: string) => {
@@ -298,8 +301,7 @@ export class SurveysService {
                 }
             }            
         }       
-
-        console.log('getShowIfFields', fields);
+        
         return fields;
     }
 
@@ -520,7 +522,7 @@ export class SurveysService {
     /**************************************************************************************/
 
     // Get the surveys (distinct with the drafts)
-    getSurveys(addonUUID: string, options: any): Observable<ISurveyRowModel[]> {
+    getSurveys(addonUUID: string, options: any): Observable<SurveyRowProjection[]> {
         // Get the surveys from the server.
         const baseUrl = this.getBaseUrl(addonUUID);
         return this.httpService.getHttpCall(`${baseUrl}/get_surveys_data?${options}`);
@@ -581,92 +583,24 @@ export class SurveysService {
         const body = JSON.stringify(survey);
         const baseUrl = this.getBaseUrl(addonUUID);
         return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
-    }
+    } 
 
-    validateSurvey(): boolean {
-        this.failedOnValidation = [];
-        //TODO: NEED TO CHECK FOR DUPLICATE KEYS AND THROW ERROR WHEN NEED
-        const survey: Survey = this._surveySubject.getValue();
-        this.mandaitoryfields = [];
-        const mandetoryFieldsArr = ['multiple-selection-dropdown', 'boolean-toggle']
-        survey.Sections.forEach((section, secIndex) => {
-            //Checking the name & Title of the section
-            this.keyAndTitleValidator(section, secIndex);
-
-            section.Questions.forEach((question, quesIndex) => {
-                //Checking the name & Title of the section
-                this.keyAndTitleValidator(question, secIndex, quesIndex);
-                //Check if question type has mandatory fields
-                if (mandetoryFieldsArr.includes(question.Type)) {
-                    this.checkQuestionMandatoryFields(question, secIndex, quesIndex);
-                }
-            });
-        });
-
-        return this.mandaitoryfields.length ? false : true;
-    }
-
-    checkQuestionMandatoryFields(question: SurveyQuestion, secIndex, quesIndex) {
-        secIndex++;
-        quesIndex++;
-        switch (question.Type) {
-            case 'multiple-selection-dropdown': {
-                question.OptionalValues.forEach((opt, optIndex) => {
-                    const index = `${secIndex.toString()}.${quesIndex.toString()}`; // .${(optIndex+1).toString()}
-                    if (opt.key.trim() == '') {
-                        this.mandaitoryfields.push((new SurveyObjValidator('question', 'Key', index, this.translate.instant('VALIDATION.KEY_MISSING'))));
-
-                    }
-                    if (opt.value.trim() == '') {
-                        this.mandaitoryfields.push(new SurveyObjValidator('question', 'Value', index, this.translate.instant('VALIDATION.VALUE_MISSING')));
-                    }
-                });
-                break;
-            }
-        }
-    }
-
-    keyAndTitleValidator(obj, secIndex, quesIndex = 1) {
-        secIndex++;
-        quesIndex++;
-        const type = "Type" in obj ? 'question' : 'section';
-        const index = type == 'section' ? `${secIndex.toString()}` : `${secIndex.toString()}.${quesIndex.toString()}`;
-
-        if (obj.Key.trim() == '') {
-            this.mandaitoryfields.push(new SurveyObjValidator(type, 'Key', index, this.translate.instant('VALIDATION.KEY_MISSING')));
-        }
-
-        if (obj.Title.trim() == '') {
-            this.mandaitoryfields.push((new SurveyObjValidator(type, 'Title', index, type == 'section' ? this.translate.instant('VALIDATION.NAME_MISSING') : this.translate.instant('VALIDATION.QUESTION_MISSING'))));
-        }
-    }
-
-    showValidationInfo() {
-        let content = '';
-
-        this.mandaitoryfields.forEach((field, index) => {
-            if (!this.failedOnValidation.includes((field.type) + (field.index))) {
-                this.failedOnValidation.push((field.type) + (field.index));
-            }
-            content += `${field.type} ${field.index} ${(field.error)}.`;
-            content += index < (this.mandaitoryfields.length - 1) ? '</br>' : '';
-        });
-
-        const title = this.translate.instant('VALIDATION.FAILED_MSG');
-        const dataMsg = new PepDialogData({ title, actionsType: "close", content });
-
-        this.dialog.openDefaultDialog(dataMsg);
-    }
-
+    // Open dialog to set the display condition of the selected question
     openShowIfDialog() {        
         const config = this.dialog.getDialogConfig({ minWidth: '30rem' }, 'large');
         const data = new PepDialogData({ actionsType: 'cancel-ok', content: { query: null, fields: this.getShowIfFields() }, showClose: true });
         const dialogRef = this.dialog.openDialog(ShowIfDialogComponent, data, config);        
         dialogRef.afterClosed().subscribe({
-            next: (res) => {
-                console.log('res', res);
-                //TODO save filter
-            }
+            next: (res) => {                             
+                const sections = this._sectionsSubject.getValue();
+                const currentSection = sections[this._selectedSectionIndex];
+                if (currentSection) {
+                    const currentQuestion = currentSection.Questions[this._selectedQuestionIndex];
+                    if (currentQuestion) {
+                        currentQuestion.ShowIf = JSON.stringify(res.query);                                                
+                    }
+                } 
+            }     
         });
     }
 
@@ -678,12 +612,12 @@ export class SurveysService {
         return this.httpService.postHttpCall(`${baseUrl}/publish_survey`, body);
     }
 
-    duplicateSelectedItem() {        
+    duplicateSelectedItem() {                        
         if (this.selectedItemType === 'section') {
             this.duplicateSelectedSection();
         } else if (this.selectedItemType === 'question') {
             this.duplicateSelectedQuestion();
-        }
+        } 
     }
 
     deleteSelectedItem() {

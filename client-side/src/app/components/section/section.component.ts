@@ -1,9 +1,8 @@
-import { Component, ElementRef, HostBinding, HostListener, Input, OnChanges, OnInit, QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
-import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragEnter, CdkDragExit, CdkDragStart, CdkDropList } from '@angular/cdk/drag-drop';
+import { Component, Input, OnInit, Renderer2 } from '@angular/core';
+import { CdkDragDrop, CdkDragEnd, CdkDragStart } from '@angular/cdk/drag-drop';
 import { SurveysService } from '../../services/surveys.service';
-import { TranslateService } from '@ngx-translate/core';
-import { PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
-import { SurveyQuestion, SurveyQuestionType, SurveySection } from "../../model/survey.model";
+import { PepScreenSizeType } from '@pepperi-addons/ngx-lib';
+import { SurveyQuestion, SurveyQuestionType } from "shared";
 import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
 
 @Component({
@@ -29,7 +28,8 @@ export class SectionComponent implements OnInit {
     @Input() hasError: boolean = false;
 
     @Input() questions: Array<SurveyQuestion>;
-
+    @Input() showIf: string;
+    
     @Input() sectionsQuestionsDropList = [];
 
     private _editable = false;

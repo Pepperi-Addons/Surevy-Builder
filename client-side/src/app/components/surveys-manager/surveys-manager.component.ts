@@ -9,7 +9,8 @@ import { PepSelectionData } from '@pepperi-addons/ngx-lib/list';
 import { NavigationService } from "../../services/navigation.service";
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { SurveysService } from "../../services/surveys.service";
-import { Survey, ISurveyRowModel, MY_DATE_FORMATS, MomentUtcDateAdapter, MomentUtcDateTimeAdapter } from "../../model/survey.model";
+import { MY_DATE_FORMATS, MomentUtcDateAdapter, MomentUtcDateTimeAdapter } from "../../model/survey.model";
+import { Survey, SurveyRowProjection } from "shared";
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from "@angular/material/core";
 import { getCalture } from "@pepperi-addons/ngx-lib/date";
 import { DatetimeAdapter, MAT_DATETIME_FORMATS } from '@mat-datetimepicker/core';
@@ -35,7 +36,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
     //actions: IPepGenericListActions;
 
     totalSurveys: number = 0;
-    surveys: ISurveyRowModel[];
+    surveys: SurveyRowProjection[];
     //imagesPath = '';
     //hasSurevy = true;
     private _subscriptions: Subscription[] = [];

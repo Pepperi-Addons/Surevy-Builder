@@ -25,7 +25,7 @@
                         (valueChange)="onActiveStateChanged($event)">
                     </pep-checkbox>
                     
-                    <div fxLayout="row" fxLayoutGap="1rem">
+                    <div fxLayout="row" style="gap: '1rem';">
                         <pep-date fxFlex="50%" [value]="activeFromDate"
                             [label]="'SURVEY_MANAGER.SURVEY_EDITOR.ACTIVE_FROM_DATE' | translate" [type]="'date'"
                             [disabled]="!isActive" (valueChange)="onActiveFromDateChanged($event)" [maxDateValue]="maxDateValue"></pep-date>

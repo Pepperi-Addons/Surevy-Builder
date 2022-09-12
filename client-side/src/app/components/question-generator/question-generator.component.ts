@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CdkDragEnd, CdkDragStart } from '@angular/cdk/drag-drop';
 import { SurveysService } from 'src/app/services/surveys.service';
-import { SurveyQuestion, SurveyQuestionType } from '../../model/survey.model';
+import { ValidationService } from 'src/app/services/validation.service';
+import { SurveyQuestion, SurveyQuestionType } from 'shared';
 import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
 
 @Component({
@@ -31,7 +32,8 @@ export class QuestionGeneratorComponent implements OnInit {
     protected isQuestionTypeMenuOpen = false;
 
     constructor(
-        private surveysService: SurveysService
+        private surveysService: SurveysService,
+        private validationService: ValidationService
     ) { }
     
     ngOnInit(): void {
@@ -70,6 +72,6 @@ export class QuestionGeneratorComponent implements OnInit {
     }
 
     isValidQuestion(){
-        return !this.surveysService?.failedOnValidation?.includes('question'+this.sequenceNumber);
+        return !this.validationService?.failedOnValidation?.includes('question'+this.sequenceNumber);
     }
 }

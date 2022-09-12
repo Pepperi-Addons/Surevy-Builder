@@ -25,6 +25,8 @@ const pepIcons = [
 import { YesNoQuestionComponent } from '../yes-no-question/yes-no-question.component';
 import { QuestionGeneratorComponent } from './question-generator.component';
 import { SequenceNumberModule } from '../sequence-number/sequence-number.module';
+import { MatBadgeModule } from '@angular/material/badge';
+import { ShowIfBadgeModule } from '../show-if-badge/show-if-badge.module';
 
 @NgModule({
     declarations: [
@@ -47,6 +49,9 @@ import { SequenceNumberModule } from '../sequence-number/sequence-number.module'
         QuestionMenuModule,
         YesNoQuestionModule,
         SequenceNumberModule,
+        ShowIfBadgeModule,
+        MatBadgeModule,
+        MatIconModule,
         TranslateModule.forChild()
     ],
     exports: [QuestionGeneratorComponent]

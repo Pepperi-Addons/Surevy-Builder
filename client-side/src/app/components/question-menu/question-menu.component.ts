@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { QuestionMenuService } from './question-menu.service';
 import { SurveysService } from "../../services/surveys.service";
-import { SurveyQuestionType } from 'src/app/model/survey.model';
+import { SurveyQuestionType } from 'shared';
 import { PepSizeType, PepStyleType } from '@pepperi-addons/ngx-lib';
 import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
 

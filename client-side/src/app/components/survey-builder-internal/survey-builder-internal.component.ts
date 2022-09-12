@@ -3,10 +3,11 @@ import { Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, Renderer2
 import { BehaviorSubject, Observable, Subject, takeUntil } from "rxjs";
 import { CdkDragDrop, CdkDragEnd, CdkDragStart  } from '@angular/cdk/drag-drop';
 import { SurveysService } from '../../services/surveys.service';
+import { ValidationService } from 'src/app/services/validation.service';
 import { TranslateService } from '@ngx-translate/core';
 import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
 import { NavigationService } from '../../services/navigation.service';
-import { Survey, SurveyQuestion, SurveySection } from "../../model/survey.model";
+import { Survey, SurveyQuestion, SurveySection } from "shared";
 
 export interface ISurveyBuilderHostObject {
     surveyKey: string;
@@ -58,7 +59,8 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         private navigationService: NavigationService,
         private utilitiesService: PepUtilitiesService,
         private layoutService: PepLayoutService,
-        private surveysService: SurveysService
+        private surveysService: SurveysService,
+        private validationService: ValidationService
     ) {
         this._destroyed = new Subject();
     }
@@ -121,6 +123,6 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     }
 
     isValidSection(index){
-        return this.surveysService?.failedOnValidation?.includes('section'+(index+1));
+        return this.validationService?.failedOnValidation?.includes('section'+(index+1));
     }
 }
