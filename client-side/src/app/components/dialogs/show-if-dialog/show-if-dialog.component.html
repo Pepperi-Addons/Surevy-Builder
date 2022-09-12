@@ -1,0 +1,12 @@
+<div class="dialog">
+    <pep-dialog [title]="'DIALOGS.SHOW_IF.TITLE' | translate" [showClose]="true" (close)="onDialogClose()">
+        <ng-container pep-dialog-content>
+            <pep-query-builder [query]="query" [fields]="fields" (queryChange)="outputData.query=$event || ''"
+                (formValidationChange)="isValid=$event">
+            </pep-query-builder>            
+        </ng-container>
+        <ng-container pep-dialog-actions class="pepperi-border-top">
+            <pep-button [value]="'DIALOGS.SHOW_IF.OK' | translate" [disabled]="!isValid" [mat-dialog-close]="outputData"></pep-button>
+        </ng-container>
+    </pep-dialog>
+</div>

@@ -12,15 +12,17 @@ import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
 
 import { SurveysManagerModule } from './components/surveys-manager/surveys-manager.module';
 import { SurveyManagerModule } from './components/survey-manager/survey-manager.module';
+import { ShowIfModule } from './components/dialogs/show-if-dialog/show-if.module';
 
 import { AppComponent } from './app.component';
 import { config } from './components/addon.config';
 import { SettingsComponent, SettingsModule } from './components/settings';
+
 import { SurveyBuilderComponent } from './components/survey-builder';
 
 @NgModule({
     declarations: [
-        AppComponent    
+        AppComponent        
     ],
     imports: [
         BrowserModule,
@@ -29,8 +31,9 @@ import { SurveyBuilderComponent } from './components/survey-builder';
         SettingsModule,
         SurveysManagerModule,
         SurveyManagerModule,
+        ShowIfModule,
         AppRoutingModule,    
-        PepMenuModule,   
+        PepMenuModule,           
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

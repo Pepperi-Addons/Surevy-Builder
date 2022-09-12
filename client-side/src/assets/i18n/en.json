@@ -135,7 +135,11 @@
         "PERCENTAGE": "Percentage",
         "DATE": "Date",
         "DATE_TIME": "Date Time"
-        
-
+    },
+    "DIALOGS": {
+        "SHOW_IF": {
+            "TITLE": "Show If",
+            "OK": "Ok"
+        }
     }
 }

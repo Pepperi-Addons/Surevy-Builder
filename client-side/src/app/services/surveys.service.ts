@@ -8,6 +8,9 @@ import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, ISurveyRowModel, Survey, SurveySection, ISurveyBuilderData, SurveyQuestion, SurveyQuestionType, SurveyObjValidator } from "../model/survey.model";
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
+import { PepQueryBuilderComponent, IPepQueryBuilderField } from "@pepperi-addons/ngx-lib/query-builder";
+import { ShowIfDialogComponent } from '../components/dialogs/show-if-dialog/show-if-dialog.component';
+
 import * as _ from 'lodash';
 
 
@@ -83,9 +86,9 @@ export class SurveysService {
     get lockScreenChange$(): Observable<boolean> {
         return this._lockScreenSubject.asObservable().pipe(distinctUntilChanged());
     }
-    
+
     get selectedItemType(): 'section' | 'question' | 'none' {
-        return this._selectedQuestionIndex > -1 ? 'question' : (this._selectedSectionIndex > -1 ? 'section' : 'none');        
+        return this._selectedQuestionIndex > -1 ? 'question' : (this._selectedSectionIndex > -1 ? 'section' : 'none');
     }
 
     constructor(
@@ -104,8 +107,8 @@ export class SurveysService {
         });
     }
 
-    private  getNewSection() {
-        
+    private getNewSection() {
+
         let section: SurveySection = null;
 
         this.translate.get('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER').subscribe((res: string) => {
@@ -114,10 +117,10 @@ export class SurveysService {
                 Title: res,
                 Questions: []
             };
-        }); 
+        });
 
         return section;
-        
+
     }
 
     private loadSurveyEditor(survey: Survey) {
@@ -210,7 +213,7 @@ export class SurveysService {
 
         return currentSection;
     }
-   
+
     private duplicateSelectedSection() {
         if (this._selectedSectionIndex > -1) {
             const sections = this._sectionsSubject.getValue();
@@ -223,7 +226,7 @@ export class SurveysService {
             this.notifySelectedSectionChange(duplicated, newSelectedIndex);
         }
     }
-        
+
     private deleteSelectedSection() {
         if (this._selectedSectionIndex > -1) {
             const sections = this._sectionsSubject.getValue();
@@ -235,34 +238,90 @@ export class SurveysService {
             }
         }
     }
-    
-    private duplicateSelectedQuestion() {
+
+    private duplicateSelectedQuestion() {        
         if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
             const sections = this._sectionsSubject.getValue();
             const currentSection = sections[this._selectedSectionIndex];
             if (currentSection?.Questions?.length > this._selectedQuestionIndex) {
                 const duplicated: SurveyQuestion = _.clone(currentSection.Questions[this._selectedQuestionIndex]);
-                duplicated.Key = PepGuid.newGuid();                
-                const newSelectedIndex = this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ? 
-                    this._selectedQuestionIndex + 1 : currentSection.Questions.length;                                               
+                duplicated.Key = PepGuid.newGuid();
+                const newSelectedIndex = this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ?
+                    this._selectedQuestionIndex + 1 : currentSection.Questions.length;
                 currentSection.Questions.splice(newSelectedIndex, 0, duplicated);
                 this.notifySectionsChange(sections);
                 this.notifySelectedQuestionChange(duplicated, newSelectedIndex);
             }
-        }
+        } 
     }
-        
+
     private deleteSelectedQuestion() {
         if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
             const sections = this._sectionsSubject.getValue();
             const currentSection = sections[this._selectedSectionIndex];
-            if (currentSection?.Questions?.length > this._selectedQuestionIndex) {                
-                const newSelectedIndex = this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ? 
-                    (this._selectedQuestionIndex === 0 && currentSection.Questions.length > 1 ? 0 : this._selectedQuestionIndex - 1) : -1;                                      
+            if (currentSection?.Questions?.length > this._selectedQuestionIndex) {
+                const newSelectedIndex = this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ?
+                    (this._selectedQuestionIndex === 0 && currentSection.Questions.length > 1 ? 0 : this._selectedQuestionIndex - 1) : -1;
                 currentSection.Questions.splice(this._selectedQuestionIndex, 1);
                 this.notifySectionsChange(sections);
                 this.notifySelectedQuestionChange(newSelectedIndex > -1 ? currentSection.Questions[newSelectedIndex] : null, newSelectedIndex);
             }
+        }
+    }
+
+    /**
+     * create a question-key array from all questions prior to the selected question with type boolean or select
+     * @returns array of questions key
+     */
+    private getShowIfFields() {
+        let fields: Array<IPepQueryBuilderField> = new Array<IPepQueryBuilderField>();
+
+        const sections = this._sectionsSubject.getValue();
+        for (let i = 0; i <= this._selectedSectionIndex; i++) {
+            const currentSection = sections[i];
+            if (currentSection) {
+                const sectionQuestionsLength = i === this._selectedSectionIndex ? this._selectedQuestionIndex : currentSection.Questions.length;
+                for (let j = 0; j < sectionQuestionsLength; j++) {
+                    const currentQuestion = currentSection.Questions[j];
+                    if (currentQuestion &&
+                        (currentQuestion.Type === 'single-selection-dropdown' ||
+                            currentQuestion.Type === 'multiple-selection-dropdown' ||
+                            currentQuestion.Type === 'boolean-toggle')) {
+                                fields.push({
+                                    FieldID: currentQuestion.Key,
+                                    Title: currentQuestion.Title,
+                                    FieldType: this.getShowIfQuestionType(currentQuestion.Type),
+                                    OptionalValues: currentQuestion.OptionalValues || []
+                                } as IPepQueryBuilderField);
+                    }
+    
+                }
+            }            
+        }       
+
+        console.log('getShowIfFields', fields);
+        return fields;
+    }
+
+    private getShowIfQuestionType(type: string) {
+        switch (type) {
+            case 'short-text':
+            case 'long-text':
+                return 'String';
+            case 'single-selection-dropdown':
+            case 'multiple-selection-dropdown':
+                return 'MultipleStringValues';
+            case 'boolean-toggle':
+                return 'Bool'
+            case 'number':
+            case 'decimal':
+            case 'currency':
+            case 'percentage':
+                return 'Integer';
+            case 'date':
+                return 'Date';
+            case 'datetime':
+                return 'DateTime';
         }
     }
 
@@ -406,8 +465,8 @@ export class SurveysService {
 
     addQuestion(questionType: SurveyQuestionType, sectionIndex = -1, questionIndex = -1) {
         // Create new question
-        const title = this.translate.get('SURVEY_MANAGER.QUESTION_TITLE_PLACEHOLDER').subscribe((title:string) => {
-        
+        const title = this.translate.get('SURVEY_MANAGER.QUESTION_TITLE_PLACEHOLDER').subscribe((title: string) => {
+
             const question: SurveyQuestion = {
                 Name: PepGuid.newGuid(),
                 Key: PepGuid.newGuid(),
@@ -519,47 +578,47 @@ export class SurveysService {
     // Save the current survey in drafts.
     saveCurrentSurvey(addonUUID: string): Observable<Survey> {
         const survey: Survey = this._surveySubject.getValue();
-            const body = JSON.stringify(survey);
-            const baseUrl = this.getBaseUrl(addonUUID);
-            return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
+        const body = JSON.stringify(survey);
+        const baseUrl = this.getBaseUrl(addonUUID);
+        return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
     }
 
-    validateSurvey(): boolean{
+    validateSurvey(): boolean {
         this.failedOnValidation = [];
-         //TODO: NEED TO CHECK FOR DUPLICATE KEYS AND THROW ERROR WHEN NEED
+        //TODO: NEED TO CHECK FOR DUPLICATE KEYS AND THROW ERROR WHEN NEED
         const survey: Survey = this._surveySubject.getValue();
         this.mandaitoryfields = [];
-        const mandetoryFieldsArr = ['multiple-selection-dropdown','boolean-toggle']
-        survey.Sections.forEach((section,secIndex) => {
+        const mandetoryFieldsArr = ['multiple-selection-dropdown', 'boolean-toggle']
+        survey.Sections.forEach((section, secIndex) => {
             //Checking the name & Title of the section
             this.keyAndTitleValidator(section, secIndex);
-            
-            section.Questions.forEach((question,quesIndex) => {
+
+            section.Questions.forEach((question, quesIndex) => {
                 //Checking the name & Title of the section
-               this.keyAndTitleValidator(question, secIndex, quesIndex);
+                this.keyAndTitleValidator(question, secIndex, quesIndex);
                 //Check if question type has mandatory fields
-               if(mandetoryFieldsArr.includes(question.Type)){
-                    this.checkQuestionMandatoryFields(question,secIndex, quesIndex);
-               }
+                if (mandetoryFieldsArr.includes(question.Type)) {
+                    this.checkQuestionMandatoryFields(question, secIndex, quesIndex);
+                }
             });
         });
 
         return this.mandaitoryfields.length ? false : true;
     }
 
-    checkQuestionMandatoryFields(question: SurveyQuestion, secIndex, quesIndex){
+    checkQuestionMandatoryFields(question: SurveyQuestion, secIndex, quesIndex) {
         secIndex++;
         quesIndex++;
-        switch(question.Type){
-            case 'multiple-selection-dropdown':{
+        switch (question.Type) {
+            case 'multiple-selection-dropdown': {
                 question.OptionalValues.forEach((opt, optIndex) => {
                     const index = `${secIndex.toString()}.${quesIndex.toString()}`; // .${(optIndex+1).toString()}
-                    if(opt.key.trim() == ''){
-                        this.mandaitoryfields.push( (new SurveyObjValidator('question','Key', index ,this.translate.instant('VALIDATION.KEY_MISSING'))));
-                        
+                    if (opt.key.trim() == '') {
+                        this.mandaitoryfields.push((new SurveyObjValidator('question', 'Key', index, this.translate.instant('VALIDATION.KEY_MISSING'))));
+
                     }
-                    if(opt.value.trim() == ''){
-                        this.mandaitoryfields.push( new SurveyObjValidator('question','Value', index ,this.translate.instant('VALIDATION.VALUE_MISSING')));
+                    if (opt.value.trim() == '') {
+                        this.mandaitoryfields.push(new SurveyObjValidator('question', 'Value', index, this.translate.instant('VALIDATION.VALUE_MISSING')));
                     }
                 });
                 break;
@@ -567,37 +626,48 @@ export class SurveysService {
         }
     }
 
-    keyAndTitleValidator(obj, secIndex, quesIndex = 1){
-        secIndex ++;
-        quesIndex ++;
+    keyAndTitleValidator(obj, secIndex, quesIndex = 1) {
+        secIndex++;
+        quesIndex++;
         const type = "Type" in obj ? 'question' : 'section';
         const index = type == 'section' ? `${secIndex.toString()}` : `${secIndex.toString()}.${quesIndex.toString()}`;
 
-        if(obj.Key.trim() == ''){
-            this.mandaitoryfields.push( new SurveyObjValidator(type,'Key', index, this.translate.instant('VALIDATION.KEY_MISSING')));
+        if (obj.Key.trim() == '') {
+            this.mandaitoryfields.push(new SurveyObjValidator(type, 'Key', index, this.translate.instant('VALIDATION.KEY_MISSING')));
         }
 
-        if(obj.Title.trim() == ''){
-            this.mandaitoryfields.push( (new SurveyObjValidator(type,'Title', index, type == 'section' ? this.translate.instant('VALIDATION.NAME_MISSING') : this.translate.instant('VALIDATION.QUESTION_MISSING'))));
+        if (obj.Title.trim() == '') {
+            this.mandaitoryfields.push((new SurveyObjValidator(type, 'Title', index, type == 'section' ? this.translate.instant('VALIDATION.NAME_MISSING') : this.translate.instant('VALIDATION.QUESTION_MISSING'))));
         }
     }
 
-    showValidationInfo(){
-        
+    showValidationInfo() {
         let content = '';
-        
-        this.mandaitoryfields.forEach((field,index) => { 
-                if(!this.failedOnValidation.includes((field.type)+(field.index))){
-                    this.failedOnValidation.push((field.type)+(field.index));
-                }
-                content +=  `${field.type} ${field.index} ${(field.error)}.`;
-                content += index < (this.mandaitoryfields.length - 1) ? '</br>' : '';
+
+        this.mandaitoryfields.forEach((field, index) => {
+            if (!this.failedOnValidation.includes((field.type) + (field.index))) {
+                this.failedOnValidation.push((field.type) + (field.index));
+            }
+            content += `${field.type} ${field.index} ${(field.error)}.`;
+            content += index < (this.mandaitoryfields.length - 1) ? '</br>' : '';
         });
-       
+
         const title = this.translate.instant('VALIDATION.FAILED_MSG');
-        const dataMsg = new PepDialogData({title, actionsType: "close", content});
+        const dataMsg = new PepDialogData({ title, actionsType: "close", content });
 
         this.dialog.openDefaultDialog(dataMsg);
+    }
+
+    openShowIfDialog() {        
+        const config = this.dialog.getDialogConfig({ minWidth: '30rem' }, 'large');
+        const data = new PepDialogData({ actionsType: 'cancel-ok', content: { query: null, fields: this.getShowIfFields() }, showClose: true });
+        const dialogRef = this.dialog.openDialog(ShowIfDialogComponent, data, config);        
+        dialogRef.afterClosed().subscribe({
+            next: (res) => {
+                console.log('res', res);
+                //TODO save filter
+            }
+        });
     }
 
     // Publish the current survey.
@@ -608,7 +678,7 @@ export class SurveysService {
         return this.httpService.postHttpCall(`${baseUrl}/publish_survey`, body);
     }
 
-    duplicateSelectedItem() {
+    duplicateSelectedItem() {        
         if (this.selectedItemType === 'section') {
             this.duplicateSelectedSection();
         } else if (this.selectedItemType === 'question') {
@@ -623,6 +693,8 @@ export class SurveysService {
             this.deleteSelectedQuestion();
         }
     }
+
+
 }
 
 
