@@ -15,8 +15,6 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     question: SurveyQuestion = null;
     section: SurveySection = null;
 
-    forNextVersion = false;
-    
     constructor(
         protected surveysService: SurveysService,
         private validationService: ValidationService
@@ -34,6 +32,9 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
 
     ngOnInit(): void {
       
+    }
+    openShowIfDialog(){
+        this.surveysService.openShowIfDialog();
     }
 
     onQuestionValueChanged(value: any): void {

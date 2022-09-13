@@ -46,16 +46,15 @@
         <ng-container *ngIf="surveysService.selectedItemType === 'section'; then sectionEditorTemplate; else questionEditorTemplate"></ng-container>
 
         <div class="pep-actions" *ngIf="surveysService.selectedItemType !== 'none'">
-            <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
+            <pep-button value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
                         iconName="system_copy" iconPosition="end"
                         (buttonClick)="onItemDuplicateClicked()"></pep-button>
-            <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
+            <pep-button value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
                         iconName="system_bin" iconPosition="end" classNames="caution"
                         (buttonClick)="onItemDeleteClicked()"></pep-button>
         </div>
     </div>
 </pep-side-bar>
-
 
 <ng-template #sectionEditorTemplate>
     <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY' | translate" [mandatory]="true"
@@ -68,10 +67,6 @@
             [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2"
             [value]="section?.Description || ''" (valueChange)="onSectionEditorFieldChanged('Description',$event)">
     </pep-textarea>
-    <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
-    <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
-                        iconName="system_copy" iconPosition="end"
-                        (buttonClick)="openShowIfDialog()"></pep-button>
 
     <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SECTION_OPTION" | translate}}</label>
 </ng-template>
@@ -114,14 +109,14 @@
                    (inputChange)="onQuestionEditorFieldChanged('Value',$event)">
            </pep-slider>
         </ng-container>
-    
-        <!-- <ng-container *ngIf="forNextVersion">
-        <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
-        <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
-            styleType="weak" iconName="system_filter_2" iconPosition="end"
-            (buttonClick)="onShowLogicClick($event)" sizeType="sm"></pep-button>
-        </ng-container> -->
-    
+        
+        <div class="showIfCont">
+            <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
+            <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
+                                iconName="system_filter_2" iconPosition="end"
+                                (buttonClick)="openShowIfDialog()"></pep-button>
+        </div>
+
         <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>
         
         <pep-textbox *ngIf="question?.Type === 'short-text' || question?.Type === 'long-text'"
