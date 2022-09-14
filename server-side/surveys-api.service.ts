@@ -74,6 +74,30 @@ export class SurveyApiService {
         this.upsertRelation(addonBlockRelation);
     }
 
+    private upsertPageBlockRelation() {
+        const blockRelationName = 'Survey';
+        const blockName = 'Block';
+
+        const blockRelation: Relation = {
+            RelationName: 'PageBlock',
+            Name: blockRelationName,
+            Description: `${blockRelationName} block`,
+            Type: "NgComponent",
+            SubType: "NG14",
+            AddonUUID: this.client.AddonUUID,
+            AddonRelativeURL: bundleFileName,
+            ComponentName: `${blockName}Component`, // This is should be the block component name (from the client-side)
+            ModuleName: `${blockName}Module`, // This is should be the block module name (from the client-side)
+            EditorComponentName: `${blockName}EditorComponent`, // This is should be the block editor component name (from the client-side)
+            EditorModuleName: `${blockName}EditorModule`, // This is should be the block editor module name (from the client-side)}
+            ElementsModule: 'WebComponents',
+            ElementName: `${blockName.toLocaleLowerCase()}-element-${this.client.AddonUUID}`,
+            EditorElementName: `${blockName.toLocaleLowerCase()}-editor-element-${this.client.AddonUUID}`
+        };
+
+        return this.upsertRelation(blockRelation);
+    }
+
     private upsertSettingsRelation() {
         const blockName = 'Settings';
         const name = 'Surveys';
@@ -155,6 +179,7 @@ export class SurveyApiService {
         }
 
         this.upsertAddonBlockRelation();
+        this.upsertPageBlockRelation();
         this.upsertSettingsRelation();
     }
 

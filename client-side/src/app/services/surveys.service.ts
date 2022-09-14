@@ -13,6 +13,7 @@ import { PepQueryBuilderComponent, IPepQueryBuilderField } from "@pepperi-addons
 import { ShowIfDialogComponent } from '../components/dialogs/show-if-dialog/show-if-dialog.component';
 
 import * as _ from 'lodash';
+import { config } from "../components/addon.config";
 
 
 @Injectable({
@@ -542,16 +543,33 @@ export class SurveysService {
     loadSurveyBuilder(addonUUID: string, surveyKey: string, editable: boolean, queryParameters: Params): void {
         //  If is't not edit mode get the survey from the CPI side.
         const baseUrl = this.getBaseUrl(addonUUID);
+        debugger;
 
         if (!editable) {
-            // Get the survey (sections and the questions data) from the server.
-            this.httpService.getHttpCall(`${baseUrl}/get_survey_data?key=${surveyKey}`)
-                .subscribe((res: ISurveyTemplateBuilderData) => {
-                    if (res && res.survey) {
-                        // Load the survey.
-                        this.notifySurveyChange(res.survey);
+            const eventData = {
+                detail: {
+                    eventKey: 'OnSurveyLoad',
+                    eventData: {
+                        surveyKey: surveyKey
+                    },
+                    completion: (data) => {
+                        debugger;
                     }
-                });
+                }
+            };
+    
+            const customEvent = new CustomEvent('emit-event', eventData);
+            window.dispatchEvent(customEvent);
+
+            // const baseUrlCPI = `http://localhost:8088/addon/api/${config.AddonUUID}/addon-cpi`;
+            // // Get the survey (sections and the questions data) from the server.
+            // this.httpService.getHttpCall(`${baseUrl}/get_survey_data?key=${surveyKey}`)
+            //     .subscribe((res: ISurveyTemplateBuilderData) => {
+            //         if (res && res.survey) {
+            //             // Load the survey.
+            //             this.notifySurveyChange(res.survey);
+            //         }
+            //     });
         } else { // If is't edit mode get the data of the survey and the relations from the Server side.
             // Get the survey (sections and the questions data) from the server.
             this.httpService.getHttpCall(`${baseUrl}/get_survey_builder_data?key=${surveyKey}`)

@@ -18,7 +18,9 @@ import { AppComponent } from './app.component';
 import { config } from './components/addon.config';
 import { SettingsComponent, SettingsModule } from './components/settings';
 
-import { SurveyBuilderComponent } from './components/survey-builder';
+// import { SurveyBuilderComponent, SurveyBuilderModule } from './components/survey-builder';
+import { BlockComponent, BlockModule } from './components/block';
+import { BlockEditorComponent, BlockEditorModule } from './components/block-editor';
 
 @NgModule({
     declarations: [
@@ -29,6 +31,9 @@ import { SurveyBuilderComponent } from './components/survey-builder';
         BrowserAnimationsModule,
         HttpClientModule,
         SettingsModule,
+        // SurveyBuilderModule,
+        BlockModule,
+        BlockEditorModule,
         SurveysManagerModule,
         SurveyManagerModule,
         ShowIfModule,
@@ -62,6 +67,9 @@ export class AppModule implements DoBootstrap {
 
     ngDoBootstrap() {
         this.pepAddonService.defineCustomElement(`settings-element-${config.AddonUUID}`, SettingsComponent, this.injector);
-        this.pepAddonService.defineCustomElement(`survey-element-${config.AddonUUID}`, SurveyBuilderComponent, this.injector);
+        
+        // this.pepAddonService.defineCustomElement(`survey-element-${config.AddonUUID}`, SurveyBuilderComponent, this.injector);
+        this.pepAddonService.defineCustomElement(`block-element-${config.AddonUUID}`, BlockComponent, this.injector);
+        this.pepAddonService.defineCustomElement(`block-editor-element-${config.AddonUUID}`, BlockEditorComponent, this.injector);
     }
 }
