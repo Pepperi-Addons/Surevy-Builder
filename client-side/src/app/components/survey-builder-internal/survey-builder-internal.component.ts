@@ -4,10 +4,9 @@ import { BehaviorSubject, Observable, Subject, takeUntil } from "rxjs";
 import { CdkDragDrop, CdkDragEnd, CdkDragStart  } from '@angular/cdk/drag-drop';
 import { SurveysService } from '../../services/surveys.service';
 import { ValidationService } from 'src/app/services/validation.service';
-import { TranslateService } from '@ngx-translate/core';
 import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
 import { NavigationService } from '../../services/navigation.service';
-import { Survey, SurveyQuestion, SurveySection } from "shared";
+import { SurveyTemplate, SurveyTemplateSection } from "shared";
 
 export interface ISurveyBuilderHostObject {
     surveyKey: string;
@@ -44,13 +43,13 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         return this._screenSize;
     }
     
-    private _sectionsSubject: BehaviorSubject<SurveySection[]> = new BehaviorSubject<SurveySection[]>([]);
-    get sections$(): Observable<SurveySection[]> {
+    private _sectionsSubject: BehaviorSubject<SurveyTemplateSection[]> = new BehaviorSubject<SurveyTemplateSection[]>([]);
+    get sections$(): Observable<SurveyTemplateSection[]> {
         return this._sectionsSubject.asObservable();
     }
 
     protected isGrabbing = false;
-    protected selectedSection: SurveySection = null;
+    protected selectedSection: SurveyTemplateSection = null;
     private readonly _destroyed: Subject<void>;
 
     constructor(
@@ -69,7 +68,7 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         return takeUntil(this._destroyed);
     }
 
-    private setSurveyDataProperties(survey: Survey) {
+    private setSurveyDataProperties(survey: SurveyTemplate) {
         if (survey && this.sectionsContainer?.nativeElement) {
             
         }
@@ -90,15 +89,15 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
             });
             
             if (this.editMode) {
-                this.surveysService.sectionsChange$.pipe(this.getDestroyer()).subscribe((sections: SurveySection[]) => {
+                this.surveysService.sectionsChange$.pipe(this.getDestroyer()).subscribe((sections: SurveyTemplateSection[]) => {
                     this._sectionsSubject.next(sections);
                 });
     
-                this.surveysService.surveyDataChange$.pipe(this.getDestroyer()).subscribe((survey: Survey) => {
+                this.surveysService.surveyDataChange$.pipe(this.getDestroyer()).subscribe((survey: SurveyTemplate) => {
                     this.setSurveyDataProperties(survey);
                 });
 
-                this.surveysService.selectedSectionChange$.pipe(this.getDestroyer()).subscribe((section: SurveySection) => {
+                this.surveysService.selectedSectionChange$.pipe(this.getDestroyer()).subscribe((section: SurveyTemplateSection) => {
                     this.selectedSection = section;
                 });
 

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CdkDragEnd, CdkDragStart } from '@angular/cdk/drag-drop';
 import { SurveysService } from 'src/app/services/surveys.service';
 import { ValidationService } from 'src/app/services/validation.service';
-import { SurveyQuestion, SurveyQuestionType } from 'shared';
+import { SurveyTemplateQuestion, SurveyTemplateQuestionType } from 'shared';
 import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
 
 @Component({
@@ -11,7 +11,7 @@ import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
     styleUrls: ['./question-generator.component.scss', './question-generator.component.theme.scss']
 })
 export class QuestionGeneratorComponent implements OnInit {
-    @Input() question: SurveyQuestion;
+    @Input() question: SurveyTemplateQuestion;
     @Input() sequenceNumber: string;
     @Input() isActive: boolean = false;
     @Input() hasError: boolean = false;
@@ -26,7 +26,7 @@ export class QuestionGeneratorComponent implements OnInit {
     }
 
     @Output() questionClick: EventEmitter<void> = new EventEmitter();
-    @Output() addQuestionClick: EventEmitter<SurveyQuestionType> = new EventEmitter();
+    @Output() addQuestionClick: EventEmitter<SurveyTemplateQuestionType> = new EventEmitter();
 
     protected isGrabbing = false;
     protected isQuestionTypeMenuOpen = false;
@@ -58,7 +58,7 @@ export class QuestionGeneratorComponent implements OnInit {
         // event.stopPropagation();
     }
 
-    onAddQuestionClicked(type: SurveyQuestionType) {
+    onAddQuestionClicked(type: SurveyTemplateQuestionType) {
         this.addQuestionClick.emit(type);
     }
     

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { SurveysService } from 'src/app/services/surveys.service';
 import { ValidationService } from 'src/app/services/validation.service';
-import { SurveyQuestion, SurveySection } from 'shared';
+import { SurveyTemplateQuestion, SurveyTemplateSection } from 'shared';
 import { DestoyerDirective } from '../../model/destroyer';
 
 @Component({
@@ -12,8 +12,8 @@ import { DestoyerDirective } from '../../model/destroyer';
 
 export class SelectedItemEditorComponent extends DestoyerDirective implements OnInit, OnDestroy {
     
-    question: SurveyQuestion = null;
-    section: SurveySection = null;
+    question: SurveyTemplateQuestion = null;
+    section: SurveyTemplateSection = null;
 
     constructor(
         protected surveysService: SurveysService,

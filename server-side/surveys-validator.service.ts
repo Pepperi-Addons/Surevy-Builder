@@ -1,4 +1,4 @@
-import { Survey, SurveyQuestion, SurveySection } from "./surveys.model";
+import { SurveyTemplate, SurveyTemplateQuestion, SurveyTemplateSection } from 'shared';
 
 export class SurveysValidatorService {
 
@@ -67,7 +67,7 @@ export class SurveysValidatorService {
     /*                                  Public functions
     /***********************************************************************************************/
     
-    private validateSurveySectionQuestionProperties(sectionsPropertyBreadcrumb: string, question: SurveyQuestion): void {
+    private validateSurveySectionQuestionProperties(sectionsPropertyBreadcrumb: string, question: SurveyTemplateQuestion): void {
         // Validate Key
         this.validateObjectProperty(question, 'Key', sectionsPropertyBreadcrumb);
 
@@ -94,7 +94,7 @@ export class SurveysValidatorService {
         this.validateObjectProperty(question, 'Mandatory', sectionsPropertyBreadcrumb, true, 'boolean');
     }
 
-    private validateSurveySectionProperties(surveyPropertyBreadcrumb: string, section: SurveySection, sectionIndex: number): void {
+    private validateSurveySectionProperties(surveyPropertyBreadcrumb: string, section: SurveyTemplateSection, sectionIndex: number): void {
         const sectionsPropertyBreadcrumb = `${surveyPropertyBreadcrumb} -> Sections at index ${sectionIndex}`;
 
         // Validate Key
@@ -122,7 +122,7 @@ export class SurveysValidatorService {
     /***********************************************************************************************/
 
     // Validate the survey and throw error if not valid.
-    validateSurveyProperties(survey: Survey): void {
+    validateSurveyProperties(survey: SurveyTemplate): void {
         const surveyPropertyBreadcrumb = 'Survey';
         
         // Validate Key if exist (Optional)
@@ -157,7 +157,7 @@ export class SurveysValidatorService {
         }
     }
     
-    validateSurveyData(survey: Survey) {
+    validateSurveyData(survey: SurveyTemplate) {
         // Validate sections and questions.
         const sectionsKeys = new Map<string, string>();
         const questionsKeys = new Map<string, string>();
@@ -187,9 +187,9 @@ export class SurveysValidatorService {
         }
     }
 
-    getSurveyCopyAccordingInterface(survey: Survey): Survey {
+    getSurveyCopyAccordingInterface(survey: SurveyTemplate): SurveyTemplate {
         // Init with the mandatories properties.
-        let res: Survey = {
+        let res: SurveyTemplate = {
             Name: survey.Name,
             Active: survey.Active,
             Sections: []
@@ -204,7 +204,7 @@ export class SurveysValidatorService {
         // Add sections specific properties.
         for (let sectionIndex = 0; sectionIndex < survey.Sections.length; sectionIndex++) {
             const currentSection = survey.Sections[sectionIndex];
-            const sectionToAdd: SurveySection = {
+            const sectionToAdd: SurveyTemplateSection = {
                 Key: currentSection.Key,
                 Title: currentSection.Title,
                 Questions: currentSection.Questions // Add all questions properties.

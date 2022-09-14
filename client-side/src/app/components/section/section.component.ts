@@ -2,7 +2,7 @@ import { Component, Input, OnInit, Renderer2 } from '@angular/core';
 import { CdkDragDrop, CdkDragEnd, CdkDragStart } from '@angular/cdk/drag-drop';
 import { SurveysService } from '../../services/surveys.service';
 import { PepScreenSizeType } from '@pepperi-addons/ngx-lib';
-import { SurveyQuestion, SurveyQuestionType } from "shared";
+import { SurveyTemplateQuestion, SurveyTemplateQuestionType } from "shared";
 import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
 
 @Component({
@@ -27,7 +27,7 @@ export class SectionComponent implements OnInit {
     @Input() isActive: boolean = false;
     @Input() hasError: boolean = false;
 
-    @Input() questions: Array<SurveyQuestion>;
+    @Input() questions: Array<SurveyTemplateQuestion>;
     @Input() showIf: string;
     
     @Input() sectionsQuestionsDropList = [];
@@ -51,7 +51,7 @@ export class SectionComponent implements OnInit {
     }
 
     protected sectionContainerKeyPrefix = ''
-    protected selectedQuestion: SurveyQuestion = null;
+    protected selectedQuestion: SurveyTemplateQuestion = null;
     protected isGrabbing = false;
     protected isQuestionTypeMenuOpen = false;
 
@@ -64,7 +64,7 @@ export class SectionComponent implements OnInit {
    
     ngOnInit(): void {
         if (this.editable) {
-            this.surveysService.selectedQuestionChange$.subscribe((question: SurveyQuestion) => {
+            this.surveysService.selectedQuestionChange$.subscribe((question: SurveyTemplateQuestion) => {
                 this.selectedQuestion = question;
             });
 
@@ -100,7 +100,7 @@ export class SectionComponent implements OnInit {
         this.surveysService.addSection(this.index + 1);
     }
 
-    onAddQuestionClicked(type: SurveyQuestionType, questionIndex: number = -1) {
+    onAddQuestionClicked(type: SurveyTemplateQuestionType, questionIndex: number = -1) {
         this.surveysService.addQuestion(type, this.index, questionIndex);
     }
     onStateChange(event: IPepMenuStateChangeEvent) {

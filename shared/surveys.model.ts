@@ -1,28 +1,28 @@
 import { AddonData } from "@pepperi-addons/papi-sdk";
 
-export interface Survey extends AddonData {
+export interface SurveyTemplate extends AddonData {
     Name: string;
     Description?: string;
     Active: boolean;
-    ActiveDateRange?: SurveyDateRange;
-    Sections: SurveySection[];
+    ActiveDateRange?: SurveyTemplateDateRange;
+    Sections: SurveyTemplateSection[];
 }
 
-export interface SurveyDateRange {
+export interface SurveyTemplateDateRange {
     From?: string;
     To?: string;
 }
 
-export interface SurveySection {
+export interface SurveyTemplateSection {
     Key: string;
     Name?: string;
     Title: string;  
     Description?: string;
-    Questions: SurveyQuestion[];
+    Questions: SurveyTemplateQuestion[];
     ShowIf?: string;
 }
 
-export type SurveyQuestionType = 'short-text' | 'long-text' 
+export type SurveyTemplateQuestionType = 'short-text' | 'long-text' 
     | 'single-selection-dropdown' // | 'single-selection-radiobuttons' 
     | 'multiple-selection-dropdown' //  | 'multiple-selection-checkboxs'
     | 'boolean-toggle'
@@ -32,34 +32,34 @@ export type SurveyQuestionType = 'short-text' | 'long-text'
     // | 'signature'
     ;
 
-export interface SurveyQuestion {
+export interface SurveyTemplateQuestion {
     Key: string;
     Name?: string;
     Title: string;  
     Description?: string;
-    Type: SurveyQuestionType;
+    Type: SurveyTemplateQuestionType;
     Mandatory?: boolean; 
     ShowIf?: string;
     [key: string]: any;
 }
 
-export interface SurveyRowProjection {
+export interface SurveyTemplateRowProjection {
     Key?: string,
     Name?: string,
     Description?: string,
     Active: boolean,
-    ActiveDateRange?: SurveyDateRange,
+    ActiveDateRange?: SurveyTemplateDateRange,
     Draft: boolean
     Published: boolean,
     ModificationDate?: string,
 }
 
 
-export interface ISurveyBuilderData {
-    survey: Survey, 
+export interface ISurveyTemplateBuilderData {
+    survey: SurveyTemplate, 
 }
 
-export const DEFAULT_BLANK_SURVEY_DATA: Survey = {
+export const DEFAULT_BLANK_SURVEY_DATA: SurveyTemplate = {
     "Name": "",
     //  optional
     "Description": "",

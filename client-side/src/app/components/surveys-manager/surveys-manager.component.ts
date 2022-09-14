@@ -10,7 +10,7 @@ import { NavigationService } from "../../services/navigation.service";
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { SurveysService } from "../../services/surveys.service";
 import { MY_DATE_FORMATS, MomentUtcDateAdapter, MomentUtcDateTimeAdapter } from "../../model/survey.model";
-import { Survey, SurveyRowProjection } from "shared";
+import { SurveyTemplate, SurveyTemplateRowProjection } from "shared";
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from "@angular/material/core";
 import { getCalture } from "@pepperi-addons/ngx-lib/date";
 import { DatetimeAdapter, MAT_DATETIME_FORMATS } from '@mat-datetimepicker/core';
@@ -36,7 +36,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
     //actions: IPepGenericListActions;
 
     totalSurveys: number = 0;
-    surveys: SurveyRowProjection[];
+    surveys: SurveyTemplateRowProjection[];
     //imagesPath = '';
     //hasSurevy = true;
     private _subscriptions: Subscription[] = [];
@@ -188,7 +188,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
     }
 
     onAddSurveyClicked() {
-        this.surveysService.createNewSurvey(this._navigationService.addonUUID, this.totalSurveys).pipe(first()).subscribe((survey: Survey) => {
+        this.surveysService.createNewSurvey(this._navigationService.addonUUID, this.totalSurveys).pipe(first()).subscribe((survey: SurveyTemplate) => {
             if (survey) {
                 this._navigationService.navigateToSurvey(survey.Key);
             } else {

@@ -1,13 +1,9 @@
-import { CdkDragDrop, CdkDragEnd, CdkDragStart, copyArrayItem, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
-import { Injectable, ɵɵresolveBody } from "@angular/core";
-import { Params } from "@angular/router";
+import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { PepGuid, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
-import { Observable, BehaviorSubject, from } from 'rxjs';
+import { PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
 import { NavigationService } from "./navigation.service";
-import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { SurveyObjValidator } from "../model/survey.model";
-import { Survey, SurveyQuestion } from "shared";
+import { SurveyTemplate, SurveyTemplateQuestion } from "shared";
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { SurveysService } from "./surveys.service";
 @Injectable({
@@ -21,9 +17,9 @@ export class ValidationService {
 
     constructor(
         private translate: TranslateService,
-        private sessionService: PepSessionService,
-        private httpService: PepHttpService,
-        private navigationService: NavigationService,
+        // private sessionService: PepSessionService,
+        // private httpService: PepHttpService,
+        // private navigationService: NavigationService,
         private dialog: PepDialogService,
         private surveysService: SurveysService
     ) {}
@@ -31,7 +27,7 @@ export class ValidationService {
     validateSurvey(): boolean{
         this.failedOnValidation = [];
         
-        const survey: Survey = this.surveysService.getSurvey();
+        const survey: SurveyTemplate = this.surveysService.getSurvey();
         this.mandaitoryfields =  [];
         this.keysValidation = [];
         const mandetoryFieldsArr = ['multiple-selection-dropdown','boolean-toggle'];
@@ -42,11 +38,11 @@ export class ValidationService {
             
             section.Questions.forEach((question,quesIndex) => {
                 //Checking the name & Title of the section
-               this.keyAndTitleValidator(question, secIndex, quesIndex);
-                //Check if question type has mandatory fields
-               if(mandetoryFieldsArr.includes(question.Type)){
-                    this.checkQuestionMandatoryFields(question,secIndex, quesIndex);
-               }
+                this.keyAndTitleValidator(question, secIndex, quesIndex);
+                    //Check if question type has mandatory fields
+                if(mandetoryFieldsArr.includes(question.Type)){
+                        this.checkQuestionMandatoryFields(question,secIndex, quesIndex);
+                }
             });
         });
 
@@ -76,7 +72,7 @@ export class ValidationService {
         return this.mandaitoryfields.length ? false : true;
     }
 
-    checkQuestionMandatoryFields(question: SurveyQuestion, secIndex, quesIndex){
+    checkQuestionMandatoryFields(question: SurveyTemplateQuestion, secIndex, quesIndex){
         secIndex++;
         quesIndex++;
         switch(question.Type){
