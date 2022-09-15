@@ -535,12 +535,12 @@ export class SurveysService {
     }
 
     // Delete the survey
-    deleteSurvey(addonUUID: string, surveyKey: string): Observable<any> {
+    deleteSurvey(addonUUID: string, surveyTemplateKey: string): Observable<any> {
         const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.getHttpCall(`${baseUrl}/remove_survey?key=${surveyKey}`);
+        return this.httpService.getHttpCall(`${baseUrl}/remove_survey?key=${surveyTemplateKey}`);
     }
 
-    loadSurveyBuilder(addonUUID: string, surveyKey: string, editable: boolean, queryParameters: Params): void {
+    loadSurveyBuilder(addonUUID: string, key: string, editable: boolean, queryParameters: Params): void {
         //  If is't not edit mode get the survey from the CPI side.
         const baseUrl = this.getBaseUrl(addonUUID);
         debugger;
@@ -550,10 +550,11 @@ export class SurveysService {
                 detail: {
                     eventKey: 'OnSurveyLoad',
                     eventData: {
-                        surveyKey: surveyKey
+                        surveyKey: key
                     },
                     completion: (data) => {
                         debugger;
+                        this.notifySurveyChange(data.survey);
                     }
                 }
             };
@@ -563,7 +564,7 @@ export class SurveysService {
 
             // const baseUrlCPI = `http://localhost:8088/addon/api/${config.AddonUUID}/addon-cpi`;
             // // Get the survey (sections and the questions data) from the server.
-            // this.httpService.getHttpCall(`${baseUrl}/get_survey_data?key=${surveyKey}`)
+            // this.httpService.getHttpCall(`${baseUrl}/get_survey_data?key=${key}`)
             //     .subscribe((res: ISurveyTemplateBuilderData) => {
             //         if (res && res.survey) {
             //             // Load the survey.
@@ -572,7 +573,7 @@ export class SurveysService {
             //     });
         } else { // If is't edit mode get the data of the survey and the relations from the Server side.
             // Get the survey (sections and the questions data) from the server.
-            this.httpService.getHttpCall(`${baseUrl}/get_survey_builder_data?key=${surveyKey}`)
+            this.httpService.getHttpCall(`${baseUrl}/get_survey_builder_data?key=${key}`)
                 .subscribe((res: ISurveyTemplateBuilderData) => {
                     if (res && res.survey) {
                         // Load the survey.

@@ -17,6 +17,7 @@ export class BlockComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        debugger;
     }
 
     ngOnChanges(e: any): void {

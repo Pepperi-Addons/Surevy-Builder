@@ -15,7 +15,7 @@ const routes: Routes = [
         component: SettingsComponent,
         children: [
             {
-                path: ':survey_key',
+                path: ':survey_template_key',
                 loadChildren: () => import('../survey-manager/survey-manager.module').then(m => m.SurveyManagerModule)
             },
             {

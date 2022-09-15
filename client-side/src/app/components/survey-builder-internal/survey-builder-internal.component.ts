@@ -8,9 +8,12 @@ import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@peppe
 import { NavigationService } from '../../services/navigation.service';
 import { SurveyTemplate, SurveyTemplateSection } from "shared";
 
-export interface ISurveyBuilderHostObject {
-    surveyKey: string;
-    surveyParams: any;
+export interface ISurveyRuntimeHostObject {
+    // surveyParams: any;
+    pageParameters: {
+        survey_key: string,
+        [key: string]: any;
+    };
 }
 
 @Component({
@@ -24,13 +27,13 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     @Input() editMode: boolean = false;
     @Input() sectionsQuestionsDropList = [];
     
-    // For loading the survey from the client apps.
-    private _hostObject: ISurveyBuilderHostObject;
+    // For loading the survey in runtime.
+    private _hostObject: ISurveyRuntimeHostObject;
     @Input()
-    set hostObject(value: ISurveyBuilderHostObject) {
+    set hostObject(value: ISurveyRuntimeHostObject) {
         this._hostObject = value;
     }
-    get hostObject(): ISurveyBuilderHostObject {
+    get hostObject(): ISurveyRuntimeHostObject {
         return this._hostObject;
     }
 
@@ -76,13 +79,14 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         const addonUUID = this.navigationService.addonUUID;
-        const surveyKey = this.hostObject?.surveyKey || this.route.snapshot.data['survey_key'] || this.route?.snapshot?.params['survey_key'] || '';
-
-        console.log('surveyKey - ' + surveyKey);
-        if (surveyKey.length > 0) {
-            const queryParams = this.hostObject?.surveyParams || this.route?.snapshot?.queryParams;
+        // This is survey key if it's runtime an if not it's the survey template key (for builder)
+        const key = this.hostObject?.pageParameters?.survey_key || this.route?.snapshot?.params['survey_template_key'] || '';
+debugger;
+        console.log((this.editMode ? 'surveyTemplateKey - ' : 'surveyKey - ') + key);
+        if (key.length > 0) {
+            const queryParams = this.route?.snapshot?.queryParams;
             
-            this.surveysService.loadSurveyBuilder(addonUUID, surveyKey, this.editMode, queryParams);
+            this.surveysService.loadSurveyBuilder(addonUUID, key, this.editMode, queryParams);
 
             this.layoutService.onResize$.pipe(this.getDestroyer()).subscribe((size: PepScreenSizeType) => {
                 this.screenSize = size;

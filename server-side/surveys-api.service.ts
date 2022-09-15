@@ -166,8 +166,8 @@ export class SurveyApiService {
     /*                                  Public functions
     /***********************************************************************************************/
     
-    async getSurvey(surveykey: string, tableName: string = SURVEYS_TABLE_NAME): Promise<SurveyTemplate> {
-        return await this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).key(surveykey).get() as SurveyTemplate;
+    async getSurvey(surveyTemplatekey: string, tableName: string = SURVEYS_TABLE_NAME): Promise<SurveyTemplate> {
+        return await this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).key(surveyTemplatekey).get() as SurveyTemplate;
     }
 
     async upsertRelationsAndScheme(install = true): Promise<void> {
@@ -206,20 +206,20 @@ export class SurveyApiService {
     }
 
     async removeSurvey(query: any): Promise<boolean> {
-        const surveykey = query['key'] || '';
+        const surveyTemplatekey = query['key'] || '';
         
         let draftRes = false;
         let res = false;
 
-        if (surveykey.length > 0) {
+        if (surveyTemplatekey.length > 0) {
             try {
-                let survey = await this.getSurvey(surveykey, DRAFT_SURVEYS_TABLE_NAME);
+                let survey = await this.getSurvey(surveyTemplatekey, DRAFT_SURVEYS_TABLE_NAME);
                 draftRes = await this.hideSurvey(survey, DRAFT_SURVEYS_TABLE_NAME);
             } catch (e) {
             }
     
             try {
-                let survey = await this.getSurvey(surveykey, SURVEYS_TABLE_NAME);
+                let survey = await this.getSurvey(surveyTemplatekey, SURVEYS_TABLE_NAME);
                 res = await this.hideSurvey(survey, SURVEYS_TABLE_NAME);
             } catch (e) {
             }
@@ -296,16 +296,16 @@ export class SurveyApiService {
 
     async getSurveyData(query: any, lookForDraft = false): Promise<ISurveyTemplateBuilderData> {
         let res: any;
-        const surveyKey = query['key'] || '';
+        const surveyTemplateKey = query['key'] || '';
         
-        if (surveyKey) {
+        if (surveyTemplateKey) {
             let survey;
             
             // If lookForDraft try to get the survey from the draft first (for runtime the lookForDraft will be false).
             if (lookForDraft) {
                 try {
                     // Get the survey from the drafts.
-                    survey = await this.getSurvey(surveyKey, DRAFT_SURVEYS_TABLE_NAME);
+                    survey = await this.getSurvey(surveyTemplateKey, DRAFT_SURVEYS_TABLE_NAME);
                 } catch {
                     // Do nothing
                 }
@@ -315,7 +315,7 @@ export class SurveyApiService {
             
             // If draft is hidden or not exist add call to bring the publish survey.
             if (!survey || survey.Hidden) {
-                dataPromises.push(this.getSurvey(surveyKey, SURVEYS_TABLE_NAME));
+                dataPromises.push(this.getSurvey(surveyTemplateKey, SURVEYS_TABLE_NAME));
             }
                 
             const arr = await Promise.all(dataPromises).then(res => res);
@@ -333,14 +333,14 @@ export class SurveyApiService {
     }
     
     async restoreToLastPublish(query: any): Promise<SurveyTemplate> {
-        const surveykey = query['key'];
+        const surveyTemplatekey = query['key'];
 
-        if (surveykey) {
-            let survey = await this.getSurvey(surveykey, SURVEYS_TABLE_NAME);
+        if (surveyTemplatekey) {
+            let survey = await this.getSurvey(surveyTemplatekey, SURVEYS_TABLE_NAME);
 
             // In case that the survey was never published.
             if (!survey) {
-                survey = await this.getSurvey(surveykey, DRAFT_SURVEYS_TABLE_NAME);
+                survey = await this.getSurvey(surveyTemplatekey, DRAFT_SURVEYS_TABLE_NAME);
                 return this.publishSurvey(survey);
             } else {
                 const surveyCopy = JSON.parse(JSON.stringify(survey));

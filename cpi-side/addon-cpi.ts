@@ -13,7 +13,7 @@ export async function load(configuration: any) {
 
         if (surveyKey) {
             const service = new SurveysService();
-            survey = await service.getSurveyData(surveyKey);
+            survey = await service.loadSurveyData(surveyKey);
         }
         
         // Test alert
@@ -34,22 +34,22 @@ export async function load(configuration: any) {
 }
 
 
-router.get('/get_survey_data', async (req, res, next) => {
-    let result = {};
+// router.get('/get_survey_data', async (req, res, next) => {
+//     let result = {};
 
-    try {
-        const surveyKey = req.query['survey_key']?.toString();
-        if (surveyKey) {
-            const service = new SurveysService();
-            result = await service.getSurveyData(surveyKey);
-        }
-    } catch (err) {
-        console.log(err);
-        next(err)
-    }
+//     try {
+//         const surveyKey = req.query['survey_key']?.toString();
+//         if (surveyKey) {
+//             const service = new SurveysService();
+//             result = await service.getSurveyData(surveyKey);
+//         }
+//     } catch (err) {
+//         console.log(err);
+//         next(err)
+//     }
 
-    res.json(result);
-});
+//     res.json(result);
+// });
 
 router.get('/get_survey', async (req, res) => {
     let resObj = {}
