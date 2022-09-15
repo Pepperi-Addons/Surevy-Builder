@@ -1,5 +1,8 @@
 import { AddonData } from "@pepperi-addons/papi-sdk";
 
+export const SURVEYS_TABLE_NAME = 'SurveysTemplate';
+export const DRAFT_SURVEYS_TABLE_NAME = 'SurveysTemplateDrafts';
+
 export interface SurveyTemplate extends AddonData {
     Name: string;
     Description?: string;

@@ -1,11 +1,8 @@
 import { PapiClient, InstalledAddon, AddonDataScheme, Relation, FindOptions } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
-import { DEFAULT_BLANK_SURVEY_DATA, ISurveyTemplateBuilderData, SurveyTemplate, SurveyTemplateRowProjection } from 'shared';
+import { DEFAULT_BLANK_SURVEY_DATA, ISurveyTemplateBuilderData, SurveyTemplate, SurveyTemplateRowProjection, SURVEYS_TABLE_NAME, DRAFT_SURVEYS_TABLE_NAME } from 'shared';
 import { v4 as uuidv4 } from 'uuid';
 import { SurveysValidatorService } from './surveys-validator.service';
-
-export const SURVEYS_TABLE_NAME = 'Surveys';
-export const DRAFT_SURVEYS_TABLE_NAME = 'SurveysDrafts';
 
 const bundleFileName = 'survey_builder';
 
