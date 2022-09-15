@@ -198,6 +198,7 @@ export class SurveyApiService {
 
         if (survey.Sections.length === 1) {
             survey.Sections[0].Key = uuidv4();
+            survey.Sections[0].Title = 'Section 1';
         }
 
         survey.Key = '';
