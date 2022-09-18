@@ -17,7 +17,7 @@ export async function load(configuration: any) {
         // }
         
         // Test alert
-        data.client?.alert('survey load', `${JSON.stringify(survey)}`);
+        await data.client?.alert('survey load', `${JSON.stringify(survey)}`);
         
         return survey as any;
     });
