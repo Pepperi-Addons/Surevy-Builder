@@ -11,10 +11,10 @@ export async function load(configuration: any) {
         const surveyKey = data.surveyKey;
         let survey = {};
 
-        if (surveyKey) {
+        // if (surveyKey) {
             const service = new SurveysService();
             survey = await service.loadSurveyData(surveyKey);
-        }
+        // }
         
         // Test alert
         data.client?.alert('survey load', `${JSON.stringify(survey)}`);
