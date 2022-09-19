@@ -9,7 +9,7 @@ import { SelectedItemEditorComponent } from './selected-item-editor.component';
 import { QuestionSelectOptionsModule } from '../select-options/select-options.module';
 import { PepNgxLibModule, PepAddonService } from '@pepperi-addons/ngx-lib';
 import { PepSliderModule } from '@pepperi-addons/ngx-lib/slider';
-import { PepIconRegistry, pepIconSystemFilter2} from '@pepperi-addons/ngx-lib/icon';
+import { PepIconRegistry, pepIconSystemFilter2, pepIconSystemCopy} from '@pepperi-addons/ngx-lib/icon';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepCheckboxModule } from '@pepperi-addons/ngx-lib/checkbox';
@@ -18,7 +18,8 @@ import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } fr
 import { PepSideBarModule } from '@pepperi-addons/ngx-lib/side-bar';
 
 const pepIcons = [
-    pepIconSystemFilter2
+    pepIconSystemFilter2,
+    pepIconSystemCopy
 ];
 
 @NgModule({
