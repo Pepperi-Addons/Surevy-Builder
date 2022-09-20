@@ -3,6 +3,11 @@ import { AddonData } from "@pepperi-addons/papi-sdk";
 export const SURVEYS_TABLE_NAME = 'SurveysTemplate';
 export const DRAFT_SURVEYS_TABLE_NAME = 'SurveysTemplateDrafts';
 
+export const SURVEY_LOAD_EVENT_NAME = 'OnSurveyLoad';
+export const SURVEY_LOAD_CLIENT_EVENT_NAME = 'OnClientSurveyLoad';
+export const SURVEY_FIELD_CHANGE_EVENT_NAME = 'OnSurveyFieldChange';
+export const SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyFieldChange';
+
 export interface SurveyTemplate extends AddonData {
     Name: string;
     Description?: string;

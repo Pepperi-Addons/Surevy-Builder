@@ -1,20 +1,21 @@
 import '@pepperi-addons/cpi-node'
 import SurveysService from './surveys-cpi.service';
+import { SURVEY_LOAD_EVENT_NAME, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME } from 'shared';
 export const router = Router();
 
 export async function load(configuration: any) {
     // console.log('cpi side works!');
     // Put your cpi side code here
 
-    pepperi.events.intercept('OnSurveyLoad' as any, {}, async (data): Promise<void> => {
+    pepperi.events.intercept(SURVEY_LOAD_CLIENT_EVENT_NAME as any, {}, async (data): Promise<void> => {
         // Handle on survey load
         const surveyKey = data.surveyKey;
         let survey = {};
 
-        // if (surveyKey) { 
+        if (surveyKey) { 
             const service = new SurveysService();
-            survey = await service.loadSurveyData(surveyKey);
-        // }
+            survey = await service.getSurveyData(surveyKey);
+        }
         
         // Test alert
         await data.client?.alert('survey load', `${JSON.stringify(survey)}`);
@@ -22,13 +23,15 @@ export async function load(configuration: any) {
         return survey as any;
     });
 
-    pepperi.events.intercept('OnSurveyFieldChange' as any, {}, async (data): Promise<void> => {
+    pepperi.events.intercept(SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME as any, {}, async (data): Promise<void> => {
         // Handle on survey field change
-        const survey = {};
+        const survey = data.survey;
 
         // Test alert
         data.client?.alert('survey field change', `${JSON.stringify(survey)}`);
         
+        // Save the survey model in the db.
+
         return survey as any;
     });
 }
@@ -51,17 +54,17 @@ export async function load(configuration: any) {
 //     res.json(result);
 // });
 
-router.get('/get_survey', async (req, res) => {
-    let resObj = {}
+// router.get('/get_survey', async (req, res) => {
+//     let resObj = {}
     
     
-    res.json(resObj);
-});
+//     res.json(resObj);
+// });
 
-router.post('/update_survey', async (req, res) => {
-    // debugger;
-    let resObj = {}
+// router.post('/update_survey', async (req, res) => {
+//     // debugger;
+//     let resObj = {}
     
-    res.json(resObj);
+//     res.json(resObj);
 
-});
+// });

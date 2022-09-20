@@ -55,14 +55,14 @@ export async function save_draft_survey(client: Client, request: Request): Promi
     }
 }
 
-export async function restore_to_last_publish(client: Client, request: Request): Promise<any> {
-    try {
-        const service = new SurveyApiService(client);
-        return service.restoreToLastPublish(request.query);
-    } catch(err) {
-        throw new Error(`Failed to restore to last publish. error - ${err}`);
-    }
-}
+// export async function restore_to_last_publish(client: Client, request: Request): Promise<any> {
+//     try {
+//         const service = new SurveyApiService(client);
+//         return service.restoreToLastPublish(request.query);
+//     } catch(err) {
+//         throw new Error(`Failed to restore to last publish. error - ${err}`);
+//     }
+// }
 
 export async function publish_survey(client: Client, request: Request): Promise<any> {
     try {

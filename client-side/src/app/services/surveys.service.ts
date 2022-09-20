@@ -7,7 +7,8 @@ import { Observable, BehaviorSubject, from } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
-import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData, SurveyTemplateQuestion, SurveyTemplateQuestionType } from 'shared';
+import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData,
+    SurveyTemplateQuestion, SurveyTemplateQuestionType, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME } from 'shared';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { PepQueryBuilderComponent, IPepQueryBuilderField } from "@pepperi-addons/ngx-lib/query-builder";
 import { ShowIfDialogComponent } from '../components/dialogs/show-if-dialog/show-if-dialog.component';
@@ -543,12 +544,11 @@ export class SurveysService {
     loadSurveyBuilder(addonUUID: string, key: string, editable: boolean, queryParameters: Params): void {
         //  If is't not edit mode get the survey from the CPI side.
         const baseUrl = this.getBaseUrl(addonUUID);
-        debugger;
-
+ 
         if (!editable) {
             const eventData = {
                 detail: {
-                    eventKey: 'OnSurveyLoad',
+                    eventKey: SURVEY_LOAD_CLIENT_EVENT_NAME,
                     eventData: {
                         surveyKey: key
                     },
@@ -589,35 +589,76 @@ export class SurveysService {
     }
 
     // Restore the survey to tha last publish
-    restoreToLastPublish(addonUUID: string): Observable<SurveyTemplate> {
-        const survey = this._surveySubject.getValue();
-        const baseUrl = this.getBaseUrl(addonUUID);
+    // restoreToLastPublish(addonUUID: string): Observable<SurveyTemplate> {
+    //     const survey = this._surveySubject.getValue();
+    //     const baseUrl = this.getBaseUrl(addonUUID);
 
-        return this.httpService.getHttpCall(`${baseUrl}/restore_to_last_publish?key=${survey.Key}`);
-    }
+    //     return this.httpService.getHttpCall(`${baseUrl}/restore_to_last_publish?key=${survey.Key}`);
+    // }
 
     // Save the current survey in drafts.
-    saveCurrentSurvey(addonUUID: string): Observable<SurveyTemplate> {
+    saveCurrentSurvey(addonUUID: string, editable: boolean): Observable<SurveyTemplate> {
         const survey: SurveyTemplate = this._surveySubject.getValue();
-        const body = JSON.stringify(survey);
-        const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
+        
+        if (!editable) {
+            const eventData = {
+                detail: {
+                    eventKey: SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
+                    eventData: {
+                        survey: survey
+                    },
+                    completion: (data) => {
+                        debugger;
+                        // Notify survey change to update survey object with all changes (like show if questions if added or removed).
+                        this.notifySurveyChange(data.survey);
+
+                        // Notify sections change to update UI.
+                        this.notifySectionsChange(data.survey.Sections);
+                    }
+                }
+            };
+    
+            const customEvent = new CustomEvent('emit-event', eventData);
+            window.dispatchEvent(customEvent);
+        } else {
+            const body = JSON.stringify(survey);
+            const baseUrl = this.getBaseUrl(addonUUID);
+            return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
+        }
     } 
+
+    private getSelectedQuestion(): SurveyTemplateQuestion {
+        const sections = this._sectionsSubject.getValue();
+        const currentSection = sections[this._selectedSectionIndex];
+        if (currentSection) {
+            return currentSection.Questions[this._selectedQuestionIndex];
+        } 
+
+        return null;
+    }
 
     // Open dialog to set the display condition of the selected question
     openShowIfDialog() {        
         const config = this.dialog.getDialogConfig({ minWidth: '30rem' }, 'large');
-        const data = new PepDialogData({ actionsType: 'cancel-ok', content: { query: null, fields: this.getShowIfFields() }, showClose: true });
+        const selectedQuestion = this.getSelectedQuestion();
+        const query = selectedQuestion && selectedQuestion.ShowIf?.length > 0 ? JSON.parse(selectedQuestion.ShowIf) : null;
+
+        const data = new PepDialogData({ 
+            actionsType: 'cancel-ok',
+            content: { 
+                query: query,
+                fields: this.getShowIfFields()
+            },
+            showClose: true 
+        });
+
         const dialogRef = this.dialog.openDialog(ShowIfDialogComponent, data, config);        
         dialogRef.afterClosed().subscribe({
             next: (res) => {                             
-                const sections = this._sectionsSubject.getValue();
-                const currentSection = sections[this._selectedSectionIndex];
-                if (currentSection) {
-                    const currentQuestion = currentSection.Questions[this._selectedQuestionIndex];
-                    if (currentQuestion) {
-                        currentQuestion.ShowIf = JSON.stringify(res.query);                                                
-                    }
+                const selectedQuestion = this.getSelectedQuestion();
+
+                if (selectedQuestion) {
+                    selectedQuestion.ShowIf = JSON.stringify(res.query);
                 } 
             }     
         });
