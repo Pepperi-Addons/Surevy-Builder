@@ -31,6 +31,9 @@ export class SurveyApiService {
         const createSurveyTable = await this.papiClient.addons.data.schemes.post({
             Name: SURVEYS_TABLE_NAME,
             Type: 'meta_data',
+            SyncData: {
+                Sync: true
+            }
         });
         
         // Create Survey draft table

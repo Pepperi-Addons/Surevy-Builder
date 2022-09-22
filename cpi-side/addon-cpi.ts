@@ -12,14 +12,19 @@ export async function load(configuration: any) {
         const surveyKey = data.surveyKey;
         let survey = {};
 
-        if (surveyKey) { 
+        // Test alert
+        await data.client?.alert('survey load - before', data.surveyKey);
+        
+        // if (surveyKey) { 
             const service = new SurveysService();
-            survey = await service.getSurveyData(surveyKey);
-        }
+            survey = await service.getSurveyData(data.client, surveyKey);
+        // }
         
         // Test alert
-        await data.client?.alert('survey load', `${JSON.stringify(survey)}`);
+        await data.client?.alert('survey load - after', `${JSON.stringify(survey)}`);
         
+        // TODO: Throw server event SURVEY_LOAD_EVENT_NAME
+
         return survey as any;
     });
 
@@ -31,6 +36,8 @@ export async function load(configuration: any) {
         data.client?.alert('survey field change', `${JSON.stringify(survey)}`);
         
         // Save the survey model in the db.
+
+        // TODO: Throw server event SURVEY_FIELD_CHANGE_EVENT_NAME
 
         return survey as any;
     });
