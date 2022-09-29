@@ -11,7 +11,7 @@ export async function load(configuration: any) {
         // Handle on survey load
         const surveyKey = data.surveyKey;
         let survey = {};
-
+debugger;
         // Test alert
         await data.client?.alert('survey load - before', data.surveyKey);
         
