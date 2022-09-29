@@ -14,7 +14,7 @@ class SurveysService {
         // }); 
         const SURVEY_ADDON_UUID = 'dd0a85ea-7ef0-4bc1-b14f-959e0372877a';
         const options = {
-            url: `/addons/api/${SURVEY_ADDON_UUID}/addon-cpi/get_surveys_by_key?key=${surveyKey}`, //http://localhost:8088
+            url: `addon-cpi/get_surveys_by_key?key=${surveyKey}`, //http://localhost:8088
             client: client
         }
         
