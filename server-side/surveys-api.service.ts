@@ -1,11 +1,8 @@
 import { PapiClient, InstalledAddon, AddonDataScheme, Relation, FindOptions } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
-import { DEFAULT_BLANK_SURVEY_DATA, ISurveyBuilderData, Survey, SurveyRowProjection } from './surveys.model';
+import { DEFAULT_BLANK_SURVEY_DATA, ISurveyTemplateBuilderData, SurveyTemplate, SurveyTemplateRowProjection, SURVEYS_TABLE_NAME, DRAFT_SURVEYS_TABLE_NAME } from 'shared';
 import { v4 as uuidv4 } from 'uuid';
 import { SurveysValidatorService } from './surveys-validator.service';
-
-export const SURVEYS_TABLE_NAME = 'Surveys';
-export const DRAFT_SURVEYS_TABLE_NAME = 'SurveysDrafts';
 
 const bundleFileName = 'survey_builder';
 
@@ -37,6 +34,9 @@ export class SurveyApiService {
                 Sync: true
             },
             Type: 'meta_data',
+            SyncData: {
+                Sync: true
+            }
         });
         
         // Create Survey draft table
@@ -77,6 +77,30 @@ export class SurveyApiService {
         this.upsertRelation(addonBlockRelation);
     }
 
+    private upsertPageBlockRelation() {
+        const blockRelationName = 'Survey';
+        const blockName = 'Block';
+
+        const blockRelation: Relation = {
+            RelationName: 'PageBlock',
+            Name: blockRelationName,
+            Description: `${blockRelationName} block`,
+            Type: "NgComponent",
+            SubType: "NG14",
+            AddonUUID: this.client.AddonUUID,
+            AddonRelativeURL: bundleFileName,
+            ComponentName: `${blockName}Component`, // This is should be the block component name (from the client-side)
+            ModuleName: `${blockName}Module`, // This is should be the block module name (from the client-side)
+            EditorComponentName: `${blockName}EditorComponent`, // This is should be the block editor component name (from the client-side)
+            EditorModuleName: `${blockName}EditorModule`, // This is should be the block editor module name (from the client-side)}
+            ElementsModule: 'WebComponents',
+            ElementName: `${blockName.toLocaleLowerCase()}-element-${this.client.AddonUUID}`,
+            EditorElementName: `${blockName.toLocaleLowerCase()}-editor-element-${this.client.AddonUUID}`
+        };
+
+        return this.upsertRelation(blockRelation);
+    }
+
     private upsertSettingsRelation() {
         const blockName = 'Settings';
         const name = 'Surveys';
@@ -100,7 +124,7 @@ export class SurveyApiService {
         this.upsertRelation(addonBlockRelation);
     }
     
-    private async hideSurvey(survey: Survey, tableName: string): Promise<boolean> {
+    private async hideSurvey(survey: SurveyTemplate, tableName: string): Promise<boolean> {
         if (!survey) {
             return Promise.reject(null);
         }
@@ -110,7 +134,7 @@ export class SurveyApiService {
         return Promise.resolve(res != null);
     }
 
-    private async validateAndOverrideSurveyAccordingInterface(survey: Survey, validateSurveysLimit: boolean): Promise<Survey> {
+    private async validateAndOverrideSurveyAccordingInterface(survey: SurveyTemplate, validateSurveysLimit: boolean): Promise<SurveyTemplate> {
         // Validate survey object before upsert.
         this.surveysValidatorService.validateSurveyProperties(survey);
         
@@ -121,7 +145,7 @@ export class SurveyApiService {
         return this.surveysValidatorService.getSurveyCopyAccordingInterface(survey);
     }
 
-    private async upsertSurveyInternal(survey: Survey, tableName = SURVEYS_TABLE_NAME): Promise<Survey> {
+    private async upsertSurveyInternal(survey: SurveyTemplate, tableName = SURVEYS_TABLE_NAME): Promise<SurveyTemplate> {
         if (!survey) {
             return Promise.reject(null);
         }
@@ -133,23 +157,23 @@ export class SurveyApiService {
         // Validate survey object before upsert.
         survey = await this.validateAndOverrideSurveyAccordingInterface(survey, tableName === SURVEYS_TABLE_NAME);
         
-        return this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).upsert(survey) as Promise<Survey>;
+        return this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).upsert(survey) as Promise<SurveyTemplate>;
     }
 
     /***********************************************************************************************/
     /*                                  Protected functions
     /***********************************************************************************************/
 
-    protected async getSurveysFrom(tableName: string, options: FindOptions | undefined = undefined): Promise<Survey[]> {
-        return await this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).find(options) as Survey[];
+    protected async getSurveysFrom(tableName: string, options: FindOptions | undefined = undefined): Promise<SurveyTemplate[]> {
+        return await this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).find(options) as SurveyTemplate[];
     }
 
     /***********************************************************************************************/
     /*                                  Public functions
     /***********************************************************************************************/
     
-    async getSurvey(surveykey: string, tableName: string = SURVEYS_TABLE_NAME): Promise<Survey> {
-        return await this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).key(surveykey).get() as Survey;
+    async getSurvey(surveyTemplatekey: string, tableName: string = SURVEYS_TABLE_NAME): Promise<SurveyTemplate> {
+        return await this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).key(surveyTemplatekey).get() as SurveyTemplate;
     }
 
     async upsertRelationsAndScheme(install = true): Promise<void> {
@@ -158,19 +182,20 @@ export class SurveyApiService {
         }
 
         this.upsertAddonBlockRelation();
+        this.upsertPageBlockRelation();
         this.upsertSettingsRelation();
     }
 
-    async getSurveys(options: FindOptions | undefined = undefined): Promise<Survey[]> {
+    async getSurveys(options: FindOptions | undefined = undefined): Promise<SurveyTemplate[]> {
         return await this.getSurveysFrom(SURVEYS_TABLE_NAME, options);
     }
     
-    saveDraftSurvey(survey: Survey): Promise<Survey>  {
+    saveDraftSurvey(survey: SurveyTemplate): Promise<SurveyTemplate>  {
         survey.Hidden = false;
         return this.upsertSurveyInternal(survey, DRAFT_SURVEYS_TABLE_NAME);
     }
 
-    async createTemplateSurvey(query: any): Promise<Survey> {
+    async createTemplateSurvey(query: any): Promise<SurveyTemplate> {
         const surveyNum = query['surveyNum'] || '0';
         
         let survey = JSON.parse(JSON.stringify(DEFAULT_BLANK_SURVEY_DATA)) ;
@@ -179,6 +204,7 @@ export class SurveyApiService {
 
         if (survey.Sections.length === 1) {
             survey.Sections[0].Key = uuidv4();
+            survey.Sections[0].Title = 'Section 1';
         }
 
         survey.Key = '';
@@ -186,20 +212,20 @@ export class SurveyApiService {
     }
 
     async removeSurvey(query: any): Promise<boolean> {
-        const surveykey = query['key'] || '';
+        const surveyTemplatekey = query['key'] || '';
         
         let draftRes = false;
         let res = false;
 
-        if (surveykey.length > 0) {
+        if (surveyTemplatekey.length > 0) {
             try {
-                let survey = await this.getSurvey(surveykey, DRAFT_SURVEYS_TABLE_NAME);
+                let survey = await this.getSurvey(surveyTemplatekey, DRAFT_SURVEYS_TABLE_NAME);
                 draftRes = await this.hideSurvey(survey, DRAFT_SURVEYS_TABLE_NAME);
             } catch (e) {
             }
     
             try {
-                let survey = await this.getSurvey(surveykey, SURVEYS_TABLE_NAME);
+                let survey = await this.getSurvey(surveyTemplatekey, SURVEYS_TABLE_NAME);
                 res = await this.hideSurvey(survey, SURVEYS_TABLE_NAME);
             } catch (e) {
             }
@@ -208,12 +234,12 @@ export class SurveyApiService {
         return Promise.resolve(draftRes || res);
     }
 
-    async getSurveysData(options: FindOptions | undefined = undefined): Promise<SurveyRowProjection[]> {
-        let surveys: Survey[] = await this.getSurveysFrom(SURVEYS_TABLE_NAME);
-        let draftSurveys: Survey[] = await this.getSurveysFrom(DRAFT_SURVEYS_TABLE_NAME);
+    async getSurveysData(options: FindOptions | undefined = undefined): Promise<SurveyTemplateRowProjection[]> {
+        let surveys: SurveyTemplate[] = await this.getSurveysFrom(SURVEYS_TABLE_NAME);
+        let draftSurveys: SurveyTemplate[] = await this.getSurveysFrom(DRAFT_SURVEYS_TABLE_NAME);
 
         //  Add the surveys into map for distinct them.
-        const distinctSurveysMap = new Map<string, Survey>();
+        const distinctSurveysMap = new Map<string, SurveyTemplate>();
         surveys.forEach(survey => {
             if (survey.Key) {
                 distinctSurveysMap.set(survey.Key, survey);
@@ -235,13 +261,13 @@ export class SurveyApiService {
         }
 
         const promise = new Promise<any[]>((resolve, reject): void => {
-            let allSurveys = distinctSurveysArray.map((survey: Survey) => {
+            let allSurveys = distinctSurveysArray.map((survey: SurveyTemplate) => {
                 const isPublished = surveys.some(published => published.Key === survey.Key);
                 const draftSurvey = draftSurveys.find(draft => draft.Key === survey.Key);
                 const isDraft = draftSurvey != null && !draftSurvey.Hidden;
 
                 // Return projection object.
-                const prp: SurveyRowProjection = {
+                const prp: SurveyTemplateRowProjection = {
                     Key: survey.Key,
                     Name: survey.Name,
                     Description: survey.Description,
@@ -274,18 +300,18 @@ export class SurveyApiService {
         return promise;
     }
 
-    async getSurveyData(query: any, lookForDraft = false): Promise<ISurveyBuilderData> {
+    async getSurveyData(query: any, lookForDraft = false): Promise<ISurveyTemplateBuilderData> {
         let res: any;
-        const surveyKey = query['key'] || '';
+        const surveyTemplateKey = query['key'] || '';
         
-        if (surveyKey) {
+        if (surveyTemplateKey) {
             let survey;
             
             // If lookForDraft try to get the survey from the draft first (for runtime the lookForDraft will be false).
             if (lookForDraft) {
                 try {
                     // Get the survey from the drafts.
-                    survey = await this.getSurvey(surveyKey, DRAFT_SURVEYS_TABLE_NAME);
+                    survey = await this.getSurvey(surveyTemplateKey, DRAFT_SURVEYS_TABLE_NAME);
                 } catch {
                     // Do nothing
                 }
@@ -295,7 +321,7 @@ export class SurveyApiService {
             
             // If draft is hidden or not exist add call to bring the publish survey.
             if (!survey || survey.Hidden) {
-                dataPromises.push(this.getSurvey(surveyKey, SURVEYS_TABLE_NAME));
+                dataPromises.push(this.getSurvey(surveyTemplateKey, SURVEYS_TABLE_NAME));
             }
                 
             const arr = await Promise.all(dataPromises).then(res => res);
@@ -305,35 +331,35 @@ export class SurveyApiService {
             }
         }
 
-        const promise = new Promise<ISurveyBuilderData>((resolve, reject): void => {
+        const promise = new Promise<ISurveyTemplateBuilderData>((resolve, reject): void => {
             resolve(res);
         });
 
         return promise;
     }
     
-    async restoreToLastPublish(query: any): Promise<Survey> {
-        const surveykey = query['key'];
+    // async restoreToLastPublish(query: any): Promise<SurveyTemplate> {
+    //     const surveyTemplatekey = query['key'];
 
-        if (surveykey) {
-            let survey = await this.getSurvey(surveykey, SURVEYS_TABLE_NAME);
+    //     if (surveyTemplatekey) {
+    //         let survey = await this.getSurvey(surveyTemplatekey, SURVEYS_TABLE_NAME);
 
-            // In case that the survey was never published.
-            if (!survey) {
-                survey = await this.getSurvey(surveykey, DRAFT_SURVEYS_TABLE_NAME);
-                return this.publishSurvey(survey);
-            } else {
-                const surveyCopy = JSON.parse(JSON.stringify(survey));
-                await this.hideSurvey(surveyCopy, DRAFT_SURVEYS_TABLE_NAME);
-                return surveyCopy;
-            }
-        }
+    //         // In case that the survey was never published.
+    //         if (!survey) {
+    //             survey = await this.getSurvey(surveyTemplatekey, DRAFT_SURVEYS_TABLE_NAME);
+    //             return this.publishSurvey(survey);
+    //         } else {
+    //             const surveyCopy = JSON.parse(JSON.stringify(survey));
+    //             await this.hideSurvey(surveyCopy, DRAFT_SURVEYS_TABLE_NAME);
+    //             return surveyCopy;
+    //         }
+    //     }
         
-        return Promise.reject(null);
-    }
+    //     return Promise.reject(null);
+    // }
 
-    async publishSurvey(survey: Survey): Promise<Survey> {
-        let res: Survey | null = null;
+    async publishSurvey(survey: SurveyTemplate): Promise<SurveyTemplate> {
+        let res: SurveyTemplate | null = null;
 
         if (survey) {
             // Save the current survey in surveys table

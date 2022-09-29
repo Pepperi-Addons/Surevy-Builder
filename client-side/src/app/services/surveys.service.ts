@@ -7,12 +7,14 @@ import { Observable, BehaviorSubject, from } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
-import { SurveyRowProjection, Survey, SurveySection, ISurveyBuilderData, SurveyQuestion, SurveyQuestionType } from 'shared';
+import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData,
+    SurveyTemplateQuestion, SurveyTemplateQuestionType, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME } from 'shared';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { PepQueryBuilderComponent, IPepQueryBuilderField } from "@pepperi-addons/ngx-lib/query-builder";
 import { ShowIfDialogComponent } from '../components/dialogs/show-if-dialog/show-if-dialog.component';
 
 import * as _ from 'lodash';
+import { config } from "../components/addon.config";
 
 
 @Injectable({
@@ -41,31 +43,31 @@ export class SurveysService {
     }
 
     // This is the sections subject
-    private _sectionsSubject: BehaviorSubject<SurveySection[]> = new BehaviorSubject<SurveySection[]>([]);
-    get sectionsChange$(): Observable<SurveySection[]> {
+    private _sectionsSubject: BehaviorSubject<SurveyTemplateSection[]> = new BehaviorSubject<SurveyTemplateSection[]>([]);
+    get sectionsChange$(): Observable<SurveyTemplateSection[]> {
         return this._sectionsSubject.asObservable();
     }
 
     // This is the selected section subject
     private _selectedSectionIndex = -1;
-    private _selectedSectionChangeSubject: BehaviorSubject<SurveySection> = new BehaviorSubject<SurveySection>(null);
-    get selectedSectionChange$(): Observable<SurveySection> {
+    private _selectedSectionChangeSubject: BehaviorSubject<SurveyTemplateSection> = new BehaviorSubject<SurveyTemplateSection>(null);
+    get selectedSectionChange$(): Observable<SurveyTemplateSection> {
         return this._selectedSectionChangeSubject.asObservable().pipe(distinctUntilChanged());
     }
 
     // This is the selected question subject
     private _selectedQuestionIndex = -1;
-    private _selectedQuestionChangeSubject: BehaviorSubject<SurveyQuestion> = new BehaviorSubject<SurveyQuestion>(null);
-    get selectedQuestionChange$(): Observable<SurveyQuestion> {
+    private _selectedQuestionChangeSubject: BehaviorSubject<SurveyTemplateQuestion> = new BehaviorSubject<SurveyTemplateQuestion>(null);
+    get selectedQuestionChange$(): Observable<SurveyTemplateQuestion> {
         return this._selectedQuestionChangeSubject.asObservable().pipe(distinctUntilChanged());
     }
 
     // This subject is for survey change.
-    private _surveySubject: BehaviorSubject<Survey> = new BehaviorSubject<Survey>(null);
-    get surveyLoad$(): Observable<Survey> {
+    private _surveySubject: BehaviorSubject<SurveyTemplate> = new BehaviorSubject<SurveyTemplate>(null);
+    get surveyLoad$(): Observable<SurveyTemplate> {
         return this._surveySubject.asObservable().pipe(distinctUntilChanged((prevSurvey, nextSurvey) => prevSurvey?.Key === nextSurvey?.Key));
     }
-    get surveyDataChange$(): Observable<Survey> {
+    get surveyDataChange$(): Observable<SurveyTemplate> {
         return this._surveySubject.asObservable().pipe(filter(survey => !!survey));
     }
 
@@ -99,7 +101,7 @@ export class SurveysService {
         private dialog: PepDialogService
     ) {
 
-        this.surveyLoad$.subscribe((survey: Survey) => {
+        this.surveyLoad$.subscribe((survey: SurveyTemplate) => {
             this.loadSurveyEditor(survey);
             this.notifySectionsChange(survey?.Sections ?? []);
             this.setSelected(0);
@@ -107,12 +109,12 @@ export class SurveysService {
         });
     }    
 
-    public getSurvey(): Survey {
+    public getSurvey(): SurveyTemplate {
         return this._surveySubject.getValue();
     }
     private  getNewSection() {
         
-        let section: SurveySection = null;
+        let section: SurveyTemplateSection = null;
 
         this.translate.get('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER').subscribe((res: string) => {
             section = {
@@ -126,7 +128,7 @@ export class SurveysService {
 
     }
 
-    private loadSurveyEditor(survey: Survey) {
+    private loadSurveyEditor(survey: SurveyTemplate) {
         if (survey) {
             const surveyEditor: ISurveyEditor = {
                 key: survey?.Key,
@@ -148,11 +150,11 @@ export class SurveysService {
         }
     }
 
-    private notifySurveyChange(survey: Survey) {
+    private notifySurveyChange(survey: SurveyTemplate) {
         this._surveySubject.next(survey);
     }
 
-    private notifySectionsChange(sections: SurveySection[], addDefualtSection = true) {
+    private notifySectionsChange(sections: SurveyTemplateSection[], addDefualtSection = true) {
         const survey = this._surveySubject.getValue();
 
         if (survey) {
@@ -168,12 +170,12 @@ export class SurveysService {
         }
     }
 
-    private notifySelectedSectionChange(section: SurveySection, index: number) {
+    private notifySelectedSectionChange(section: SurveyTemplateSection, index: number) {
         this._selectedSectionIndex = index;
         this._selectedSectionChangeSubject.next(section);
     }
 
-    private notifySelectedQuestionChange(question: SurveyQuestion, index: number) {
+    private notifySelectedQuestionChange(question: SurveyTemplateQuestion, index: number) {
         this._selectedQuestionIndex = index;
         this._selectedQuestionChangeSubject.next(question);
     }
@@ -200,7 +202,7 @@ export class SurveysService {
         this._isGrabbingSubject.next(false);
     }
 
-    private getSectionByIndex(sectionIndex: string): SurveySection {
+    private getSectionByIndex(sectionIndex: string): SurveyTemplateSection {
         let currentSection = null;
 
         // Get the section and column array by the pattern of the section column key.
@@ -220,7 +222,7 @@ export class SurveysService {
     private duplicateSelectedSection() {
         if (this._selectedSectionIndex > -1) {
             const sections = this._sectionsSubject.getValue();
-            const duplicated: SurveySection = _.cloneDeep(sections[this._selectedSectionIndex]);
+            const duplicated: SurveyTemplateSection = _.cloneDeep(sections[this._selectedSectionIndex]);
             duplicated.Key = PepGuid.newGuid();
             const newSelectedIndex = this._selectedSectionIndex > -1 && this._selectedSectionIndex < sections.length ?
                 this._selectedSectionIndex + 1 : sections.length;
@@ -247,7 +249,7 @@ export class SurveysService {
             const sections = this._sectionsSubject.getValue();
             const currentSection = sections[this._selectedSectionIndex];
             if (currentSection?.Questions?.length > this._selectedQuestionIndex) {
-                const duplicated: SurveyQuestion = _.clone(currentSection.Questions[this._selectedQuestionIndex]);
+                const duplicated: SurveyTemplateQuestion = _.clone(currentSection.Questions[this._selectedQuestionIndex]);
                 duplicated.Key = PepGuid.newGuid();
                 const newSelectedIndex = this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ?
                     this._selectedQuestionIndex + 1 : currentSection.Questions.length;
@@ -358,7 +360,7 @@ export class SurveysService {
         }
     }
 
-    updateSectionFromEditor(surveySection: SurveySection) {
+    updateSectionFromEditor(surveySection: SurveyTemplateSection) {
         const sections = this._sectionsSubject.getValue();
 
         if (this._selectedSectionIndex >= 0 && this._selectedSectionIndex < sections.length) {
@@ -367,7 +369,7 @@ export class SurveysService {
         }
     }
 
-    updateQuestionFromEditor(surveyQuestion: SurveyQuestion) {
+    updateQuestionFromEditor(surveyQuestion: SurveyTemplateQuestion) {
         const sections = this._sectionsSubject.getValue();
 
         if (this._selectedSectionIndex >= 0 && this._selectedSectionIndex < sections.length) {
@@ -403,7 +405,7 @@ export class SurveysService {
         this.setSelected(-1);
     }
 
-    addSection(sectionIndex: number = -1, section: SurveySection = null) {
+    addSection(sectionIndex: number = -1, section: SurveyTemplateSection = null) {
         // Create new section
         if (!section) {
             section = this.getNewSection();
@@ -465,11 +467,11 @@ export class SurveysService {
     //     }
     // }
 
-    addQuestion(questionType: SurveyQuestionType, sectionIndex = -1, questionIndex = -1) {
+    addQuestion(questionType: SurveyTemplateQuestionType, sectionIndex = -1, questionIndex = -1) {
         // Create new question
         const title = this.translate.get('SURVEY_MANAGER.QUESTION_TITLE_PLACEHOLDER').subscribe((title: string) => {
 
-            const question: SurveyQuestion = {
+            const question: SurveyTemplateQuestion = {
                 Name: PepGuid.newGuid(),
                 Key: PepGuid.newGuid(),
                 Title: title.toString() || '',
@@ -522,40 +524,57 @@ export class SurveysService {
     /**************************************************************************************/
 
     // Get the surveys (distinct with the drafts)
-    getSurveys(addonUUID: string, options: any): Observable<SurveyRowProjection[]> {
+    getSurveys(addonUUID: string, options: any): Observable<SurveyTemplateRowProjection[]> {
         // Get the surveys from the server.
         const baseUrl = this.getBaseUrl(addonUUID);
         return this.httpService.getHttpCall(`${baseUrl}/get_surveys_data?${options}`);
     }
 
-    createNewSurvey(addonUUID: string, totalSurveys: number = 0): Observable<Survey> {
+    createNewSurvey(addonUUID: string, totalSurveys: number = 0): Observable<SurveyTemplate> {
         const baseUrl = this.getBaseUrl(addonUUID);
         return this.httpService.getHttpCall(`${baseUrl}/create_survey?surveyNum=${totalSurveys + 1}`);
     }
 
     // Delete the survey
-    deleteSurvey(addonUUID: string, surveyKey: string): Observable<any> {
+    deleteSurvey(addonUUID: string, surveyTemplateKey: string): Observable<any> {
         const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.getHttpCall(`${baseUrl}/remove_survey?key=${surveyKey}`);
+        return this.httpService.getHttpCall(`${baseUrl}/remove_survey?key=${surveyTemplateKey}`);
     }
 
-    loadSurveyBuilder(addonUUID: string, surveyKey: string, editable: boolean, queryParameters: Params): void {
+    loadSurveyBuilder(addonUUID: string, key: string, editable: boolean, queryParameters: Params): void {
         //  If is't not edit mode get the survey from the CPI side.
         const baseUrl = this.getBaseUrl(addonUUID);
-
+ 
         if (!editable) {
-            // Get the survey (sections and the questions data) from the server.
-            this.httpService.getHttpCall(`${baseUrl}/get_survey_data?key=${surveyKey}`)
-                .subscribe((res: ISurveyBuilderData) => {
-                    if (res && res.survey) {
-                        // Load the survey.
-                        this.notifySurveyChange(res.survey);
+            const eventData = {
+                detail: {
+                    eventKey: SURVEY_LOAD_CLIENT_EVENT_NAME,
+                    eventData: {
+                        surveyKey: key
+                    },
+                    completion: (data) => {
+                        debugger;
+                        this.notifySurveyChange(data.survey);
                     }
-                });
+                }
+            };
+    
+            const customEvent = new CustomEvent('emit-event', eventData);
+            window.dispatchEvent(customEvent);
+
+            // const baseUrlCPI = `http://localhost:8088/addon/api/${config.AddonUUID}/addon-cpi`;
+            // // Get the survey (sections and the questions data) from the server.
+            // this.httpService.getHttpCall(`${baseUrl}/get_survey_data?key=${key}`)
+            //     .subscribe((res: ISurveyTemplateBuilderData) => {
+            //         if (res && res.survey) {
+            //             // Load the survey.
+            //             this.notifySurveyChange(res.survey);
+            //         }
+            //     });
         } else { // If is't edit mode get the data of the survey and the relations from the Server side.
             // Get the survey (sections and the questions data) from the server.
-            this.httpService.getHttpCall(`${baseUrl}/get_survey_builder_data?key=${surveyKey}`)
-                .subscribe((res: ISurveyBuilderData) => {
+            this.httpService.getHttpCall(`${baseUrl}/get_survey_builder_data?key=${key}`)
+                .subscribe((res: ISurveyTemplateBuilderData) => {
                     if (res && res.survey) {
                         // Load the survey.
                         this.notifySurveyChange(res.survey);
@@ -570,43 +589,84 @@ export class SurveysService {
     }
 
     // Restore the survey to tha last publish
-    restoreToLastPublish(addonUUID: string): Observable<Survey> {
-        const survey = this._surveySubject.getValue();
-        const baseUrl = this.getBaseUrl(addonUUID);
+    // restoreToLastPublish(addonUUID: string): Observable<SurveyTemplate> {
+    //     const survey = this._surveySubject.getValue();
+    //     const baseUrl = this.getBaseUrl(addonUUID);
 
-        return this.httpService.getHttpCall(`${baseUrl}/restore_to_last_publish?key=${survey.Key}`);
-    }
+    //     return this.httpService.getHttpCall(`${baseUrl}/restore_to_last_publish?key=${survey.Key}`);
+    // }
 
     // Save the current survey in drafts.
-    saveCurrentSurvey(addonUUID: string): Observable<Survey> {
-        const survey: Survey = this._surveySubject.getValue();
-        const body = JSON.stringify(survey);
-        const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
+    saveCurrentSurvey(addonUUID: string, editable: boolean): Observable<SurveyTemplate> {
+        const survey: SurveyTemplate = this._surveySubject.getValue();
+        
+        if (!editable) {
+            const eventData = {
+                detail: {
+                    eventKey: SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
+                    eventData: {
+                        survey: survey
+                    },
+                    completion: (data) => {
+                        debugger;
+                        // Notify survey change to update survey object with all changes (like show if questions if added or removed).
+                        this.notifySurveyChange(data.survey);
+
+                        // Notify sections change to update UI.
+                        this.notifySectionsChange(data.survey.Sections);
+                    }
+                }
+            };
+    
+            const customEvent = new CustomEvent('emit-event', eventData);
+            window.dispatchEvent(customEvent);
+        } else {
+            const body = JSON.stringify(survey);
+            const baseUrl = this.getBaseUrl(addonUUID);
+            return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
+        }
     } 
+
+    private getSelectedQuestion(): SurveyTemplateQuestion {
+        const sections = this._sectionsSubject.getValue();
+        const currentSection = sections[this._selectedSectionIndex];
+        if (currentSection) {
+            return currentSection.Questions[this._selectedQuestionIndex];
+        } 
+
+        return null;
+    }
 
     // Open dialog to set the display condition of the selected question
     openShowIfDialog() {        
         const config = this.dialog.getDialogConfig({ minWidth: '30rem' }, 'large');
-        const data = new PepDialogData({ actionsType: 'cancel-ok', content: { query: null, fields: this.getShowIfFields() }, showClose: true });
+        const selectedQuestion = this.getSelectedQuestion();
+        const query = selectedQuestion && selectedQuestion.ShowIf?.length > 0 ? JSON.parse(selectedQuestion.ShowIf) : null;
+
+        const data = new PepDialogData({ 
+            actionsType: 'cancel-ok',
+            content: { 
+                query: query,
+                fields: this.getShowIfFields()
+            },
+            showClose: true 
+        });
+
         const dialogRef = this.dialog.openDialog(ShowIfDialogComponent, data, config);        
         dialogRef.afterClosed().subscribe({
             next: (res) => {                             
-                const sections = this._sectionsSubject.getValue();
-                const currentSection = sections[this._selectedSectionIndex];
-                if (currentSection) {
-                    const currentQuestion = currentSection.Questions[this._selectedQuestionIndex];
-                    if (currentQuestion) {
-                        currentQuestion.ShowIf = JSON.stringify(res.query);                                                
-                    }
+                const selectedQuestion = this.getSelectedQuestion();
+
+                if (selectedQuestion) {
+                    selectedQuestion.ShowIf = JSON.stringify(res.query);
                 } 
             }     
         });
     }
 
     // Publish the current survey.
-    publishCurrentSurvey(addonUUID: string): Observable<Survey> {
-        const survey: Survey = this._surveySubject.getValue();
+    publishCurrentSurvey(addonUUID: string): Observable<SurveyTemplate> {
+        const survey: SurveyTemplate = this._surveySubject.getValue();
         const body = JSON.stringify(survey);
         const baseUrl = this.getBaseUrl(addonUUID);
         return this.httpService.postHttpCall(`${baseUrl}/publish_survey`, body);

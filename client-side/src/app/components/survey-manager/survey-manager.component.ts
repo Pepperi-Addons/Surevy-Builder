@@ -5,7 +5,7 @@ import { SurveysService } from "../../services/surveys.service";
 import { ValidationService } from '../../services/validation.service';
 import { NavigationService } from '../../services/navigation.service';
 import { ISurveyEditor } from "../../model/survey.model";
-import { SurveyQuestionType } from "shared";
+import { SurveyTemplateQuestionType } from "shared";
 import { DestoyerDirective } from '../../model/destroyer';
 import { PepSnackBarData, PepSnackBarService } from "@pepperi-addons/ngx-lib/snack-bar";
 
@@ -155,7 +155,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         this._surveysService.addSection();
     }
 
-    onQuestionTypeClick(type: SurveyQuestionType) {
+    onQuestionTypeClick(type: SurveyTemplateQuestionType) {
         this._surveysService.addQuestion(type);
     }
 
@@ -172,7 +172,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     onSaveClicked() {
         //validate mandatory fields
         if(this.validationService.validateSurvey()){
-            this._surveysService.saveCurrentSurvey(this._navigationService.addonUUID).pipe(this.destroy$).subscribe(res => {
+            this._surveysService.saveCurrentSurvey(this._navigationService.addonUUID, true).pipe(this.destroy$).subscribe(res => {
                 const data: PepSnackBarData = {
                     title: this.translate.instant('MESSAGES.SURVEY_SAVED'),
                     content: '',

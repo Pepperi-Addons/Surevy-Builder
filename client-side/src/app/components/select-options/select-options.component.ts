@@ -3,7 +3,7 @@ import { IPepOption } from '@pepperi-addons/ngx-lib';
 import { SurveysService } from 'src/app/services/surveys.service';
 import { ValidationService } from 'src/app/services/validation.service';
 import { SurveyOptionStateType } from '../../model/survey.model';
-import { SurveyQuestion } from 'shared';
+import { SurveyTemplateQuestion } from 'shared';
 import { CdkDragDrop, CdkDragEnd, CdkDragStart, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
 class SelectOption {
@@ -26,10 +26,10 @@ class SelectOption {
 
 export class QuestionSelectOptionsComponent implements OnInit {
     
-    public _question: SurveyQuestion;
+    public _question: SurveyTemplateQuestion;
 
     @Input()
-    set question(value: SurveyQuestion) {
+    set question(value: SurveyTemplateQuestion) {
         this._question = value;
         this.setOptionalValues();
     }

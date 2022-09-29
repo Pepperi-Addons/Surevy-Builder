@@ -20,6 +20,8 @@ export class ShowIfDialogComponent implements OnInit {
     constructor(public dialogRef: MatDialogRef<ShowIfDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public incoming: any) {
         this.fields = incoming.content.fields;
+        this.query = incoming.content.query;
+        this.outputData = { query: this.query };
     }
 
     onDialogClose() {

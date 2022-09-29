@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { QuestionMenuService } from './question-menu.service';
 import { SurveysService } from "../../services/surveys.service";
-import { SurveyQuestionType } from 'shared';
+import { SurveyTemplateQuestionType } from 'shared';
 import { PepSizeType, PepStyleType } from '@pepperi-addons/ngx-lib';
 import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
 
@@ -16,7 +16,7 @@ export class QuestionMenuComponent implements OnInit {
     @Input() styleType: PepStyleType = 'weak';
     @Input() sizeType: PepSizeType = 'md';
     
-    @Output() questionTypeClick: EventEmitter<SurveyQuestionType> = new EventEmitter();
+    @Output() questionTypeClick: EventEmitter<SurveyTemplateQuestionType> = new EventEmitter();
     @Output() onStateChange: EventEmitter<IPepMenuStateChangeEvent> = new EventEmitter();
     
     get menuItems() {

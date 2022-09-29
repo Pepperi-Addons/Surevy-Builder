@@ -52,10 +52,10 @@ export class NavigationService {
         });
     }
 
-    navigateToSurvey(surveyKey: string): Promise<boolean> {
+    navigateToSurvey(surveyTemplateKey: string): Promise<boolean> {
         const route: ActivatedRoute = this.getCurrentRoute(this.route);
         
-        return this.router.navigate([`${surveyKey}`], {
+        return this.router.navigate([`${surveyTemplateKey}`], {
             relativeTo: route,
             queryParamsHandling: 'merge'
         });

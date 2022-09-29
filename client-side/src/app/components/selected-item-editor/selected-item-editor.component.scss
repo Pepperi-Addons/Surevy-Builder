@@ -24,6 +24,9 @@ pep-side-bar {
         margin: variables.$spacing-xs 0 variables.$spacing-lg;
     }
 
+    .showIfCont{
+        margin-bottom: variables.$spacing-md;
+    }
     .pep-actions {
         margin-top: variables.$spacing-sm;   
         display: flex;
