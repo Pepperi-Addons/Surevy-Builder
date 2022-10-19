@@ -1,8 +1,10 @@
 import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
-import { SurveyTemplate, SURVEYS_TABLE_NAME } from 'shared';
+import { SurveyTemplate, SURVEYS_TABLE_NAME, SurveyTemplateSection } from 'shared';
 import { Survey, Answer } from 'shared';
 import config from '../addon.config.json';
 class SurveysService {
+    private readonly SURVEY_ADDON_UUID = 'dd0a85ea-7ef0-4bc1-b14f-959e0372877a';
+
     constructor() {}
 
     private async getSurveyModel(client: IClient | undefined, surveyKey: string): Promise<Survey> {
@@ -12,24 +14,28 @@ class SurveysService {
         //     table: 'Surveys',
         //     key: surveyKey
         // }); 
-        const SURVEY_ADDON_UUID = 'dd0a85ea-7ef0-4bc1-b14f-959e0372877a';
+        
         const options = {
             url: `addon-cpi/get_surveys_by_key?key=${surveyKey}`, //http://localhost:8088
             client: client
         }
         
-        const survey = await pepperi.addons.api.uuid(SURVEY_ADDON_UUID).get(options);
+        const survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).get(options);
         return survey;
+    }
 
-        // return survey.object as any;
-        // return { 
-        //     Template: 'c018cea0-c63b-426d-b781-e9f766c59565',
-        //     Answers: []
-        // };
+    private async setSurveyModel(client: IClient | undefined, survey: Survey): Promise<Survey> {
+        const options = {
+            url: `addon-cpi/surveys`, //http://localhost:8088
+            body: survey,
+            client: client
+        }
+        
+        survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).post(options);
+        return survey;
     }
 
     private async getSurveyTemplate(surveyTemplateKey: string): Promise<SurveyTemplate> {
-
         const survey = await pepperi.api.adal.get({
             addon: config.AddonUUID,
             table: SURVEYS_TABLE_NAME,
@@ -39,25 +45,144 @@ class SurveysService {
         return survey.object as SurveyTemplate;
     }
     
-    // TODO: Here we should calc the survey template object.
-    private mergeSurveyIntoTemplateData(survey: Survey, surveyTemplate: SurveyTemplate |any): SurveyTemplate {
-        let mergeSurvey: SurveyTemplate = surveyTemplate;
+    // Calc the merge survey template object.
+    private mergeSurveyIntoTemplateData(survey: Survey, surveyTemplate: SurveyTemplate): void {
+        if (survey.Answers && survey.Answers?.length > 0) {
+            // For each answer set it in the right question.
+            for (let answerIndex = 0; answerIndex < survey.Answers.length; answerIndex++) {
+                const answer = survey.Answers[answerIndex];
+                let valueIsSet = false;
 
-        return mergeSurvey;
+                for (let sectionIndex = 0; sectionIndex < surveyTemplate?.Sections?.length; sectionIndex++) {
+                    const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
+    
+                    for (let questionIndex = 0; questionIndex < section.Questions?.length; questionIndex++) {
+                        const question = section.Questions[questionIndex];
+                        
+                        // Set the value is break this loop
+                        if (question.Key === answer.QuestionKey) {
+                            question.Value = answer.Value;
+                            valueIsSet = true;
+                            break;
+                        }
+                    }
+
+                    // Break this loop for continue to the next answer.
+                    if (valueIsSet) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private getQuestionValueByKey(surveyTemplate: SurveyTemplate, questionKey: string): any {
+        let valueToReutn = null;
+        let questionFounded = false;
+
+        for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
+            const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
+
+            for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
+                const question = section.Questions[questionIndex];
+
+                if (question.Key === questionKey) {
+                    valueToReutn = question.Value || null;
+                    questionFounded = true;
+                    break;
+                }
+            }
+
+            if (questionFounded) {
+                break;
+            }
+        }
+
+        return valueToReutn;
+    }
+
+    private createMapQuestionObject(showIf: any, surveyTemplate: SurveyTemplate): Map<string, any> {
+        const ret = new Map<string, any>();
+
+        // TODO: Check for all questions in the ShowIf object and set map object from it's values.
+        // this.getQuestionValueByKey(surveyTemplate)
+
+        return ret;
+    }
+
+    private calcShowIf(surveyTemplate: SurveyTemplate) {
+        for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
+            const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
+
+            for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
+                let shouldBeVisible = true;
+                const question = section.Questions[questionIndex];
+
+                if (question.ShowIf && question.ShowIf.length > 0) {
+                    const showIf = JSON.parse(question.ShowIf);
+                    const questionsMap = this.createMapQuestionObject(showIf, surveyTemplate);
+
+                    // TODO: Call pepperi filters to apply this
+                    // shouldBeVisible = peperiFilters.apply(showIf, questionsMap);
+                }
+
+                question.Visible = shouldBeVisible;
+            }
+        }
+    }
+
+    private setSurveyAnswers(survey: Survey, surveyTemplate: SurveyTemplate) {
+        // Remove old answers
+        survey.Answers = [];
+
+        for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
+            const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
+
+            for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
+                const question = section.Questions[questionIndex];
+
+                if (question.Value) {
+                    survey.Answers.push({
+                        QuestionKey: question.Key, 
+                        Value: question.Value
+                    })
+                }
+            }
+        }
     }
 
     // Load the survey template with the values form the DB.
-    async getSurveyData(client: IClient | undefined, surveyKey: string): Promise<SurveyTemplate> {
+    async getSurveyData(client: IClient | undefined, surveyKey: string): Promise<SurveyTemplate | null> {
+        let surveyTemplate: SurveyTemplate | null = null;
         const survey = await this.getSurveyModel(client, surveyKey);
-        // const surveyTemplate = { Tomer: 'test'};
-        const surveyTemplate = await this.getSurveyTemplate(survey?.Template || 'c018cea0-c63b-426d-b781-e9f766c59565');
+        
+        if (survey?.Template) {
+            surveyTemplate = await this.getSurveyTemplate(survey?.Template);
+    
+            if (surveyTemplate) {
+                this.mergeSurveyIntoTemplateData(survey, surveyTemplate);
+                this.calcShowIf(surveyTemplate);
+            }
+        }
 
-        const mergedSurvey = this.mergeSurveyIntoTemplateData(survey, surveyTemplate);
-        return mergedSurvey;
+        return surveyTemplate;
     }
 
-    async updateSurveyQuestions(surveyTemplate: SurveyTemplate): Promise<any> {
-        // TODO: Implement this
+    async updateSurveyQuestions(client: IClient | undefined, surveyKey: string, surveyTemplate: SurveyTemplate): Promise<any> {
+        let survey = await this.getSurveyModel(client, surveyKey);
+
+        if (surveyTemplate && survey?.Template === surveyTemplate?.Key) {
+            // Set the new Answers and save in the DB.
+            this.setSurveyAnswers(survey, surveyTemplate);
+            this.setSurveyModel(client, survey)
+
+            // Calc the show if
+            this.calcShowIf(surveyTemplate);
+        } else {
+            // Template is different.
+        }
+
+        return surveyTemplate;
     }
    
 }

@@ -23,11 +23,21 @@ export class NavigationService {
     ) {
         // Get the addonUUID from the root config.
         this._addonUUID = config.AddonUUID;
-        this._devServer = this.route.snapshot.queryParamMap.get('devServer') === 'true';
-        
+        // this._devServer = this.route.snapshot.queryParamMap.get('devServer') === 'true';
+        const urlParams = this.getQueryParamsAsObject();
+        this._devServer = urlParams['devServer'] === 'true';
+
         this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
             this.history.push(event.urlAfterRedirects);
         });
+    }
+    
+    private paramsToObject(entries) {
+        const result = {}
+        for(const [key, value] of entries) { // each 'entry' is a [key, value] tupple
+          result[key] = value;
+        }
+        return result;
     }
 
     private getCurrentRoute(route: ActivatedRoute) {
@@ -59,5 +69,10 @@ export class NavigationService {
             relativeTo: route,
             queryParamsHandling: 'merge'
         });
+    }
+
+    getQueryParamsAsObject(): any {
+        const queryParamsAsObject = this.paramsToObject(new URLSearchParams(location.search));
+        return queryParamsAsObject;
     }
 }

@@ -16,7 +16,7 @@ export interface SurveyTemplate extends AddonData {
     Sections: SurveyTemplateSection[];
 }
 
-// Temp nedd to remove it when will be integrated with papi-sdk
+// Temp need to remove it when will be integrated with papi-sdk
 export interface Survey extends AddonData {
     // Generated UUID
     Key?:string;
@@ -53,7 +53,7 @@ export interface SurveyTemplateSection {
     Title: string;  
     Description?: string;
     Questions: SurveyTemplateQuestion[];
-    ShowIf?: string;
+    // ShowIf?: string;
 }
 
 export type SurveyTemplateQuestionType = 'short-text' | 'long-text' 
@@ -75,6 +75,7 @@ export interface SurveyTemplateQuestion {
     Mandatory?: boolean; 
     ShowIf?: string;
     Value?: any;
+    Visible?: boolean;
     [key: string]: any;
 }
 

@@ -92,11 +92,11 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
                 this.screenSize = size;
             });
             
+            this.surveysService.sectionsChange$.pipe(this.getDestroyer()).subscribe((sections: SurveyTemplateSection[]) => {
+                this._sectionsSubject.next(sections);
+            });
+            
             if (this.editMode) {
-                this.surveysService.sectionsChange$.pipe(this.getDestroyer()).subscribe((sections: SurveyTemplateSection[]) => {
-                    this._sectionsSubject.next(sections);
-                });
-    
                 this.surveysService.surveyDataChange$.pipe(this.getDestroyer()).subscribe((survey: SurveyTemplate) => {
                     this.setSurveyDataProperties(survey);
                 });

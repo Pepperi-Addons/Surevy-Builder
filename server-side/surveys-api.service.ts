@@ -33,10 +33,7 @@ export class SurveyApiService {
             SyncData: {
                 Sync: true
             },
-            Type: 'meta_data',
-            SyncData: {
-                Sync: true
-            }
+            Type: 'meta_data'
         });
         
         // Create Survey draft table

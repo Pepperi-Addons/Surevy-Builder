@@ -552,9 +552,9 @@ export class SurveysService {
                     eventData: {
                         surveyKey: key
                     },
-                    completion: (data) => {
+                    completion: (survey) => {
                         debugger;
-                        this.notifySurveyChange(data.survey);
+                        this.notifySurveyChange(survey);
                     }
                 }
             };
