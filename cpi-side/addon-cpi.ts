@@ -14,7 +14,7 @@ export async function load(configuration: any) {
 
         // debugger;
         // Test alert
-        // await data.client?.alert('survey load - before', data.surveyKey);
+        await data.client?.alert('survey load - before', data.surveyKey);
         
         if (surveyKey) { 
             const service = new SurveysService();
@@ -22,7 +22,7 @@ export async function load(configuration: any) {
         }
         
         // Test alert
-        // await data.client?.alert('survey load - after', `${JSON.stringify(survey)}`);
+        await data.client?.alert('survey load - after', `${JSON.stringify(mergedSurvey)}`);
         
         // TODO: Throw server event SURVEY_LOAD_EVENT_NAME
 
