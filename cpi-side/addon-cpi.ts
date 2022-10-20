@@ -7,7 +7,7 @@ export async function load(configuration: any) {
     // console.log('cpi side works!');
     // Put your cpi side code here
 
-    pepperi.events.intercept(SURVEY_LOAD_CLIENT_EVENT_NAME as any, {}, async (data): Promise<SurveyTemplate | null> => {
+    pepperi.events.intercept(SURVEY_LOAD_CLIENT_EVENT_NAME as any, {}, async (data): Promise<any> => {
         // Handle on survey load
         const surveyKey = data.surveyKey;
         let mergedSurvey: SurveyTemplate | null = null;
@@ -30,7 +30,7 @@ export async function load(configuration: any) {
     });
 
     // Handle on survey field change
-    pepperi.events.intercept(SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME as any, {}, async (data): Promise<SurveyTemplate | null> => {
+    pepperi.events.intercept(SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME as any, {}, async (data): Promise<any> => {
         let mergedSurvey: SurveyTemplate | null = null;
 
         const surveyKey = data.surveyKey;

@@ -15,7 +15,6 @@
   "license": "ISC",
   "dependencies": {
     "@pepperi-addons/cpi-node": "^1.0.2",
-    "@pepperi-addons/pepperi-filters": "^1.0.17",
     "rollup-plugin-typescript2": "^0.30.0",
     "shared": "file:../shared"
   },

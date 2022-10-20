@@ -1,7 +1,7 @@
 import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 import { SurveyTemplate, SURVEYS_TABLE_NAME, SurveyTemplateSection } from 'shared';
 import { Survey, Answer } from 'shared';
-import { filter } from '@pepperi-addons/pepperi-filters';
+// import { filter } from '@pepperi-addons/pepperi-filters';
 import config from '../addon.config.json';
 class SurveysService {
     private readonly SURVEY_ADDON_UUID = 'dd0a85ea-7ef0-4bc1-b14f-959e0372877a';
@@ -106,8 +106,8 @@ class SurveysService {
                 if (question.ShowIf && question.ShowIf.length > 0) {
                     const showIf = JSON.parse(question.ShowIf);
                     
-                    // Call pepperi filters to apply this.
-                    shouldBeVisible = filter([questionsObject], showIf).length > 0;
+                    // TODO: Call pepperi filters to apply this.
+                    // shouldBeVisible = filter([questionsObject], showIf).length > 0;
                 }
 
                 question.Visible = shouldBeVisible;
