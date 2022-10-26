@@ -8,6 +8,11 @@ export const SURVEY_LOAD_CLIENT_EVENT_NAME = 'OnClientSurveyLoad';
 export const SURVEY_FIELD_CHANGE_EVENT_NAME = 'OnSurveyFieldChange';
 export const SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyFieldChange';
 
+export const SURVEY_CANCEL_EVENT_NAME = 'OnSurveyCancel';
+export const SURVEY_CANCEL_CLIENT_EVENT_NAME = 'OnClientSurveyCancel';
+export const SURVEY_SAVE_EVENT_NAME = 'OnSurveySave';
+export const SURVEY_SAVE_CLIENT_EVENT_NAME = 'OnClientSurveySave';
+
 export interface SurveyTemplate extends AddonData {
     Name: string;
     Description?: string;
@@ -49,7 +54,7 @@ export interface SurveyTemplateDateRange {
 
 export interface SurveyTemplateSection {
     Key: string;
-    Name?: string;
+    // Name?: string;
     Title: string;  
     Description?: string;
     Questions: SurveyTemplateQuestion[];
@@ -68,7 +73,7 @@ export type SurveyTemplateQuestionType = 'short-text' | 'long-text'
 
 export interface SurveyTemplateQuestion {
     Key: string;
-    Name?: string;
+    // Name?: string;
     Title: string;  
     Description?: string;
     Type: SurveyTemplateQuestionType;

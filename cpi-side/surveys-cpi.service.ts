@@ -27,13 +27,33 @@ class SurveysService {
 
     private async setSurveyModel(client: IClient | undefined, survey: Survey): Promise<Survey> {
         const options = {
-            url: `addon-cpi/surveys`, //http://localhost:8088
+            url: `addon-cpi/surveys`,
             body: survey,
             client: client
         }
         
         survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).post(options);
         return survey;
+    }
+
+    private async saveSurveyModel(client: IClient | undefined, surveyKey: string): Promise<boolean> {
+        const options = {
+            url: `addon-cpi/save_surveys_by_key?key=${surveyKey}`,
+            client: client
+        }
+        
+        const survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).get(options);
+        return survey.object ? true : false;
+    }
+
+    private async cancelSurveyModel(client: IClient | undefined, surveyKey: string): Promise<boolean> {
+        const options = {
+            url: `addon-cpi/cancel_surveys_by_key?key=${surveyKey}`,
+            client: client
+        }
+        
+        const survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).get(options);
+        return survey.object ? true : false;
     }
 
     private async getSurveyTemplate(surveyTemplateKey: string): Promise<SurveyTemplate> {
@@ -112,6 +132,9 @@ class SurveysService {
 
                 question.Visible = shouldBeVisible;
             }
+
+            // Set only the visible questions.
+            section.Questions = section.Questions.filter(q => q.Visible);
         }
     }
 
@@ -171,5 +194,12 @@ class SurveysService {
         return surveyTemplate;
     }
    
+    async saveSurveyData(client: IClient | undefined, surveyKey: string): Promise<boolean> {
+        return await this.saveSurveyModel(client, surveyKey);
+    }
+
+    async cancelSurveyData(client: IClient | undefined, surveyKey: string): Promise<boolean> {
+        return await this.cancelSurveyModel(client, surveyKey);
+    }
 }
 export default SurveysService;

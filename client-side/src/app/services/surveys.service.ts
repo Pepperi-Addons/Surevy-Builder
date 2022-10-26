@@ -21,7 +21,7 @@ import { config } from "../components/addon.config";
     providedIn: 'root',
 })
 export class SurveysService {
-
+    private _surveyModelKey = '';
     
     private _defaultSectionTitle = '';
     set defaultSectionTitle(value: string) {
@@ -546,6 +546,9 @@ export class SurveysService {
         const baseUrl = this.getBaseUrl(addonUUID);
  
         if (!editable) {
+            // Save the survey model key.
+            this._surveyModelKey = key;
+
             const eventData = {
                 detail: {
                     eventKey: SURVEY_LOAD_CLIENT_EVENT_NAME,
@@ -553,7 +556,7 @@ export class SurveysService {
                         surveyKey: key
                     },
                     completion: (survey) => {
-                        debugger;
+                        // debugger;
                         this.notifySurveyChange(survey);
                     }
                 }
@@ -586,6 +589,7 @@ export class SurveysService {
     unloadSurveyBuilder() {
         this.notifySectionsChange([], false);
         this.notifySurveyChange(null);
+        this._surveyModelKey = '';
     }
 
     // Restore the survey to tha last publish
@@ -596,35 +600,61 @@ export class SurveysService {
     //     return this.httpService.getHttpCall(`${baseUrl}/restore_to_last_publish?key=${survey.Key}`);
     // }
 
-    // Save the current survey in drafts.
-    saveCurrentSurvey(addonUUID: string, editable: boolean): Observable<SurveyTemplate> {
-        const survey: SurveyTemplate = this._surveySubject.getValue();
-        
-        if (!editable) {
+    onSurveyQuestionValueChange(): void {
+        if (this._surveyModelKey.length > 0) {
+            const survey: SurveyTemplate = this._surveySubject.getValue();
             const eventData = {
                 detail: {
                     eventKey: SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
                     eventData: {
-                        survey: survey
+                        surveyKey: this._surveyModelKey,
+                        surveyTemplate: survey
                     },
                     completion: (data) => {
                         debugger;
                         // Notify survey change to update survey object with all changes (like show if questions if added or removed).
                         this.notifySurveyChange(data.survey);
-
+    
                         // Notify sections change to update UI.
                         this.notifySectionsChange(data.survey.Sections);
                     }
                 }
             };
-    
+        
             const customEvent = new CustomEvent('emit-event', eventData);
             window.dispatchEvent(customEvent);
-        } else {
+        }
+    }
+
+    // Save the current survey in drafts.
+    saveCurrentSurvey(addonUUID: string, editable: boolean): Observable<SurveyTemplate> {
+        const survey: SurveyTemplate = this._surveySubject.getValue();
+        
+        // if (!editable) {
+        //     const eventData = {
+        //         detail: {
+        //             eventKey: SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
+        //             eventData: {
+        //                 survey: survey
+        //             },
+        //             completion: (data) => {
+        //                 debugger;
+        //                 // Notify survey change to update survey object with all changes (like show if questions if added or removed).
+        //                 this.notifySurveyChange(data.survey);
+
+        //                 // Notify sections change to update UI.
+        //                 this.notifySectionsChange(data.survey.Sections);
+        //             }
+        //         }
+        //     };
+    
+        //     const customEvent = new CustomEvent('emit-event', eventData);
+        //     window.dispatchEvent(customEvent);
+        // } else {
             const body = JSON.stringify(survey);
             const baseUrl = this.getBaseUrl(addonUUID);
             return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
-        }
+        // }
     } 
 
     private getSelectedQuestion(): SurveyTemplateQuestion {

@@ -1,6 +1,7 @@
 import '@pepperi-addons/cpi-node'
 import SurveysService from './surveys-cpi.service';
-import { SURVEY_LOAD_EVENT_NAME, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME, SurveyTemplate } from 'shared';
+import { SURVEY_LOAD_EVENT_NAME, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
+    SURVEY_CANCEL_CLIENT_EVENT_NAME, SURVEY_SAVE_CLIENT_EVENT_NAME, SurveyTemplate } from 'shared';
 export const router = Router();
 
 export async function load(configuration: any) {
@@ -49,6 +50,36 @@ export async function load(configuration: any) {
         // TODO: Throw server event SURVEY_FIELD_CHANGE_EVENT_NAME
 
         return mergedSurvey as any;
+    });
+
+    pepperi.events.intercept(SURVEY_CANCEL_CLIENT_EVENT_NAME as any, {}, async (data): Promise<any> => {
+        // Handle on survey Cancel
+        const surveyKey = data.surveyKey;
+        let res: boolean = false;
+
+        if (surveyKey) { 
+            const service = new SurveysService();
+            res = await service.cancelSurveyData(data.client, surveyKey);
+        }
+
+        // TODO: Throw server event SURVEY_CANCEL_EVENT_NAME
+
+        return res;
+    });
+
+    pepperi.events.intercept(SURVEY_SAVE_CLIENT_EVENT_NAME as any, {}, async (data): Promise<any> => {
+        // Handle on survey Save
+        const surveyKey = data.surveyKey;
+        let res: boolean = false;
+
+        if (surveyKey) { 
+            const service = new SurveysService();
+            res = await service.saveSurveyData(data.client, surveyKey);
+        }
+        
+        // TODO: Throw server event SURVEY_SAVE_EVENT_NAME
+
+        return res;
     });
 }
 
