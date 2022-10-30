@@ -2,13 +2,14 @@
 
 :host {
     display: block;
-    padding: variables.$content-padding;
+    // padding: variables.$content-padding;
 }
 
 .survey-top-bar {
     display: grid;
     justify-items: center;
-    
+    margin-top: variables.$top-bar-spacing-top;
+
     ::ng-deep.pep-top-bar-container {
         width: 100%;
         max-width: 832px;
@@ -18,6 +19,8 @@
 .sections-container {
     width: 100%;
     margin: 0 auto;
+    // padding-top: variables.$content-padding;
+    // padding-bottom: variables.$content-padding;
     position: relative;
     display: grid;
     // gap: variables.$content-padding;
@@ -29,7 +32,7 @@
     }
     
     // This css is only for edit mode!!!
-    // &.editable-state {
-            
-    // }
+    &.editable-state {
+        padding-top: variables.$content-padding;
+    }
 }

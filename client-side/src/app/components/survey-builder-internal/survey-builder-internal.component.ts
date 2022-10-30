@@ -77,8 +77,9 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     }
 
     private setSurveyDataProperties(survey: SurveyTemplate) {
-        if (survey && this.sectionsContainer?.nativeElement) {
-            
+        if (survey) {
+            this.isSubmitted = survey?.Status === 'Submitted';
+            this.surveyName = survey?.Name;
         }
     }
 
@@ -101,11 +102,15 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
                 this._sectionsSubject.next(sections);
             });
             
-            if (this.editMode) {
-                this.surveysService.surveyDataChange$.pipe(this.getDestroyer()).subscribe((survey: SurveyTemplate) => {
-                    this.setSurveyDataProperties(survey);
-                });
+            this.surveysService.surveyLoad$.subscribe((survey: SurveyTemplate) => {
+                this.setSurveyDataProperties(survey);
+            });
 
+            this.surveysService.surveyDataChange$.subscribe((survey: SurveyTemplate) => {
+                this.setSurveyDataProperties(survey);
+            });
+
+            if (this.editMode) {
                 this.surveysService.selectedSectionChange$.pipe(this.getDestroyer()).subscribe((section: SurveyTemplateSection) => {
                     this.selectedSection = section;
                 });
@@ -115,13 +120,6 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
                 });
             } else {
 
-                this.surveysService.surveyLoad$.subscribe((survey: SurveyTemplate) => {
-                    this.isSubmitted = survey?.Status === 'Submitted';
-                });
-
-                this.surveysService.surveyDataChange$.subscribe((survey: SurveyTemplate) => {
-                    this.surveyName = survey?.Name;
-                });
 
                 // Load menu items.
                 this.pepMenuItems = new Array<PepMenuItem>();

@@ -76,9 +76,7 @@ class SurveysService {
             }
         }
 
-        if (survey.Status && survey.Status?.length > 0) {
-            surveyTemplate.Status = survey.Status as SurveyStatusType;
-        }
+        surveyTemplate.Status = survey.Status && survey.Status?.length > 0 ? survey.Status as SurveyStatusType : 'In Creation';
     }
 
     private createMapQuestionObject(surveyTemplate: SurveyTemplate): any {
