@@ -8,10 +8,10 @@ export const SURVEY_LOAD_CLIENT_EVENT_NAME = 'OnClientSurveyLoad';
 export const SURVEY_FIELD_CHANGE_EVENT_NAME = 'OnSurveyFieldChange';
 export const SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyFieldChange';
 
-export const SURVEY_CANCEL_EVENT_NAME = 'OnSurveyCancel';
-export const SURVEY_CANCEL_CLIENT_EVENT_NAME = 'OnClientSurveyCancel';
-export const SURVEY_SAVE_EVENT_NAME = 'OnSurveySave';
-export const SURVEY_SAVE_CLIENT_EVENT_NAME = 'OnClientSurveySave';
+export const SURVEY_STATUS_CHANGE_EVENT_NAME = 'OnSurveyStatusChange';
+export const SURVEY_STATUS_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyStatusChange';
+
+export type SurveyStatusType = 'Submitted' | 'In Creation';
 
 export interface SurveyTemplate extends AddonData {
     Name: string;
@@ -19,6 +19,7 @@ export interface SurveyTemplate extends AddonData {
     Active: boolean;
     ActiveDateRange?: SurveyTemplateDateRange;
     Sections: SurveyTemplateSection[];
+    Status?: SurveyStatusType;
 }
 
 // Temp need to remove it when will be integrated with papi-sdk
@@ -30,7 +31,7 @@ export interface Survey extends AddonData {
     // unique ID - ?
     ExternalID?:string;
     // reference to the SurveyTemplate
-    Template?:string;
+    Template:string;
     // contains object
     Answers?:Answer[];
     // the UUID of the user who created the survey

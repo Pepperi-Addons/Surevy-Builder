@@ -8,7 +8,7 @@ import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
 import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData,
-    SurveyTemplateQuestion, SurveyTemplateQuestionType, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME } from 'shared';
+    SurveyTemplateQuestion, SurveyTemplateQuestionType, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME, SURVEY_STATUS_CHANGE_CLIENT_EVENT_NAME, SurveyStatusType } from 'shared';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { PepQueryBuilderComponent, IPepQueryBuilderField } from "@pepperi-addons/ngx-lib/query-builder";
 import { ShowIfDialogComponent } from '../components/dialogs/show-if-dialog/show-if-dialog.component';
@@ -600,9 +600,16 @@ export class SurveysService {
     //     return this.httpService.getHttpCall(`${baseUrl}/restore_to_last_publish?key=${survey.Key}`);
     // }
 
-    onSurveyQuestionValueChange(): void {
+    onSurveyQuestionValueChange(questionKey: string, value: any): void {
         if (this._surveyModelKey.length > 0) {
             const survey: SurveyTemplate = this._surveySubject.getValue();
+            
+            // Set the question value
+            survey.Sections.every(s => {
+                const currentQuestion = s.Questions.find(q => q.Key === questionKey);
+                currentQuestion.Value = value;
+            });
+
             const eventData = {
                 detail: {
                     eventKey: SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
@@ -626,35 +633,37 @@ export class SurveysService {
         }
     }
 
+    onSurveyStatusChange(status: SurveyStatusType): void {
+        if (this._surveyModelKey.length > 0) {
+            const survey: SurveyTemplate = this._surveySubject.getValue();
+            survey.Status = status;
+
+            const eventData = {
+                detail: {
+                    eventKey: SURVEY_STATUS_CHANGE_CLIENT_EVENT_NAME,
+                    eventData: {
+                        surveyKey: this._surveyModelKey,
+                        status: status
+                    },
+                    completion: (data) => {
+                        debugger;
+                        // Notify survey change to update survey object with all changes (like show if questions if added or removed).
+                        this.notifySurveyChange(data.survey);
+                    }
+                }
+            };
+        
+            const customEvent = new CustomEvent('emit-event', eventData);
+            window.dispatchEvent(customEvent);
+        }
+    }
+
     // Save the current survey in drafts.
     saveCurrentSurvey(addonUUID: string, editable: boolean): Observable<SurveyTemplate> {
         const survey: SurveyTemplate = this._surveySubject.getValue();
-        
-        // if (!editable) {
-        //     const eventData = {
-        //         detail: {
-        //             eventKey: SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
-        //             eventData: {
-        //                 survey: survey
-        //             },
-        //             completion: (data) => {
-        //                 debugger;
-        //                 // Notify survey change to update survey object with all changes (like show if questions if added or removed).
-        //                 this.notifySurveyChange(data.survey);
-
-        //                 // Notify sections change to update UI.
-        //                 this.notifySectionsChange(data.survey.Sections);
-        //             }
-        //         }
-        //     };
-    
-        //     const customEvent = new CustomEvent('emit-event', eventData);
-        //     window.dispatchEvent(customEvent);
-        // } else {
-            const body = JSON.stringify(survey);
-            const baseUrl = this.getBaseUrl(addonUUID);
-            return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
-        // }
+        const body = JSON.stringify(survey);
+        const baseUrl = this.getBaseUrl(addonUUID);
+        return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
     } 
 
     private getSelectedQuestion(): SurveyTemplateQuestion {

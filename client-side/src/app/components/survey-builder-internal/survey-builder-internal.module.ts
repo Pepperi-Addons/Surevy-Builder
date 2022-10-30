@@ -11,6 +11,10 @@ import { PepDialogModule } from '@pepperi-addons/ngx-lib/dialog';
 
 import { SectionModule } from '../section/section.module'
 import { SurveyBuilderComponent } from './survey-builder-internal.component';
+import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
+import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
+import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
+import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
 
 @NgModule({
     declarations: [
@@ -25,6 +29,10 @@ import { SurveyBuilderComponent } from './survey-builder-internal.component';
         PepDialogModule,
         DragDropModule,
         SectionModule,
+        PepPageLayoutModule,
+        PepTopBarModule,
+        PepButtonModule,
+        PepMenuModule,
         TranslateModule.forChild(),
     ],
     exports:[SurveyBuilderComponent],

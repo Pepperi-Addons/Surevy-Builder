@@ -7,6 +7,7 @@ import { ValidationService } from 'src/app/services/validation.service';
 import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
 import { NavigationService } from '../../services/navigation.service';
 import { SurveyTemplate, SurveyTemplateSection } from "shared";
+import { IPepMenuItemClickEvent, PepMenuItem } from '@pepperi-addons/ngx-lib/menu';
 
 export interface ISurveyRuntimeHostObject {
     // surveyParams: any;
@@ -53,6 +54,10 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
 
     protected isGrabbing = false;
     protected selectedSection: SurveyTemplateSection = null;
+    protected pepMenuItems: Array<PepMenuItem> = null;
+    protected isSubmitted = false;
+    protected surveyName = '';
+
     private readonly _destroyed: Subject<void>;
 
     constructor(
@@ -108,6 +113,23 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
                 this.surveysService.isGrabbingChange$.pipe(this.getDestroyer()).subscribe((value: boolean) => {
                     this.isGrabbing = value;
                 });
+            } else {
+
+                this.surveysService.surveyLoad$.subscribe((survey: SurveyTemplate) => {
+                    this.isSubmitted = survey?.Status === 'Submitted';
+                });
+
+                this.surveysService.surveyDataChange$.subscribe((survey: SurveyTemplate) => {
+                    this.surveyName = survey?.Name;
+                });
+
+                // Load menu items.
+                this.pepMenuItems = new Array<PepMenuItem>();
+                this.pepMenuItems.push({
+                    key: 'key',
+                    text: 'test',
+                    type: 'regular'
+                });
             }
         } else {
             // TODO: Show error message key isn't supply.
@@ -127,5 +149,17 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
 
     isValidSection(index){
         return this.validationService?.failedOnValidation?.includes('section'+(index+1));
+    }
+
+    onCloseSurvey() {
+        // TODO: Back.
+    }
+
+    onChangeSurveyStatus() {
+        this.surveysService.onSurveyStatusChange(this.isSubmitted ? 'In Creation' : 'Submitted');
+    }
+
+    onMenuItemClicked(event: IPepMenuItemClickEvent) {
+
     }
 }

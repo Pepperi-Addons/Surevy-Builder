@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, ViewContainerRef } from "@angular/core";
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router'
 import { first, Subscription, firstValueFrom } from 'rxjs';
 import { PepAddonService, PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
@@ -10,12 +10,14 @@ import { NavigationService } from "../../services/navigation.service";
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { SurveysService } from "../../services/surveys.service";
 import { MY_DATE_FORMATS, MomentUtcDateAdapter, MomentUtcDateTimeAdapter } from "../../model/survey.model";
-import { SurveyTemplate, SurveyTemplateRowProjection } from "shared";
+import { SurveyTemplate, SurveyTemplateRowProjection, SURVEY_FIELD_CHANGE_EVENT_NAME, SURVEY_LOAD_EVENT_NAME, SURVEY_STATUS_CHANGE_EVENT_NAME } from "shared";
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from "@angular/material/core";
 import { getCalture } from "@pepperi-addons/ngx-lib/date";
 import { DatetimeAdapter, MAT_DATETIME_FORMATS } from '@mat-datetimepicker/core';
+import { PepAddonBlockLoaderService } from "@pepperi-addons/ngx-lib/remote-loader";
 
 import { utc } from "moment";
+import { config } from "../addon.config";
 
 @Component({
     selector: 'surveys-manager',
@@ -51,6 +53,8 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         private dialog: PepDialogService,
         private adapter: DateAdapter<any>,
         private utilitiesService: PepUtilitiesService,
+        private pepAddonBlockLoader: PepAddonBlockLoaderService,
+        private viewContainerRef: ViewContainerRef
     ) {
         this.pepAddonService.setShellRouterData({ showSidebar: true, addPadding: true});
        
@@ -215,4 +219,37 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         this._subscriptions.forEach(sub => sub.unsubscribe);
     }
 
+    onAddSurveyScriptClicked() {
+        const hostObject = {
+            AddonUUID: config.AddonUUID,
+            PossibleEvents: [{
+                Title: 'on survey load',
+                EventKey: SURVEY_LOAD_EVENT_NAME,
+                // EventFilter: {},
+                // Fields: []
+            }, {
+                Title: 'on survey field change',
+                EventKey: SURVEY_FIELD_CHANGE_EVENT_NAME,
+                // EventFilter: {},
+                // Fields: []
+            }, {
+                Title: 'on servey status change',
+                EventKey: SURVEY_STATUS_CHANGE_EVENT_NAME,
+                // EventFilter: {},
+                // Fields: []
+            }]
+        };
+
+        this.pepAddonBlockLoader.loadAddonBlockInDialog({
+            name: 'UserEvents',
+            container: this.viewContainerRef,
+            hostObject: hostObject,
+            hostEventsCallback: (event) => { 
+                debugger;
+                // if (dialogRef) {
+                //     dialogRef.close(null);
+                // }
+            }
+        });
+    }
 }

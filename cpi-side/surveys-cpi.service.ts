@@ -1,5 +1,5 @@
 import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
-import { SurveyTemplate, SURVEYS_TABLE_NAME, SurveyTemplateSection } from 'shared';
+import { SurveyTemplate, SURVEYS_TABLE_NAME, SurveyTemplateSection, SurveyStatusType } from 'shared';
 import { Survey, Answer } from 'shared';
 import { filter } from '@pepperi-addons/pepperi-filters';
 import config from '../addon.config.json';
@@ -34,26 +34,6 @@ class SurveysService {
         
         survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).post(options);
         return survey;
-    }
-
-    private async saveSurveyModel(client: IClient | undefined, surveyKey: string): Promise<boolean> {
-        const options = {
-            url: `addon-cpi/save_surveys_by_key?key=${surveyKey}`,
-            client: client
-        }
-        
-        const survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).get(options);
-        return survey.object ? true : false;
-    }
-
-    private async cancelSurveyModel(client: IClient | undefined, surveyKey: string): Promise<boolean> {
-        const options = {
-            url: `addon-cpi/cancel_surveys_by_key?key=${surveyKey}`,
-            client: client
-        }
-        
-        const survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).get(options);
-        return survey.object ? true : false;
     }
 
     private async getSurveyTemplate(surveyTemplateKey: string): Promise<SurveyTemplate> {
@@ -95,6 +75,10 @@ class SurveysService {
                 }
             }
         }
+
+        if (survey.Status && survey.Status?.length > 0) {
+            surveyTemplate.Status = survey.Status as SurveyStatusType;
+        }
     }
 
     private createMapQuestionObject(surveyTemplate: SurveyTemplate): any {
@@ -112,7 +96,7 @@ class SurveysService {
         return ret;
     }
 
-    private calcShowIf(surveyTemplate: SurveyTemplate) {
+    private calcShowIf(surveyTemplate: SurveyTemplate): void {
         // Prepare the questions value data object
         const questionsObject = this.createMapQuestionObject(surveyTemplate);
 
@@ -138,7 +122,7 @@ class SurveysService {
         }
     }
 
-    private setSurveyAnswers(survey: Survey, surveyTemplate: SurveyTemplate) {
+    private setSurveyAnswers(survey: Survey, surveyTemplate: SurveyTemplate): void {
         // Remove old answers
         survey.Answers = [];
 
@@ -156,6 +140,33 @@ class SurveysService {
                 }
             }
         }
+    }
+
+    private async validateSurvey(survey: Survey): Promise<boolean> {
+        let isValid = true;
+
+        const surveyTemplate = await this.getSurveyTemplate(survey.Template);
+        this.mergeSurveyIntoTemplateData(survey, surveyTemplate);
+
+        for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
+            const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
+
+            for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
+                const question = section.Questions[questionIndex];
+            
+                // If this questions is mandatory and the value is empty.
+                if (question.Mandatory && (question.Value === undefined || question.Value === null || question.Value.length === 0)) {
+                    isValid = false;
+                    break;
+                }
+            }
+
+            if (!isValid) {
+                break;
+            }
+        }
+
+        return isValid;
     }
 
     // Load the survey template with the values form the DB.
@@ -194,12 +205,21 @@ class SurveysService {
         return surveyTemplate;
     }
    
-    async saveSurveyData(client: IClient | undefined, surveyKey: string): Promise<boolean> {
-        return await this.saveSurveyModel(client, surveyKey);
-    }
+    async onSurveyStatusChange(client: IClient | undefined, surveyKey: string, status: SurveyStatusType): Promise<boolean> {
+        let res = false;
+        const survey = await this.getSurveyModel(client, surveyKey);
+        
+        if (survey) {
+            const canChangeStatus = (status === 'Submitted') ? await this.validateSurvey(survey) : true;
+            
+            if (canChangeStatus) {
+                survey.Status = status;
+                await this.setSurveyModel(client, survey);
+                res = true;
+            }
+        }
 
-    async cancelSurveyData(client: IClient | undefined, surveyKey: string): Promise<boolean> {
-        return await this.cancelSurveyModel(client, surveyKey);
+        return res;
     }
 }
 export default SurveysService;
