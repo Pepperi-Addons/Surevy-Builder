@@ -15,17 +15,17 @@ export async function load(configuration: any) {
 
         // debugger;
         // Test alert
-        // await data.client?.alert('survey load - before', data.surveyKey);
+        await data.client?.alert('survey load - before', data.surveyKey);
         
         if (surveyKey) { 
             const service = new SurveysService();
             mergedSurvey = await service.getSurveyData(data.client, surveyKey);
 
-            // // Test alert
-            // await data.client?.alert('survey load - after', `${JSON.stringify(mergedSurvey)}`);
+            // Test alert
+            await data.client?.alert('survey load - after', `${JSON.stringify(mergedSurvey)}`);
             
             // Emit server event SURVEY_LOAD_EVENT_NAME
-            // pepperi.events.emit(SURVEY_LOAD_EVENT_NAME, mergedSurvey);
+            pepperi.events.emit(SURVEY_LOAD_EVENT_NAME, mergedSurvey);
         }
 
         return mergedSurvey;
@@ -45,7 +45,7 @@ export async function load(configuration: any) {
             mergedSurvey = await service.updateSurveyQuestions(data.client, surveyKey, surveyTemplate);
 
             // Emit server event SURVEY_FIELD_CHANGE_EVENT_NAME
-            // pepperi.events.emit(SURVEY_FIELD_CHANGE_EVENT_NAME, mergedSurvey);
+            pepperi.events.emit(SURVEY_FIELD_CHANGE_EVENT_NAME, mergedSurvey);
         }
 
         return mergedSurvey as any;
@@ -63,7 +63,7 @@ export async function load(configuration: any) {
     
             if (res) {
                 // Emit server event SURVEY_STATUS_CHANGE_EVENT_NAME
-                // pepperi.events.emit(SURVEY_STATUS_CHANGE_EVENT_NAME, data);
+                pepperi.events.emit(SURVEY_STATUS_CHANGE_EVENT_NAME, data);
             }
         }
 
