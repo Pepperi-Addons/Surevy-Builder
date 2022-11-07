@@ -42,6 +42,16 @@ export class QuestionMenuService {
                     iconName: 'system_radio_btn'
                 },
                 {
+                    key: `multiple-selection-checkboxes`,
+                    text: 'Multiple Select Open',
+                    iconName: 'system_radio_btn'
+                },
+                {
+                    key: `single-selection-radiobuttons`,
+                    text: 'Single Select Open',
+                    iconName: 'system_radio_btn'
+                },
+                {
                     key: `boolean-toggle`,
                     text: 'Yes/No',
                     iconName: 'system_boolean'

@@ -42,6 +42,28 @@
                         type="multi" [options]="question?.OptionalValues" [emptyOption]="question?.AddNoneOption"
                         (valueChange)="onQuestionValueChanged($event)"></pep-select>
                 </ng-container>
+                <ng-container *ngSwitchCase="'single-selection-radiobuttons'">
+                    <pep-select-panel 
+                        [renderTitle]="false"
+                        [mandatory]="question?.Mandatory"
+                        [isMultiSelect]="false"
+                        [disabled]="false"
+                        [numOfCol]="question?.selectionColumns"
+                        [options]="question?.OptionalValues"
+                        (valueChange)="onQuestionValueChanged($event)">
+                    </pep-select-panel>
+                </ng-container>
+                <ng-container *ngSwitchCase="'multiple-selection-checkboxes'">
+                    <pep-select-panel 
+                        [renderTitle]="false"
+                        [mandatory]="question?.Mandatory"
+                        [isMultiSelect]="true"
+                        [disabled]="false"
+                        [numOfCol]="question.selectionColumns"
+                        [options]="question?.OptionalValues"
+                        (valueChange)="onQuestionValueChanged($event)">
+                    </pep-select-panel>
+                </ng-container>
                 <ng-container *ngSwitchCase="'boolean-toggle'">
                     <survey-yes-no-question [value]="question.Value" [mandatory]="question?.Mandatory" [yesTitle]="question?.True || null" [noTitle]="question?.False || ''"
                         (valueChange)="onQuestionValueChanged($event)"></survey-yes-no-question>

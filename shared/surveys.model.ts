@@ -63,8 +63,8 @@ export interface SurveyTemplateSection {
 }
 
 export type SurveyTemplateQuestionType = 'short-text' | 'long-text' 
-    | 'single-selection-dropdown' // | 'single-selection-radiobuttons' 
-    | 'multiple-selection-dropdown' //  | 'multiple-selection-checkboxs'
+    | 'single-selection-dropdown' | 'single-selection-radiobuttons' 
+    | 'multiple-selection-dropdown' | 'multiple-selection-checkboxes'
     | 'boolean-toggle'
     | 'number' | 'decimal' | 'currency' | 'percentage'
     | 'date' | 'datetime'

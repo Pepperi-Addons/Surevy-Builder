@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
+import { PepSelectPanelModule } from '@pepperi-addons/ngx-lib/select-panel';
 import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
 import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items';
 import { PepIconModule,PepIconRegistry, pepIconSystemMust} from '@pepperi-addons/ngx-lib/icon';
@@ -38,6 +39,7 @@ import { ShowIfBadgeModule } from '../show-if-badge/show-if-badge.module';
         DragDropModule,
         PepButtonModule,        
         PepSelectModule,
+        PepSelectPanelModule,
         PepRemoteLoaderModule,
         PepDraggableItemsModule,
         PepTextboxModule,
