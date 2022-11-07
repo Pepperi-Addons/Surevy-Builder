@@ -232,12 +232,14 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                 EventKey: SURVEY_FIELD_CHANGE_EVENT_NAME,
                 // EventFilter: {},
                 // Fields: []
-            }, {
-                Title: 'on servey status change',
-                EventKey: SURVEY_STATUS_CHANGE_EVENT_NAME,
-                // EventFilter: {},
-                // Fields: []
-            }]
+            }
+            // , {
+            //     Title: 'on servey status change',
+            //     EventKey: SURVEY_STATUS_CHANGE_EVENT_NAME,
+            //     // EventFilter: {},
+            //     // Fields: []
+            // }
+            ]
         };
 
         this.pepAddonBlockLoader.loadAddonBlockInDialog({
