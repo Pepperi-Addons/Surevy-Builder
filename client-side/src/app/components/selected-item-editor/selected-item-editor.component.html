@@ -85,7 +85,9 @@
         </pep-textarea>
         
         <ng-container *ngIf="question?.Type == 'multiple-selection-dropdown' ||
-                             question?.Type == 'single-selection-dropdown'">
+                             question?.Type == 'single-selection-dropdown' ||
+                             question?.Type == 'single-selection-radiobuttons' ||
+                             question?.Type == 'multiple-selection-checkboxes'">
             <question-select-options [question]="question" (questionValueChanged)="onSelectQuestionFieldChanged($event)" (optionChanged)="selectOptionChanged($event)"></question-select-options>
         </ng-container>
 

@@ -245,7 +245,6 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
             container: this.viewContainerRef,
             hostObject: hostObject,
             hostEventsCallback: (event) => { 
-                debugger;
                 // if (dialogRef) {
                 //     dialogRef.close(null);
                 // }

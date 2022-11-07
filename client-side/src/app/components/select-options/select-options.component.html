@@ -1,11 +1,19 @@
 <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TITLE" | translate}}</label>
 
-<pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT' | translate"
+<!-- <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT' | translate"
              [value]="_question?.placeHolderText || ''"
              [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT_DEFAULT' | translate"
              (valueChange)="onQuestionEditorFieldChanged('placeHolderText',$event)">
-</pep-textbox>
+</pep-textbox> -->
 
+<ng-container *ngIf="_question?.Type === 'single-selection-radiobuttons' || _question?.Type === 'multiple-selection-checkboxes'">
+    <pep-group-buttons-settings 
+    [subHeader]="'Columns'"
+    [btnKey]="_question?.selectionColumns || '1'" 
+    [groupType]="'custom'" [btnsArray]="numOfColumn"
+    (btnkeyChange)="onQuestionEditorFieldChanged('selectionColumns',$event)">
+</pep-group-buttons-settings>
+</ng-container>
 <div class="options-container" (cdkDropListDropped)="drop($event)"  cdkDropList>
     <div  *ngFor="let opt of selectOptions; let i=index;">
         <div class="select-option-container" cdkDrag [cdkDragData]="opt?.id" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)">
