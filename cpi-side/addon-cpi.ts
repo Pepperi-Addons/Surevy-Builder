@@ -10,7 +10,7 @@ export async function load(configuration: any) {
 
     pepperi.events.intercept(SURVEY_LOAD_CLIENT_EVENT_NAME as any, {}, async (data): Promise<any> => {
         // Handle on survey load
-        const surveyKey = data.surveyKey;
+        const surveyKey = data.ObjectKey;
         let mergedSurvey: SurveyTemplate | null = null;
 
         // debugger;

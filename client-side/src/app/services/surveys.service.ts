@@ -553,7 +553,7 @@ export class SurveysService {
                 detail: {
                     eventKey: SURVEY_LOAD_CLIENT_EVENT_NAME,
                     eventData: {
-                        surveyKey: key
+                        ObjectKey: key
                     },
                     completion: (survey) => {
                         debugger;
