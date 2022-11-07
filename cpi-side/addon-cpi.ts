@@ -1,7 +1,7 @@
 import '@pepperi-addons/cpi-node'
 import SurveysService from './surveys-cpi.service';
 import { SURVEY_LOAD_EVENT_NAME, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
-    SURVEY_STATUS_CHANGE_CLIENT_EVENT_NAME, SURVEY_STATUS_CHANGE_EVENT_NAME, SurveyTemplate } from 'shared';
+    SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME, SURVEY_QUESTION_CHANGE_EVENT_NAME, SurveyTemplate } from 'shared';
 export const router = Router();
 
 export async function load(configuration: any) {
@@ -34,41 +34,44 @@ export async function load(configuration: any) {
     // Handle on survey field change
     pepperi.events.intercept(SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME as any, {}, async (data): Promise<any> => {
         let mergedSurvey: SurveyTemplate | null = null;
-
-        const surveyKey = data.surveyKey;
-        const surveyTemplate = data.surveyTemplate;
-
-        // Save the survey model in the db.
-        if (surveyKey && surveyTemplate) { 
+        const surveyKey = data.ObjectKey;
+        const propertyName = data.FieldID;
+        const value = data.Value;
+        
+        if (surveyKey && propertyName) { 
             const service = new SurveysService();
-            
-            mergedSurvey = await service.updateSurveyQuestions(data.client, surveyKey, surveyTemplate);
-
-            // Emit server event SURVEY_FIELD_CHANGE_EVENT_NAME
-            pepperi.events.emit(SURVEY_FIELD_CHANGE_EVENT_NAME, mergedSurvey);
-        }
-
-        return mergedSurvey as any;
-    });
-
-    pepperi.events.intercept(SURVEY_STATUS_CHANGE_CLIENT_EVENT_NAME as any, {}, async (data): Promise<any> => {
-        // Handle on survey status change
-        const surveyKey = data.surveyKey;
-        const status = data.status;
-        let res: boolean = false;
-
-        if (surveyKey) { 
-            const service = new SurveysService();
-            res = await service.onSurveyStatusChange(data.client, surveyKey, status);
+            mergedSurvey = await service.onSurveyFieldChange(data.client, surveyKey, propertyName, value);
     
-            if (res) {
+            if (mergedSurvey) {
                 // Emit server event SURVEY_STATUS_CHANGE_EVENT_NAME
-                pepperi.events.emit(SURVEY_STATUS_CHANGE_EVENT_NAME, data);
+                pepperi.events.emit(SURVEY_FIELD_CHANGE_EVENT_NAME, data);
             }
         }
 
-        return res;
+        return mergedSurvey;
     });
+
+    // Handle on survey question change
+    pepperi.events.intercept(SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME as any, {}, async (data): Promise<any> => {
+        let mergedSurvey: SurveyTemplate | null = null;
+
+        const surveyKey = data.ObjectKey;
+        const questionKey = data.FieldID;
+        const value = data.Value;
+
+        if (surveyKey && questionKey) { 
+            const service = new SurveysService();
+            mergedSurvey = await service.onSurveyQuestionChange(data.client, surveyKey, questionKey, value);
+
+            if (mergedSurvey) {
+                // Emit server event SURVEY_QUESTION_CHANGE_EVENT_NAME
+                pepperi.events.emit(SURVEY_QUESTION_CHANGE_EVENT_NAME, mergedSurvey);
+            }
+        }
+
+        return mergedSurvey;
+    });
+
 }
 
 // router.get('/get_survey_data', async (req, res, next) => {

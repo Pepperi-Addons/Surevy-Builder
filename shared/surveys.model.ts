@@ -7,9 +7,8 @@ export const SURVEY_LOAD_EVENT_NAME = 'OnSurveyLoad';
 export const SURVEY_LOAD_CLIENT_EVENT_NAME = 'OnClientSurveyLoad';
 export const SURVEY_FIELD_CHANGE_EVENT_NAME = 'OnSurveyFieldChange';
 export const SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyFieldChange';
-
-export const SURVEY_STATUS_CHANGE_EVENT_NAME = 'OnSurveyStatusChange';
-export const SURVEY_STATUS_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyStatusChange';
+export const SURVEY_QUESTION_CHANGE_EVENT_NAME = 'OnSurveyQuestionChange';
+export const SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyQuestionChange';
 
 export type SurveyStatusType = 'Submitted' | 'In Creation';
 

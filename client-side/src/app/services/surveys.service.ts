@@ -8,7 +8,7 @@ import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
 import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData,
-    SurveyTemplateQuestion, SurveyTemplateQuestionType, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME, SURVEY_STATUS_CHANGE_CLIENT_EVENT_NAME, SurveyStatusType } from 'shared';
+    SurveyTemplateQuestion, SurveyTemplateQuestionType, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME, SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME, SurveyStatusType } from 'shared';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { PepQueryBuilderComponent, IPepQueryBuilderField } from "@pepperi-addons/ngx-lib/query-builder";
 import { ShowIfDialogComponent } from '../components/dialogs/show-if-dialog/show-if-dialog.component';
@@ -556,7 +556,7 @@ export class SurveysService {
                         surveyKey: key
                     },
                     completion: (survey) => {
-                        // debugger;
+                        debugger;
                         this.notifySurveyChange(survey);
                     }
                 }
@@ -600,30 +600,23 @@ export class SurveysService {
     //     return this.httpService.getHttpCall(`${baseUrl}/restore_to_last_publish?key=${survey.Key}`);
     // }
 
-    onSurveyQuestionValueChange(questionKey: string, value: any): void {
+    onSurveyStatusChange(status: SurveyStatusType): void {
         if (this._surveyModelKey.length > 0) {
-            const survey: SurveyTemplate = this._surveySubject.getValue();
-            
-            // Set the question value
-            survey.Sections.every(s => {
-                const currentQuestion = s.Questions.find(q => q.Key === questionKey);
-                currentQuestion.Value = value;
-            });
+            // const survey: SurveyTemplate = this._surveySubject.getValue();
+            // survey.Status = status;
 
             const eventData = {
                 detail: {
                     eventKey: SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
                     eventData: {
-                        surveyKey: this._surveyModelKey,
-                        surveyTemplate: survey
+                        ObjectKey: this._surveyModelKey,
+                        FieldID: 'Status',
+                        Value: status
                     },
                     completion: (data) => {
                         debugger;
                         // Notify survey change to update survey object with all changes (like show if questions if added or removed).
                         this.notifySurveyChange(data.survey);
-    
-                        // Notify sections change to update UI.
-                        this.notifySectionsChange(data.survey.Sections);
                     }
                 }
             };
@@ -633,22 +626,31 @@ export class SurveysService {
         }
     }
 
-    onSurveyStatusChange(status: SurveyStatusType): void {
+    onSurveyQuestionValueChange(questionKey: string, value: any): void {
         if (this._surveyModelKey.length > 0) {
-            const survey: SurveyTemplate = this._surveySubject.getValue();
-            survey.Status = status;
+            // const survey: SurveyTemplate = this._surveySubject.getValue();
+            
+            // // Set the question value
+            // survey.Sections.every(s => {
+            //     const currentQuestion = s.Questions.find(q => q.Key === questionKey);
+            //     currentQuestion.Value = value;
+            // });
 
             const eventData = {
                 detail: {
-                    eventKey: SURVEY_STATUS_CHANGE_CLIENT_EVENT_NAME,
+                    eventKey: SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME,
                     eventData: {
-                        surveyKey: this._surveyModelKey,
-                        status: status
+                        ObjectKey: this._surveyModelKey,
+                        FieldID: questionKey,
+                        Value: value
                     },
                     completion: (data) => {
                         debugger;
                         // Notify survey change to update survey object with all changes (like show if questions if added or removed).
                         this.notifySurveyChange(data.survey);
+    
+                        // Notify sections change to update UI.
+                        this.notifySectionsChange(data.survey.Sections);
                     }
                 }
             };

@@ -76,7 +76,7 @@ class SurveysService {
             }
         }
 
-        surveyTemplate.Status = survey.Status && survey.Status?.length > 0 ? survey.Status as SurveyStatusType : 'In Creation';
+        surveyTemplate.Status = survey.Status && survey.Status.length > 0 ? survey.Status as SurveyStatusType : 'In Creation';
     }
 
     private createMapQuestionObject(surveyTemplate: SurveyTemplate): any {
@@ -130,7 +130,7 @@ class SurveysService {
             for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
                 const question = section.Questions[questionIndex];
 
-                if (question.Value) {
+                if (question.Value?.length > 0) {
                     survey.Answers.push({
                         QuestionKey: question.Key, 
                         Value: question.Value
@@ -167,6 +167,48 @@ class SurveysService {
         return isValid;
     }
 
+    private setSurveyQuestionValue(surveyTemplate: SurveyTemplate, questionKey: string, value: any): boolean {
+        let isValueSet = false;
+
+        for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
+            const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
+
+            for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
+                const question = section.Questions[questionIndex];
+                
+                // Set the value for this question.
+                if (question.Key === questionKey) {
+                    question.Value = value;
+                    isValueSet = true;
+                    break;
+                }
+            }
+
+            if (isValueSet) {
+                break;
+            }
+        }
+
+        return isValueSet;
+    }
+
+    private async updateSurveyQuestions(client: IClient | undefined, surveyKey: string, surveyTemplate: SurveyTemplate): Promise<any> {
+        let survey = await this.getSurveyModel(client, surveyKey);
+
+        if (surveyTemplate && survey?.Template === surveyTemplate?.Key) {
+            // Set the new Answers and save in the DB.
+            this.setSurveyAnswers(survey, surveyTemplate);
+            this.setSurveyModel(client, survey)
+
+            // Calc the show if
+            this.calcShowIf(surveyTemplate);
+        } else {
+            // Template is different.
+        }
+
+        return surveyTemplate;
+    }
+
     // Load the survey template with the values form the DB.
     async getSurveyData(client: IClient | undefined, surveyKey: string): Promise<SurveyTemplate | null> {
         let surveyTemplate: SurveyTemplate | null = null;
@@ -186,38 +228,73 @@ class SurveysService {
         return surveyTemplate;
     }
 
-    async updateSurveyQuestions(client: IClient | undefined, surveyKey: string, surveyTemplate: SurveyTemplate): Promise<any> {
-        let survey = await this.getSurveyModel(client, surveyKey);
+    async onSurveyFieldChange(client: IClient | undefined, surveyKey: string, propertyName: string, value: any): Promise<SurveyTemplate | null> {
+        let surveyTemplate: SurveyTemplate | null = null;
+        const survey = await this.getSurveyModel(client, surveyKey);
+        
+        if (survey && survey.Template) {
+            surveyTemplate = await this.getSurveyTemplate(survey.Template);
+    
+            if (surveyTemplate) {
+                this.mergeSurveyIntoTemplateData(survey, surveyTemplate);
+                let isValueSet = false;
 
-        if (surveyTemplate && survey?.Template === surveyTemplate?.Key) {
-            // Set the new Answers and save in the DB.
-            this.setSurveyAnswers(survey, surveyTemplate);
-            this.setSurveyModel(client, survey)
+                // If the field name is status check if valid in case that the status is 'Submitted', else, set other property on survey.
+                if (propertyName === 'Status') {
+                    const status: SurveyStatusType = value as SurveyStatusType;
+                    const canChangeStatus = (status === 'Submitted') ? await this.validateSurvey(survey) : true;
+                    
+                    if (canChangeStatus) {
+                        survey.Status = status;
+                        isValueSet = true;
+                    } else {
+                        // TODO: Throw invalid survey
+                    }
+                } else {
+                    if (survey.hasOwnProperty(propertyName)) {
+                        survey[propertyName] = propertyName;
+                        isValueSet = true;
+                    }
+                }
 
-            // Calc the show if
-            this.calcShowIf(surveyTemplate);
-        } else {
-            // Template is different.
+                if (isValueSet) {
+                    await this.setSurveyModel(client, survey);
+                    // TODO: Maybe need to calc show if when the survey field change??
+                    // this.calcShowIf(surveyTemplate);
+                }
+            } else {
+                // TODO: Throw survey has no template.
+            }
         }
 
         return surveyTemplate;
     }
-   
-    async onSurveyStatusChange(client: IClient | undefined, surveyKey: string, status: SurveyStatusType): Promise<boolean> {
-        let res = false;
+
+    async onSurveyQuestionChange(client: IClient | undefined, surveyKey: string, questionKey: string, value: any): Promise<SurveyTemplate | null> {
+        let surveyTemplate: SurveyTemplate | null = null;
         const survey = await this.getSurveyModel(client, surveyKey);
         
-        if (survey) {
-            const canChangeStatus = (status === 'Submitted') ? await this.validateSurvey(survey) : true;
+        if (survey && survey.Template) {
+            surveyTemplate = await this.getSurveyTemplate(survey.Template);
             
-            if (canChangeStatus) {
-                survey.Status = status;
-                await this.setSurveyModel(client, survey);
-                res = true;
+            if (surveyTemplate) {
+                this.mergeSurveyIntoTemplateData(survey, surveyTemplate);
+                let isValueSet = this.setSurveyQuestionValue(surveyTemplate, questionKey, value);
+
+                if (isValueSet) {
+                    // Set the new Answers and save in the DB.
+                    this.setSurveyAnswers(survey, surveyTemplate);
+                    await this.setSurveyModel(client, survey)
+
+                    // Calc the show if
+                    this.calcShowIf(surveyTemplate);
+                }
+            } else {
+                // TODO: Throw survey has no template.
             }
         }
 
-        return res;
+        return surveyTemplate;
     }
 }
 export default SurveysService;
