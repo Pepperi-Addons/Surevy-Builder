@@ -3,15 +3,25 @@ import { AddonData } from "@pepperi-addons/papi-sdk";
 export const SURVEYS_TABLE_NAME = 'SurveysTemplate';
 export const DRAFT_SURVEYS_TABLE_NAME = 'SurveysTemplateDrafts';
 
+export const SURVEY_LOAD_EVENT_NAME = 'OnSurveyLoad';
+export const SURVEY_LOAD_CLIENT_EVENT_NAME = 'OnClientSurveyLoad';
+export const SURVEY_FIELD_CHANGE_EVENT_NAME = 'OnSurveyFieldChange';
+export const SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyFieldChange';
+export const SURVEY_QUESTION_CHANGE_EVENT_NAME = 'OnSurveyQuestionChange';
+export const SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyQuestionChange';
+
+export type SurveyStatusType = 'Submitted' | 'In Creation';
+
 export interface SurveyTemplate extends AddonData {
     Name: string;
     Description?: string;
     Active: boolean;
     ActiveDateRange?: SurveyTemplateDateRange;
     Sections: SurveyTemplateSection[];
+    Status?: SurveyStatusType;
 }
 
-// Temp nedd to remove it when will be integrated with papi-sdk
+// Temp need to remove it when will be integrated with papi-sdk
 export interface Survey extends AddonData {
     // Generated UUID
     Key?:string;
@@ -20,7 +30,7 @@ export interface Survey extends AddonData {
     // unique ID - ?
     ExternalID?:string;
     // reference to the SurveyTemplate
-    Template?:string;
+    Template:string;
     // contains object
     Answers?:Answer[];
     // the UUID of the user who created the survey
@@ -44,16 +54,16 @@ export interface SurveyTemplateDateRange {
 
 export interface SurveyTemplateSection {
     Key: string;
-    Name?: string;
+    // Name?: string;
     Title: string;  
     Description?: string;
     Questions: SurveyTemplateQuestion[];
-    ShowIf?: string;
+    // ShowIf?: string;
 }
 
 export type SurveyTemplateQuestionType = 'short-text' | 'long-text' 
-    | 'single-selection-dropdown' // | 'single-selection-radiobuttons' 
-    | 'multiple-selection-dropdown' //  | 'multiple-selection-checkboxs'
+    | 'single-selection-dropdown' | 'single-selection-radiobuttons' 
+    | 'multiple-selection-dropdown' | 'multiple-selection-checkboxes'
     | 'boolean-toggle'
     | 'number' | 'decimal' | 'currency' | 'percentage'
     | 'date' | 'datetime'
@@ -63,13 +73,14 @@ export type SurveyTemplateQuestionType = 'short-text' | 'long-text'
 
 export interface SurveyTemplateQuestion {
     Key: string;
-    Name?: string;
+    // Name?: string;
     Title: string;  
     Description?: string;
     Type: SurveyTemplateQuestionType;
     Mandatory?: boolean; 
     ShowIf?: string;
     Value?: any;
+    Visible?: boolean;
     [key: string]: any;
 }
 

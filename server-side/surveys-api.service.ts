@@ -30,7 +30,10 @@ export class SurveyApiService {
         // Create Survey table
         const createSurveyTable = await this.papiClient.addons.data.schemes.post({
             Name: SURVEYS_TABLE_NAME,
-            Type: 'meta_data',
+            SyncData: {
+                Sync: true
+            },
+            Type: 'meta_data'
         });
         
         // Create Survey draft table
@@ -332,25 +335,25 @@ export class SurveyApiService {
         return promise;
     }
     
-    async restoreToLastPublish(query: any): Promise<SurveyTemplate> {
-        const surveyTemplatekey = query['key'];
+    // async restoreToLastPublish(query: any): Promise<SurveyTemplate> {
+    //     const surveyTemplatekey = query['key'];
 
-        if (surveyTemplatekey) {
-            let survey = await this.getSurvey(surveyTemplatekey, SURVEYS_TABLE_NAME);
+    //     if (surveyTemplatekey) {
+    //         let survey = await this.getSurvey(surveyTemplatekey, SURVEYS_TABLE_NAME);
 
-            // In case that the survey was never published.
-            if (!survey) {
-                survey = await this.getSurvey(surveyTemplatekey, DRAFT_SURVEYS_TABLE_NAME);
-                return this.publishSurvey(survey);
-            } else {
-                const surveyCopy = JSON.parse(JSON.stringify(survey));
-                await this.hideSurvey(surveyCopy, DRAFT_SURVEYS_TABLE_NAME);
-                return surveyCopy;
-            }
-        }
+    //         // In case that the survey was never published.
+    //         if (!survey) {
+    //             survey = await this.getSurvey(surveyTemplatekey, DRAFT_SURVEYS_TABLE_NAME);
+    //             return this.publishSurvey(survey);
+    //         } else {
+    //             const surveyCopy = JSON.parse(JSON.stringify(survey));
+    //             await this.hideSurvey(surveyCopy, DRAFT_SURVEYS_TABLE_NAME);
+    //             return surveyCopy;
+    //         }
+    //     }
         
-        return Promise.reject(null);
-    }
+    //     return Promise.reject(null);
+    // }
 
     async publishSurvey(survey: SurveyTemplate): Promise<SurveyTemplate> {
         let res: SurveyTemplate | null = null;

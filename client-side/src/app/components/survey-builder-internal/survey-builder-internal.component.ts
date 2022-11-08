@@ -7,6 +7,7 @@ import { ValidationService } from 'src/app/services/validation.service';
 import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
 import { NavigationService } from '../../services/navigation.service';
 import { SurveyTemplate, SurveyTemplateSection } from "shared";
+import { IPepMenuItemClickEvent, PepMenuItem } from '@pepperi-addons/ngx-lib/menu';
 
 export interface ISurveyRuntimeHostObject {
     // surveyParams: any;
@@ -53,6 +54,10 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
 
     protected isGrabbing = false;
     protected selectedSection: SurveyTemplateSection = null;
+    protected pepMenuItems: Array<PepMenuItem> = null;
+    protected isSubmitted = false;
+    protected surveyName = '';
+
     private readonly _destroyed: Subject<void>;
 
     constructor(
@@ -72,8 +77,9 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     }
 
     private setSurveyDataProperties(survey: SurveyTemplate) {
-        if (survey && this.sectionsContainer?.nativeElement) {
-            
+        if (survey) {
+            this.isSubmitted = survey?.Status === 'Submitted';
+            this.surveyName = survey?.Name;
         }
     }
 
@@ -81,7 +87,7 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         const addonUUID = this.navigationService.addonUUID;
         // This is survey key if it's runtime an if not it's the survey template key (for builder)
         const key = this.hostObject?.pageParameters?.survey_key || this.route?.snapshot?.params['survey_template_key'] || '';
-debugger;
+
         console.log((this.editMode ? 'surveyTemplateKey - ' : 'surveyKey - ') + key);
         if (key.length > 0) {
             const queryParams = this.route?.snapshot?.queryParams;
@@ -92,21 +98,35 @@ debugger;
                 this.screenSize = size;
             });
             
-            if (this.editMode) {
-                this.surveysService.sectionsChange$.pipe(this.getDestroyer()).subscribe((sections: SurveyTemplateSection[]) => {
-                    this._sectionsSubject.next(sections);
-                });
-    
-                this.surveysService.surveyDataChange$.pipe(this.getDestroyer()).subscribe((survey: SurveyTemplate) => {
-                    this.setSurveyDataProperties(survey);
-                });
+            this.surveysService.sectionsChange$.pipe(this.getDestroyer()).subscribe((sections: SurveyTemplateSection[]) => {
+                this._sectionsSubject.next(sections);
+            });
+            
+            this.surveysService.surveyLoad$.subscribe((survey: SurveyTemplate) => {
+                this.setSurveyDataProperties(survey);
+            });
 
+            this.surveysService.surveyDataChange$.subscribe((survey: SurveyTemplate) => {
+                this.setSurveyDataProperties(survey);
+            });
+
+            if (this.editMode) {
                 this.surveysService.selectedSectionChange$.pipe(this.getDestroyer()).subscribe((section: SurveyTemplateSection) => {
                     this.selectedSection = section;
                 });
 
                 this.surveysService.isGrabbingChange$.pipe(this.getDestroyer()).subscribe((value: boolean) => {
                     this.isGrabbing = value;
+                });
+            } else {
+
+
+                // Load menu items.
+                this.pepMenuItems = new Array<PepMenuItem>();
+                this.pepMenuItems.push({
+                    key: 'key',
+                    text: 'test',
+                    type: 'regular'
                 });
             }
         } else {
@@ -127,5 +147,17 @@ debugger;
 
     isValidSection(index){
         return this.validationService?.failedOnValidation?.includes('section'+(index+1));
+    }
+
+    onCloseSurvey() {
+        // TODO: Back.
+    }
+
+    onChangeSurveyStatus() {
+        this.surveysService.onSurveyStatusChange(this.isSubmitted ? 'In Creation' : 'Submitted');
+    }
+
+    onMenuItemClicked(event: IPepMenuItemClickEvent) {
+
     }
 }

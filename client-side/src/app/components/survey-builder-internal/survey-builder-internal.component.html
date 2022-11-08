@@ -1,7 +1,27 @@
-<div #sectionsCont [ngClass]="{ 'editable-state': editMode }" cdkDropListGroup class="sections-container" cdkDropList (cdkDropListDropped)="onSectionDropped($event)" >
-    <section *ngFor="let section of sections$ | async; let i=index;" [hasError]="isValidSection(i)"
-        [sectionsQuestionsDropList]="sectionsQuestionsDropList" [index]="i" [title]="section.Title" [description]="section.Description" [isActive]="section === selectedSection"
-        [questions]="section.Questions" [showIf]="section.ShowIf" [screenSize]="screenSize" [editable]="editMode"
-        >
-    </section>
-</div>
+<pep-page-layout [addPadding]="true">
+    <ng-container pep-top-area *ngIf="!editMode">
+        <pep-top-bar class="survey-top-bar" [inline]="true" >
+            <div header-start-content>
+                <label class="body-xl title">{{surveyName}}</label>
+            </div>
+            <div header-end-content>
+                <!-- <pep-menu class="pep-spacing-element" [items]="pepMenuItems" (menuItemClick)="onMenuItemClicked($event)"  sizeType="sm">
+                </pep-menu> -->
+                <pep-button [value]="('Close' | translate)" class="pep-spacing-element" (buttonClick)="onCloseSurvey()" sizeType="sm"></pep-button>
+                <pep-button [value]="isSubmitted ? ('Edit' | translate) : ('Submit' | translate)" class="pep-spacing-element" styleType="strong"  sizeType="sm"
+                    [iconName]="isSubmitted ? 'system_edit' : ''" [iconPosition]="'start'"
+                    (buttonClick)="onChangeSurveyStatus()"></pep-button>
+            </div>
+        </pep-top-bar>
+    </ng-container>
+
+    <ng-container pep-main-area>
+        <div #sectionsCont [ngClass]="{ 'editable-state': editMode }" cdkDropListGroup class="sections-container" cdkDropList (cdkDropListDropped)="onSectionDropped($event)" >
+            <section *ngFor="let section of sections$ | async; let i=index;" [hasError]="isValidSection(i)"
+                [sectionsQuestionsDropList]="sectionsQuestionsDropList" [index]="i" [title]="section.Title" [description]="section.Description" [isActive]="section === selectedSection"
+                [questions]="section.Questions" [showIf]="section.ShowIf" [screenSize]="screenSize" [editable]="editMode"
+                >
+            </section>
+        </div>
+    </ng-container>
+</pep-page-layout>

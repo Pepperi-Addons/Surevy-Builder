@@ -54,3 +54,7 @@
     }
 }
 
+::ng-deep.group-buttons-container{
+    margin-bottom:  ngx-variables.$spacing-lg;
+}
+

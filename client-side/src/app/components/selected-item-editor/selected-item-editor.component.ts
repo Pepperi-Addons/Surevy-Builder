@@ -38,6 +38,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     }
 
     onQuestionValueChanged(value: any): void {
+        debugger; //dfgdfg
         // TODO: implement
     }
 
@@ -89,7 +90,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
         event.forEach(opt => {
             options.push({key: opt.option.key, value: opt.option.value});
         });
-        debugger;
+
         this.question['OptionalValues'] = options;
         this.surveysService.updateQuestionFromEditor(this.question);
     }

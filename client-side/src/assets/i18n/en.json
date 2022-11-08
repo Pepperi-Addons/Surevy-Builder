@@ -2,6 +2,7 @@
     "SURVEYS_MANAGER": {
         "MAIN_HEADER": "Survey Builder",
         "ADD_SURVEY": "Add a Survey",
+        "MANAGE_EVENTS": "Manage events",
         "MAIN_EXPLANATION": "Create new survey with our drag & drop builder that gives you total control of each detail of your survey.",
         "SECONDARY_HEADER": "Surveys",
         "GRID_HEADER": {

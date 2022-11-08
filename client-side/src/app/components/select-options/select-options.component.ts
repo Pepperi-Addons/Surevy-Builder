@@ -5,6 +5,7 @@ import { ValidationService } from 'src/app/services/validation.service';
 import { SurveyOptionStateType } from '../../model/survey.model';
 import { SurveyTemplateQuestion } from 'shared';
 import { CdkDragDrop, CdkDragEnd, CdkDragStart, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import { PepButton } from '@pepperi-addons/ngx-lib/button';
 
 class SelectOption {
     state: SurveyOptionStateType; 
@@ -40,6 +41,7 @@ export class QuestionSelectOptionsComponent implements OnInit {
 
     selectOptions: Array<SelectOption> = [];
     optionsDropList = [];
+    public numOfColumn : Array<PepButton> = [];
 
     constructor(
         private surveysService: SurveysService,
@@ -47,8 +49,11 @@ export class QuestionSelectOptionsComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-      
-       
+        this.numOfColumn = [
+            { key: '1', value: '1', callback: (event: any) => this.onQuestionEditorFieldChanged('selectionColumns',event.source.key)},
+            { key: '2', value: '2', callback: (event: any) => this.onQuestionEditorFieldChanged('selectionColumns',event.source.key)},
+            { key: '3', value: '3', callback: (event: any) => this.onQuestionEditorFieldChanged('selectionColumns',event.source.key)}
+        ] 
     }
 
     setOptionalValues(){
