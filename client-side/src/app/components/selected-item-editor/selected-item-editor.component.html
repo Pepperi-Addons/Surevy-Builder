@@ -1,0 +1,132 @@
+<pep-side-bar position="end" [ignoreResize]="true" (stateChange)="onSidebarEndStateChange($event)">
+    <div header-content class="side-bar-title ellipsis">
+        <div class=" title-xl ellipsis" [title]="">
+            <ng-container [ngSwitch]="question?.Type">
+                <ng-container *ngSwitchCase="'short-text'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.SHORT_TEXT' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'multi-text'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.MULTI_TEXT' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'single-selection-dropdown'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.SINGLE_SELECT' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'multiple-selection-dropdown'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.MULTI_SELECT' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'boolean-toggle'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.BOOLEAN' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'number'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.NUMBER' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'decimal'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.DECIMAL' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'currency'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.CURRENCY' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'percentage'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.PRECENTAGE' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'date'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.DATE' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'datetime'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.DATE_TIME' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.SECTION' | translate }}</span>
+                </ng-container>
+            </ng-container>
+            
+        </div>
+    </div>
+    <div class="survey-details">
+        <ng-container *ngIf="surveysService.selectedItemType === 'section'; then sectionEditorTemplate; else questionEditorTemplate"></ng-container>
+
+        <div class="pep-actions" *ngIf="surveysService.selectedItemType !== 'none'">
+            <pep-button value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DUPLICATE' | translate}}" 
+                        iconName="system_copy" iconPosition="end"
+                        (buttonClick)="onItemDuplicateClicked()"></pep-button>
+            <pep-button value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE' | translate}}" 
+                        iconName="system_bin" iconPosition="end" classNames="caution"
+                        (buttonClick)="onItemDeleteClicked()"></pep-button>
+        </div>
+    </div>
+</pep-side-bar>
+
+<ng-template #sectionEditorTemplate>
+    <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY' | translate" [mandatory]="true"
+            [value]="section?.Key || ''" (valueChange)="onSectionEditorFieldChanged('Key',$event)">
+    </pep-textbox>
+    <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SECTION_TITLE' | translate" [mandatory]="true"
+            [value]="section?.Title || ('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER' | translate)" (valueChange)="onSectionEditorFieldChanged('Title',$event)">
+    </pep-textbox>
+    <pep-textarea 
+            [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2"
+            [value]="section?.Description || ''" (valueChange)="onSectionEditorFieldChanged('Description',$event)">
+    </pep-textarea>
+
+    <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SECTION_OPTION" | translate}}</label>
+</ng-template>
+
+<ng-template #questionEditorTemplate>
+    <ng-container *ngIf="surveysService.selectedItemType === 'question' && question">
+        <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY' | translate" [mandatory]="true"
+            [value]="question?.Key || ''" (valueChange)="onQuestionEditorFieldChanged('Key',$event)">
+        </pep-textbox>
+        <pep-textarea [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_TITLE' | translate" [rowSpan]="1.5" [mandatory]="true"
+            (valueChange)="onQuestionEditorFieldChanged('Title',$event)" [value]="question?.Title || ''">
+        </pep-textarea>
+        <pep-textarea 
+            [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2"
+            [value]="question?.Description || ''" (valueChange)="onQuestionEditorFieldChanged('Description',$event)">
+        </pep-textarea>
+        
+        <ng-container *ngIf="question?.Type == 'multiple-selection-dropdown' ||
+                             question?.Type == 'single-selection-dropdown' ||
+                             question?.Type == 'single-selection-radiobuttons' ||
+                             question?.Type == 'multiple-selection-checkboxes'">
+            <question-select-options [question]="question" (questionValueChanged)="onSelectQuestionFieldChanged($event)" (optionChanged)="selectOptionChanged($event)"></question-select-options>
+        </ng-container>
+
+        <ng-container *ngIf="question?.Type == 'boolean-toggle'">
+            <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.TITLE" | translate}}</label>
+            <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.TRUE' | translate" [mandatory]="'true'"
+                         [value]="question?.True || ''" (valueChange)="onQuestionEditorFieldChanged('True',$event)">
+            </pep-textbox>
+            <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.FALSE' | translate" [mandatory]="'true'"
+                         [value]="question?.False || ''" (valueChange)="onQuestionEditorFieldChanged('False',$event)">
+        </pep-textbox>
+        </ng-container>
+        <ng-container *ngIf="question?.Type == 'decimal'">
+            <pep-slider [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DECIMAL.NUMBER_AFTER' | translate" 
+                   [hint]="question?.Value?.toString() || '0'" 
+                   [minValue]="0" 
+                   [maxValue]="6"
+                   [disabled]="false" 
+                   [value]="question?.Value"
+                   [background]="'RGBA(0,0,0,50%)'"
+                   (inputChange)="onQuestionEditorFieldChanged('Value',$event)">
+           </pep-slider>
+        </ng-container>
+        
+        <div class="showIfCont">
+            <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
+            <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
+                                iconName="system_filter_2" iconPosition="end"
+                                (buttonClick)="openShowIfDialog()"></pep-button>
+        </div>
+
+        <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>
+        
+        <pep-textbox *ngIf="question?.Type === 'short-text' || question?.Type === 'long-text'"
+            [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAX_CHARACTERS' | translate" [type]="'int'"
+            [value]="question?.MaxCharacters || ''" (valueChange)="onQuestionEditorFieldChanged('MaxCharacters',$event)">
+        </pep-textbox>
+       
+        <pep-checkbox class="checkbox-no-background" [value]="question?.Mandatory || false" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAKE_MANDATORY' | translate" 
+            [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('Mandatory',$event)"></pep-checkbox>
+    </ng-container>
+</ng-template>

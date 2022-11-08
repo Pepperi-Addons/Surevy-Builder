@@ -1,0 +1,60 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables' as ngx-variables;
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as ngx-functions;
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
+
+// :host {
+//     margin-bottom: ngx-variables.$spacing-lg;
+// }
+
+.add-content-button{
+    margin-bottom: ngx-variables.$spacing-lg;
+}
+.select-option-container {
+    min-height: 2.5rem;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    
+    padding-top: ngx-variables.$spacing-sm;
+    border-radius: ngx-variables.$border-radius-md;
+    padding-inline: ngx-variables.$spacing-sm;
+    margin-bottom: ngx-variables.$spacing-sm;
+    @include ngx-mixins.state-regular-default(true);
+    
+    .actions {
+        display: inline-flex;
+        gap: ngx-variables.$spacing-xs;
+    }
+    
+    .editorCont{
+        padding-top: ngx-variables.$spacing-sm;
+        grid-column: 1 / 4;
+        grid-row: 2 / 4;
+
+        .script-button {
+            margin-bottom: ngx-variables.$form-spacing;
+        }
+    }
+
+    .title-container {
+        margin-top: .15rem;
+        overflow-x: hidden;
+        margin-inline: ngx-variables.$spacing-sm;
+    
+        .title {
+            display: block;
+        }
+    }
+
+}
+
+.checkbox-no-background {
+    &.withPaddingBot{
+        padding-bottom: ngx-variables.$spacing-sm;
+    }
+}
+
+::ng-deep.group-buttons-container{
+    margin-bottom:  ngx-variables.$spacing-lg;
+}
+

@@ -1,0 +1,38 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
+
+:host {
+    display: block;
+    // padding: variables.$content-padding;
+}
+
+.survey-top-bar {
+    display: grid;
+    justify-items: center;
+    margin-top: variables.$top-bar-spacing-top;
+
+    ::ng-deep.pep-top-bar-container {
+        width: 100%;
+        max-width: 832px;
+    }
+}
+
+.sections-container {
+    width: 100%;
+    margin: 0 auto;
+    // padding-top: variables.$content-padding;
+    padding-bottom: variables.$content-padding;
+    position: relative;
+    display: grid;
+    // gap: variables.$content-padding;
+    max-width: 560px;
+
+    // Keep the spacing when grabbing & not in edit mode cause the seperator of the add section button is not visible.
+    &:not(.editable-state) {
+        gap: variables.$content-padding;
+    }
+    
+    // This css is only for edit mode!!!
+    &.editable-state {
+        padding-top: variables.$content-padding;
+    }
+}

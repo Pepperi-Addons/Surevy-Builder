@@ -1,0 +1,36 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
+@import '../../../mixins.scss';
+
+pep-side-bar {
+    @include side-bar-title();
+}
+
+.survey-details {
+    display: flex;
+    flex-direction: column;
+    padding: variables.$spacing-lg 0;
+
+    .title {
+        margin: 0;
+    }
+
+    .checkbox-no-background {
+        &.withPadding{
+            padding-top: variables.$spacing-sm;
+        }
+    }
+
+    pep-slider{
+        margin: variables.$spacing-xs 0 variables.$spacing-lg;
+    }
+
+    .showIfCont{
+        margin-bottom: variables.$spacing-md;
+    }
+    .pep-actions {
+        margin-top: variables.$spacing-sm;   
+        display: flex;
+        flex-direction: column;
+        gap: variables.$spacing-sm;
+    }
+}

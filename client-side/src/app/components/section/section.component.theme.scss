@@ -1,0 +1,36 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins';
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions';
+@import '../../../mixins.scss';
+
+.section-area {
+    // This css is only for edit mode!!!
+    &.editable-state {
+
+        .section-container {
+            background: functions.get-pep-color(color-system-primary-invert, color-base);
+            
+            @include mixins.state-regular-default(true);
+            box-shadow: functions.get-pep-shadow(shadow-xs, regular);
+
+            &.error-in-section {
+                @include error-border();
+            }
+
+            &.active-section {
+                @include mixins.focus();
+
+                &.error-in-section {
+                    @include error-border(true);
+                }
+            }
+
+            .sequence-number {
+                @include mixins.state-weak-default();
+            }
+        }
+
+        .show-if-badge {
+            @include show-if-badge();
+        }
+    }
+}

@@ -1,0 +1,63 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions';
+@import '../../../mixins.scss';
+
+:host {
+    height: inherit;
+}
+
+.survey-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    height: 100%;
+    width: 100%;
+
+    @include add-padding();
+
+    pep-side-bar {
+        @include side-bar-title();
+    }
+
+    .survey-details {
+        margin-top: variables.$spacing-lg;    
+
+        ::ng-deep.streched {
+            width: 100%;
+            max-width: none;
+        }
+
+        .title {
+            margin: 0;
+        }
+
+        .pep-actions{
+            margin-top: variables.$spacing-sm;   
+            display: flex;
+            flex-direction: column;
+            gap: variables.$spacing-sm;
+        }
+    }
+
+    .main-area-container {
+        min-height: 100%;
+        display: grid;
+        grid-template-rows: auto 1fr;
+
+        .header-container {
+            display: flex;
+            position: sticky;
+            top: 0;
+            z-index: variables.$z-index-medium;
+            height: 3rem;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 variables.$spacing-xs;
+
+            .header-end {
+                display: flex;
+                justify-content: flex-end;
+            }
+        } 
+
+    }
+}

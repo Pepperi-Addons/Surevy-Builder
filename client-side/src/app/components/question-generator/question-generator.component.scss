@@ -1,0 +1,42 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
+@import '../../../mixins.scss';
+
+.question-container {
+    // The placeholder of the drop area when dragging a section.
+    &.cdk-drag-placeholder {
+        opacity: 0.5;
+    }
+    
+    .add-separator-container {
+        @include add-separator-container();
+    }
+
+    .question-with-sequence-container {
+        display: flex;
+        gap: variables.$spacing-sm;
+        padding-inline-start: variables.$spacing-sm;
+        // margin-top: variables.$content-margin;
+        
+        // Keep the spacing when grabbing & not in edit mode cause the seperator of the add section button is not visible.
+        &:not(.editable-state) {
+            margin-top: variables.$content-padding;
+        }
+
+        // This css is only for edit mode!!!
+        &.editable-state {
+            @include sequence-number();
+        
+            .question-field-container {
+                border-radius: variables.$border-radius-md;
+                padding: variables.$content-padding;
+            }
+        }  
+        
+        .question-field-container {
+            display: grid;
+            gap: variables.$spacing-sm;
+            height: 100%;
+            width: 100%;
+        }
+    }
+}

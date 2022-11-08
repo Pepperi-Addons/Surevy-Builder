@@ -1,0 +1,54 @@
+<pep-page-layout class="surveys-container" [addPadding]="true">
+    <ng-container pep-top-area>
+        <pep-top-bar [title]="('SURVEYS_MANAGER.MAIN_HEADER' | translate)">
+            <!-- <div header-start-content>
+                <pep-button  class="back-button pull-left flip pep-spacing-element" iconName="arrow_left_alt" (buttonClick)="navigateSurevyPage();"></pep-button>
+            </div> -->
+            <div header-end-content>
+            </div>
+        </pep-top-bar>
+    </ng-container>
+
+    <ng-container pep-main-area>
+        <div class="add-on-width">
+            <div class="surveyExplanation">
+                <span class="body-md">{{ 'SURVEYS_MANAGER.MAIN_EXPLANATION' | translate }}</span>
+            </div>
+            <pep-generic-list [dataSource]="dataSource" [actions]="actions" [inline]="true" [showTopBar]="true"
+                              [showSearch]="true" [supportSorting]="true" [uuidMapping]="'Key'"
+                              [title]="'SURVEYS_MANAGER.SECONDARY_HEADER' | translate" 
+                              (fieldClick)="onSurveyClicked($event)">
+                    <ng-container right-buttons>
+                        <pep-button class="pep-spacing-element" [value]="'SURVEYS_MANAGER.ADD_SURVEY' | translate" [sizeType]="'sm'"
+                            [styleType]="'strong'" (buttonClick)="onAddSurveyClicked()">
+                        </pep-button>
+                        <!-- <pep-button class="pep-spacing-element" [value]="'SURVEYS_MANAGER.MANAGE_EVENTS' | translate" [sizeType]="'sm'"
+                            [styleType]="'strong'" (buttonClick)="onAddSurveyScriptClicked()">
+                        </pep-button> -->
+                    </ng-container>
+            </pep-generic-list>
+    <!-- <ng-container *ngIf="!hasSurevy">
+        <pep-top-bar class="main-top-header" [inline]="true">
+            <div header-end-content>
+                <ng-container *ngTemplateOutlet="topBarEnd"></ng-container>
+            </div>
+        </pep-top-bar>
+        <div class="PagesNotFoundMsg">
+                <div class="leaf-background">
+                    <img [src]="imagesPath + 'brand-leaf-skiny.svg'">
+                    <img [src]="imagesPath + 'brand-leaf-round.svg'">
+                </div>
+                <h2>{{ "SURVEYS_MANAGER.PAGES_HEADER" | translate}}</h2>
+                <span>{{ "SURVEYS_MANAGER.NO_PAGES_MSG" | translate}}</span>
+        </div>
+    </ng-container> -->
+        </div>
+    </ng-container>
+</pep-page-layout>
+
+<ng-template #topBarEnd>
+    <!-- <pep-menu class="pep-spacing-element" [items]="[{key: 'import', text: 'ACTIONS.IMPORT' | translate }]" [sizeType]="'sm'" (menuItemClick)="onMenuItemClicked($event)">
+    </pep-menu> -->
+    <pep-button class="pep-spacing-element" [value]="'SURVEY_MANAGER.A_SURVEY' | translate" [sizeType]="'sm'" [styleType]="'strong'" >
+    </pep-button>
+</ng-template>

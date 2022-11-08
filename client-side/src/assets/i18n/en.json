@@ -1,10 +1,148 @@
-{
-    "SURVEY_MANAGER": {
-        "MAIN_HEADER": "Surevy Builder",
-        "A_SURVEY": "Add a Survey",
+{    
+    "SURVEYS_MANAGER": {
+        "MAIN_HEADER": "Survey Builder",
+        "ADD_SURVEY": "Add a Survey",
+        "MANAGE_EVENTS": "Manage events",
         "MAIN_EXPLANATION": "Create new survey with our drag & drop builder that gives you total control of each detail of your survey.",
         "SECONDARY_HEADER": "Surveys",
-        "PAGES_HEADER": "You haven't used the survey builder yet",
-        "NO_PAGES_MSG": "Survey not found"
+        "GRID_HEADER": {
+            "NAME": "Name",
+            "DESCRIPTION": "Description",
+            "CREATIONDATE": "Creation Date",
+            "DATERANGE": "Date Range",
+            "MODIFICATIONDATE": "Modification Date",
+            "STATUS": "Status",
+            "PUBLISHED": "Published",
+            "DRAFT": "Draft",
+            "ACTIVE": "Active"           
+        },
+        "DELETE_SURVEY":{
+            "TITLE": "Delete survey",
+            "MSG": "Are you sure you want to delete this survey ?"
+        }
+    },
+    "SURVEY_MANAGER": {
+        "PREVIEW_TITLE": "Preview",
+        "PREVIEW_CLICK_HERE": "Click here to edit",
+        "SECTION_TITLE_PLACEHOLDER": "Type your section title here...",
+        "QUESTION_TYPE_NOT_SUPPORTED": "This question type is not supported",
+        "QUESTION_TITLE_PLACEHOLDER": "Type your question in the side panel",
+        "SURVEY_EDITOR": {
+            "NAME": "Survey Name",
+            "NAME_PLACEHOLDER": "Name of the survey",
+            "DESCRIPTION": "Description",
+            "ACTIVATE_TITLE": "Published",        
+            "ACTIVATE": "Activate",            
+            "ACTIVE_DATE_RANGE_TITLE": "Active date range",
+            "ACTIVE_FROM_DATE": "Start Date",
+            "ACTIVE_TO_DATE": "End Date",
+            "ADD_ITEM": "Add Items",
+            "SECTION": "Section",
+            "ADD_SECTION": "Add a Section",
+            "ADD_QUESTION": "Add a Question",            
+            "RIGHT_SIDE": {
+                "TYPES":{
+                    "SECTION": "Section",
+                    "SHORT_TEXT": "Short Text",
+                    "LONG_TEXT": "Long Text",
+                    "SINGLE_SELECT": "Single Select",
+                    "MULTI_SELECT": "Multi Select",
+                    "BOOLEAN": "Boolean",
+                    "NUMBER": "Number",
+                    "DECIMAL": "Decimal",
+                    "CURRENCY": "Currency",
+                    "PRECENTAGE": "Percentage",
+                    "DATE": "Date",
+                    "DATE_TIME": "Date Time"
+                },
+                "SECTION_HEADER": "Section",
+                "KEY": "Key",
+                "KEY_NAME": "Key Name",
+                "SECTION_TITLE": "Section Title",
+                "SECTION_NAME": "Section Name",
+                "QUESTION_TITLE": "Type your question here...",
+                "DESCRIPTION": "Description",
+                "SHOW_IF": "Show If",
+                "QUESTION_OPTION": "Question Options",
+                "SECTION_OPTION": "Section Options",
+                "MAX_CHARACTERS": "Max Characters",
+                "MAX_CHARACTERS_PLACEHOLDER": "Empty for no max",
+                "MAKE_MANDATORY": "Make Mandatory",
+                "ADD_NONE_OPTION": "Add \"None\" option",
+                "ACTIONS": {
+                    "ADD_LOGIC": "Add Logic",
+                    "DUPLICATE": "Duplicate",
+                    "DELETE": "Delete"
+                },
+                "SELECT_OPTION": {
+                    "TITLE": "Select Options",
+                    "PLACEHOLDER_TEXT": "Placeholder Text",
+                    "PLACEHOLDER_TEXT_DEFAULT": "Please select an option...",
+                    "ADD_KEY": "Add Key",
+                    "TYPE_YOUR_OPTION": "Type your option here...",
+                    "DEFAULT_KEY_PREFIX": "GLX-",
+                    "ADD_ITEM": "Add item to Selection"
+                },
+                "BOOLEAN": {
+                    "TITLE": "Boolean Options",
+                    "TRUE": "True",
+                    "FALSE": "False"
+                },
+                "DECIMAL":{
+                    "NUMBER_AFTER": "Numbers after the dot"
+                }
+            }
+        }
+    },
+    "ACTIONS": {
+        "CANCEL": "Cancel",
+        "CONTINUE": "Continue",
+        "DELETE": "Delete",
+        "EDIT": "Edit",
+        "SAVE": "Save",
+        "PREVIEW": "Preview",
+        "PUBLISH": "Publish",
+        "IMPORT": "Import a survey",
+        "EXPORT": "Export a survey",
+        "RESTORE_TO_LAST_PUBLISH": "Restore to last publish"
+    },
+    "MESSAGES": {
+        "TITLE_NOTICE": "Notice",
+        "OPERATION_SUCCESS": "Operation success.",
+        "SURVEY_SAVED": "Survey Saved",
+        "SURVEY_SAVE_FAILED": "Survey save Failed",
+        "SURVEY_PUBLISHED": "Survey Saved and Published",
+        "SURVEY_RESTORED": "Survey Restored"
+    },
+
+    "VALIDATION": {
+        "FAILED_MSG": "Validation failed",
+        "KEY_MISSING": "Key is missing",
+        "NAME_MISSING": "Name is missing",
+        "QUESTION_MISSING": "Question is missing",
+        "VALUE_MISSING": "Value is missing",
+        "USING_SAME_KEY": "Keys must be unique",
+        "UNIQUE_KEY_ERROR": "Can’t save survey for a unique key error",
+        "UNIQUE_KEY_ERROR2": "Please use a unique key value"
+    },
+
+    "QUESTION_MENU": {
+        "SHORT_TEXT": "Short Text",
+        "LONG_TEXT": "Long Text",
+        "MULTIPLE_SELECTION_DROPDOWN": "Multiple Select",
+        "SINGLE_SELECTION_DROPDOWN": "Single Select",
+        "BOOLEAN_TOGGLE": "Yes/No",
+        "NUMBER": "Number",
+        "DECIMAL": "Decimal",
+        "CURRENCY": "Currency",
+        "PERCENTAGE": "Percentage",
+        "DATE": "Date",
+        "DATE_TIME": "Date Time"
+    },
+    "DIALOGS": {
+        "SHOW_IF": {
+            "TITLE": "Show If",
+            "OK": "Ok"
+        }
     }
 }

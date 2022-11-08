@@ -1,0 +1,95 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins';
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions';
+
+//**************************************************************************
+// This file contains all mixins.
+//**************************************************************************
+@mixin add-padding() {
+    .add-padding {
+        padding-inline: variables.$content-padding;
+
+        @media (max-width: variables.$screen-max-size-xs) {
+            padding-inline: 0;
+        }
+    }
+}
+
+@mixin add-separator-container() {
+    max-width: 100%;
+    height: variables.$content-margin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: variables.$border-radius-md;
+    gap: variables.$spacing-sm;
+
+    .add-button {
+        position: relative;
+        display: none;
+    }
+
+    &:not(.is-grabbing) {
+        &.state-open .add-button,
+        &:hover .add-button {
+            display: block;
+        }
+    }
+}
+
+@mixin side-bar-title() {
+    .side-bar-title {
+        display: flex;
+        padding-top: variables.$spacing-sm; 
+        
+        .back-button {
+            margin-inline-end: variables.$spacing-sm;
+        }
+    }
+}
+
+@mixin sequence-number() {
+    .sequence-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+
+        @include mixins.state-weak-default();
+    }
+}
+
+@mixin error-border($isActive: false) {
+    @if $isActive { 
+        border: solid 0.125rem functions.get-pep-color(color-system-caution, color-base);
+    } @else {
+        border: solid 0.125rem functions.get-pep-color(color-system-caution, color-tran-70);
+    }
+}
+
+@mixin show-if-badge() {
+    @include mixins.pep-badge();
+    position: absolute;
+    right: 0;
+    
+    &.rtl-direction {
+        right: unset;
+        left: 0;
+    }
+
+    .mat-icon {
+        right: 0;
+        height: 2.5rem;
+        width: 2.5rem;
+        margin-top: -1rem;
+        margin-right: -1.25rem;
+
+        ::ng-deep.svg-icon {
+            fill: functions.get-pep-color(color-system-primary-invert, color-base);
+            width: 1.75rem;
+            height: 1.75rem;
+        }
+    }
+}

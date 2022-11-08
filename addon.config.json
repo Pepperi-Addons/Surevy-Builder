@@ -1,23 +1,24 @@
 {
   "AddonUUID": "cf17b569-1af4-45a9-aac5-99f23cae45d8",
-  "AddonVersion": "0.0.1",
+  "AddonVersion": "0.5.0",
   "DebugPort": 4500,
   "WebappBaseUrl": "https://app.sandbox.pepperi.com",
   "DefaultEditor": "main",
   "Endpoints": [
     "installation.ts",
-    "api.ts"
+    "api.ts",
+    "internal_api.ts"
   ],
   "Editors": [
     "main"
   ],
   "PublishConfig": {
-    "ClientStack": "ng10",
+    "ClientStack": "ng14",
     "Editors": [
       {
-        "ParentPackageName": "Pages",
-        "PackageName": "Surevy_Builder",
-        "Description": "Surevy Builder"
+        "ParentPackageName": "Surveys",
+        "PackageName": "surveys",
+        "Description": "Survey Builder"
       }
     ],
     "Dependencies": {},

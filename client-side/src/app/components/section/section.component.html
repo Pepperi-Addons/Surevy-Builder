@@ -1,0 +1,43 @@
+<div class="section-area " [ngClass]="{ 'editable-state': editable }" 
+    cdkDrag [cdkDragDisabled]="!editable" [cdkDragData]="index" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)" 
+>
+    <survey-show-if-badge *ngIf="editable" [showIf]="showIf"></survey-show-if-badge>
+
+    <div class="section-container " [ngClass]="{ 'active-section': isActive && selectedQuestion === null, 'error-in-section': hasError }"  (mousedown)="onSectionClicked($event)">
+        <ng-container *ngIf="editable; then editableTitleTemplate; else runnerTitleTemplate"></ng-container>
+        <ng-template #editableTitleTemplate>
+            <survey-sequence-number cdkDragHandle [value]="index + 1"></survey-sequence-number>
+            <div class="titles-container" [ngClass]="{'withDesc': description?.length > 0 }">
+                <pep-field-title [label]="title !== '' ? title : ('SURVEY_MANAGER.SECTION_TITLE_PLACEHOLDER' | translate)"></pep-field-title> 
+                <span *ngIf="description?.length > 0" class="body-xs color-dimmed" title="{{ description }}">{{ description }}</span>
+            </div>
+        </ng-template>
+        <ng-template #runnerTitleTemplate>
+            <div class="titles-container pep-border-bottom" >
+                <label class="body-lg title">{{title}}</label> 
+                <span *ngIf="description?.length > 0" class="body-sm color-dimmed" title="{{ description }}">{{ description }}</span>
+            </div>
+        </ng-template>
+    </div>
+    
+    <div [id]="sectionContainerKeyPrefix" class="questions-wrapper "
+        cdkDropList
+        [cdkDropListConnectedTo]="sectionsQuestionsDropList"
+        (cdkDropListDropped)="onQuestionDropped($event)">
+        
+        <ng-container *ngFor="let question of questions; let i=index;">
+            <survey-question-generator [editable]="editable" [question]="question" [sequenceNumber]="(index + 1) + '.' + (i + 1)" 
+                [isActive]="isActive && selectedQuestion === question" 
+                (questionClick)="onQuestionClicked(i)" (addQuestionClick)="onAddQuestionClicked($event, i)"></survey-question-generator>
+        </ng-container>
+        
+    </div>
+
+    <div *ngIf="editable" class="add-separator-container" [ngClass]="{ 'is-grabbing': isGrabbing, 'state-open': isQuestionTypeMenuOpen  }">
+        <pep-button class="add-button" styleType="regular" sizeType="sm" iconName="number_plus" 
+            [value]="'SURVEY_MANAGER.SURVEY_EDITOR.ADD_SECTION' | translate" (buttonClick)="onAddSectionClicked()"></pep-button>
+
+        <survey-question-menu class="add-button" sizeType="sm" styleType="regular" (questionTypeClick)="onAddQuestionClicked($event)"
+            (onStateChange)="onStateChange($event)"></survey-question-menu>
+    </div>
+</div>
