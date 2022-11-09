@@ -33,7 +33,7 @@ export class QuestionMenuService {
                 },
                 {
                     key: `multiple-selection-dropdown`,
-                    text: 'Multiple Select',
+                    text: 'Multi Selection',
                     iconName: 'system_ok'
                 },
                 {
@@ -43,12 +43,12 @@ export class QuestionMenuService {
                 },
                 {
                     key: `multiple-selection-checkboxes`,
-                    text: 'Multiple Select Open',
-                    iconName: 'system_radio_btn'
+                    text: 'Checkbox',
+                    iconName: 'system_select'
                 },
                 {
                     key: `single-selection-radiobuttons`,
-                    text: 'Single Select Open',
+                    text: 'Radio Group',
                     iconName: 'system_radio_btn'
                 },
                 {
@@ -85,7 +85,17 @@ export class QuestionMenuService {
                     key: `datetime`,
                     text: 'Date Time',
                     iconName: 'time_datetime'
-                }
+                }//,
+                // {
+                //     key: `photo`,
+                //     text: 'Photo',
+                //     iconName: 'system_signature'
+                // },
+                // {
+                //     key: `signature`,
+                //     text: 'Signature',
+                //     iconName: 'system_signature'
+                // }
             ]
         } 
 

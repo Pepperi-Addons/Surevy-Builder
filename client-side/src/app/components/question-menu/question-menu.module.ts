@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { PepSizeDetectorModule } from '@pepperi-addons/ngx-lib/size-detector';
 import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
 
-import { PepIconRegistry, pepIconNumberDecimal, pepIconSystemOk, pepIconSystemSignature, pepIconTimeCal, pepIconTextShortText, pepIconTextLongText, pepIconSystemRadioBtn, pepIconNumberNumber, pepIconNumberPercent, pepIconNumberCoins, pepIconSystemBoolean, pepIconTimeDatetime } from '@pepperi-addons/ngx-lib/icon';
+import {pepIconSystemSelect, PepIconRegistry, pepIconNumberDecimal, pepIconSystemOk, pepIconSystemSignature, pepIconTimeCal, pepIconTextShortText, pepIconTextLongText, pepIconSystemRadioBtn, pepIconNumberNumber, pepIconNumberPercent, pepIconNumberCoins, pepIconSystemBoolean, pepIconTimeDatetime } from '@pepperi-addons/ngx-lib/icon';
 
 import { QuestionMenuComponent } from './question-menu.component';
 
@@ -16,6 +16,7 @@ const pepIcons = [
     pepIconNumberDecimal,
     pepIconSystemOk,
     pepIconSystemSignature,
+    pepIconSystemSelect,
     pepIconTextShortText,
     pepIconTextLongText,
     pepIconSystemRadioBtn,
