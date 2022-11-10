@@ -113,9 +113,13 @@
         </ng-container>
         
         <div class="showIfCont">
-            <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
+            <pep-checkbox class="checkbox-as-title" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF' | translate"
+                [value]="question?.IsShowIf || false" [renderTitle]="false" xAlignment="left"
+                (valueChange)="onQuestionEditorFieldChanged('IsShowIf',$event)">
+            </pep-checkbox>
+            <!-- <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label> -->
             <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
-                                iconName="system_filter_2" iconPosition="end"
+                                iconName="system_filter_2" iconPosition="end" [disabled]="!question?.IsShowIf"
                                 (buttonClick)="openShowIfDialog()"></pep-button>
         </div>
 

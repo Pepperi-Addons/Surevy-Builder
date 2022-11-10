@@ -697,8 +697,8 @@ export class SurveysService {
         dialogRef.afterClosed().subscribe({
             next: (res) => {                             
                 const selectedQuestion = this.getSelectedQuestion();
-
-                if (selectedQuestion) {
+                
+                if (selectedQuestion && res.query) {
                     selectedQuestion.ShowIf = JSON.stringify(res.query);
                 } 
             }     
