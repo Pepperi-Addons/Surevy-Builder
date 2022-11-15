@@ -94,10 +94,10 @@
         <ng-container *ngIf="question?.Type == 'boolean-toggle'">
             <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.TITLE" | translate}}</label>
             <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.TRUE' | translate" [mandatory]="'true'"
-                         [value]="question?.True || ''" (valueChange)="onQuestionEditorFieldChanged('True',$event)">
+                         [value]="question?.True || ('SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.YES' | translate)" (valueChange)="onQuestionEditorFieldChanged('True',$event)">
             </pep-textbox>
             <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.FALSE' | translate" [mandatory]="'true'"
-                         [value]="question?.False || ''" (valueChange)="onQuestionEditorFieldChanged('False',$event)">
+                         [value]="question?.False || ('SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.NO' | translate)" (valueChange)="onQuestionEditorFieldChanged('False',$event)">
         </pep-textbox>
         </ng-container>
         <ng-container *ngIf="question?.Type == 'decimal'">

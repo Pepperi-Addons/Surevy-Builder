@@ -86,7 +86,9 @@
                 "BOOLEAN": {
                     "TITLE": "Boolean Options",
                     "TRUE": "True",
-                    "FALSE": "False"
+                    "FALSE": "False",
+                    "YES": "Yes",
+                    "NO": "No"
                 },
                 "DECIMAL":{
                     "NUMBER_AFTER": "Numbers after the dot"

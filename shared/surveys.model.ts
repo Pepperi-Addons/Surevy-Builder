@@ -1,7 +1,11 @@
 import { AddonData } from "@pepperi-addons/papi-sdk";
 
-export const SURVEYS_TABLE_NAME = 'SurveysTemplate';
-export const DRAFT_SURVEYS_TABLE_NAME = 'SurveysTemplateDrafts';
+// export const SURVEYS_TABLE_NAME = 'Surveys';
+export const SURVEYS_TABLE_NAME = 'surveys';
+// export const SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplates';
+export const SURVEY_TEMPLATES_TABLE_NAME = 'surveyTemplates';
+// export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplatesDrafts';
+export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'surveyTemplatesDrafts';
 
 export const SURVEY_LOAD_EVENT_NAME = 'OnSurveyLoad';
 export const SURVEY_LOAD_CLIENT_EVENT_NAME = 'OnClientSurveyLoad';
@@ -23,8 +27,6 @@ export interface SurveyTemplate extends AddonData {
 
 // Temp need to remove it when will be integrated with papi-sdk
 export interface Survey extends AddonData {
-    // Generated UUID
-    Key?:string;
     // status keyword values (not free text)
     Status?:string;
     // unique ID - ?

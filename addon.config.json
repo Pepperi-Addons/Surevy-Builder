@@ -1,6 +1,6 @@
 {
   "AddonUUID": "cf17b569-1af4-45a9-aac5-99f23cae45d8",
-  "AddonVersion": "0.5.2",
+  "AddonVersion": "0.5.11",
   "DebugPort": 4500,
   "WebappBaseUrl": "https://app.sandbox.pepperi.com",
   "DefaultEditor": "main",
@@ -21,7 +21,10 @@
         "Description": "Survey Builder"
       }
     ],
-    "Dependencies": {},
+    "Dependencies": {
+      "survey": "0.0.14",
+      "cpi-data": "0.0.8"
+    },
     "CPISide": [
       "addon-cpi.ts"
     ]

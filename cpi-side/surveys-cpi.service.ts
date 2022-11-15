@@ -1,45 +1,56 @@
 import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
-import { SurveyTemplate, SURVEYS_TABLE_NAME, SurveyTemplateSection, SurveyStatusType } from 'shared';
+import { SurveyTemplate, SURVEY_TEMPLATES_TABLE_NAME, SurveyTemplateSection, SurveyStatusType, SURVEYS_TABLE_NAME } from 'shared';
 import { Survey, Answer } from 'shared';
 import { filter } from '@pepperi-addons/pepperi-filters';
 import config from '../addon.config.json';
 class SurveysService {
-    private readonly SURVEY_ADDON_UUID = 'dd0a85ea-7ef0-4bc1-b14f-959e0372877a';
+    // private readonly SURVEY_ADDON_UUID = 'dd0a85ea-7ef0-4bc1-b14f-959e0372877a';
+    private readonly UDC_ADDON_UUID = '122c0e9d-c240-4865-b446-f37ece866c22';
 
     constructor() {}
 
     private async getSurveyModel(client: IClient | undefined, surveyKey: string): Promise<Survey> {
-        // TODO: Implement this - Get the survey object
-        // const survey = await pepperi.api.adal.get({
-        //     addon: '', // surveys addon
-        //     table: 'Surveys',
-        //     key: surveyKey
-        // }); 
+        // TODO: Implement this - from Generic resource
         
-        const options = {
-            url: `addon-cpi/get_surveys_by_key?key=${surveyKey}`, //http://localhost:8088
-            client: client
-        }
+        // const options = {
+        //     url: `addon-cpi/get_surveys_by_key?key=${surveyKey}`, //http://localhost:8088
+        //     client: client
+        // }
         
-        const survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).get(options);
-        return survey.object;
+        // const survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).get(options);
+        // return survey.object;
+
+        const survey = await pepperi.api.adal.get({
+            addon: this.UDC_ADDON_UUID,
+            table: SURVEYS_TABLE_NAME,
+            key: surveyKey
+        });
+        return survey.object as Survey;
     }
 
     private async setSurveyModel(client: IClient | undefined, survey: Survey): Promise<Survey> {
-        const options = {
-            url: `addon-cpi/surveys`,
-            body: survey,
-            client: client
-        }
+        // const options = {
+        //     url: `addon-cpi/surveys`,
+        //     body: survey,
+        //     client: client
+        // }
         
-        survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).post(options);
-        return survey;
+        // survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).post(options);
+        // return survey;
+        const res = await pepperi.api.adal.upsert({
+            addon: this.UDC_ADDON_UUID,
+            table: SURVEYS_TABLE_NAME,
+            object: survey as any,
+            indexedField: ''
+        });
+
+        return res.object as Survey;
     }
 
     private async getSurveyTemplate(surveyTemplateKey: string): Promise<SurveyTemplate> {
         const survey = await pepperi.api.adal.get({
             addon: config.AddonUUID,
-            table: SURVEYS_TABLE_NAME,
+            table: SURVEY_TEMPLATES_TABLE_NAME,
             key: surveyTemplateKey
         });
         

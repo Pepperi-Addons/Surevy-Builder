@@ -14,7 +14,7 @@ import SurveyApiService from './surveys-api.service';
 export async function install(client: Client, request: Request): Promise<any> {
     try {
         const service = new SurveyApiService(client)
-        service.upsertRelationsAndScheme();
+        await service.upsertRelationsAndScheme();
     } catch (err) {
         throw new Error(`Failed to create ADAL Tables. error - ${err}`);
     }
@@ -29,7 +29,7 @@ export async function uninstall(client: Client, request: Request): Promise<any> 
 export async function upgrade(client: Client, request: Request): Promise<any> {
     try {
         const service = new SurveyApiService(client)
-        service.upsertRelationsAndScheme(false);
+        await service.upsertRelationsAndScheme(false);
     } catch (err) {
         throw new Error(`Failed to create ADAL Tables. error - ${err}`);
     }
