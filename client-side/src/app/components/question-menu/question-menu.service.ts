@@ -19,81 +19,81 @@ export class QuestionMenuService {
         //this._menuItems = this.getMenuItems();
     }
     
-        loadMenuItems() {
+        async loadMenuItems() {
             this._menuItems = [
                 {
                     key: `short-text`,
-                    text: 'Short Text',
+                    text: await firstValueFrom(this._translate.get('QUESTION_MENU.SHORT_TEXT')),
                     iconName: 'text_short_text'
                 },
                 {
                     key: `long-text`,
-                    text: 'Long Text',
+                    text: await firstValueFrom(this._translate.get('QUESTION_MENU.LONG_TEXT')),
                     iconName: 'text_long_text'
                 },
                 {
                     key: `multiple-selection-dropdown`,
-                    text: 'Multi Selection',
+                    text: await firstValueFrom(this._translate.get('QUESTION_MENU.MULTIPLE_SELECTION_DROPDOWN')),
                     iconName: 'system_ok'
                 },
                 {
                     key: `single-selection-dropdown`,
-                    text: 'Single Select',
+                    text: await firstValueFrom(this._translate.get('QUESTION_MENU.SINGLE_SELECTION_DROPDOWN')),
                     iconName: 'system_radio_btn'
                 },
                 {
                     key: `multiple-selection-checkboxes`,
-                    text: 'Checkbox',
+                    text: await firstValueFrom(this._translate.get('QUESTION_MENU.CHECKBOX')),
                     iconName: 'system_select'
                 },
                 {
                     key: `single-selection-radiobuttons`,
-                    text: 'Radio Group',
+                    text: await firstValueFrom(this._translate.get('QUESTION_MENU.RADIO_GROUP')),
                     iconName: 'system_radio_btn'
                 },
                 {
                     key: `boolean-toggle`,
-                    text: 'Yes/No',
+                    text: await firstValueFrom(this._translate.get('QUESTION_MENU.BOOLEAN_TOGGLE')),
                     iconName: 'system_boolean'
                 },           
                 {
                     key: `number`,
-                    text: 'Number',
+                    text: await firstValueFrom(this._translate.get('QUESTION_MENU.NUMBER')),
                     iconName: 'number_number'
                 },
                 {
                     key: `decimal`,
-                    text: 'Decimal',
+                    text: await firstValueFrom(this._translate.get('QUESTION_MENU.DECIMAL')),
                     iconName: 'number_decimal'
                 },           
                 {
                     key: `currency`,
-                    text: 'Currency',
+                    text: await firstValueFrom(this._translate.get('QUESTION_MENU.CURRENCY')),
                     iconName: 'number_coins'
                 },
                 {
                     key: `percentage`,
-                    text: 'Percentage',
+                    text: await firstValueFrom(this._translate.get('QUESTION_MENU.PERCENTAGE')),
                     iconName: 'number_percent'
                 },  
                 {
                     key: `date`,
-                    text: 'Date',
+                    text: await firstValueFrom(this._translate.get('QUESTION_MENU.DATE')),
                     iconName: 'time_cal'
                 },
                 {
                     key: `datetime`,
-                    text: 'Date Time',
+                    text: await firstValueFrom(this._translate.get('QUESTION_MENU.DATE_TIME')),
                     iconName: 'time_datetime'
                 }//,
                 // {
                 //     key: `photo`,
-                //     text: 'Photo',
+                //     text: await firstValueFrom(this._translate.get('QUESTION_MENU.PHOTO')),
                 //     iconName: 'system_signature'
                 // },
                 // {
                 //     key: `signature`,
-                //     text: 'Signature',
+                //     text: await firstValueFrom(this._translate.get('QUESTION_MENU.SIGNATURE')),
                 //     iconName: 'system_signature'
                 // }
             ]

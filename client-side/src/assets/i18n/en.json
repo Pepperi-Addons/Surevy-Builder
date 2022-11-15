@@ -58,6 +58,8 @@
                 "SECTION_HEADER": "Section",
                 "KEY": "Key",
                 "KEY_NAME": "Key Name",
+                "YES": "Yes",
+                "NO": "No",
                 "SECTION_TITLE": "Section Title",
                 "SECTION_NAME": "Section Name",
                 "QUESTION_TITLE": "Type your question here...",
@@ -69,6 +71,7 @@
                 "MAX_CHARACTERS_PLACEHOLDER": "Empty for no max",
                 "MAKE_MANDATORY": "Make Mandatory",
                 "ADD_NONE_OPTION": "Add \"None\" option",
+                "COLUMNS": "Columns",
                 "ACTIONS": {
                     "ADD_LOGIC": "Add Logic",
                     "DUPLICATE": "Duplicate",
@@ -131,15 +134,19 @@
     "QUESTION_MENU": {
         "SHORT_TEXT": "Short Text",
         "LONG_TEXT": "Long Text",
-        "MULTIPLE_SELECTION_DROPDOWN": "Multiple Select",
+        "MULTIPLE_SELECTION_DROPDOWN": "Multi Selection",
         "SINGLE_SELECTION_DROPDOWN": "Single Select",
+        "CHECKBOX": "Checkbox",
+        "RADIO_GROUP": "Radio Group",
         "BOOLEAN_TOGGLE": "Yes/No",
         "NUMBER": "Number",
         "DECIMAL": "Decimal",
         "CURRENCY": "Currency",
         "PERCENTAGE": "Percentage",
         "DATE": "Date",
-        "DATE_TIME": "Date Time"
+        "DATE_TIME": "Date Time",
+        "PHOTO": "Photo",
+        "SIGNATURE": "Signature"
     },
     "DIALOGS": {
         "SHOW_IF": {

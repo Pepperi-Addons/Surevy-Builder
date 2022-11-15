@@ -8,7 +8,7 @@
 
 <ng-container *ngIf="_question?.Type === 'single-selection-radiobuttons' || _question?.Type === 'multiple-selection-checkboxes'">
     <pep-group-buttons-settings 
-    [subHeader]="'Columns'"
+    [subHeader]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.COLUMNS' | translate"
     [btnKey]="_question?.selectionColumns || '1'" 
     [groupType]="'custom'" [btnsArray]="numOfColumn"
     (btnkeyChange)="onQuestionEditorFieldChanged('selectionColumns',$event)">
