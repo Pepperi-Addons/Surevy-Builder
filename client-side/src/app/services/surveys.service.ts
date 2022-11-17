@@ -329,6 +329,16 @@ export class SurveysService {
         }
     }
 
+    private getSelectedQuestion(): SurveyTemplateQuestion {
+        const sections = this._sectionsSubject.getValue();
+        const currentSection = sections[this._selectedSectionIndex];
+        if (currentSection) {
+            return currentSection.Questions[this._selectedQuestionIndex];
+        } 
+
+        return null;
+    }
+
     /***********************************************************************************************/
     /*                                  Public functions
     /***********************************************************************************************/
@@ -519,29 +529,73 @@ export class SurveysService {
         this.changeCursorOnDragEnd();
     }
 
+    
+    duplicateSelectedItem() {                        
+        if (this.selectedItemType === 'section') {
+            this.duplicateSelectedSection();
+        } else if (this.selectedItemType === 'question') {
+            this.duplicateSelectedQuestion();
+        } 
+    }
+
+    deleteSelectedItem() {
+        if (this.selectedItemType === 'section') {
+            this.deleteSelectedSection();
+        } else if (this.selectedItemType === 'question') {
+            this.deleteSelectedQuestion();
+        }
+    }
+
+    // Open dialog to set the display condition of the selected question
+    openShowIfDialog() {        
+        const config = this.dialog.getDialogConfig({ minWidth: '30rem' }, 'large');
+        const selectedQuestion = this.getSelectedQuestion();
+        const query = selectedQuestion && selectedQuestion.ShowIf?.length > 0 ? JSON.parse(selectedQuestion.ShowIf) : null;
+
+        const data = new PepDialogData({ 
+            actionsType: 'cancel-ok',
+            content: { 
+                query: query,
+                fields: this.getShowIfFields()
+            },
+            showClose: true 
+        });
+
+        const dialogRef = this.dialog.openDialog(ShowIfDialogComponent, data, config);        
+        dialogRef.afterClosed().subscribe({
+            next: (res) => {                             
+                const selectedQuestion = this.getSelectedQuestion();
+                
+                if (selectedQuestion && res.query) {
+                    selectedQuestion.ShowIf = JSON.stringify(res.query);
+                } 
+            }     
+        });
+    }
+
     /**************************************************************************************/
     /*                            CPI & Server side calls.
     /**************************************************************************************/
 
     // Get the surveys (distinct with the drafts)
-    getSurveys(addonUUID: string, options: any): Observable<SurveyTemplateRowProjection[]> {
+    getSurveyTemplates(addonUUID: string, options: any): Observable<SurveyTemplateRowProjection[]> {
         // Get the surveys from the server.
         const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.getHttpCall(`${baseUrl}/get_surveys_data?${options}`);
+        return this.httpService.getHttpCall(`${baseUrl}/get_survey_templates_data?${options}`);
     }
 
-    createNewSurvey(addonUUID: string, totalSurveys: number = 0): Observable<SurveyTemplate> {
+    createNewSurveyTemplate(addonUUID: string, totalSurveys: number = 0): Observable<SurveyTemplate> {
         const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.getHttpCall(`${baseUrl}/create_survey?surveyNum=${totalSurveys + 1}`);
+        return this.httpService.getHttpCall(`${baseUrl}/create_survey_template?surveyNum=${totalSurveys + 1}`);
     }
 
     // Delete the survey
-    deleteSurvey(addonUUID: string, surveyTemplateKey: string): Observable<any> {
+    deleteSurveyTemplate(addonUUID: string, surveyTemplateKey: string): Observable<any> {
         const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.getHttpCall(`${baseUrl}/remove_survey?key=${surveyTemplateKey}`);
+        return this.httpService.getHttpCall(`${baseUrl}/remove_survey_template?key=${surveyTemplateKey}`);
     }
 
-    loadSurveyBuilder(addonUUID: string, key: string, editable: boolean, queryParameters: Params): void {
+    loadSurveyTemplateBuilder(addonUUID: string, key: string, editable: boolean, queryParameters: Params): void {
         //  If is't not edit mode get the survey from the CPI side.
         const baseUrl = this.getBaseUrl(addonUUID);
  
@@ -567,7 +621,7 @@ export class SurveysService {
 
             // const baseUrlCPI = `http://localhost:8088/addon/api/${config.AddonUUID}/addon-cpi`;
             // // Get the survey (sections and the questions data) from the server.
-            // this.httpService.getHttpCall(`${baseUrl}/get_survey_data?key=${key}`)
+            // this.httpService.getHttpCall(`${baseUrl}/get_survey_template_data?key=${key}`)
             //     .subscribe((res: ISurveyTemplateBuilderData) => {
             //         if (res && res.survey) {
             //             // Load the survey.
@@ -576,7 +630,7 @@ export class SurveysService {
             //     });
         } else { // If is't edit mode get the data of the survey and the relations from the Server side.
             // Get the survey (sections and the questions data) from the server.
-            this.httpService.getHttpCall(`${baseUrl}/get_survey_builder_data?key=${key}`)
+            this.httpService.getHttpCall(`${baseUrl}/get_survey_template_builder_data?key=${key}`)
                 .subscribe((res: ISurveyTemplateBuilderData) => {
                     if (res && res.survey) {
                         // Load the survey.
@@ -586,7 +640,7 @@ export class SurveysService {
         }
     }
 
-    unloadSurveyBuilder() {
+    unloadSurveyTemplateBuilder() {
         this.notifySectionsChange([], false);
         this.notifySurveyChange(null);
         this._surveyModelKey = '';
@@ -599,6 +653,22 @@ export class SurveysService {
 
     //     return this.httpService.getHttpCall(`${baseUrl}/restore_to_last_publish?key=${survey.Key}`);
     // }
+
+    // Save the current survey in drafts.
+    saveCurrentSurveyTemplate(addonUUID: string, editable: boolean): Observable<SurveyTemplate> {
+        const survey: SurveyTemplate = this._surveySubject.getValue();
+        const body = JSON.stringify(survey);
+        const baseUrl = this.getBaseUrl(addonUUID);
+        return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey_template`, body);
+    } 
+
+    // Publish the current survey.
+    publishCurrentSurveyTemplate(addonUUID: string): Observable<SurveyTemplate> {
+        const survey: SurveyTemplate = this._surveySubject.getValue();
+        const body = JSON.stringify(survey);
+        const baseUrl = this.getBaseUrl(addonUUID);
+        return this.httpService.postHttpCall(`${baseUrl}/publish_survey_template`, body);
+    }
 
     onSurveyStatusChange(status: SurveyStatusType): void {
         if (this._surveyModelKey.length > 0) {
@@ -660,77 +730,4 @@ export class SurveysService {
         }
     }
 
-    // Save the current survey in drafts.
-    saveCurrentSurvey(addonUUID: string, editable: boolean): Observable<SurveyTemplate> {
-        const survey: SurveyTemplate = this._surveySubject.getValue();
-        const body = JSON.stringify(survey);
-        const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey`, body);
-    } 
-
-    private getSelectedQuestion(): SurveyTemplateQuestion {
-        const sections = this._sectionsSubject.getValue();
-        const currentSection = sections[this._selectedSectionIndex];
-        if (currentSection) {
-            return currentSection.Questions[this._selectedQuestionIndex];
-        } 
-
-        return null;
-    }
-
-    // Open dialog to set the display condition of the selected question
-    openShowIfDialog() {        
-        const config = this.dialog.getDialogConfig({ minWidth: '30rem' }, 'large');
-        const selectedQuestion = this.getSelectedQuestion();
-        const query = selectedQuestion && selectedQuestion.ShowIf?.length > 0 ? JSON.parse(selectedQuestion.ShowIf) : null;
-
-        const data = new PepDialogData({ 
-            actionsType: 'cancel-ok',
-            content: { 
-                query: query,
-                fields: this.getShowIfFields()
-            },
-            showClose: true 
-        });
-
-        const dialogRef = this.dialog.openDialog(ShowIfDialogComponent, data, config);        
-        dialogRef.afterClosed().subscribe({
-            next: (res) => {                             
-                const selectedQuestion = this.getSelectedQuestion();
-                
-                if (selectedQuestion && res.query) {
-                    selectedQuestion.ShowIf = JSON.stringify(res.query);
-                } 
-            }     
-        });
-    }
-
-    // Publish the current survey.
-    publishCurrentSurvey(addonUUID: string): Observable<SurveyTemplate> {
-        const survey: SurveyTemplate = this._surveySubject.getValue();
-        const body = JSON.stringify(survey);
-        const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.postHttpCall(`${baseUrl}/publish_survey`, body);
-    }
-
-    duplicateSelectedItem() {                        
-        if (this.selectedItemType === 'section') {
-            this.duplicateSelectedSection();
-        } else if (this.selectedItemType === 'question') {
-            this.duplicateSelectedQuestion();
-        } 
-    }
-
-    deleteSelectedItem() {
-        if (this.selectedItemType === 'section') {
-            this.deleteSelectedSection();
-        } else if (this.selectedItemType === 'question') {
-            this.deleteSelectedQuestion();
-        }
-    }
-
-
 }
-
-
-

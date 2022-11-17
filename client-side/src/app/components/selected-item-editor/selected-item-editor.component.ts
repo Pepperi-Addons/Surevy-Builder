@@ -46,6 +46,12 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     onQuestionEditorFieldChanged(key,value) {
         const oldValue = this.question[key];
         this.question[key] = value;
+
+        // Clear the show if value
+        if (key === 'IsShowIf' && value === false) {
+            this.question['ShowIf'] = null;
+        }
+
         this.surveysService.updateQuestionFromEditor(this.question);
 
         if(key == 'Key' || key == 'Title'){

@@ -97,7 +97,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                     options += `&where=${params.searchString}`;
                 }
                 
-                this.surveys = await firstValueFrom(this.surveysService.getSurveys(this._navigationService.addonUUID, encodeURI(options)));
+                this.surveys = await firstValueFrom(this.surveysService.getSurveyTemplates(this._navigationService.addonUUID, encodeURI(options)));
 
                 this.surveys.forEach(sur => {
                     let fromDate = '';
@@ -165,7 +165,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                         title: this.translate.instant("ACTIONS.DELETE"),
                         handler: async (data: PepSelectionData) => {
                             if (data?.rows.length > 0) {
-                                this.deleteSurvey(data?.rows[0]);
+                                this.deleteSurveyTemplate(data?.rows[0]);
                             }
                         }
                     }
@@ -192,7 +192,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
     }
 
     onAddSurveyClicked() {
-        this.surveysService.createNewSurvey(this._navigationService.addonUUID, this.totalSurveys).pipe(first()).subscribe((survey: SurveyTemplate) => {
+        this.surveysService.createNewSurveyTemplate(this._navigationService.addonUUID, this.totalSurveys).pipe(first()).subscribe((survey: SurveyTemplate) => {
             if (survey) {
                 this._navigationService.navigateToSurvey(survey.Key);
             } else {
@@ -201,14 +201,14 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         });
     }
 
-    deleteSurvey(surveyID: string) {
+    deleteSurveyTemplate(surveyID: string) {
         const content = this.translate.instant('SURVEYS_MANAGER.DELETE_SURVEY.MSG');
         const title = this.translate.instant('SURVEYS_MANAGER.DELETE_SURVEY.TITLE');
         const dataMsg = new PepDialogData({title, actionsType: "cancel-delete", content});
 
         this.dialog.openDefaultDialog(dataMsg).afterClosed().pipe(first()).subscribe((isDeletePressed) => {
             if (isDeletePressed) {
-                this.surveysService.deleteSurvey(this._navigationService.addonUUID, surveyID).pipe(first()).subscribe((res) => {
+                this.surveysService.deleteSurveyTemplate(this._navigationService.addonUUID, surveyID).pipe(first()).subscribe((res) => {
                          this.dataSource = this.setDataSource();
                  });
             }

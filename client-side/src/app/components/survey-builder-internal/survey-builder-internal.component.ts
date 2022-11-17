@@ -92,7 +92,7 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         if (key.length > 0) {
             const queryParams = this.route?.snapshot?.queryParams;
             
-            this.surveysService.loadSurveyBuilder(addonUUID, key, this.editMode, queryParams);
+            this.surveysService.loadSurveyTemplateBuilder(addonUUID, key, this.editMode, queryParams);
 
             this.layoutService.onResize$.pipe(this.getDestroyer()).subscribe((size: PepScreenSizeType) => {
                 this.screenSize = size;
@@ -138,7 +138,7 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         this._destroyed.next();
         this._destroyed.complete();
 
-        this.surveysService.unloadSurveyBuilder();
+        this.surveysService.unloadSurveyTemplateBuilder();
     }
 
     onSectionDropped(event: CdkDragDrop<any[]>) {

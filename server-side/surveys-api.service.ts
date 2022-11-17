@@ -29,9 +29,9 @@ export class SurveyApiService {
         // const promises: AddonDataScheme[] = [];
 
         const udcTempObject = {
-            // "DocumentKey":{"Delimiter":"@","Type":"AutoGenerate","Fields":[]},
-            // "Fields":{"test":{"Description":"","Mandatory":false,"Type":"String","OptionalValues":[],"Items":{"Type":"String","Mandatory":false,"Description":""},"Resource":"","AddonUUID":"","Indexed":false}},
-            // "ListView":{"Type":"Grid","Fields":[{"FieldID":"test","Mandatory":false,"ReadOnly":true,"Title":"test","Type":"TextBox"}],"Columns":[{"Width":10}]},
+            "DocumentKey":{"Delimiter":"@","Type":"AutoGenerate","Fields":[]},
+            "Fields":{"test":{"Description":"","Mandatory":false,"Type":"String","OptionalValues":[],"Items":{"Type":"String","Mandatory":false,"Description":""},"Resource":"","AddonUUID":"","Indexed":false}},
+            "ListView":{"Type":"Grid","Fields":[{"FieldID":"test","Mandatory":false,"ReadOnly":true,"Title":"test","Type":"TextBox"}],"Columns":[{"Width":10}]},
             "GenericResource":true
         };
 
@@ -44,12 +44,26 @@ export class SurveyApiService {
             },
             SyncData: {
                 Sync: true
+                // Sync: false
             },
             Type: 'data',
             ...udcTempObject
         };
-        // const createSurveyTable = await this.papiClient.userDefinedCollections.schemes.upsert(schema as any);
-        const createSurveyTable = await this.papiClient.addons.data.schemes.post(schema as any);
+        const createSurveyTable = await this.papiClient.userDefinedCollections.schemes.upsert(schema as any);
+        // // TODO: Remove this
+        // const createSurveyTableTmp = await this.papiClient.addons.data.schemes.post({
+        //     Name: "surveys",
+        //     Extends: {
+        //         AddonUUID: this.SURVEY_ADDON_UUID,
+        //         Name: "baseSurveys"
+        //     },
+        //     SyncData: {
+        //         Sync: true
+        //         // Sync: false
+        //     },
+        //     Type: 'data',
+        //     "GenericResource":true
+        // } as any);
 
         // Create Survey template table
         const schemaTemplate = {
@@ -60,12 +74,26 @@ export class SurveyApiService {
             },
             SyncData: {
                 Sync: true
+                // Sync: false
             },
             Type: 'meta_data',
             ...udcTempObject
         };
-        // const createSurveyTemplateTable = await this.papiClient.userDefinedCollections.schemes.upsert(schemaTemplate as any);
-        const createSurveyTemplateTable = await this.papiClient.addons.data.schemes.post(schemaTemplate as any);
+        const createSurveyTemplateTable = await this.papiClient.userDefinedCollections.schemes.upsert(schemaTemplate as any);
+        // // TODO: Remove this
+        // const createSurveyTemplateTableTmp = await this.papiClient.addons.data.schemes.post({
+        //     Name: "surveyTemplates",
+        //     Extends: {
+        //         AddonUUID: this.SURVEY_ADDON_UUID,
+        //         Name: "baseSurveyTemplates"
+        //     },
+        //     SyncData: {
+        //         Sync: true
+        //         // Sync: false
+        //     },
+        //     Type: 'meta_data',
+        //     "GenericResource":true
+        // } as any);
         
         // Create draft Survey template table
         const schemaDraftTemplate = {
@@ -80,8 +108,8 @@ export class SurveyApiService {
             Type: 'meta_data',
             ...udcTempObject
         };
-        // const createSurveyDraftTemplateTable = await this.papiClient.userDefinedCollections.schemes.upsert(schemaDraftTemplate as any);
-        const createSurveyDraftTemplateTable = await this.papiClient.addons.data.schemes.post(schemaDraftTemplate as any);
+        const createSurveyDraftTemplateTable = await this.papiClient.userDefinedCollections.schemes.upsert(schemaDraftTemplate as any);
+        // const createSurveyDraftTemplateTable = await this.papiClient.addons.data.schemes.post(schemaDraftTemplate as any);
 
         // promises.push(createSurveyTable);
         // promises.push(createSurveyTemplateTable);
@@ -195,8 +223,8 @@ export class SurveyApiService {
         // Validate survey object before upsert.
         survey = await this.validateAndOverrideSurveyAccordingInterface(survey, tableName === SURVEY_TEMPLATES_TABLE_NAME);
         
-        // return this.papiClient.userDefinedCollections.documents(tableName).upsert(survey) as Promise<SurveyTemplate>;
-        return this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).upsert(survey) as Promise<SurveyTemplate>;
+        return this.papiClient.userDefinedCollections.documents(tableName).upsert(survey) as Promise<SurveyTemplate>;
+        // return this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).upsert(survey) as Promise<SurveyTemplate>;
     }
 
     /***********************************************************************************************/
@@ -204,8 +232,8 @@ export class SurveyApiService {
     /***********************************************************************************************/
 
     protected async getSurveysFrom(tableName: string, options: FindOptions | undefined = undefined): Promise<SurveyTemplate[]> {
-        // return await this.papiClient.userDefinedCollections.documents(tableName).find(options) as SurveyTemplate[];
-        return await this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).find(options) as SurveyTemplate[];
+        return await this.papiClient.userDefinedCollections.documents(tableName).find(options) as SurveyTemplate[];
+        // return await this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).find(options) as SurveyTemplate[];
     }
 
     /***********************************************************************************************/
@@ -213,8 +241,17 @@ export class SurveyApiService {
     /***********************************************************************************************/
     
     async getSurvey(surveyTemplatekey: string, tableName: string = SURVEY_TEMPLATES_TABLE_NAME): Promise<SurveyTemplate> {
-        // return await this.papiClient.userDefinedCollections.documents(tableName).find({ where: "Key=" + surveyTemplatekey})[0] as SurveyTemplate;
-        return await this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).key(surveyTemplatekey).get() as SurveyTemplate;
+        const surveys = await this.papiClient.userDefinedCollections.documents(tableName).find();
+        const survey = surveys.find(s => s.Key === surveyTemplatekey);
+        if (survey) {
+            return survey as SurveyTemplate;
+        }
+        else {
+            throw new Error(`survey with Key ${surveyTemplatekey} not found`);
+        }
+        // return (await this.papiClient.userDefinedCollections.documents(tableName).find({ where: "Key=" + surveyTemplatekey}))[0] as SurveyTemplate;
+
+        // return await this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).key(surveyTemplatekey).get() as SurveyTemplate;
     }
 
     async upsertRelationsAndScheme(install = true): Promise<void> {
@@ -227,7 +264,7 @@ export class SurveyApiService {
         await this.upsertSettingsRelation();
     }
 
-    async getSurveys(options: FindOptions | undefined = undefined): Promise<SurveyTemplate[]> {
+    async getSurveyTemplates(options: FindOptions | undefined = undefined): Promise<SurveyTemplate[]> {
         return await this.getSurveysFrom(SURVEY_TEMPLATES_TABLE_NAME, options);
     }
     

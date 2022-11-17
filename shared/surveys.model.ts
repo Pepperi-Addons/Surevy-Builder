@@ -1,11 +1,11 @@
 import { AddonData } from "@pepperi-addons/papi-sdk";
 
-// export const SURVEYS_TABLE_NAME = 'Surveys';
-export const SURVEYS_TABLE_NAME = 'surveys';
-// export const SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplates';
-export const SURVEY_TEMPLATES_TABLE_NAME = 'surveyTemplates';
-// export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplatesDrafts';
-export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'surveyTemplatesDrafts';
+export const SURVEYS_TABLE_NAME = 'Surveys';
+// export const SURVEYS_TABLE_NAME = 'surveys';
+export const SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplates';
+// export const SURVEY_TEMPLATES_TABLE_NAME = 'surveyTemplates';
+export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplatesDrafts';
+// export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'surveyTemplatesDrafts';
 
 export const SURVEY_LOAD_EVENT_NAME = 'OnSurveyLoad';
 export const SURVEY_LOAD_CLIENT_EVENT_NAME = 'OnClientSurveyLoad';

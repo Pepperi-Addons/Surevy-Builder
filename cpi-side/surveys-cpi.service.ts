@@ -19,7 +19,6 @@ class SurveysService {
         
         // const survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).get(options);
         // return survey.object;
-
         const survey = await pepperi.api.adal.get({
             addon: this.UDC_ADDON_UUID,
             table: SURVEYS_TABLE_NAME,
