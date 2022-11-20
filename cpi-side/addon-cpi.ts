@@ -15,7 +15,7 @@ export async function load(configuration: any) {
 
         // debugger;
         // Test alert
-        await data.client?.alert('survey load - before', data.surveyKey);
+        await data.client?.alert('survey load - before', surveyKey);
         
         if (surveyKey) { 
             const service = new SurveysService();
@@ -74,73 +74,6 @@ export async function load(configuration: any) {
 
 }
 
-// export async function main(data)  {
-//     // your predefined parameters will be properties on data object
-//     let accountUUID: string = data.account_uuid || '';
-//     let templateKey: string = data.template_key || '';
-//     // TODO: Create new survey
-	
-// 	const hostObj = {
-// 		resource: 'surveyTemplates',
-// 		view: '23f1a6fa-8983-4a84-b7f3-b022e40c6a44',
-// 		selectionMode: 'single', // multi
-// 		selectedObjectKeys: [],
-// 	};
-// 	const modalOptions: any = {
-// 		addonBlockName: 'ResourcePicker',
-// 		hostObject: hostObj,
-// 		title: 'Select template',
-// 		allowCancel: true,
-// 	};
-//     const {canceled, result} = await client?.["showModal"](modalOptions);
-	
-//     await client?.alert('', JSON.stringify(accountUUID));
-//     await client?.alert('', JSON.stringify(result));
-
-//     if(!canceled) { 
-//         // If object choosen
-//         if (result.action === 'on-save') {
-//             const selectedItem = result.selectedObjectKeys[0];
-//             const res = await pepperi.api.adal.upsert({
-//                 addon: '122c0e9d-c240-4865-b446-f37ece866c22',
-//                 table: 'surveys',
-//                 object: {
-//                     'Key': '',
-//                     'Template': '824e9a23-3ac7-4c38-97a8-0fe46070ac12',
-//                     // 'AccountUUID': '123'
-//                 },
-//                 indexedField: ''
-//             });
-    
-//             const surveyKey = res.object['Key']?.toString();
-            
-//             await data.client?.navigateTo({ url: 'survey_test?survey_key=' + surveyKey});
-
-//         } else {
-//     		// TODO: If cancel ??
-//         }
-//     } else {
-// 		// TODO: If cancel ??
-//     }
-
-//     // const SURVEY_ADDON_UUID = 'dd0a85ea-7ef0-4bc1-b14f-959e0372877a';
-//     // const options = {
-//     //     url: `addon-cpi/surveys`,
-//     //     body: {
-
-//     //     },
-//     //     client: client
-//     // }
-        
-    
-//     // const survey = null;//await pepperi.addons.api.uuid(SURVEY_ADDON_UUID).post(options);
-
-//     // // pepperi.api.
-//     // const surveyKey = '2d333a42-e1cd-4aa0-b17f-59c5555f2999';
-
-//     // await client.navigateTo({ url: 'survey_test?survey_key=' + surveyKey});
-// }
-
 // router.get('/get_survey_template_data', async (req, res, next) => {
 //     let result = {};
 
@@ -172,3 +105,79 @@ export async function load(configuration: any) {
 //     res.json(resObj);
 
 // });
+
+
+// export async function main(data)  {
+//     // your predefined parameters will be properties on data object
+//     // let accountUUID: string = data.account_uuid || '';
+//     // let templateKey: string = data.template_key || '';
+	
+// 	const templateMmodalOptions: any = {
+// 		addonBlockName: 'ResourcePicker',
+// 		hostObject: {
+//             resource: 'SurveyTemplates',
+//             view: '23f1a6fa-8983-4a84-b7f3-b022e40c6a44',
+//             selectionMode: 'single', // multi
+//             selectedObjectKeys: [],
+//         },
+// 		title: 'Select template',
+// 		allowCancel: true,
+// 	};
+//     const templatesResult = await client?.["showModal"](templateMmodalOptions);
+	
+//     // If survey template was choosen
+//     if(!templatesResult.canceled && templatesResult.result?.action === 'on-save') {
+
+//         const accountsModalOptions: any = {
+//             addonBlockName: 'ResourcePicker',
+//             hostObject: {
+//                 resource: 'accounts',
+//                 view: 'bc2b2abf-6128-4db6-944a-e17a6a919cc9',
+//                 selectionMode: 'single', // multi
+//                 selectedObjectKeys: [],
+//             },
+//             title: 'Select account',
+//             allowCancel: true,
+//         };
+//         const accountsResult = await client?.["showModal"](accountsModalOptions);
+//         // await client?.alert('', JSON.stringify(accountsResult.result));
+
+//         // If account was choosen
+//         if(!accountsResult.canceled && accountsResult.result?.action === 'on-save') {
+//             const selectedTemplateKey = templatesResult.result.data.selectedObjectKeys[0];
+//             const selectedAccountKey = accountsResult.result.data.selectedObjectKeys[0];
+
+//             // Create new survey
+//             const res = await pepperi.api.adal.upsert({
+//                 addon: '122c0e9d-c240-4865-b446-f37ece866c22',
+//                 table: 'Surveys',
+//                 object: {
+//                     'Key': '',
+//                     'Template': selectedTemplateKey,
+//                     'AccountUUID': selectedAccountKey
+//                 },
+//                 indexedField: ''
+//             });
+            
+//             await client?.alert('', JSON.stringify(res));
+
+//             const surveyKey = res.object['Key']?.toString();
+//             await data.client?.navigateTo({ url: 'survey_test?survey_key=' + surveyKey});
+//         } else {
+//             // TODO: If cancel ??
+//         }
+//     } else {
+//         // TODO: If cancel ??
+//     }
+
+//     // const SURVEY_ADDON_UUID = 'dd0a85ea-7ef0-4bc1-b14f-959e0372877a';
+//     // const options = {
+//     //     url: `addon-cpi/surveys`,
+//     //     body: {
+
+//     //     },
+//     //     client: client
+//     // }
+//     // const survey = null;//await pepperi.addons.api.uuid(SURVEY_ADDON_UUID).post(options);
+//     // await client.navigateTo({ url: 'survey_test?survey_key=' + surveyKey});
+// }
