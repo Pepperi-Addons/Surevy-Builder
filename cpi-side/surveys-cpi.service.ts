@@ -202,25 +202,7 @@ class SurveysService {
         return isValueSet;
     }
 
-    // private async updateSurveyQuestions(client: IClient | undefined, surveyKey: string, surveyTemplate: SurveyTemplate): Promise<any> {
-    //     let survey = await this.getSurveyModel(client, surveyKey);
-
-    //     if (surveyTemplate && survey?.Template === surveyTemplate?.Key) {
-    //         // Set the new Answers and save in the DB.
-    //         this.setSurveyAnswers(survey, surveyTemplate);
-    //         this.setSurveyModel(client, survey)
-
-    //         // Calc the show if
-    //         this.calcShowIf(surveyTemplate);
-    //     } else {
-    //         // Template is different.
-    //     }
-
-    //     return surveyTemplate;
-    // }
-
-    // Load the survey template with the values form the DB.
-    async getSurveyData(client: IClient | undefined, surveyKey: string): Promise<SurveyTemplate | null> {
+    private async getSurveyDataInternal(client: IClient | undefined, surveyKey: string, calcShowIf = true): Promise<{ survey: Survey, surveyTemplate: SurveyTemplate | null }> {
         let surveyTemplate: SurveyTemplate | null = null;
         const survey = await this.getSurveyModel(client, surveyKey);
         
@@ -235,45 +217,41 @@ class SurveysService {
             // TODO: Throw survey has no template.
         }
 
+        return { survey, surveyTemplate };
+    }
+
+    // Load the survey template with the values form the DB.
+    async getSurveyData(client: IClient | undefined, surveyKey: string): Promise<SurveyTemplate | null> {
+        const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey);
         return surveyTemplate;
     }
 
     async onSurveyFieldChange(client: IClient | undefined, surveyKey: string, propertyName: string, value: any): Promise<SurveyTemplate | null> {
-        let surveyTemplate: SurveyTemplate | null = null;
-        const survey = await this.getSurveyModel(client, surveyKey);
+        const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey);
         
-        if (survey && survey.Template) {
-            surveyTemplate = await this.getSurveyTemplate(survey.Template);
-    
-            if (surveyTemplate) {
-                this.mergeSurveyIntoTemplateData(survey, surveyTemplate);
-                let isValueSet = false;
+        if (surveyTemplate) {
+            let isValueSet = false;
 
-                // If the field name is status check if valid in case that the status is 'Submitted', else, set other property on survey.
-                if (propertyName === 'Status') {
-                    const status: SurveyStatusType = value as SurveyStatusType;
-                    const canChangeStatus = (status === 'Submitted') ? await this.validateSurvey(survey) : true;
-                    
-                    if (canChangeStatus) {
-                        survey.Status = status;
-                        isValueSet = true;
-                    } else {
-                        // TODO: Throw invalid survey
-                    }
+            // If the field name is status check if valid in case that the status is 'Submitted', else, set other property on survey.
+            if (propertyName === 'Status') {
+                const status: SurveyStatusType = value as SurveyStatusType;
+                const canChangeStatus = (status === 'Submitted') ? await this.validateSurvey(survey) : true;
+                
+                if (canChangeStatus) {
+                    survey.Status = status;
+                    isValueSet = true;
                 } else {
-                    if (survey.hasOwnProperty(propertyName)) {
-                        survey[propertyName] = propertyName;
-                        isValueSet = true;
-                    }
-                }
-
-                if (isValueSet) {
-                    await this.setSurveyModel(client, survey);
-                    // TODO: Maybe need to calc show if when the survey field change??
-                    // this.calcShowIf(surveyTemplate);
+                    // TODO: Throw invalid survey
                 }
             } else {
-                // TODO: Throw survey has no template.
+                if (survey.hasOwnProperty(propertyName)) {
+                    survey[propertyName] = propertyName;
+                    isValueSet = true;
+                }
+            }
+
+            if (isValueSet) {
+                await this.setSurveyModel(client, survey);
             }
         }
 
@@ -281,26 +259,18 @@ class SurveysService {
     }
 
     async onSurveyQuestionChange(client: IClient | undefined, surveyKey: string, questionKey: string, value: any): Promise<SurveyTemplate | null> {
-        let surveyTemplate: SurveyTemplate | null = null;
-        const survey = await this.getSurveyModel(client, surveyKey);
-        
-        if (survey && survey.Template) {
-            surveyTemplate = await this.getSurveyTemplate(survey.Template);
+        const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey, false);
             
-            if (surveyTemplate) {
-                this.mergeSurveyIntoTemplateData(survey, surveyTemplate);
-                let isValueSet = this.setSurveyQuestionValue(surveyTemplate, questionKey, value);
-
-                if (isValueSet) {
-                    // Set the new Answers and save in the DB.
-                    this.setSurveyAnswers(survey, surveyTemplate);
-                    await this.setSurveyModel(client, survey)
-
-                    // Calc the show if
-                    this.calcShowIf(surveyTemplate);
-                }
-            } else {
-                // TODO: Throw survey has no template.
+        if (surveyTemplate) {
+            let isValueSet = this.setSurveyQuestionValue(surveyTemplate, questionKey, value);
+    
+            if (isValueSet) {
+                // Set the new Answers and save in the DB.
+                this.setSurveyAnswers(survey, surveyTemplate);
+                await this.setSurveyModel(client, survey)
+    
+                // Calc the show if
+                this.calcShowIf(surveyTemplate);
             }
         }
 

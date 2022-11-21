@@ -27,7 +27,7 @@ export async function load(configuration: any) {
             if (mergedSurvey) {
                 // TODO: Remove this.
                 service.removeShowIfs(mergedSurvey);
-                
+
                 // Emit server event SURVEY_LOAD_EVENT_NAME
                 pepperi.events.emit(SURVEY_LOAD_EVENT_NAME, mergedSurvey);
             }
@@ -48,7 +48,7 @@ export async function load(configuration: any) {
             mergedSurvey = await service.onSurveyFieldChange(data.client, surveyKey, propertyName, value);
     
             // Test alert
-            await data.client?.alert('field change - after', `${JSON.stringify(mergedSurvey)}`);
+            // await data.client?.alert('field change - after', `${JSON.stringify(mergedSurvey)}`);
 
             if (mergedSurvey) {
                 // TODO: Remove this.
