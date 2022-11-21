@@ -233,27 +233,16 @@ class SurveysService {
         const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey);
         
         if (surveyTemplate) {
-            let isValueSet = false;
+            let canChangeProperty = survey.hasOwnProperty(propertyName);
 
-            // If the field name is status check if valid in case that the status is 'Submitted', else, set other property on survey.
-            if (propertyName === 'Status') {
+            if (canChangeProperty && propertyName === 'Status') {
                 const status: SurveyStatusType = value as SurveyStatusType;
-                const canChangeStatus = (status === 'Submitted') ? await this.validateSurvey(survey) : true;
-                
-                if (canChangeStatus) {
-                    survey.Status = status;
-                    isValueSet = true;
-                } else {
-                    // TODO: Throw invalid survey
-                }
-            } else {
-                if (survey.hasOwnProperty(propertyName)) {
-                    survey[propertyName] = propertyName;
-                    isValueSet = true;
-                }
+                canChangeProperty = (status === 'Submitted') ? await this.validateSurvey(survey) : true;
             }
 
-            if (isValueSet) {
+            if (canChangeProperty) {
+                survey[propertyName] = propertyName;
+                surveyTemplate[propertyName] = propertyName;
                 await this.setSurveyModel(client, survey);
             }
         }
