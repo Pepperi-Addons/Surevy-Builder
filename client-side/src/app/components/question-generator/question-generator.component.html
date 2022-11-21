@@ -43,6 +43,7 @@
                         (valueChange)="onQuestionValueChanged($event)"></pep-select>
                 </ng-container>
                 <ng-container *ngSwitchCase="'single-selection-radiobuttons'">
+                    <!-- [value]="question.Value"  -->
                     <pep-select-panel 
                         [renderTitle]="false"
                         [mandatory]="question?.Mandatory"
@@ -54,6 +55,7 @@
                     </pep-select-panel>
                 </ng-container>
                 <ng-container *ngSwitchCase="'multiple-selection-checkboxes'">
+                    <!-- [value]="question.Value"  -->
                     <pep-select-panel 
                         [renderTitle]="false"
                         [mandatory]="question?.Mandatory"
@@ -75,7 +77,7 @@
                         type="int" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
                 </ng-container>
                 <ng-container *ngSwitchCase="'decimal'">
-                    <pep-textbox [minFractionDigits]="question?.Value" [maxFractionDigits]="question?.Value" [value]="" [mandatory]="question?.Mandatory" [renderTitle]="false"
+                    <pep-textbox [minFractionDigits]="question?.Value" [maxFractionDigits]="question?.Value" [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
                         type="real" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
                 </ng-container>
                 <ng-container *ngSwitchCase="'currency'">

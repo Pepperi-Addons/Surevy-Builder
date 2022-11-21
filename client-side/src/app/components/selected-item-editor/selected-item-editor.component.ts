@@ -38,7 +38,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     }
 
     onQuestionValueChanged(value: any): void {
-        debugger; //dfgdfg
+        // debugger; //dfgdfg
         // TODO: implement
     }
 

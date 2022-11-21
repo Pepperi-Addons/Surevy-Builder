@@ -610,7 +610,7 @@ export class SurveysService {
                         ObjectKey: key
                     },
                     completion: (survey) => {
-                        debugger;
+                        // debugger;
                         this.notifySurveyChange(survey);
                     }
                 }
@@ -683,10 +683,10 @@ export class SurveysService {
                         FieldID: 'Status',
                         Value: status
                     },
-                    completion: (data) => {
-                        debugger;
+                    completion: (survey) => {
+                        // debugger;
                         // Notify survey change to update survey object with all changes (like show if questions if added or removed).
-                        this.notifySurveyChange(data.survey);
+                        this.notifySurveyChange(survey);
                     }
                 }
             };
@@ -714,13 +714,13 @@ export class SurveysService {
                         FieldID: questionKey,
                         Value: value
                     },
-                    completion: (data) => {
-                        debugger;
+                    completion: (survey) => {
+                        // debugger;
                         // Notify survey change to update survey object with all changes (like show if questions if added or removed).
-                        this.notifySurveyChange(data.survey);
+                        this.notifySurveyChange(survey);
     
                         // Notify sections change to update UI.
-                        this.notifySectionsChange(data.survey.Sections);
+                        this.notifySectionsChange(survey.Sections);
                     }
                 }
             };

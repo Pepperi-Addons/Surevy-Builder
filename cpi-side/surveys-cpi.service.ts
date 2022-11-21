@@ -144,7 +144,7 @@ class SurveysService {
                     survey.Answers.push({
                         QuestionKey: question.Key, 
                         Value: question.Value
-                    })
+                    });
                 }
             }
         }
@@ -202,22 +202,22 @@ class SurveysService {
         return isValueSet;
     }
 
-    private async updateSurveyQuestions(client: IClient | undefined, surveyKey: string, surveyTemplate: SurveyTemplate): Promise<any> {
-        let survey = await this.getSurveyModel(client, surveyKey);
+    // private async updateSurveyQuestions(client: IClient | undefined, surveyKey: string, surveyTemplate: SurveyTemplate): Promise<any> {
+    //     let survey = await this.getSurveyModel(client, surveyKey);
 
-        if (surveyTemplate && survey?.Template === surveyTemplate?.Key) {
-            // Set the new Answers and save in the DB.
-            this.setSurveyAnswers(survey, surveyTemplate);
-            this.setSurveyModel(client, survey)
+    //     if (surveyTemplate && survey?.Template === surveyTemplate?.Key) {
+    //         // Set the new Answers and save in the DB.
+    //         this.setSurveyAnswers(survey, surveyTemplate);
+    //         this.setSurveyModel(client, survey)
 
-            // Calc the show if
-            this.calcShowIf(surveyTemplate);
-        } else {
-            // Template is different.
-        }
+    //         // Calc the show if
+    //         this.calcShowIf(surveyTemplate);
+    //     } else {
+    //         // Template is different.
+    //     }
 
-        return surveyTemplate;
-    }
+    //     return surveyTemplate;
+    // }
 
     // Load the survey template with the values form the DB.
     async getSurveyData(client: IClient | undefined, surveyKey: string): Promise<SurveyTemplate | null> {
