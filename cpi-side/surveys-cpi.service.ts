@@ -306,5 +306,20 @@ class SurveysService {
 
         return surveyTemplate;
     }
+
+    // Temp function 
+    removeShowIfs(surveyTemplate: SurveyTemplate) {
+        for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
+            const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
+
+            for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
+                const question = section.Questions[questionIndex];
+
+                if (question.ShowIf) {
+                    delete question.ShowIf;
+                }
+            }
+        }
+    }
 }
 export default SurveysService;
