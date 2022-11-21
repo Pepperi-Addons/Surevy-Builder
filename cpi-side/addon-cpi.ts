@@ -15,14 +15,14 @@ export async function load(configuration: any) {
 
         // debugger;
         // Test alert
-        await data.client?.alert('survey load - before', surveyKey);
+        // await data.client?.alert('survey load - before', surveyKey);
         
         if (surveyKey) { 
             const service = new SurveysService();
             mergedSurvey = await service.getSurveyData(data.client, surveyKey);
 
             // Test alert
-            await data.client?.alert('survey load - after', `${JSON.stringify(mergedSurvey)}`);
+            // await data.client?.alert('survey load - after', `${JSON.stringify(mergedSurvey)}`);
             
             if (mergedSurvey) {
                 // Emit server event SURVEY_LOAD_EVENT_NAME
@@ -59,6 +59,7 @@ export async function load(configuration: any) {
     // Handle on survey question change
     pepperi.events.intercept(SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME as any, {}, async (data): Promise<any> => {
         let mergedSurvey: SurveyTemplate | null = null;
+        // debugger;
 
         const surveyKey = data.ObjectKey;
         const questionKey = data.FieldID;
@@ -69,7 +70,7 @@ export async function load(configuration: any) {
             mergedSurvey = await service.onSurveyQuestionChange(data.client, surveyKey, questionKey, value);
 
             // Test alert
-            await data.client?.alert('question change - after', `${JSON.stringify(mergedSurvey)}`);
+            // await data.client?.alert('question change - after', `${JSON.stringify(mergedSurvey)}`);
 
             if (mergedSurvey) {
                 // Emit server event SURVEY_QUESTION_CHANGE_EVENT_NAME
