@@ -13,7 +13,7 @@ export async function load(configuration: any) {
         const surveyKey = data.ObjectKey;
         let mergedSurvey: SurveyTemplate | null = null;
 
-        // debugger;
+        debugger;
         // Test alert
         await data.client?.alert('survey load - before', surveyKey);
         
@@ -54,6 +54,7 @@ export async function load(configuration: any) {
     // Handle on survey question change
     pepperi.events.intercept(SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME as any, {}, async (data): Promise<any> => {
         let mergedSurvey: SurveyTemplate | null = null;
+        debugger;
 
         const surveyKey = data.ObjectKey;
         const questionKey = data.FieldID;
