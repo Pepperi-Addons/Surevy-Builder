@@ -48,7 +48,7 @@ class SurveysService {
 
     private async getSurveyTemplate(surveyTemplateKey: string): Promise<SurveyTemplate> {
         const survey = await pepperi.api.adal.get({
-            addon: config.AddonUUID,
+            addon: this.UDC_ADDON_UUID,
             table: SURVEY_TEMPLATES_TABLE_NAME,
             key: surveyTemplateKey
         });

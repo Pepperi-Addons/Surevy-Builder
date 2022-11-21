@@ -169,15 +169,4 @@ export async function load(configuration: any) {
 //     } else {
 //         // TODO: If cancel ??
 //     }
-
-//     // const SURVEY_ADDON_UUID = 'dd0a85ea-7ef0-4bc1-b14f-959e0372877a';
-//     // const options = {
-//     //     url: `addon-cpi/surveys`,
-//     //     body: {
-
-//     //     },
-//     //     client: client
-//     // }
-//     // const survey = null;//await pepperi.addons.api.uuid(SURVEY_ADDON_UUID).post(options);
-//     // await client.navigateTo({ url: 'survey_test?survey_key=' + surveyKey});
 // }
