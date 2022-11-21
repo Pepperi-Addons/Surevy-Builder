@@ -29,7 +29,7 @@ export async function load(configuration: any) {
                 service.removeShowIfs(mergedSurvey);
 
                 // Emit server event SURVEY_LOAD_EVENT_NAME
-                pepperi.events.emit(SURVEY_LOAD_EVENT_NAME, mergedSurvey);
+                // pepperi.events.emit(SURVEY_LOAD_EVENT_NAME, mergedSurvey);
             }
         }
 
@@ -55,7 +55,7 @@ export async function load(configuration: any) {
                 service.removeShowIfs(mergedSurvey);
 
                 // Emit server event SURVEY_STATUS_CHANGE_EVENT_NAME
-                pepperi.events.emit(SURVEY_FIELD_CHANGE_EVENT_NAME, data);
+                // pepperi.events.emit(SURVEY_FIELD_CHANGE_EVENT_NAME, data);
             }
         }
 
@@ -83,7 +83,7 @@ export async function load(configuration: any) {
                 service.removeShowIfs(mergedSurvey);
 
                 // Emit server event SURVEY_QUESTION_CHANGE_EVENT_NAME
-                pepperi.events.emit(SURVEY_QUESTION_CHANGE_EVENT_NAME, mergedSurvey);
+                // pepperi.events.emit(SURVEY_QUESTION_CHANGE_EVENT_NAME, mergedSurvey);
             }
         }
 
