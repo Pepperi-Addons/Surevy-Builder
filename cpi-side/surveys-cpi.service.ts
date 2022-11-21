@@ -211,7 +211,10 @@ class SurveysService {
     
             if (surveyTemplate) {
                 this.mergeSurveyIntoTemplateData(survey, surveyTemplate);
-                this.calcShowIf(surveyTemplate);
+
+                if (calcShowIf) {
+                    this.calcShowIf(surveyTemplate);
+                }
             }
         } else {
             // TODO: Throw survey has no template.
