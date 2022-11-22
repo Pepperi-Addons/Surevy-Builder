@@ -17,7 +17,7 @@
 
     <ng-container pep-main-area>
         <div #sectionsCont [ngClass]="{ 'editable-state': editMode }" cdkDropListGroup class="sections-container" cdkDropList (cdkDropListDropped)="onSectionDropped($event)" >
-            <section *ngFor="let section of sections$ | async; let i=index;" [hasError]="isValidSection(i)"
+            <section *ngFor="let section of sections$ | async; let i=index;" [hasError]="isValidSection(i)" [disabled]="isSubmitted"
                 [sectionsQuestionsDropList]="sectionsQuestionsDropList" [index]="i" [title]="section.Title" [description]="section.Description" [isActive]="section === selectedSection"
                 [questions]="section.Questions" [showIf]="(section.ShowIf && section.IsShowIf ? section.ShowIf : '')" [screenSize]="screenSize" [editable]="editMode"
                 >

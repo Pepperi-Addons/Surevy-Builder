@@ -23,7 +23,7 @@ export class SectionComponent implements OnInit {
 
     @Input() title: string;
     @Input() description: string;
-    
+    @Input() disabled: boolean = false;
     @Input() isActive: boolean = false;
     @Input() hasError: boolean = false;
 

@@ -23,22 +23,22 @@
             
             <ng-container [ngSwitch]="question.Type">
                 <ng-container *ngSwitchCase="'short-text'">
-                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
+                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
                         [maxFieldCharacters]="question?.MaxCharacters?.length > 0 ? question.MaxCharacters : 'undefined'"
                         (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
                 </ng-container>
                 <ng-container *ngSwitchCase="'long-text'">
-                    <pep-textarea [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
+                    <pep-textarea [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
                     [maxFieldCharacters]="question?.MaxCharacters?.length > 0 ? question.MaxCharacters : 'undefined'"
                         [rowSpan]="2" (valueChange)="onQuestionValueChanged($event)"></pep-textarea>
                 </ng-container>
                 <ng-container *ngSwitchCase="'single-selection-dropdown'">
-                    <pep-select [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
+                    <pep-select [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
                         [options]="question?.OptionalValues" (valueChange)="onQuestionValueChanged($event)" [emptyOption]="question?.AddNoneOption">
                     </pep-select>
                 </ng-container>
                 <ng-container *ngSwitchCase="'multiple-selection-dropdown'">
-                    <pep-select [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
+                    <pep-select [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
                         type="multi" [options]="question?.OptionalValues" [emptyOption]="question?.AddNoneOption"
                         (valueChange)="onQuestionValueChanged($event)"></pep-select>
                 </ng-container>
@@ -48,7 +48,7 @@
                         [renderTitle]="false"
                         [mandatory]="question?.Mandatory"
                         [isMultiSelect]="false"
-                        [disabled]="false"
+                        [disabled]="disabled"
                         [numOfCol]="question?.selectionColumns"
                         [options]="question?.OptionalValues"
                         (valueChange)="onQuestionValueChanged($event)">
@@ -60,40 +60,40 @@
                         [renderTitle]="false"
                         [mandatory]="question?.Mandatory"
                         [isMultiSelect]="true"
-                        [disabled]="false"
+                        [disabled]="disabled"
                         [numOfCol]="question.selectionColumns"
                         [options]="question?.OptionalValues"
                         (valueChange)="onQuestionValueChanged($event)">
                     </pep-select-panel>
                 </ng-container>
                 <ng-container *ngSwitchCase="'boolean-toggle'">
-                    <survey-yes-no-question [value]="question.Value" [mandatory]="question?.Mandatory" 
+                    <survey-yes-no-question [value]="question.Value" [mandatory]="question?.Mandatory" [disabled]="disabled"
                         [yesTitle]="question?.True || ('SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.YES' | translate)" 
                         [noTitle]="question?.False || ('SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.NO' | translate)"
                         (valueChange)="onQuestionValueChanged($event)"></survey-yes-no-question>
                 </ng-container>
                 <ng-container *ngSwitchCase="'number'">
-                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
+                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
                         type="int" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
                 </ng-container>
                 <ng-container *ngSwitchCase="'decimal'">
-                    <pep-textbox [minFractionDigits]="question?.Value" [maxFractionDigits]="question?.Value" [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
+                    <pep-textbox [minFractionDigits]="question?.Value" [maxFractionDigits]="question?.Value" [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
                         type="real" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
                 </ng-container>
                 <ng-container *ngSwitchCase="'currency'">
-                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
+                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
                         type="currency" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
                 </ng-container>
                 <ng-container *ngSwitchCase="'percentage'">
-                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
+                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
                         type="percentage" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
                 </ng-container>
                 <ng-container *ngSwitchCase="'date'">
-                    <pep-date [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
+                    <pep-date [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
                         type="date" (valueChange)="onQuestionValueChanged($event)"></pep-date>
                 </ng-container>
                 <ng-container *ngSwitchCase="'datetime'">
-                    <pep-date [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false"
+                    <pep-date [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
                         type="datetime" (valueChange)="onQuestionValueChanged($event)"></pep-date>
                 </ng-container>
                 <ng-container *ngSwitchDefault>

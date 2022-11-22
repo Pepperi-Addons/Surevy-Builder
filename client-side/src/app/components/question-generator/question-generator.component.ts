@@ -15,6 +15,7 @@ export class QuestionGeneratorComponent implements OnInit {
     @Input() sequenceNumber: string;
     @Input() isActive: boolean = false;
     @Input() hasError: boolean = false;
+    @Input() disabled: boolean = false;
 
     private _editable = false;
     @Input()

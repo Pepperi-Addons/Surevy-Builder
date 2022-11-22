@@ -233,16 +233,15 @@ class SurveysService {
         const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey);
         
         if (surveyTemplate) {
-            let canChangeProperty = survey.hasOwnProperty(propertyName);
+            let canChangeProperty = true;
 
-            if (canChangeProperty && propertyName === 'Status') {
+            if (propertyName === 'Status') {
                 const status: SurveyStatusType = value as SurveyStatusType;
                 canChangeProperty = (status === 'Submitted') ? await this.validateSurvey(survey) : true;
             }
 
             if (canChangeProperty) {
-                survey[propertyName] = propertyName;
-                surveyTemplate[propertyName] = propertyName;
+                survey[propertyName] = surveyTemplate[propertyName] = value;
                 await this.setSurveyModel(client, survey);
             }
         }
