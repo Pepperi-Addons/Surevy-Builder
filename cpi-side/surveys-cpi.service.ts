@@ -70,7 +70,7 @@ class SurveysService {
                     for (let questionIndex = 0; questionIndex < section.Questions?.length; questionIndex++) {
                         const question = section.Questions[questionIndex];
                         
-                        // Set the value is break this loop
+                        // Set the value and break this loop
                         if (question.Key === answer?.QuestionKey) {
                             question.Value = answer?.Value;
                             valueIsSet = true;

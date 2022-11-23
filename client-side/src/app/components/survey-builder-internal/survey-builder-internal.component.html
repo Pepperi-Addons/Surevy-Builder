@@ -7,8 +7,8 @@
             <div header-end-content>
                 <!-- <pep-menu class="pep-spacing-element" [items]="pepMenuItems" (menuItemClick)="onMenuItemClicked($event)"  sizeType="sm">
                 </pep-menu> -->
-                <pep-button [value]="('Close' | translate)" class="pep-spacing-element" (buttonClick)="onCloseSurvey()" sizeType="sm"></pep-button>
-                <pep-button [value]="isSubmitted ? ('Edit' | translate) : ('Submit' | translate)" class="pep-spacing-element" styleType="strong"  sizeType="sm"
+                <pep-button [value]="('ACTIONS.CLOSE' | translate)" class="pep-spacing-element" (buttonClick)="onCloseSurvey()" sizeType="sm"></pep-button>
+                <pep-button [value]="isSubmitted ? ('ACTIONS.EDIT' | translate) : ('ACTIONS.SAVE' | translate)" class="pep-spacing-element" styleType="strong"  sizeType="sm"
                     [iconName]="isSubmitted ? 'system_edit' : ''" [iconPosition]="'start'"
                     (buttonClick)="onChangeSurveyStatus()"></pep-button>
             </div>
