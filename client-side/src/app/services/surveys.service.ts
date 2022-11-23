@@ -8,7 +8,7 @@ import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
 import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData,
-    SurveyTemplateQuestion, SurveyTemplateQuestionType, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME, SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME, SurveyStatusType } from 'shared';
+    SurveyTemplateQuestion, SurveyTemplateQuestionType, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME, SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME, SurveyStatusType, SURVEY_UNLOAD_CLIENT_EVENT_NAME } from 'shared';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { PepQueryBuilderComponent, IPepQueryBuilderField } from "@pepperi-addons/ngx-lib/query-builder";
 import { ShowIfDialogComponent } from '../components/dialogs/show-if-dialog/show-if-dialog.component';
@@ -595,52 +595,20 @@ export class SurveysService {
         return this.httpService.getHttpCall(`${baseUrl}/remove_survey_template?key=${surveyTemplateKey}`);
     }
 
-    loadSurveyTemplateBuilder(addonUUID: string, key: string, editable: boolean, queryParameters: Params): void {
-        //  If is't not edit mode get the survey from the CPI side.
+    loadSurveyTemplateBuilder(addonUUID: string, key: string, queryParameters: Params): void {
         const baseUrl = this.getBaseUrl(addonUUID);
- 
-        if (!editable) {
-            // Save the survey model key.
-            this._surveyModelKey = key;
 
-            const eventData = {
-                detail: {
-                    eventKey: SURVEY_LOAD_CLIENT_EVENT_NAME,
-                    eventData: {
-                        ObjectKey: key
-                    },
-                    completion: (survey) => {
-                        // debugger;
-                        this.notifySurveyChange(survey);
-                    }
+        // Get the survey (sections and the questions data) from the server.
+        this.httpService.getHttpCall(`${baseUrl}/get_survey_template_builder_data?key=${key}`)
+            .subscribe((res: ISurveyTemplateBuilderData) => {
+                if (res && res.survey) {
+                    // Load the survey.
+                    this.notifySurveyChange(res.survey);
                 }
-            };
-    
-            const customEvent = new CustomEvent('emit-event', eventData);
-            window.dispatchEvent(customEvent);
-
-            // const baseUrlCPI = `http://localhost:8088/addon/api/${config.AddonUUID}/addon-cpi`;
-            // // Get the survey (sections and the questions data) from the server.
-            // this.httpService.getHttpCall(`${baseUrl}/get_survey_template_data?key=${key}`)
-            //     .subscribe((res: ISurveyTemplateBuilderData) => {
-            //         if (res && res.survey) {
-            //             // Load the survey.
-            //             this.notifySurveyChange(res.survey);
-            //         }
-            //     });
-        } else { // If is't edit mode get the data of the survey and the relations from the Server side.
-            // Get the survey (sections and the questions data) from the server.
-            this.httpService.getHttpCall(`${baseUrl}/get_survey_template_builder_data?key=${key}`)
-                .subscribe((res: ISurveyTemplateBuilderData) => {
-                    if (res && res.survey) {
-                        // Load the survey.
-                        this.notifySurveyChange(res.survey);
-                    }
-                });
-        }
+            });
     }
 
-    unloadSurveyTemplateBuilder() {
+    unloadSurveyData() {
         this.notifySectionsChange([], false);
         this.notifySurveyChange(null);
         this._surveyModelKey = '';
@@ -670,11 +638,46 @@ export class SurveysService {
         return this.httpService.postHttpCall(`${baseUrl}/publish_survey_template`, body);
     }
 
-    onSurveyStatusChange(status: SurveyStatusType): void {
-        if (this._surveyModelKey.length > 0) {
-            // const survey: SurveyTemplate = this._surveySubject.getValue();
-            // survey.Status = status;
+    loadSurvey(surveyKey: string): void {
+        // Save the survey model key.
+        this._surveyModelKey = surveyKey;
 
+        const eventData = {
+            detail: {
+                eventKey: SURVEY_LOAD_CLIENT_EVENT_NAME,
+                eventData: {
+                    ObjectKey: surveyKey
+                },
+                completion: (survey: SurveyTemplate) => {
+                    // debugger;
+                    this.notifySurveyChange(survey);
+                }
+            }
+        };
+
+        const customEvent = new CustomEvent('emit-event', eventData);
+        window.dispatchEvent(customEvent);
+    }
+
+    unloadSurvey(): void {
+        if (this._surveyModelKey.length > 0) {
+            const eventData = {
+                detail: {
+                    eventKey: SURVEY_UNLOAD_CLIENT_EVENT_NAME,
+                    eventData: {},
+                    completion: (res) => {
+                        // debugger;
+                    }
+                }
+            };
+        
+            const customEvent = new CustomEvent('emit-event', eventData);
+            window.dispatchEvent(customEvent);
+        }
+    }
+
+    changeSurveyStatus(status: SurveyStatusType): void {
+        if (this._surveyModelKey.length > 0) {
             const eventData = {
                 detail: {
                     eventKey: SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
@@ -683,7 +686,7 @@ export class SurveysService {
                         FieldID: 'Status',
                         Value: status
                     },
-                    completion: (survey) => {
+                    completion: (survey: SurveyTemplate) => {
                         // debugger;
                         // Notify survey change to update survey object with all changes (like show if questions if added or removed).
                         this.notifySurveyChange(survey);
@@ -696,16 +699,8 @@ export class SurveysService {
         }
     }
 
-    onSurveyQuestionValueChange(questionKey: string, value: any): void {
+    changeSurveyQuestionValue(questionKey: string, value: any): void {
         if (this._surveyModelKey.length > 0) {
-            // const survey: SurveyTemplate = this._surveySubject.getValue();
-            
-            // // Set the question value
-            // survey.Sections.every(s => {
-            //     const currentQuestion = s.Questions.find(q => q.Key === questionKey);
-            //     currentQuestion.Value = value;
-            // });
-
             const eventData = {
                 detail: {
                     eventKey: SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME,
@@ -714,7 +709,7 @@ export class SurveysService {
                         FieldID: questionKey,
                         Value: value
                     },
-                    completion: (survey) => {
+                    completion: (survey: SurveyTemplate) => {
                         // debugger;
                         // Notify survey change to update survey object with all changes (like show if questions if added or removed).
                         this.notifySurveyChange(survey);

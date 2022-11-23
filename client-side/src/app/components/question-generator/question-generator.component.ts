@@ -65,7 +65,7 @@ export class QuestionGeneratorComponent implements OnInit {
     
     onQuestionValueChanged(value: any): void {
         this.question.Value = value;
-        this.surveysService.onSurveyQuestionValueChange(this.question.Key, value);
+        this.surveysService.changeSurveyQuestionValue(this.question.Key, value);
     }
     
     onStateChange(event: IPepMenuStateChangeEvent) {
