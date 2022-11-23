@@ -17,7 +17,9 @@ class SurveysService {
         // });
         // return survey.object as Survey;
 
-        const survey = await pepperi.resources.resource(SURVEYS_TABLE_NAME).key(surveyKey).get();
+        // const survey = await pepperi.resources.resource(SURVEYS_TABLE_NAME).key(surveyKey).get();
+        const surveys = await pepperi.resources.resource(SURVEYS_TABLE_NAME).get({});// key(surveyKey).get();
+        const survey = surveys.find(s => s.Key === surveyKey);
         return survey as Survey;
     }
 
@@ -43,8 +45,10 @@ class SurveysService {
         
         // return survey.object as SurveyTemplate;
         
-        const survey = await pepperi.resources.resource(SURVEY_TEMPLATES_TABLE_NAME).key(surveyTemplateKey).get();
-        return survey as SurveyTemplate;
+        // const survey = await pepperi.resources.resource(SURVEY_TEMPLATES_TABLE_NAME).key(surveyTemplateKey).get();
+        const surveyTemplates = await pepperi.resources.resource(SURVEY_TEMPLATES_TABLE_NAME).get({});// key(surveyKey).get();
+        const surveyTemplate = surveyTemplates.find(s => s.Key === surveyTemplateKey);
+        return surveyTemplate as SurveyTemplate;
     }
     
     // Calc the merge survey template object.
