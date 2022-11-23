@@ -43,8 +43,8 @@
                         (valueChange)="onQuestionValueChanged($event)"></pep-select>
                 </ng-container>
                 <ng-container *ngSwitchCase="'single-selection-radiobuttons'">
-                    <!-- [value]="question.Value"  -->
                     <pep-select-panel 
+                        [value]="question.Value" 
                         [renderTitle]="false"
                         [mandatory]="question?.Mandatory"
                         [isMultiSelect]="false"
@@ -55,8 +55,8 @@
                     </pep-select-panel>
                 </ng-container>
                 <ng-container *ngSwitchCase="'multiple-selection-checkboxes'">
-                    <!-- [value]="question.Value"  -->
                     <pep-select-panel 
+                        [value]="question.Value" 
                         [renderTitle]="false"
                         [mandatory]="question?.Mandatory"
                         [isMultiSelect]="true"
