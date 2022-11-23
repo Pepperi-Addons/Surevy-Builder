@@ -1,6 +1,6 @@
 import '@pepperi-addons/cpi-node'
 import SurveysService from './surveys-cpi.service';
-import { SURVEY_LOAD_EVENT_NAME, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
+import { SURVEY_LOAD_EVENT_NAME, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_UNLOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
     SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME, SURVEY_QUESTION_CHANGE_EVENT_NAME, SurveyTemplate } from 'shared';
 export const router = Router();
 
@@ -8,6 +8,7 @@ export async function load(configuration: any) {
     // console.log('cpi side works!');
     // Put your cpi side code here
 
+    // Handle on survey load
     pepperi.events.intercept(SURVEY_LOAD_CLIENT_EVENT_NAME as any, {}, async (data): Promise<any> => {
         // Handle on survey load
         const surveyKey = data.ObjectKey;
@@ -34,6 +35,11 @@ export async function load(configuration: any) {
         }
 
         return mergedSurvey;
+    });
+
+    // Handle on survey unload
+    pepperi.events.intercept(SURVEY_UNLOAD_CLIENT_EVENT_NAME as any, {}, async (data): Promise<any> => {
+        await data.client?.navigateBack();
     });
 
     // Handle on survey field change

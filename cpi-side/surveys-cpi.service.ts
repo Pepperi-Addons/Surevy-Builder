@@ -5,55 +5,46 @@ import { filter } from '@pepperi-addons/pepperi-filters';
 import config from '../addon.config.json';
 class SurveysService {
     // private readonly SURVEY_ADDON_UUID = 'dd0a85ea-7ef0-4bc1-b14f-959e0372877a';
-    private readonly UDC_ADDON_UUID = '122c0e9d-c240-4865-b446-f37ece866c22';
+    // private readonly UDC_ADDON_UUID = '122c0e9d-c240-4865-b446-f37ece866c22';
 
     constructor() {}
 
     private async getSurveyModel(client: IClient | undefined, surveyKey: string): Promise<Survey> {
-        // TODO: Implement this - from Generic resource
-        
-        // const options = {
-        //     url: `addon-cpi/get_surveys_by_key?key=${surveyKey}`, //http://localhost:8088
-        //     client: client
-        // }
-        
-        // const survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).get(options);
-        // return survey.object;
-        const survey = await pepperi.api.adal.get({
-            addon: this.UDC_ADDON_UUID,
-            table: SURVEYS_TABLE_NAME,
-            key: surveyKey
-        });
-        return survey.object as Survey;
+        // const survey = await pepperi.api.adal.get({
+        //     addon: this.UDC_ADDON_UUID,
+        //     table: SURVEYS_TABLE_NAME,
+        //     key: surveyKey
+        // });
+        // return survey.object as Survey;
+
+        const survey = await pepperi.resources.resource(SURVEYS_TABLE_NAME).key(surveyKey).get();
+        return survey as Survey;
     }
 
     private async setSurveyModel(client: IClient | undefined, survey: Survey): Promise<Survey> {
-        // const options = {
-        //     url: `addon-cpi/surveys`,
-        //     body: survey,
-        //     client: client
-        // }
-        
-        // survey = await pepperi.addons.api.uuid(this.SURVEY_ADDON_UUID).post(options);
-        // return survey;
-        const res = await pepperi.api.adal.upsert({
-            addon: this.UDC_ADDON_UUID,
-            table: SURVEYS_TABLE_NAME,
-            object: survey as any,
-            indexedField: ''
-        });
+        // const res = await pepperi.api.adal.upsert({
+        //     addon: this.UDC_ADDON_UUID,
+        //     table: SURVEYS_TABLE_NAME,
+        //     object: survey as any,
+        //     indexedField: ''
+        // });
 
-        return res.object as Survey;
+        // return res.object as Survey;
+        const res = await pepperi.resources.resource(SURVEYS_TABLE_NAME).post(survey);
+        return res as Survey;
     }
 
     private async getSurveyTemplate(surveyTemplateKey: string): Promise<SurveyTemplate> {
-        const survey = await pepperi.api.adal.get({
-            addon: this.UDC_ADDON_UUID,
-            table: SURVEY_TEMPLATES_TABLE_NAME,
-            key: surveyTemplateKey
-        });
+        // const survey = await pepperi.api.adal.get({
+        //     addon: this.UDC_ADDON_UUID,
+        //     table: SURVEY_TEMPLATES_TABLE_NAME,
+        //     key: surveyTemplateKey
+        // });
         
-        return survey.object as SurveyTemplate;
+        // return survey.object as SurveyTemplate;
+        
+        const survey = await pepperi.resources.resource(SURVEY_TEMPLATES_TABLE_NAME).key(surveyTemplateKey).get();
+        return survey as SurveyTemplate;
     }
     
     // Calc the merge survey template object.
@@ -150,11 +141,8 @@ class SurveysService {
         }
     }
 
-    private async validateSurvey(survey: Survey): Promise<boolean> {
-        let isValid = true;
-
-        const surveyTemplate = await this.getSurveyTemplate(survey.Template);
-        this.mergeSurveyIntoTemplateData(survey, surveyTemplate);
+    private validateSurvey(surveyTemplate: SurveyTemplate): string {
+        let errorMsg = '';
 
         for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
             const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
@@ -164,17 +152,17 @@ class SurveysService {
             
                 // If this questions is mandatory and the value is empty.
                 if (question.Mandatory && (question.Value === undefined || question.Value === null || question.Value.length === 0)) {
-                    isValid = false;
+                    errorMsg = `${question.Title} is mandatory, please set value.`;
                     break;
                 }
             }
 
-            if (!isValid) {
+            if (errorMsg.length > 0) {
                 break;
             }
         }
 
-        return isValid;
+        return errorMsg;
     }
 
     private setSurveyQuestionValue(surveyTemplate: SurveyTemplate, questionKey: string, value: any): boolean {
@@ -233,16 +221,30 @@ class SurveysService {
         const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey);
         
         if (surveyTemplate) {
+            let needToNavigateBack = false;
             let canChangeProperty = true;
+            let errorMessage = '';
 
+            // If the survey field is Status
             if (propertyName === 'Status') {
                 const status: SurveyStatusType = value as SurveyStatusType;
-                canChangeProperty = (status === 'Submitted') ? await this.validateSurvey(survey) : true;
+
+                // If the status is 'Submitted' (If there is no error navigate back after save).
+                if (status === 'Submitted') {
+                    errorMessage = this.validateSurvey(surveyTemplate);
+                    canChangeProperty = needToNavigateBack = errorMessage.length === 0;
+                }
             }
 
             if (canChangeProperty) {
                 survey[propertyName] = surveyTemplate[propertyName] = value;
                 await this.setSurveyModel(client, survey);
+
+                if (needToNavigateBack) {
+                    await client?.navigateBack();
+                }
+            } else {
+                await client?.alert('Validation failed', errorMessage);
             }
         }
 

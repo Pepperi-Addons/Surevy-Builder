@@ -9,6 +9,8 @@ export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplatesDrafts';
 
 export const SURVEY_LOAD_EVENT_NAME = 'OnSurveyLoad';
 export const SURVEY_LOAD_CLIENT_EVENT_NAME = 'OnClientSurveyLoad';
+export const SURVEY_UNLOAD_EVENT_NAME = 'OnSurveyUnload';
+export const SURVEY_UNLOAD_CLIENT_EVENT_NAME = 'OnClientSurveyUnload';
 export const SURVEY_FIELD_CHANGE_EVENT_NAME = 'OnSurveyFieldChange';
 export const SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyFieldChange';
 export const SURVEY_QUESTION_CHANGE_EVENT_NAME = 'OnSurveyQuestionChange';
