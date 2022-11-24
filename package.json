@@ -15,6 +15,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@pepperi-addons/ngx-lib": "^0.4.1-beta.38",
 		"@pepperi-addons/scripts": "^2.0.12"
 	}
 }
