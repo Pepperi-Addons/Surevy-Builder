@@ -156,7 +156,7 @@ class SurveysService {
             
                 // If this questions is mandatory and the value is empty.
                 if (question.Mandatory && (question.Value === undefined || question.Value === null || question.Value.length === 0)) {
-                    errorMsg = `${question.Title} is mandatory, please set value.`;
+                    errorMsg = `"${question.Title}" question is mandatory, please set a value.`;
                     break;
                 }
             }
