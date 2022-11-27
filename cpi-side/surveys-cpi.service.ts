@@ -110,8 +110,8 @@ class SurveysService {
                 let shouldBeVisible = true;
                 const question = section.Questions[questionIndex];
 
-                if (question.ShowIf && question.ShowIf.length > 0) {
-                    const showIf = JSON.parse(question.ShowIf);
+                if (question.ShowIf) {
+                    const showIf = question.ShowIf;
                     
                     // Call pepperi filters to apply this.
                     shouldBeVisible = filter([questionsObject], showIf).length > 0;
@@ -156,7 +156,7 @@ class SurveysService {
             
                 // If this questions is mandatory and the value is empty.
                 if (question.Mandatory && (question.Value === undefined || question.Value === null || question.Value.length === 0)) {
-                    errorMsg = `"${question.Title}" question is mandatory, please set a value.`;
+                    errorMsg = `"${question.Title}" is mandatory`;
                     break;
                 }
             }
@@ -222,37 +222,65 @@ class SurveysService {
     }
 
     async onSurveyFieldChange(client: IClient | undefined, surveyKey: string, propertyName: string, value: any): Promise<SurveyTemplate | null> {
-        const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey);
+
+        const hudOptions = {
+            // HUD's message
+            message: 'Waiting....', // optional (default value is '')
         
-        if (surveyTemplate) {
-            let needToNavigateBack = false;
-            let canChangeProperty = true;
-            let errorMessage = '';
+            // adds a button with text to the HUD
+            closeMessage: 'Press to close', // optional - (default is '' and the botton is hidden)
+        
+            //display the HUD after the delay time (the block runs in the meantime)
+            delay: 0.1, //optional - (default value is 0.5)
+        
+            // block of code that will run in background while the HUD is showing.
+            block: async (updateMessage) => {
+                const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey);
+                let shouldNavigateBack = false;
+                let errorMessage = '';
+        
+                if (surveyTemplate) {
+                    let canChangeProperty = true;
 
-            // If the survey field is Status
-            if (propertyName === 'Status') {
-                const status: SurveyStatusType = value as SurveyStatusType;
+                    // If the survey field is Status
+                    if (propertyName === 'Status') {
+                        const status: SurveyStatusType = value as SurveyStatusType;
 
-                // If the status is 'Submitted' (If there is no error navigate back after save).
-                if (status === 'Submitted') {
-                    errorMessage = this.validateSurvey(surveyTemplate);
-                    canChangeProperty = needToNavigateBack = errorMessage.length === 0;
+                        // If the status is 'Submitted' (If there is no error navigate back after save).
+                        if (status === 'Submitted') {
+                            errorMessage = this.validateSurvey(surveyTemplate);
+                            canChangeProperty = shouldNavigateBack = errorMessage.length === 0;
+                        }
+                    }
+
+                    if (canChangeProperty) {
+                        survey[propertyName] = surveyTemplate[propertyName] = value;
+                        await this.setSurveyModel(client, survey);
+
+                        // if (needToNavigateBack) {
+                        //     await client?.navigateBack();
+                        // }
+                    } else {
+                        // Wait for delay.
+                        await new Promise((resolve) => setTimeout(resolve, 250));
+                        await client?.alert('Notice', errorMessage);
+                    }
                 }
-            }
 
-            if (canChangeProperty) {
-                survey[propertyName] = surveyTemplate[propertyName] = value;
-                await this.setSurveyModel(client, survey);
+                return { surveyTemplate, errorMessage, shouldNavigateBack};
+            },
+        };
 
-                if (needToNavigateBack) {
-                    await client?.navigateBack();
-                }
-            } else {
-                await client?.alert('Validation failed', errorMessage);
-            }
+        const res = await client?.showHUD(hudOptions);
+
+        // if (res?.result?.errorMessage.length > 0) {
+        //     await client?.alert('Notice', res?.result?.errorMessage);
+        // } else 
+        if (res?.result?.shouldNavigateBack) {
+            await client?.navigateBack();
         }
 
-        return surveyTemplate;
+        return res?.result?.surveyTemplate;
     }
 
     async onSurveyQuestionChange(client: IClient | undefined, surveyKey: string, questionKey: string, value: any): Promise<SurveyTemplate | null> {
@@ -275,18 +303,18 @@ class SurveysService {
     }
 
     // Temp function 
-    removeShowIfs(surveyTemplate: SurveyTemplate) {
-        for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
-            const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
+    // removeShowIfs(surveyTemplate: SurveyTemplate) {
+    //     for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
+    //         const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
 
-            for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
-                const question = section.Questions[questionIndex];
+    //         for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
+    //             const question = section.Questions[questionIndex];
 
-                if (question.ShowIf) {
-                    delete question.ShowIf;
-                }
-            }
-        }
-    }
+    //             if (question.ShowIf) {
+    //                 delete question.ShowIf;
+    //             }
+    //         }
+    //     }
+    // }
 }
 export default SurveysService;
