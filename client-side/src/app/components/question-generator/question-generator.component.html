@@ -6,7 +6,7 @@
     </div>
 
     <div class="question-with-sequence-container" [ngClass]="{ 'editable-state': editable }">
-        <survey-show-if-badge *ngIf="editable" [showIf]="(question.ShowIf && question.IsShowIf ? question.ShowIf : '')"></survey-show-if-badge>
+        <survey-show-if-badge *ngIf="editable" [showIf]="(question.ShowIf)"></survey-show-if-badge>
      
         <survey-sequence-number *ngIf="editable" cdkDragHandle [value]="sequenceNumber" (mousedown)="onQuestionClicked($event)" ></survey-sequence-number>
 

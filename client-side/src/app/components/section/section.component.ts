@@ -28,7 +28,7 @@ export class SectionComponent implements OnInit {
     @Input() hasError: boolean = false;
 
     @Input() questions: Array<SurveyTemplateQuestion>;
-    @Input() showIf: string;
+    @Input() showIf: boolean = false;
     
     @Input() sectionsQuestionsDropList = [];
 

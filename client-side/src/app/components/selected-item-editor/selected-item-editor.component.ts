@@ -44,7 +44,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
 
     
     onQuestionEditorFieldChanged(key,value) {
-        const oldValue = this.question[key];
+        // const oldValue = this.question[key];
         this.question[key] = value;
 
         // Clear the show if value

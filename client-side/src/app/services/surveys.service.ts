@@ -550,7 +550,7 @@ export class SurveysService {
     openShowIfDialog() {        
         const config = this.dialog.getDialogConfig({ minWidth: '30rem' }, 'large');
         const selectedQuestion = this.getSelectedQuestion();
-        const query = selectedQuestion && selectedQuestion.ShowIf?.length > 0 ? JSON.parse(selectedQuestion.ShowIf) : null;
+        const query = selectedQuestion?.ShowIf?? null;
 
         const data = new PepDialogData({ 
             actionsType: 'cancel-ok',
@@ -567,7 +567,7 @@ export class SurveysService {
                 const selectedQuestion = this.getSelectedQuestion();
                 
                 if (selectedQuestion && res.query) {
-                    selectedQuestion.ShowIf = JSON.stringify(res.query);
+                    selectedQuestion.ShowIf = res.query;
                 } 
             }     
         });

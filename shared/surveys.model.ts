@@ -62,7 +62,7 @@ export interface SurveyTemplateSection {
     Title: string;  
     Description?: string;
     Questions: SurveyTemplateQuestion[];
-    // ShowIf?: string;
+    // ShowIf?: any;
 }
 
 export type SurveyTemplateQuestionType = 'short-text' | 'long-text' 
@@ -82,7 +82,7 @@ export interface SurveyTemplateQuestion {
     Description?: string;
     Type: SurveyTemplateQuestionType;
     Mandatory?: boolean; 
-    ShowIf?: string;
+    ShowIf?: any;
     Value?: any;
     Visible?: boolean;
     [key: string]: any;

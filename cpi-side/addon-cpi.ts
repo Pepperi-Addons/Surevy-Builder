@@ -26,8 +26,8 @@ export async function load(configuration: any) {
             // await data.client?.alert('survey load - after', `${JSON.stringify(mergedSurvey)}`);
             
             if (mergedSurvey) {
-                // TODO: Remove this.
-                service.removeShowIfs(mergedSurvey);
+                // // TODO: Remove this.
+                // service.removeShowIfs(mergedSurvey);
 
                 // Emit server event SURVEY_LOAD_EVENT_NAME
                 // pepperi.events.emit(SURVEY_LOAD_EVENT_NAME, mergedSurvey);
@@ -57,8 +57,8 @@ export async function load(configuration: any) {
             // await data.client?.alert('field change - after', `${JSON.stringify(mergedSurvey)}`);
 
             if (mergedSurvey) {
-                // TODO: Remove this.
-                service.removeShowIfs(mergedSurvey);
+                // // TODO: Remove this.
+                // service.removeShowIfs(mergedSurvey);
 
                 // Emit server event SURVEY_STATUS_CHANGE_EVENT_NAME
                 // pepperi.events.emit(SURVEY_FIELD_CHANGE_EVENT_NAME, data);
@@ -85,8 +85,8 @@ export async function load(configuration: any) {
             // await data.client?.alert('question change - after', `${JSON.stringify(mergedSurvey)}`);
             
             if (mergedSurvey) {
-                // TODO: Remove this.
-                service.removeShowIfs(mergedSurvey);
+                // // TODO: Remove this.
+                // service.removeShowIfs(mergedSurvey);
 
                 // Emit server event SURVEY_QUESTION_CHANGE_EVENT_NAME
                 // pepperi.events.emit(SURVEY_QUESTION_CHANGE_EVENT_NAME, mergedSurvey);
