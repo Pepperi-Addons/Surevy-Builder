@@ -228,7 +228,7 @@ class SurveysService {
             message: 'Waiting....', // optional (default value is '')
         
             // adds a button with text to the HUD
-            closeMessage: 'Press to close', // optional - (default is '' and the botton is hidden)
+            // closeMessage: 'Press to close', // optional - (default is '' and the botton is hidden)
         
             //display the HUD after the delay time (the block runs in the meantime)
             delay: 0.1, //optional - (default value is 0.5)
@@ -262,7 +262,7 @@ class SurveysService {
                         // }
                     } else {
                         // Wait for delay.
-                        await new Promise((resolve) => setTimeout(resolve, 250));
+                        await new Promise((resolve) => setTimeout(resolve, 150));
                         await client?.alert('Notice', errorMessage);
                     }
                 }
