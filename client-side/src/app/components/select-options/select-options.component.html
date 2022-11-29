@@ -34,7 +34,7 @@
                     [value]="opt.option.key" (valueChange)="onQuestionOptionChanged('key',$event,opt)" [mandatory]="true">
                 </pep-textbox>
                 <pep-textarea [key]="'question'" (valueChange)="onQuestionOptionChanged('value',$event,opt)" 
-                  [value]="opt.option.value" [mandatory]="true" [rowSpan]="1.5"
+                  [value]="opt.option.value" [mandatory]="false" [rowSpan]="1.5"
                   [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TYPE_YOUR_OPTION' | translate">
                 </pep-textarea>
             </div>

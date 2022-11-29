@@ -38,11 +38,9 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     }
 
     onQuestionValueChanged(value: any): void {
-        // debugger; //dfgdfg
         // TODO: implement
     }
 
-    
     onQuestionEditorFieldChanged(key,value) {
         // const oldValue = this.question[key];
         this.question[key] = value;
@@ -55,6 +53,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
         this.surveysService.updateQuestionFromEditor(this.question);
 
         if(key == 'Key' || key == 'Title'){
+
             if(!this.validationService.validateSurvey()){
               this.validationService.showValidationInfo();
             }
@@ -94,8 +93,14 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     selectOptionChanged(event){
         let options: Array<any> = [];
         event.forEach(opt => {
+           
+            opt.option.value = opt.option.value.trim() == '' ? opt.option.key : opt.option.value;
             options.push({key: opt.option.key, value: opt.option.value});
         });
+
+        if(!this.validationService.validateSurvey()){
+            this.validationService.showValidationInfo();
+        }
 
         this.question['OptionalValues'] = options;
         this.surveysService.updateQuestionFromEditor(this.question);
