@@ -176,7 +176,6 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     selectOptionChanged(event) {
         let options: Array<any> = [];
         event.forEach(opt => {
-           
             opt.option.value = opt.option.value.trim() == '' ? opt.option.key : opt.option.value;
             options.push({key: opt.option.key, value: opt.option.value});
         });
@@ -199,5 +198,6 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
 
     onItemDeleteClicked() {
         this.surveysService.deleteSelectedItem();
+        this.validationService.validateSurvey();
     }
 }

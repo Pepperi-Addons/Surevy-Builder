@@ -51,6 +51,7 @@ export class QuestionGeneratorComponent implements OnInit {
 
     onDragEnd(event: CdkDragEnd) {
         this.surveysService.onQuestionDragEnd(event);
+        this.validationService.validateSurvey();
     }
 
     onQuestionClicked(event: any) {
