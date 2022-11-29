@@ -121,6 +121,8 @@
         "SURVEY_RESTORED": "Survey Restored"
     },
     "VALIDATION": {
+        "QUESTION": "Question",
+        "OPTION": "Option",
         "FAILED_MSG": "Validation failed",
         "KEY_MISSING": "Key is missing",
         "NAME_MISSING": "Name is missing",

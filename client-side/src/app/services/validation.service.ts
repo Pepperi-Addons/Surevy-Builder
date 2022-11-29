@@ -25,6 +25,7 @@ export class ValidationService {
     ) {}
 
     validateSurvey(): boolean{
+        
         this.failedOnValidation = [];
         
         const survey: SurveyTemplate = this.surveysService.getSurvey();
@@ -85,7 +86,7 @@ export class ValidationService {
                     question.OptionalValues.forEach((opt, optIndex) => {
                         const index = `${secIndex.toString()}.${quesIndex.toString()}`; // .${(optIndex+1).toString()}
                         if(opt.key.trim() == ''){
-                            const msg = `'question' ${index} 'option' ${optIndex+1} ${this.translate.instant('VALIDATION.KEY_MISSING')}`;
+                            const msg = `'${this.translate.instant('VALIDATION.QUESTION')}' ${index} '${this.translate.instant('VALIDATION.OPTION')}' ${optIndex+1} ${this.translate.instant('VALIDATION.KEY_MISSING')}`;
                             this.mandaitoryfields.push( (new SurveyObjValidator('question','Key', index , msg)));
                             
                         }

@@ -98,9 +98,9 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
             options.push({key: opt.option.key, value: opt.option.value});
         });
 
-        if(!this.validationService.validateSurvey()){
-            this.validationService.showValidationInfo();
-        }
+        // if(!this.validationService.validateSurvey()){
+        //     this.validationService.showValidationInfo();
+        // }
 
         this.question['OptionalValues'] = options;
         this.surveysService.updateQuestionFromEditor(this.question);
@@ -116,5 +116,6 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
 
     onItemDeleteClicked() {
         this.surveysService.deleteSelectedItem();
+        this.validationService.validateSurvey();
     }
 }
