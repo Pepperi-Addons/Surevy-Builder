@@ -14,7 +14,7 @@
     (btnkeyChange)="onQuestionEditorFieldChanged('selectionColumns',$event)">
 </pep-group-buttons-settings>
 </ng-container>
-<div class="options-container" (cdkDropListDropped)="drop($event)"  cdkDropList>
+<div class="options-container" (cdkDropListDropped)="drop($event)"  cdkDropList style="margin-top:1rem;">
     <div  *ngFor="let opt of selectOptions; let i=index;">
         <div class="select-option-container" cdkDrag [cdkDragData]="opt?.id" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)">
             <div>
