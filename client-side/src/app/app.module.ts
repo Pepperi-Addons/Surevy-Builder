@@ -12,7 +12,6 @@ import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
 
 import { SurveysManagerModule } from './components/surveys-manager/surveys-manager.module';
 import { SurveyManagerModule } from './components/survey-manager/survey-manager.module';
-import { ShowIfModule } from './components/dialogs/show-if-dialog/show-if.module';
 
 import { AppComponent } from './app.component';
 import { config } from './components/addon.config';
@@ -36,7 +35,6 @@ import { BlockEditorComponent, BlockEditorModule } from './components/block-edit
         BlockEditorModule,
         SurveysManagerModule,
         SurveyManagerModule,
-        ShowIfModule,
         AppRoutingModule,    
         PepMenuModule,           
         TranslateModule.forRoot({

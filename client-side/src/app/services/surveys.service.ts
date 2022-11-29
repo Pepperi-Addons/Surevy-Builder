@@ -9,12 +9,8 @@ import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
 import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData,
     SurveyTemplateQuestion, SurveyTemplateQuestionType, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME, SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME, SurveyStatusType, SURVEY_UNLOAD_CLIENT_EVENT_NAME } from 'shared';
-import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
-import { PepQueryBuilderComponent, IPepQueryBuilderField } from "@pepperi-addons/ngx-lib/query-builder";
-import { ShowIfDialogComponent } from '../components/dialogs/show-if-dialog/show-if-dialog.component';
 
 import * as _ from 'lodash';
-import { config } from "../components/addon.config";
 
 
 @Injectable({
@@ -48,15 +44,20 @@ export class SurveysService {
         return this._sectionsSubject.asObservable();
     }
 
-    // This is the selected section subject
+    // This is the selected section index
     private _selectedSectionIndex = -1;
+    get selectedSectionIndex(): number {
+        return this._selectedSectionIndex;
+    }
+    // This is the selected section subject
     private _selectedSectionChangeSubject: BehaviorSubject<SurveyTemplateSection> = new BehaviorSubject<SurveyTemplateSection>(null);
     get selectedSectionChange$(): Observable<SurveyTemplateSection> {
         return this._selectedSectionChangeSubject.asObservable().pipe(distinctUntilChanged());
     }
 
-    // This is the selected question subject
+    // This is the selected question index
     private _selectedQuestionIndex = -1;
+    // This is the selected question subject
     private _selectedQuestionChangeSubject: BehaviorSubject<SurveyTemplateQuestion> = new BehaviorSubject<SurveyTemplateQuestion>(null);
     get selectedQuestionChange$(): Observable<SurveyTemplateQuestion> {
         return this._selectedQuestionChangeSubject.asObservable().pipe(distinctUntilChanged());
@@ -97,8 +98,7 @@ export class SurveysService {
         private translate: TranslateService,
         private sessionService: PepSessionService,
         private httpService: PepHttpService,
-        private navigationService: NavigationService,
-        private dialog: PepDialogService
+        private navigationService: NavigationService
     ) {
 
         this.surveyLoad$.subscribe((survey: SurveyTemplate) => {
@@ -274,70 +274,70 @@ export class SurveysService {
         }
     }
 
-    /**
-     * create a question-key array from all questions prior to the selected question with type boolean or select
-     * @returns array of questions key
-     */
-    private getShowIfFields() {
-        let fields: Array<IPepQueryBuilderField> = new Array<IPepQueryBuilderField>();
+    // /**
+    //  * create a question-key array from all questions prior to the selected question with type boolean or select
+    //  * @returns array of questions key
+    //  */
+    // private getShowIfFields() {
+    //     let fields: Array<IPepQueryBuilderField> = new Array<IPepQueryBuilderField>();
 
-        const sections = this._sectionsSubject.getValue();
-        for (let i = 0; i <= this._selectedSectionIndex; i++) {
-            const currentSection = sections[i];
-            if (currentSection) {
-                const sectionQuestionsLength = i === this._selectedSectionIndex ? this._selectedQuestionIndex : currentSection.Questions.length;
-                for (let j = 0; j < sectionQuestionsLength; j++) {
-                    const currentQuestion = currentSection.Questions[j];
-                    if (currentQuestion &&
-                        (currentQuestion.Type === 'single-selection-dropdown' ||
-                            currentQuestion.Type === 'multiple-selection-dropdown' ||
-                            currentQuestion.Type === 'boolean-toggle')) {
-                                fields.push({
-                                    FieldID: currentQuestion.Key,
-                                    Title: currentQuestion.Title,
-                                    FieldType: this.getShowIfQuestionType(currentQuestion.Type),
-                                    OptionalValues: currentQuestion.OptionalValues || []
-                                } as IPepQueryBuilderField);
-                    }
+    //     const sections = this._sectionsSubject.getValue();
+    //     for (let i = 0; i <= this._selectedSectionIndex; i++) {
+    //         const currentSection = sections[i];
+    //         if (currentSection) {
+    //             const sectionQuestionsLength = i === this._selectedSectionIndex ? this._selectedQuestionIndex : currentSection.Questions.length;
+    //             for (let j = 0; j < sectionQuestionsLength; j++) {
+    //                 const currentQuestion = currentSection.Questions[j];
+    //                 if (currentQuestion &&
+    //                     (currentQuestion.Type === 'single-selection-dropdown' ||
+    //                         currentQuestion.Type === 'multiple-selection-dropdown' ||
+    //                         currentQuestion.Type === 'boolean-toggle')) {
+    //                             fields.push({
+    //                                 FieldID: currentQuestion.Key,
+    //                                 Title: currentQuestion.Title,
+    //                                 FieldType: this.getShowIfQuestionType(currentQuestion.Type),
+    //                                 OptionalValues: currentQuestion.OptionalValues || []
+    //                             } as IPepQueryBuilderField);
+    //                 }
     
-                }
-            }            
-        }       
+    //             }
+    //         }            
+    //     }       
         
-        return fields;
-    }
+    //     return fields;
+    // }
 
-    private getShowIfQuestionType(type: string) {
-        switch (type) {
-            case 'short-text':
-            case 'long-text':
-                return 'String';
-            case 'single-selection-dropdown':
-            case 'multiple-selection-dropdown':
-                return 'MultipleStringValues';
-            case 'boolean-toggle':
-                return 'Bool'
-            case 'number':
-            case 'decimal':
-            case 'currency':
-            case 'percentage':
-                return 'Integer';
-            case 'date':
-                return 'Date';
-            case 'datetime':
-                return 'DateTime';
-        }
-    }
+    // private getShowIfQuestionType(type: string) {
+    //     switch (type) {
+    //         case 'short-text':
+    //         case 'long-text':
+    //             return 'String';
+    //         case 'single-selection-dropdown':
+    //         case 'multiple-selection-dropdown':
+    //             return 'MultipleStringValues';
+    //         case 'boolean-toggle':
+    //             return 'Bool'
+    //         case 'number':
+    //         case 'decimal':
+    //         case 'currency':
+    //         case 'percentage':
+    //             return 'Integer';
+    //         case 'date':
+    //             return 'Date';
+    //         case 'datetime':
+    //             return 'DateTime';
+    //     }
+    // }
 
-    private getSelectedQuestion(): SurveyTemplateQuestion {
-        const sections = this._sectionsSubject.getValue();
-        const currentSection = sections[this._selectedSectionIndex];
-        if (currentSection) {
-            return currentSection.Questions[this._selectedQuestionIndex];
-        } 
+    // private getSelectedQuestion(): SurveyTemplateQuestion {
+    //     const sections = this._sectionsSubject.getValue();
+    //     const currentSection = sections[this._selectedSectionIndex];
+    //     if (currentSection) {
+    //         return currentSection.Questions[this._selectedQuestionIndex];
+    //     } 
 
-        return null;
-    }
+    //     return null;
+    // }
 
     /***********************************************************************************************/
     /*                                  Public functions
@@ -392,7 +392,10 @@ export class SurveysService {
         }
     }
 
-    setSelected(sectionIndex: number, questionIndex: number = -1) {
+    async setSelected(sectionIndex: number, questionIndex: number = -1) {
+        // Wait for delay to update properties in the lase chosen and not this.
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
         const sections = this._sectionsSubject.getValue();
         if (sectionIndex >= 0 && sectionIndex < sections.length) {
             const section = sections[sectionIndex];
@@ -547,31 +550,31 @@ export class SurveysService {
     }
 
     // Open dialog to set the display condition of the selected question
-    openShowIfDialog() {        
-        const config = this.dialog.getDialogConfig({ minWidth: '30rem' }, 'large');
-        const selectedQuestion = this.getSelectedQuestion();
-        const query = selectedQuestion?.ShowIf?? null;
+    // openShowIfDialog() {        
+    //     const config = this.dialog.getDialogConfig({ minWidth: '30rem' }, 'large');
+    //     const selectedQuestion = this.getSelectedQuestion();
+    //     const query = selectedQuestion?.ShowIf?? null;
 
-        const data = new PepDialogData({ 
-            actionsType: 'cancel-ok',
-            content: { 
-                query: query,
-                fields: this.getShowIfFields()
-            },
-            showClose: true 
-        });
+    //     const data = new PepDialogData({ 
+    //         actionsType: 'cancel-ok',
+    //         content: { 
+    //             query: query,
+    //             fields: this.getShowIfFields()
+    //         },
+    //         showClose: true 
+    //     });
 
-        const dialogRef = this.dialog.openDialog(ShowIfDialogComponent, data, config);        
-        dialogRef.afterClosed().subscribe({
-            next: (res) => {                             
-                const selectedQuestion = this.getSelectedQuestion();
+    //     const dialogRef = this.dialog.openDialog(ShowIfDialogComponent, data, config);        
+    //     dialogRef.afterClosed().subscribe({
+    //         next: (res) => {                             
+    //             const selectedQuestion = this.getSelectedQuestion();
                 
-                if (selectedQuestion && res.query) {
-                    selectedQuestion.ShowIf = res.query;
-                } 
-            }     
-        });
-    }
+    //             if (selectedQuestion && res.query) {
+    //                 selectedQuestion.ShowIf = res.query;
+    //             } 
+    //         }     
+    //     });
+    // }
 
     /**************************************************************************************/
     /*                            CPI & Server side calls.

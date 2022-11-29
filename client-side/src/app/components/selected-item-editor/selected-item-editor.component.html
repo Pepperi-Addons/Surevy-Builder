@@ -115,12 +115,15 @@
         <div class="showIfCont">
             <pep-checkbox class="checkbox-as-title" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF' | translate"
                 [value]="question?.IsShowIf || false" [renderTitle]="false" xAlignment="left"
-                (valueChange)="onQuestionEditorFieldChanged('IsShowIf',$event)">
+                (valueChange)="onQuestionEditorFieldChanged('IsShowIf', $event)">
             </pep-checkbox>
             <!-- <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label> -->
             <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
                                 iconName="system_filter_2" iconPosition="end" [disabled]="!question?.IsShowIf"
                                 (buttonClick)="openShowIfDialog()"></pep-button>
+
+
+
         </div>
 
         <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>
@@ -133,4 +136,20 @@
         <pep-checkbox class="checkbox-no-background" [value]="question?.Mandatory || false" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAKE_MANDATORY' | translate" 
             [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('Mandatory',$event)"></pep-checkbox>
     </ng-container>
+</ng-template>
+
+<ng-template #showIfDialogTemplate let-data>
+    <pep-dialog [title]="'DIALOGS.SHOW_IF.TITLE' | translate">
+        <ng-container pep-dialog-content>
+            <pep-query-builder [query]="data.query" [fields]="data.fields" (queryChange)="data.outputData.query=$event || ''"
+                (formValidationChange)="data.isValid=$event">
+            </pep-query-builder>            
+        </ng-container>
+        <ng-container pep-dialog-actions class="pepperi-border-top">
+            <div class="flex pep-spacing-element-negative">
+                <pep-button [value]="'ACTIONS.CANCEL' | translate" class="pep-spacing-element" [disabled]="!data.isValid" (click)="showIfDialogRef.close(null)"></pep-button>
+                <pep-button [value]="'ACTIONS.SAVE' | translate" class="pep-spacing-element" styleType="strong" [disabled]="!data.isValid" (click)="showIfDialogRef.close(data.outputData)"></pep-button>
+            </div>
+        </ng-container>
+    </pep-dialog>
 </ng-template>

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { IPepOption } from '@pepperi-addons/ngx-lib';
 import { SurveysService } from 'src/app/services/surveys.service';
-import { ValidationService } from 'src/app/services/validation.service';
+// import { ValidationService } from 'src/app/services/validation.service';
 import { SurveyOptionStateType } from '../../model/survey.model';
 import { SurveyTemplateQuestion } from 'shared';
 import { CdkDragDrop, CdkDragEnd, CdkDragStart, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
@@ -45,7 +45,7 @@ export class QuestionSelectOptionsComponent implements OnInit {
 
     constructor(
         private surveysService: SurveysService,
-        private validationService: ValidationService
+        // private validationService: ValidationService
     ) { }
 
     ngOnInit(): void {
@@ -78,9 +78,9 @@ export class QuestionSelectOptionsComponent implements OnInit {
         event.option[key] = value;
         this.optionChanged.emit(this.selectOptions);
 
-        if(!this.validationService.validateSurvey()){
-            this.validationService.showValidationInfo();
-          }
+        // if(!this.validationService.validateSurvey()){
+        //     this.validationService.showValidationInfo();
+        //   }
         
     }
 
@@ -91,8 +91,8 @@ export class QuestionSelectOptionsComponent implements OnInit {
     }
 
     addNewSelectOption(event){
-        const optSel = { key: '', value: '' };
-        const opt = new SelectOption('collapse',this.selectOptions.length,optSel);
+        const optSel = { key: `Key_${this.selectOptions.length + 1}`, value: `Value ${this.selectOptions.length + 1}` };
+        const opt = new SelectOption('collapse', this.selectOptions.length,optSel);
         this.selectOptions.push(opt);
         this.optionChanged.emit(this.selectOptions);
         
@@ -102,7 +102,7 @@ export class QuestionSelectOptionsComponent implements OnInit {
         const index = this.selectOptions.findIndex(opt => opt.id === option.id);
 
         this.selectOptions.splice(index, 1);
-        this.selectOptions.forEach(function(opt, index) {opt.id = index; });
+        this.selectOptions.forEach((opt, index) => {opt.id = index; });
 
         this.optionChanged.emit(this.selectOptions);
 

@@ -1,8 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { SurveysService } from 'src/app/services/surveys.service';
 import { ValidationService } from 'src/app/services/validation.service';
 import { SurveyTemplateQuestion, SurveyTemplateSection } from 'shared';
 import { DestoyerDirective } from '../../model/destroyer';
+import { PepDialogData, PepDialogService } from '@pepperi-addons/ngx-lib/dialog';
+import { IPepQueryBuilderField } from '@pepperi-addons/ngx-lib/query-builder';
+import { MatDialogRef } from '@angular/material/dialog';
+import { IPepOption } from '@pepperi-addons/ngx-lib';
 
 @Component({
     selector: 'survey-selected-item-editor',
@@ -11,13 +15,18 @@ import { DestoyerDirective } from '../../model/destroyer';
 })
 
 export class SelectedItemEditorComponent extends DestoyerDirective implements OnInit, OnDestroy {
+    @ViewChild('showIfDialogTemplate') showIfDialogTemplate: TemplateRef<any>;
     
     question: SurveyTemplateQuestion = null;
     section: SurveyTemplateSection = null;
 
+    private _sections: SurveyTemplateSection[] = [];
+    protected showIfDialogRef: MatDialogRef<any> = null;
+
     constructor(
         protected surveysService: SurveysService,
-        private validationService: ValidationService
+        private validationService: ValidationService,
+        private dialog: PepDialogService
     ) { 
         super();
 
@@ -28,13 +37,90 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
         this.surveysService.selectedQuestionChange$.pipe(this.destroy$).subscribe(res => {
             this.question = res;
         });
+
+        this.surveysService.sectionsChange$.pipe(this.destroy$).subscribe((sections: SurveyTemplateSection[]) => {
+            this._sections = sections;
+        });
+    }
+
+    /**
+     * create a question-key array from all questions prior to the selected question with type boolean or select
+     * @returns array of questions key
+     */
+     private getShowIfFields() {
+        let fields: Array<IPepQueryBuilderField> = new Array<IPepQueryBuilderField>();
+        const sections = this._sections;
+        for (let i = 0; i <= this.surveysService.selectedSectionIndex; i++) {
+            const currentSection = sections[i];
+            if (currentSection) {
+                const sectionQuestionsLength = i === this.surveysService.selectedSectionIndex ? this.surveysService.selectedSectionIndex : currentSection.Questions.length;
+                for (let j = 0; j < sectionQuestionsLength; j++) {
+                    const currentQuestion = currentSection.Questions[j];
+                    if (currentQuestion &&
+                        (currentQuestion.Type === 'single-selection-dropdown' ||
+                            currentQuestion.Type === 'multiple-selection-dropdown' ||
+                            currentQuestion.Type === 'boolean-toggle')) {
+                                fields.push({
+                                    FieldID: currentQuestion.Key,
+                                    Title: currentQuestion.Title,
+                                    FieldType: this.getShowIfQuestionType(currentQuestion.Type),
+                                    OptionalValues: currentQuestion.OptionalValues?.map((ov: IPepOption) => { return { Key: ov.key, Value: ov.value } }) || []
+                                } as IPepQueryBuilderField);
+                    }
+    
+                }
+            }            
+        }       
+        
+        return fields;
+    }
+    
+    private getShowIfQuestionType(type: string) {
+        switch (type) {
+            case 'short-text':
+            case 'long-text':
+                return 'String';
+            case 'single-selection-dropdown':
+            case 'multiple-selection-dropdown':
+                return 'MultipleStringValues';
+            case 'boolean-toggle':
+                return 'Bool'
+            case 'number':
+            case 'decimal':
+            case 'currency':
+            case 'percentage':
+                return 'Integer';
+            case 'date':
+                return 'Date';
+            case 'datetime':
+                return 'DateTime';
+        }
     }
 
     ngOnInit(): void {
       
     }
-    openShowIfDialog(){
-        this.surveysService.openShowIfDialog();
+
+    openShowIfDialog() {
+        // this.surveysService.openShowIfDialog();
+        const config = this.dialog.getDialogConfig({ minWidth: '30rem' }, 'large');
+        const query = this.question?.ShowIf?? null;
+
+        const data = {
+            query: query,
+            fields: this.getShowIfFields(),
+            isValid: true,
+            outputData: { query: '' }
+        };
+
+        this.showIfDialogRef = this.dialog.openDialog(this.showIfDialogTemplate, data, config);        
+        this.showIfDialogRef.afterClosed().subscribe({
+            next: (res) => {
+                if (res != null) {
+                    this.onQuestionEditorFieldChanged('ShowIf', res.query);
+                }
+            }     
+        });
     }
 
     onQuestionValueChanged(value: any): void {
@@ -52,12 +138,11 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
 
         this.surveysService.updateQuestionFromEditor(this.question);
 
-        if(key == 'Key' || key == 'Title'){
-
-            if(!this.validationService.validateSurvey()){
-              this.validationService.showValidationInfo();
+        if (key == 'Key' || key == 'Title') {
+            if (!this.validationService.validateSurvey()) {
+                this.validationService.showValidationInfo();
             }
-         }
+        }
     }
 
     onSelectQuestionFieldChanged(event){
@@ -65,17 +150,15 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     }
 
     onSectionEditorFieldChanged(key,value) {
-        const oldValue = this.section[key];
+        // const oldValue = this.section[key];
         this.section[key] = value;
         this.surveysService.updateSectionFromEditor(this.section);
         
-        if(key == 'Key' || key == 'Title'){
-           if(!this.validationService.validateSurvey()){
-             this.validationService.showValidationInfo();
-           }
+        if (key == 'Key' || key == 'Title') {
+            if (!this.validationService.validateSurvey()) {
+                this.validationService.showValidationInfo();
+            }
         }
-        
-       
     }
 
     onShowLogicClick(event) {
@@ -90,7 +173,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
         //this.updateHostObject(); 
     }
 
-    selectOptionChanged(event){
+    selectOptionChanged(event) {
         let options: Array<any> = [];
         event.forEach(opt => {
            
@@ -98,12 +181,12 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
             options.push({key: opt.option.key, value: opt.option.value});
         });
 
-        if(!this.validationService.validateSurvey()){
-            this.validationService.showValidationInfo();
-        }
-
         this.question['OptionalValues'] = options;
         this.surveysService.updateQuestionFromEditor(this.question);
+
+        if (!this.validationService.validateSurvey()) {
+            this.validationService.showValidationInfo();
+        }
     }
     
     onSidebarEndStateChange(state) {
