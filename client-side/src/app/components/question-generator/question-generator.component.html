@@ -77,7 +77,7 @@
                         type="int" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
                 </ng-container>
                 <ng-container *ngSwitchCase="'decimal'">
-                    <pep-textbox [minFractionDigits]="question?.Value" [maxFractionDigits]="question?.Value" [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
+                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
                         type="real" (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
                 </ng-container>
                 <ng-container *ngSwitchCase="'currency'">

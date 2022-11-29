@@ -40,7 +40,6 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
     totalSurveys: number = 0;
     surveys: SurveyTemplateRowProjection[];
     //imagesPath = '';
-    //hasSurevy = true;
     private _subscriptions: Subscription[] = [];
 
     constructor(
