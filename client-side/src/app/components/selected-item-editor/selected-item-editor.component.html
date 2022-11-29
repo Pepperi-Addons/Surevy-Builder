@@ -101,14 +101,14 @@
         </pep-textbox>
         </ng-container>
         <ng-container *ngIf="question?.Type == 'decimal'">
-            <pep-slider [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DECIMAL.NUMBER_AFTER' | translate" 
-                   [hint]="question?.Value?.toString() || '0'" 
-                   [minValue]="0" 
+            <pep-slider #digitsSlider [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DECIMAL.NUMBER_AFTER' | translate" 
+                   [hint]="digitsSlider.value" 
+                   [minValue]="1" 
                    [maxValue]="6"
                    [disabled]="false" 
-                   [value]="question?.Value"
+                   [value]="question?.FractionDigits?.toString() || '2'"
                    [background]="'RGBA(0,0,0,50%)'"
-                   (inputChange)="onQuestionEditorFieldChanged('Value',$event)">
+                   (inputChange)="onQuestionEditorFieldChanged('FractionDigits',$event)">
            </pep-slider>
         </ng-container>
         
