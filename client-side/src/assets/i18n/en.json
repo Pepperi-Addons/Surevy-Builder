@@ -53,7 +53,9 @@
                     "CURRENCY": "Currency",
                     "PRECENTAGE": "Percentage",
                     "DATE": "Date",
-                    "DATE_TIME": "Date Time"
+                    "DATE_TIME": "Date Time",
+                    "PHOTO": "Photo",
+                    "SIGNATURE": "Signature"
                 },
                 "SECTION_HEADER": "Section",
                 "KEY": "Key",
@@ -77,6 +79,11 @@
                     "DUPLICATE": "Duplicate",
                     "DELETE": "Delete"
                 },
+                "PHOTO":{
+                    "ALLOW_CAMERA_PHOTO_ONLY": "Allow camera photos only",
+                    "MAX_MEGAPIXEL": "Max megapixel",
+                    "QUALITY": "Quality"
+                },
                 "SELECT_OPTION": {
                     "TITLE": "Select Options",
                     "PLACEHOLDER_TEXT": "Placeholder Text",
@@ -96,6 +103,7 @@
                 "DECIMAL": {
                     "NUMBER_AFTER": "Numbers after the dot"
                 }
+               
             }
         }
     },

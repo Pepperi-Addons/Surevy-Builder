@@ -96,7 +96,23 @@
                     <pep-date [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
                         type="datetime" (valueChange)="onQuestionValueChanged($event)"></pep-date>
                 </ng-container>
-                <ng-container *ngSwitchDefault>
+                <ng-container *ngSwitchCase="'photo'">
+                    <pep-image
+                        src="question?.value || ''"
+                        [disabled]="disabled"
+                        [rowSpan]="4"
+                        [renderTitle]="false"
+                  ></pep-image>
+                </ng-container>
+                <ng-container *ngSwitchCase="'signature'">
+                    <pep-signature
+                        src="question?.value || ''"
+                        [rowSpan]="4"
+                        [disabled]="disabled"
+                        [renderTitle]="false"
+                  ></pep-signature>
+                </ng-container>
+                <ng-container *ngSwitchDefault>{{question.Type}}
                     <span>{{ 'SURVEY_MANAGER.QUESTION_TYPE_NOT_SUPPORTED' | translate }}</span>
                 </ng-container>
             </ng-container>
