@@ -71,8 +71,8 @@ export type SurveyTemplateQuestionType = 'short-text' | 'long-text'
     | 'boolean-toggle'
     | 'number' | 'decimal' | 'currency' | 'percentage'
     | 'date' | 'datetime'
-    // | 'photo'
-    // | 'signature'
+    | 'photo'
+    | 'signature'
     ;
 
 export interface SurveyTemplateQuestion {
