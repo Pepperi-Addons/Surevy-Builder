@@ -46,6 +46,8 @@
                     "SHORT_TEXT": "Short Text",
                     "LONG_TEXT": "Long Text",
                     "SINGLE_SELECT": "Single Select",
+                    "CHECKBOX": "Checkbox",
+                    "RADIO": "Radio Group",
                     "MULTI_SELECT": "Multi Select",
                     "BOOLEAN": "Boolean",
                     "NUMBER": "Number",
