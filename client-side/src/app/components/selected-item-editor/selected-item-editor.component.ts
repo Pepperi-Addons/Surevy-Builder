@@ -45,7 +45,9 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
 
     private doesQuestionTypeAllowShowIf(type: SurveyTemplateQuestionType) {
         return (type === 'single-selection-dropdown' ||
+                type === 'single-selection-radiobuttons' ||
                 type === 'multiple-selection-dropdown' ||
+                type === 'multiple-selection-checkboxes' ||
                 type === 'boolean-toggle');
     }
 

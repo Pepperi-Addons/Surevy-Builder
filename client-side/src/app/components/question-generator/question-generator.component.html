@@ -13,22 +13,22 @@
         <div class="question-field-container " (mousedown)="onQuestionClicked($event)" 
             [ngClass]="{ 'active-question': isActive, 'error-in-question': isValidQuestion() == false }">
 
-            
             <pep-field-title [label]="question.Title" [mandatory]="question.Mandatory" [fontBodyType]="editable ? 'xs' : 'md'"
-                [maxFieldCharacters]="question.MaxFieldCharacters">
+                [inputLength]="0" [maxFieldCharacters]="question.MaxCharacters || 0">
             </pep-field-title>
+
             <div *ngIf="question.Description?.length > 0">
                 <span class="body-{{editable ? 'xs' : 'sm'}} color-dimmed" title="{{ question.Description }}">{{ question.Description }}</span>
             </div>
             
             <ng-container [ngSwitch]="question.Type">
                 <ng-container *ngSwitchCase="'short-text'">
-                    <pep-textbox [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
+                    <pep-textbox #input [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
                         [maxFieldCharacters]="question?.MaxCharacters?.length > 0 ? question.MaxCharacters : 'undefined'"
                         (valueChange)="onQuestionValueChanged($event)"></pep-textbox>
                 </ng-container>
                 <ng-container *ngSwitchCase="'long-text'">
-                    <pep-textarea [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
+                    <pep-textarea #input [value]="question.Value" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
                     [maxFieldCharacters]="question?.MaxCharacters?.length > 0 ? question.MaxCharacters : 'undefined'"
                         [rowSpan]="2" (valueChange)="onQuestionValueChanged($event)"></pep-textarea>
                 </ng-container>

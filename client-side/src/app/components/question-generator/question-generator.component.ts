@@ -65,6 +65,7 @@ export class QuestionGeneratorComponent implements OnInit {
     }
     
     onQuestionValueChanged(value: any): void {
+        console.log(`value change - ${value}`);
         this.question.Value = value;
         this.surveysService.changeSurveyQuestionValue(this.question.Key, value);
     }
