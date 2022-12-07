@@ -5,14 +5,20 @@
                 <ng-container *ngSwitchCase="'short-text'">
                     <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.SHORT_TEXT' | translate }}</span>
                 </ng-container>
-                <ng-container *ngSwitchCase="'multi-text'">
-                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.MULTI_TEXT' | translate }}</span>
+                <ng-container *ngSwitchCase="'long-text'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.LONG_TEXT' | translate }}</span>
                 </ng-container>
                 <ng-container *ngSwitchCase="'single-selection-dropdown'">
                     <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.SINGLE_SELECT' | translate }}</span>
                 </ng-container>
                 <ng-container *ngSwitchCase="'multiple-selection-dropdown'">
                     <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.MULTI_SELECT' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'single-selection-radiobuttons'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.RADIO' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'multiple-selection-checkboxes'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.CHECKBOX' | translate }}</span>
                 </ng-container>
                 <ng-container *ngSwitchCase="'boolean-toggle'">
                     <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.BOOLEAN' | translate }}</span>
@@ -174,8 +180,8 @@
         </ng-container>
         <ng-container pep-dialog-actions class="pepperi-border-top">
             <div class="flex pep-spacing-element-negative">
-                <pep-button [value]="'ACTIONS.CANCEL' | translate" class="pep-spacing-element" [disabled]="!data.isValid" (click)="showIfDialogRef.close(null)"></pep-button>
-                <pep-button [value]="'ACTIONS.SAVE' | translate" class="pep-spacing-element" styleType="strong" [disabled]="!data.isValid" (click)="showIfDialogRef.close(data.outputData)"></pep-button>
+                <pep-button [value]="'ACTIONS.CANCEL' | translate" class="pep-spacing-element" (buttonClick)="showIfDialogRef.close(null)"></pep-button>
+                <pep-button [value]="'ACTIONS.SAVE' | translate" class="pep-spacing-element" styleType="strong" [disabled]="!data.isValid" (buttonClick)="showIfDialogRef.close(data.outputData)"></pep-button>
             </div>
         </ng-container>
     </pep-dialog>

@@ -43,7 +43,7 @@
     <!-- <ng-container [ngTemplateOutlet]="selectOptionsTemplate" [ngTemplateOutletContext]="{opt:opt}"></ng-container> -->
 </div>
 
-<pep-checkbox *ngIf="_question?.Type === 'single-selection-dropdown'" class="checkbox-no-background withPaddingBot" [value]="_question?.AddNoneOption || false" 
+<pep-checkbox *ngIf="_question?.Type === 'single-selection-dropdown'" class="checkbox-no-background withPaddingBot" [value]="_question?.AddNoneOption || true" 
               [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ADD_NONE_OPTION' | translate" 
               [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('AddNoneOption',$event)"></pep-checkbox>
 
