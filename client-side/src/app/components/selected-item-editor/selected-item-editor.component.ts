@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { SurveysService } from 'src/app/services/surveys.service';
 import { ValidationService } from 'src/app/services/validation.service';
-import { SurveyTemplateQuestion, SurveyTemplateSection } from 'shared';
+import { SurveyTemplateQuestion, SurveyTemplateQuestionType, SurveyTemplateSection } from 'shared';
 import { DestoyerDirective } from '../../model/destroyer';
 import { PepDialogData, PepDialogService } from '@pepperi-addons/ngx-lib/dialog';
 import { IPepQueryBuilderField } from '@pepperi-addons/ngx-lib/query-builder';
@@ -43,29 +43,36 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
         });
     }
 
+    private doesQuestionTypeAllowShowIf(type: SurveyTemplateQuestionType) {
+        return (type === 'single-selection-dropdown' ||
+                type === 'multiple-selection-dropdown' ||
+                type === 'boolean-toggle');
+    }
+
     /**
      * create a question-key array from all questions prior to the selected question with type boolean or select
      * @returns array of questions key
      */
      private getShowIfFields() {
         let fields: Array<IPepQueryBuilderField> = new Array<IPepQueryBuilderField>();
-        const sections = this._sections;
+
+        // Go for all sections before the selected question and the section that contains this selected question.
         for (let i = 0; i <= this.surveysService.selectedSectionIndex; i++) {
-            const currentSection = sections[i];
+            const currentSection = this._sections[i];
+
             if (currentSection) {
-                const sectionQuestionsLength = i === this.surveysService.selectedSectionIndex ? this.surveysService.selectedSectionIndex : currentSection.Questions.length;
+                // Go for all questions if we in the section before the selected question, Else go for all questions untill the this selected question index.
+                const sectionQuestionsLength = i === this.surveysService.selectedSectionIndex ? this.surveysService.selectedQuestionIndex : currentSection.Questions.length;
+
                 for (let j = 0; j < sectionQuestionsLength; j++) {
                     const currentQuestion = currentSection.Questions[j];
-                    if (currentQuestion &&
-                        (currentQuestion.Type === 'single-selection-dropdown' ||
-                            currentQuestion.Type === 'multiple-selection-dropdown' ||
-                            currentQuestion.Type === 'boolean-toggle')) {
-                                fields.push({
-                                    FieldID: currentQuestion.Key,
-                                    Title: currentQuestion.Title,
-                                    FieldType: this.getShowIfQuestionType(currentQuestion.Type),
-                                    OptionalValues: currentQuestion.OptionalValues?.map((ov: IPepOption) => { return { Key: ov.key, Value: ov.value } }) || []
-                                } as IPepQueryBuilderField);
+                    if (currentQuestion && this.doesQuestionTypeAllowShowIf(currentQuestion.Type)) {
+                        fields.push({
+                            FieldID: currentQuestion.Key,
+                            Title: currentQuestion.Title,
+                            FieldType: this.getShowIfQuestionType(currentQuestion.Type),
+                            OptionalValues: currentQuestion.OptionalValues?.map((ov: IPepOption) => { return { Key: ov.key, Value: ov.value } }) || []
+                        } as IPepQueryBuilderField);
                     }
     
                 }

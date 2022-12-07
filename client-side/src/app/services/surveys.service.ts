@@ -57,6 +57,9 @@ export class SurveysService {
 
     // This is the selected question index
     private _selectedQuestionIndex = -1;
+    get selectedQuestionIndex(): number {
+        return this._selectedQuestionIndex;
+    }
     // This is the selected question subject
     private _selectedQuestionChangeSubject: BehaviorSubject<SurveyTemplateQuestion> = new BehaviorSubject<SurveyTemplateQuestion>(null);
     get selectedQuestionChange$(): Observable<SurveyTemplateQuestion> {

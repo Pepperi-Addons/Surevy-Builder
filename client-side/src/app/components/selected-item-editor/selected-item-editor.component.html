@@ -153,8 +153,8 @@
         </ng-container>
         <ng-container pep-dialog-actions class="pepperi-border-top">
             <div class="flex pep-spacing-element-negative">
-                <pep-button [value]="'ACTIONS.CANCEL' | translate" class="pep-spacing-element" [disabled]="!data.isValid" (click)="showIfDialogRef.close(null)"></pep-button>
-                <pep-button [value]="'ACTIONS.SAVE' | translate" class="pep-spacing-element" styleType="strong" [disabled]="!data.isValid" (click)="showIfDialogRef.close(data.outputData)"></pep-button>
+                <pep-button [value]="'ACTIONS.CANCEL' | translate" class="pep-spacing-element" (buttonClick)="showIfDialogRef.close(null)"></pep-button>
+                <pep-button [value]="'ACTIONS.SAVE' | translate" class="pep-spacing-element" styleType="strong" [disabled]="!data.isValid" (buttonClick)="showIfDialogRef.close(data.outputData)"></pep-button>
             </div>
         </ng-container>
     </pep-dialog>
