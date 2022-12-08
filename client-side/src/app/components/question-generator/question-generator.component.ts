@@ -70,7 +70,7 @@ export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
     }
     
     onQuestionValueChanged(value: any): void {
-        console.log(`value change - ${value}`);
+        // console.log(`value change - ${value}`);
         this.question.Value = value;
         this.surveysService.changeSurveyQuestionValue(this.question.Key, value);
     }
@@ -81,7 +81,7 @@ export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
     
     onStateChange(event: IPepMenuStateChangeEvent) {
         this.isQuestionTypeMenuOpen = event.state === 'visible';
-        console.log('onStateChange', event);
+        // console.log('onStateChange', event);
     }
 
     isValidQuestion(){
