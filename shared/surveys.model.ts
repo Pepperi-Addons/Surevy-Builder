@@ -7,14 +7,18 @@ export const SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplates';
 export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplatesDrafts';
 // export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'surveyTemplatesDrafts';
 
-export const SURVEY_LOAD_EVENT_NAME = 'OnSurveyLoad';
 export const SURVEY_LOAD_CLIENT_EVENT_NAME = 'OnClientSurveyLoad';
-export const SURVEY_UNLOAD_EVENT_NAME = 'OnSurveyUnload';
+export const SURVEY_LOAD_BEFORE_MERGE_EVENT_NAME = 'OnSurveyLoad_BeforeMerge'; // TODO: Change to pre and post?
+export const SURVEY_LOAD_AFTER_MERGE_EVENT_NAME = 'OnSurveyLoad_AfterMerge';
+
 export const SURVEY_UNLOAD_CLIENT_EVENT_NAME = 'OnClientSurveyUnload';
-export const SURVEY_FIELD_CHANGE_EVENT_NAME = 'OnSurveyFieldChange';
+export const SURVEY_UNLOAD_EVENT_NAME = 'OnSurveyUnload';
+
 export const SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyFieldChange';
-export const SURVEY_QUESTION_CHANGE_EVENT_NAME = 'OnSurveyQuestionChange';
+export const SURVEY_FIELD_AFTER_CHANGE_EVENT_NAME = 'OnSurveyFieldChange_After';
+
 export const SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyQuestionChange';
+export const SURVEY_QUESTION_AFTER_CHANGE_EVENT_NAME = 'OnSurveyQuestionChange_After';
 
 export type SurveyStatusType = 'Submitted' | 'In Creation';
 

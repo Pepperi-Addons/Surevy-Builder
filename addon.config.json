@@ -23,7 +23,7 @@
     ],
     "Dependencies": {
       "adal": "1.3.27",
-      "nebula": "0.0.108",
+      "nebula": "0.1.1",
       "cpi_node": "1.1.12",
       "cpapi": "9.6.10",
       "core": "0.5.7",
