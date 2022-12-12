@@ -1,7 +1,8 @@
 import '@pepperi-addons/cpi-node'
 import SurveysService from './surveys-cpi.service';
-import { SURVEY_LOAD_EVENT_NAME, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_UNLOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
-    SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME, SURVEY_QUESTION_CHANGE_EVENT_NAME, SurveyTemplate } from 'shared';
+import { SURVEY_LOAD_BEFORE_MERGE_EVENT_NAME, SURVEY_LOAD_AFTER_MERGE_EVENT_NAME, SURVEY_LOAD_CLIENT_EVENT_NAME, 
+    SURVEY_UNLOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_AFTER_CHANGE_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
+    SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME, SURVEY_QUESTION_AFTER_CHANGE_EVENT_NAME, SurveyTemplate } from 'shared';
 export const router = Router();
 
 export async function load(configuration: any) {
@@ -19,19 +20,14 @@ export async function load(configuration: any) {
         // await data.client?.alert('survey load - before', surveyKey);
         
         if (surveyKey) { 
+            // Emit server event SURVEY_LOAD_BEFORE_MERGE_EVENT_NAME
+            // await pepperi.events.emit(SURVEY_LOAD_BEFORE_MERGE_EVENT_NAME, { ObjectKey: surveyKey });
+
             const service = new SurveysService();
             mergedSurvey = await service.getSurveyData(data.client, surveyKey);
 
-            // Test alert
-            // await data.client?.alert('survey load - after', `${JSON.stringify(mergedSurvey)}`);
-            
-            if (mergedSurvey) {
-                // // TODO: Remove this.
-                // service.removeShowIfs(mergedSurvey);
-
-                // Emit server event SURVEY_LOAD_EVENT_NAME
-                // pepperi.events.emit(SURVEY_LOAD_EVENT_NAME, mergedSurvey);
-            }
+            // Emit server event SURVEY_LOAD_AFTER_MERGE_EVENT_NAME
+            // mergedSurvey = await pepperi.events.emit(SURVEY_LOAD_AFTER_MERGE_EVENT_NAME, { Result: mergedSurvey });
         }
 
         return mergedSurvey;
@@ -53,16 +49,8 @@ export async function load(configuration: any) {
             const service = new SurveysService();
             mergedSurvey = await service.onSurveyFieldChange(data.client, surveyKey, propertyName, value);
     
-            // Test alert
-            // await data.client?.alert('field change - after', `${JSON.stringify(mergedSurvey)}`);
-
-            if (mergedSurvey) {
-                // // TODO: Remove this.
-                // service.removeShowIfs(mergedSurvey);
-
-                // Emit server event SURVEY_STATUS_CHANGE_EVENT_NAME
-                // pepperi.events.emit(SURVEY_FIELD_CHANGE_EVENT_NAME, data);
-            }
+            // Emit server event SURVEY_FIELD_AFTER_CHANGE_EVENT_NAME
+            // pepperi.events.emit(SURVEY_FIELD_AFTER_CHANGE_EVENT_NAME, { ChangedFieldID: propertyName, Result: mergedSurvey } );
         }
 
         return mergedSurvey;
@@ -81,16 +69,8 @@ export async function load(configuration: any) {
             const service = new SurveysService();
             mergedSurvey = await service.onSurveyQuestionChange(data.client, surveyKey, questionKey, value);
             
-            // Test alert
-            // await data.client?.alert('question change - after', `${JSON.stringify(mergedSurvey)}`);
-            
-            if (mergedSurvey) {
-                // // TODO: Remove this.
-                // service.removeShowIfs(mergedSurvey);
-
-                // Emit server event SURVEY_QUESTION_CHANGE_EVENT_NAME
-                // pepperi.events.emit(SURVEY_QUESTION_CHANGE_EVENT_NAME, mergedSurvey);
-            }
+            // Emit server event SURVEY_QUESTION_AFTER_CHANGE_EVENT_NAME
+            // pepperi.events.emit(SURVEY_QUESTION_AFTER_CHANGE_EVENT_NAME, { ChangedFieldID: propertyName, Result: mergedSurvey } );
         }
 
         return mergedSurvey;

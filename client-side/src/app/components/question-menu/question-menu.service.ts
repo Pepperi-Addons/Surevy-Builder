@@ -89,7 +89,7 @@ export class QuestionMenuService {
                 {
                      key: `photo`,
                      text: await firstValueFrom(this._translate.get('QUESTION_MENU.PHOTO')),
-                     iconName: 'system_signature'
+                     iconName: 'system_image'
                 },
                 {
                      key: `signature`,

@@ -82,6 +82,8 @@ class SurveysService {
         }
 
         surveyTemplate.Status = survey.Status && survey.Status.length > 0 ? survey.Status as SurveyStatusType : 'In Creation';
+
+        // TODO: Add other fields if needed.
     }
 
     private createMapQuestionObject(surveyTemplate: SurveyTemplate): any {

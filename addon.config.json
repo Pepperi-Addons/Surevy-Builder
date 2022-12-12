@@ -1,6 +1,6 @@
 {
   "AddonUUID": "cf17b569-1af4-45a9-aac5-99f23cae45d8",
-  "AddonVersion": "0.5.46",
+  "AddonVersion": "0.5.47",
   "DebugPort": 4500,
   "WebappBaseUrl": "https://app.sandbox.pepperi.com",
   "DefaultEditor": "main",
@@ -23,7 +23,7 @@
     ],
     "Dependencies": {
       "adal": "1.3.27",
-      "nebula": "0.0.108",
+      "nebula": "0.1.1",
       "cpi_node": "1.1.12",
       "cpapi": "9.6.10",
       "core": "0.5.7",
@@ -33,7 +33,8 @@
       "resource_list": "0.6.4",
       "abstract_activities": "0.0.4",
       "survey": "0.0.14",
-      "pages": "0.9.8"
+      "pages": "0.9.8",
+      "slugs": "1.0.24"
     },
     "CPISide": [
       "addon-cpi.ts"
