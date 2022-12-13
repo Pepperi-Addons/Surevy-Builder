@@ -10,6 +10,7 @@ import { PepButton,IPepButtonClickEvent } from '@pepperi-addons/ngx-lib/button';
 })
 export class YesNoQuestionComponent implements OnInit {
     @Input() value: '';
+    @Input() disabled: boolean = false;
 
     _mandatory = false;
     @Input() 

@@ -5,14 +5,20 @@
                 <ng-container *ngSwitchCase="'short-text'">
                     <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.SHORT_TEXT' | translate }}</span>
                 </ng-container>
-                <ng-container *ngSwitchCase="'multi-text'">
-                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.MULTI_TEXT' | translate }}</span>
+                <ng-container *ngSwitchCase="'long-text'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.LONG_TEXT' | translate }}</span>
                 </ng-container>
                 <ng-container *ngSwitchCase="'single-selection-dropdown'">
                     <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.SINGLE_SELECT' | translate }}</span>
                 </ng-container>
                 <ng-container *ngSwitchCase="'multiple-selection-dropdown'">
                     <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.MULTI_SELECT' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'single-selection-radiobuttons'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.RADIO' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'multiple-selection-checkboxes'">
+                    <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.CHECKBOX' | translate }}</span>
                 </ng-container>
                 <ng-container *ngSwitchCase="'boolean-toggle'">
                     <span>{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.TYPES.BOOLEAN' | translate }}</span>
@@ -94,29 +100,36 @@
         <ng-container *ngIf="question?.Type == 'boolean-toggle'">
             <label class="title body-md">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.TITLE" | translate}}</label>
             <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.TRUE' | translate" [mandatory]="'true'"
-                         [value]="question?.True || ''" (valueChange)="onQuestionEditorFieldChanged('True',$event)">
+                         [value]="question?.True || ('SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.YES' | translate)" (valueChange)="onQuestionEditorFieldChanged('True',$event)">
             </pep-textbox>
             <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.FALSE' | translate" [mandatory]="'true'"
-                         [value]="question?.False || ''" (valueChange)="onQuestionEditorFieldChanged('False',$event)">
+                         [value]="question?.False || ('SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.BOOLEAN.NO' | translate)" (valueChange)="onQuestionEditorFieldChanged('False',$event)">
         </pep-textbox>
         </ng-container>
         <ng-container *ngIf="question?.Type == 'decimal'">
-            <pep-slider [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DECIMAL.NUMBER_AFTER' | translate" 
-                   [hint]="question?.Value?.toString() || '0'" 
-                   [minValue]="0" 
+            <pep-slider #digitsSlider [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DECIMAL.NUMBER_AFTER' | translate" 
+                   [hint]="digitsSlider.value" 
+                   [minValue]="1" 
                    [maxValue]="6"
                    [disabled]="false" 
-                   [value]="question?.Value"
+                   [value]="question?.FractionDigits?.toString() || '2'"
                    [background]="'RGBA(0,0,0,50%)'"
-                   (inputChange)="onQuestionEditorFieldChanged('Value',$event)">
+                   (inputChange)="onQuestionEditorFieldChanged('FractionDigits',$event)">
            </pep-slider>
         </ng-container>
         
         <div class="showIfCont">
-            <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label>
+            <pep-checkbox class="checkbox-as-title" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF' | translate"
+                [value]="question?.IsShowIf || false" [renderTitle]="false" xAlignment="left"
+                (valueChange)="onQuestionEditorFieldChanged('IsShowIf', $event)">
+            </pep-checkbox>
+            <!-- <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label> -->
             <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
-                                iconName="system_filter_2" iconPosition="end"
+                                iconName="system_filter_2" iconPosition="end" [disabled]="!question?.IsShowIf"
                                 (buttonClick)="openShowIfDialog()"></pep-button>
+
+
+
         </div>
 
         <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_OPTION" | translate}}</label>
@@ -129,4 +142,20 @@
         <pep-checkbox class="checkbox-no-background" [value]="question?.Mandatory || false" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAKE_MANDATORY' | translate" 
             [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('Mandatory',$event)"></pep-checkbox>
     </ng-container>
+</ng-template>
+
+<ng-template #showIfDialogTemplate let-data>
+    <pep-dialog [title]="'DIALOGS.SHOW_IF.TITLE' | translate">
+        <ng-container pep-dialog-content>
+            <pep-query-builder [query]="data.query" [fields]="data.fields" (queryChange)="data.outputData.query=$event || ''"
+                (formValidationChange)="data.isValid=$event">
+            </pep-query-builder>            
+        </ng-container>
+        <ng-container pep-dialog-actions class="pepperi-border-top">
+            <div class="flex pep-spacing-element-negative">
+                <pep-button [value]="'ACTIONS.CANCEL' | translate" class="pep-spacing-element" (buttonClick)="showIfDialogRef.close(null)"></pep-button>
+                <pep-button [value]="'ACTIONS.SAVE' | translate" class="pep-spacing-element" styleType="strong" [disabled]="!data.isValid" (buttonClick)="showIfDialogRef.close(data.outputData)"></pep-button>
+            </div>
+        </ng-container>
+    </pep-dialog>
 </ng-template>

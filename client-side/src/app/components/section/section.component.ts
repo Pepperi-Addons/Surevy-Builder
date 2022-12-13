@@ -23,12 +23,12 @@ export class SectionComponent implements OnInit {
 
     @Input() title: string;
     @Input() description: string;
-    
+    @Input() disabled: boolean = false;
     @Input() isActive: boolean = false;
     @Input() hasError: boolean = false;
 
     @Input() questions: Array<SurveyTemplateQuestion>;
-    @Input() showIf: string;
+    @Input() showIf: boolean = false;
     
     @Input() sectionsQuestionsDropList = [];
 

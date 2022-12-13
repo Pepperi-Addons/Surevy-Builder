@@ -204,6 +204,10 @@ export class SurveysValidatorService {
         // Add sections specific properties.
         for (let sectionIndex = 0; sectionIndex < survey.Sections.length; sectionIndex++) {
             const currentSection = survey.Sections[sectionIndex];
+            
+            // Remove all values (This property have to be empty to get the value from the Survey activity object only - no default value).
+            currentSection.Questions.every(q => delete q.Value);
+
             const sectionToAdd: SurveyTemplateSection = {
                 Key: currentSection.Key,
                 Title: currentSection.Title,

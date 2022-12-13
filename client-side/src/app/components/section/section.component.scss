@@ -55,7 +55,7 @@
                 margin-bottom: 0;
             }
 
-            &.withDesc{
+            &.withDesc  {
                 margin-top: .25rem;
             }
         }
@@ -63,7 +63,7 @@
     
     // This is for ability to add question to empty section.
     .questions-wrapper {
-        min-height: 1px;
+        min-height: 3px;
     }
     
 }

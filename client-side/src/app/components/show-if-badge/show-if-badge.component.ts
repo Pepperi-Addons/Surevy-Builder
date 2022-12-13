@@ -8,7 +8,7 @@ import { PepLayoutService } from '@pepperi-addons/ngx-lib';
 })
 
 export class ShowIfBadgeComponent implements OnInit {
-    @Input() showIf: string;
+    @Input() showIf: boolean = false;
     
     protected isRtl = false;
     

@@ -172,7 +172,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     onSaveClicked() {
         //validate mandatory fields
         if(this.validationService.validateSurvey()){
-            this._surveysService.saveCurrentSurvey(this._navigationService.addonUUID, true).pipe(this.destroy$).subscribe(res => {
+            this._surveysService.saveCurrentSurveyTemplate(this._navigationService.addonUUID, true).pipe(this.destroy$).subscribe(res => {
                 const data: PepSnackBarData = {
                     title: this.translate.instant('MESSAGES.SURVEY_SAVED'),
                     content: '',
@@ -192,7 +192,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     }
 
     onPublishClicked() {
-        this._surveysService.publishCurrentSurvey(this._navigationService.addonUUID).pipe(this.destroy$).subscribe(res => {
+        this._surveysService.publishCurrentSurveyTemplate(this._navigationService.addonUUID).pipe(this.destroy$).subscribe(res => {
             const data: PepSnackBarData = {
                 title: this.translate.instant('MESSAGES.SURVEY_PUBLISHED'),
                 content: '',

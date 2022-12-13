@@ -6,12 +6,12 @@
         "MAIN_EXPLANATION": "Create new survey with our drag & drop builder that gives you total control of each detail of your survey.",
         "SECONDARY_HEADER": "Surveys",
         "GRID_HEADER": {
-            "NAME": "Name",
-            "DESCRIPTION": "Description",
-            "CREATIONDATE": "Creation Date",
+            "NAME": "名称",
+            "DESCRIPTION": "描述",
+            "CREATIONDATE": "创建日期",
             "DATERANGE": "Date Range",
             "MODIFICATIONDATE": "Modification Date",
-            "STATUS": "Status",
+            "STATUS": "状况",
             "PUBLISHED": "Published",
             "DRAFT": "Draft",
             "ACTIVE": "Active"
@@ -22,7 +22,7 @@
         }
     },
     "SURVEY_MANAGER": {
-        "PREVIEW_TITLE": "Preview",
+        "PREVIEW_TITLE": "预览",
         "PREVIEW_CLICK_HERE": "Click here to edit",
         "SECTION_TITLE_PLACEHOLDER": "Type your section title here...",
         "QUESTION_TYPE_NOT_SUPPORTED": "This question type is not supported",
@@ -30,7 +30,7 @@
         "SURVEY_EDITOR": {
             "NAME": "Survey Name",
             "NAME_PLACEHOLDER": "Name of the survey",
-            "DESCRIPTION": "Description",
+            "DESCRIPTION": "描述",
             "ACTIVATE_TITLE": "Published",
             "ACTIVATE": "Activate",
             "ACTIVE_DATE_RANGE_TITLE": "Active date range",
@@ -46,26 +46,22 @@
                     "SHORT_TEXT": "Short Text",
                     "LONG_TEXT": "Long Text",
                     "SINGLE_SELECT": "Single Select",
-                    "CHECKBOX": "Checkbox",
-                    "RADIO": "Radio Group",
                     "MULTI_SELECT": "Multi Select",
                     "BOOLEAN": "Boolean",
                     "NUMBER": "Number",
                     "DECIMAL": "Decimal",
                     "CURRENCY": "Currency",
                     "PRECENTAGE": "Percentage",
-                    "DATE": "Date",
+                    "DATE": "日期",
                     "DATE_TIME": "Date Time"
                 },
                 "SECTION_HEADER": "Section",
                 "KEY": "Key",
                 "KEY_NAME": "Key Name",
-                "YES": "Yes",
-                "NO": "No",
                 "SECTION_TITLE": "Section Title",
                 "SECTION_NAME": "Section Name",
                 "QUESTION_TITLE": "Type your question here...",
-                "DESCRIPTION": "Description",
+                "DESCRIPTION": "描述",
                 "SHOW_IF": "Show If",
                 "QUESTION_OPTION": "Question Options",
                 "SECTION_OPTION": "Section Options",
@@ -73,11 +69,10 @@
                 "MAX_CHARACTERS_PLACEHOLDER": "Empty for no max",
                 "MAKE_MANDATORY": "Make Mandatory",
                 "ADD_NONE_OPTION": "Add \"None\" option",
-                "COLUMNS": "Columns",
                 "ACTIONS": {
                     "ADD_LOGIC": "Add Logic",
-                    "DUPLICATE": "Duplicate",
-                    "DELETE": "Delete"
+                    "DUPLICATE": "複製",
+                    "DELETE": "刪除"
                 },
                 "SELECT_OPTION": {
                     "TITLE": "Select Options",
@@ -92,8 +87,8 @@
                     "TITLE": "Boolean Options",
                     "TRUE": "True",
                     "FALSE": "False",
-                    "YES": "Yes",
-                    "NO": "No"
+                    "YES": "确定",
+                    "NO": "没有 \n\n "
                 },
                 "DECIMAL": {
                     "NUMBER_AFTER": "Numbers after the dot"
@@ -102,20 +97,19 @@
         }
     },
     "ACTIONS": {
-        "CLOSE": "Close",
-        "CANCEL": "Cancel",
-        "CONTINUE": "Continue",
-        "DELETE": "Delete",
-        "EDIT": "Edit",
-        "SAVE": "Save",
-        "PREVIEW": "Preview",
-        "PUBLISH": "Publish",
+        "CANCEL": "取消",
+        "CONTINUE": "繼續",
+        "DELETE": "刪除",
+        "EDIT": "编辑",
+        "SAVE": "保存",
+        "PREVIEW": "预览",
+        "PUBLISH": "发布",
         "IMPORT": "Import a survey",
         "EXPORT": "Export a survey",
         "RESTORE_TO_LAST_PUBLISH": "Restore to last publish"
     },
     "MESSAGES": {
-        "TITLE_NOTICE": "Notice",
+        "TITLE_NOTICE": "通知",
         "OPERATION_SUCCESS": "Operation success.",
         "SURVEY_SAVED": "Survey Saved",
         "SURVEY_SAVE_FAILED": "Survey save Failed",
@@ -123,8 +117,6 @@
         "SURVEY_RESTORED": "Survey Restored"
     },
     "VALIDATION": {
-        "QUESTION": "Question",
-        "OPTION": "Option",
         "FAILED_MSG": "Validation failed",
         "KEY_MISSING": "Key is missing",
         "NAME_MISSING": "Name is missing",
@@ -139,22 +131,18 @@
         "LONG_TEXT": "Long Text",
         "MULTIPLE_SELECTION_DROPDOWN": "Multiple Select",
         "SINGLE_SELECTION_DROPDOWN": "Single Select",
-        "CHECKBOX": "Checkbox",
-        "RADIO_GROUP": "Radio Group",
         "BOOLEAN_TOGGLE": "Yes/No",
         "NUMBER": "Number",
         "DECIMAL": "Decimal",
         "CURRENCY": "Currency",
         "PERCENTAGE": "Percentage",
-        "DATE": "Date",
-        "DATE_TIME": "Date Time",
-        "PHOTO": "Photo",
-        "SIGNATURE": "Signature"
+        "DATE": "日期",
+        "DATE_TIME": "Date Time"
     },
     "DIALOGS": {
         "SHOW_IF": {
             "TITLE": "Show If",
-            "OK": "OK"
+            "OK": "确定"
         }
     }
 }

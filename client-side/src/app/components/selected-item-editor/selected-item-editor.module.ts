@@ -16,6 +16,9 @@ import { PepCheckboxModule } from '@pepperi-addons/ngx-lib/checkbox';
 
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 import { PepSideBarModule } from '@pepperi-addons/ngx-lib/side-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { PepDialogModule } from '@pepperi-addons/ngx-lib/dialog';
+import { PepQueryBuilderModule } from '@pepperi-addons/ngx-lib/query-builder';
 
 const pepIcons = [
     pepIconSystemFilter2,
@@ -30,6 +33,9 @@ const pepIcons = [
         CommonModule,
         ReactiveFormsModule,
         DragDropModule,
+        MatDialogModule,
+        PepDialogModule,
+        PepQueryBuilderModule,
         PepButtonModule,
         PepRemoteLoaderModule,
         PepDraggableItemsModule,

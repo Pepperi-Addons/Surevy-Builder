@@ -2,7 +2,6 @@
     <ng-container pep-top-area>
         <pep-top-bar [title]="('SURVEYS_MANAGER.MAIN_HEADER' | translate)">
             <!-- <div header-start-content>
-                <pep-button  class="back-button pull-left flip pep-spacing-element" iconName="arrow_left_alt" (buttonClick)="navigateSurevyPage();"></pep-button>
             </div> -->
             <div header-end-content>
             </div>
@@ -27,21 +26,6 @@
                         </pep-button> -->
                     </ng-container>
             </pep-generic-list>
-    <!-- <ng-container *ngIf="!hasSurevy">
-        <pep-top-bar class="main-top-header" [inline]="true">
-            <div header-end-content>
-                <ng-container *ngTemplateOutlet="topBarEnd"></ng-container>
-            </div>
-        </pep-top-bar>
-        <div class="PagesNotFoundMsg">
-                <div class="leaf-background">
-                    <img [src]="imagesPath + 'brand-leaf-skiny.svg'">
-                    <img [src]="imagesPath + 'brand-leaf-round.svg'">
-                </div>
-                <h2>{{ "SURVEYS_MANAGER.PAGES_HEADER" | translate}}</h2>
-                <span>{{ "SURVEYS_MANAGER.NO_PAGES_MSG" | translate}}</span>
-        </div>
-    </ng-container> -->
         </div>
     </ng-container>
 </pep-page-layout>

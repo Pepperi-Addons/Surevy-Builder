@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
 import { PepButton } from '@pepperi-addons/ngx-lib/button';
 
 @Injectable()
@@ -23,7 +24,7 @@ export class YesNoQuestionService {
         }
     }
 
-    constructor() {
+    constructor(private translateService: TranslateService) {
         this.loadMenuItems();
     }    
 
@@ -31,11 +32,11 @@ export class YesNoQuestionService {
         this._questionItems = [
             {
                 key: 'true',
-                value: 'Yes'
+                value: this.translateService.instant('YES')
             },
             {
                 key: 'false',
-                value: 'No'                
+                value: this.translateService.instant('NO')                
             }
         ]
     }

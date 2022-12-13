@@ -1,2 +1,2 @@
-<pep-group-buttons [buttons]="buttons" viewType="toggle" [supportUnselect]="!mandatory"
+<pep-group-buttons [buttons]="buttons" viewType="toggle" [buttonsDisabled]="disabled" [selectedButtonKey]="value" [supportUnselect]="!mandatory"
     (buttonClick)="onButtonClicked($event.source)"></pep-group-buttons>

@@ -1,14 +1,27 @@
 import { AddonData } from "@pepperi-addons/papi-sdk";
 
-export const SURVEYS_TABLE_NAME = 'SurveysTemplate';
-export const DRAFT_SURVEYS_TABLE_NAME = 'SurveysTemplateDrafts';
+export const SURVEYS_TABLE_NAME = 'Surveys';
+export const SURVEYS_BASE_TABLE_NAME = 'base_surveys'; // 'baseSurveys'
+export const SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplates';
+export const SURVEY_TEMPLATES_BASE_TABLE_NAME = 'base_surveys_templates'; // 'baseSurveyTemplates'
+export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplatesDrafts';
 
-export const SURVEY_LOAD_EVENT_NAME = 'OnSurveyLoad';
-export const SURVEY_LOAD_CLIENT_EVENT_NAME = 'OnClientSurveyLoad';
-export const SURVEY_FIELD_CHANGE_EVENT_NAME = 'OnSurveyFieldChange';
-export const SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyFieldChange';
-export const SURVEY_QUESTION_CHANGE_EVENT_NAME = 'OnSurveyQuestionChange';
-export const SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyQuestionChange';
+// **********************************************************************************************
+//                          Client & User events const
+// **********************************************************************************************
+export const CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD = 'OnClientSurveyLoad';
+export const USER_ACTION_ON_SURVEY_DATA_LOAD = 'OnSurveyDataLoad';
+export const USER_ACTION_ON_SURVEY_VIEW_LOAD = 'OnSurveyViewLoad';
+
+export const CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD = 'OnClientSurveyUnload';
+export const USER_ACTION_ON_SURVEY_VIEW_UNLOAD = 'OnSurveyUnload';
+
+export const CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE = 'OnClientSurveyFieldChange';
+export const USER_ACTION_ON_SURVEY_FIELD_CHANGED = 'OnSurveyFieldChanged';
+
+export const CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE = 'OnClientSurveyQuestionChange';
+export const USER_ACTION_ON_SURVEY_QUESTION_CHANGED = 'OnSurveyQuestionChanged';
+// **********************************************************************************************
 
 export type SurveyStatusType = 'Submitted' | 'In Creation';
 
@@ -23,8 +36,6 @@ export interface SurveyTemplate extends AddonData {
 
 // Temp need to remove it when will be integrated with papi-sdk
 export interface Survey extends AddonData {
-    // Generated UUID
-    Key?:string;
     // status keyword values (not free text)
     Status?:string;
     // unique ID - ?
@@ -58,7 +69,7 @@ export interface SurveyTemplateSection {
     Title: string;  
     Description?: string;
     Questions: SurveyTemplateQuestion[];
-    // ShowIf?: string;
+    // ShowIf?: any;
 }
 
 export type SurveyTemplateQuestionType = 'short-text' | 'long-text' 
@@ -78,7 +89,7 @@ export interface SurveyTemplateQuestion {
     Description?: string;
     Type: SurveyTemplateQuestionType;
     Mandatory?: boolean; 
-    ShowIf?: string;
+    ShowIf?: any;
     Value?: any;
     Visible?: boolean;
     [key: string]: any;

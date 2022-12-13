@@ -1,7 +1,7 @@
 import { SurveyApiService } from './surveys-api.service'
 import { Client, Request } from '@pepperi-addons/debug-server'
 
-export async function create_survey(client: Client, request: Request): Promise<any> {
+export async function create_survey_template(client: Client, request: Request): Promise<any> {
     try {
         const service = new SurveyApiService(client);
         return service.createTemplateSurvey(request.query);
@@ -10,7 +10,7 @@ export async function create_survey(client: Client, request: Request): Promise<a
     }
 }
 
-export async function remove_survey(client: Client, request: Request): Promise<any> {
+export async function remove_survey_template(client: Client, request: Request): Promise<any> {
     try {
         const service = new SurveyApiService(client);
         return service.removeSurvey(request.query);
@@ -19,7 +19,7 @@ export async function remove_survey(client: Client, request: Request): Promise<a
     }
 }
 
-export async function get_surveys_data(client: Client, request: Request): Promise<any> {
+export async function get_survey_templates_data(client: Client, request: Request): Promise<any> {
     try {
         const service = new SurveyApiService(client);
         return service.getSurveysData(request.query);
@@ -28,7 +28,7 @@ export async function get_surveys_data(client: Client, request: Request): Promis
     }
 };
 
-export async function get_survey_data(client: Client, request: Request): Promise<any> {
+export async function get_survey_template_data(client: Client, request: Request): Promise<any> {
     try {
         const service = new SurveyApiService(client);
         return service.getSurveyData(request?.query);
@@ -37,7 +37,7 @@ export async function get_survey_data(client: Client, request: Request): Promise
     }
 }
 
-export async function get_survey_builder_data(client: Client, request: Request): Promise<any> {
+export async function get_survey_template_builder_data(client: Client, request: Request): Promise<any> {
     try {
         const service = new SurveyApiService(client);
         return service.getSurveyData(request?.query, true);
@@ -46,7 +46,7 @@ export async function get_survey_builder_data(client: Client, request: Request):
     }
 };
 
-export async function save_draft_survey(client: Client, request: Request): Promise<any> {
+export async function save_draft_survey_template(client: Client, request: Request): Promise<any> {
     try {
         const service = new SurveyApiService(client);
         return service.saveDraftSurvey(request.body);
@@ -64,7 +64,7 @@ export async function save_draft_survey(client: Client, request: Request): Promi
 //     }
 // }
 
-export async function publish_survey(client: Client, request: Request): Promise<any> {
+export async function publish_survey_template(client: Client, request: Request): Promise<any> {
     try {
         const service = new SurveyApiService(client);
         return service.publishSurvey(request.body);

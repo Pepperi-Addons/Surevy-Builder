@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewInit } from '@angular/core';
 import { CdkDragEnd, CdkDragStart } from '@angular/cdk/drag-drop';
 import { SurveysService } from 'src/app/services/surveys.service';
 import { ValidationService } from 'src/app/services/validation.service';
@@ -10,11 +10,12 @@ import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
     templateUrl: './question-generator.component.html',
     styleUrls: ['./question-generator.component.scss', './question-generator.component.theme.scss']
 })
-export class QuestionGeneratorComponent implements OnInit {
+export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
     @Input() question: SurveyTemplateQuestion;
     @Input() sequenceNumber: string;
     @Input() isActive: boolean = false;
     @Input() hasError: boolean = false;
+    @Input() disabled: boolean = false;
 
     private _editable = false;
     @Input()
@@ -31,6 +32,8 @@ export class QuestionGeneratorComponent implements OnInit {
     protected isGrabbing = false;
     protected isQuestionTypeMenuOpen = false;
 
+    protected valueLength = 0;
+
     constructor(
         private surveysService: SurveysService,
         private validationService: ValidationService
@@ -44,12 +47,16 @@ export class QuestionGeneratorComponent implements OnInit {
         }
     }
 
+    ngAfterViewInit(): void {
+    }
+
     onDragStart(event: CdkDragStart) {
         this.surveysService.onQuestionDragStart(event);
     }
 
     onDragEnd(event: CdkDragEnd) {
         this.surveysService.onQuestionDragEnd(event);
+        this.validationService.validateSurvey();
     }
 
     onQuestionClicked(event: any) {
@@ -63,13 +70,18 @@ export class QuestionGeneratorComponent implements OnInit {
     }
     
     onQuestionValueChanged(value: any): void {
+        // console.log(`value change - ${value}`);
         this.question.Value = value;
-        this.surveysService.onSurveyQuestionValueChange(this.question.Key, value);
+        this.surveysService.changeSurveyQuestionValue(this.question.Key, value);
+    }
+
+    onKeyup(event) {
+        this.valueLength = event?.target?.value?.length || 0;
     }
     
     onStateChange(event: IPepMenuStateChangeEvent) {
         this.isQuestionTypeMenuOpen = event.state === 'visible';
-        console.log('onStateChange', event);
+        // console.log('onStateChange', event);
     }
 
     isValidQuestion(){

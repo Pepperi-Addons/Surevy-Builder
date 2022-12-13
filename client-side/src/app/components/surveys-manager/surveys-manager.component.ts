@@ -10,7 +10,8 @@ import { NavigationService } from "../../services/navigation.service";
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { SurveysService } from "../../services/surveys.service";
 import { MY_DATE_FORMATS, MomentUtcDateAdapter, MomentUtcDateTimeAdapter } from "../../model/survey.model";
-import { SurveyTemplate, SurveyTemplateRowProjection, SURVEY_FIELD_CHANGE_EVENT_NAME, SURVEY_LOAD_EVENT_NAME, SURVEY_QUESTION_CHANGE_EVENT_NAME } from "shared";
+import { SurveyTemplate, SurveyTemplateRowProjection, SURVEY_FIELD_AFTER_CHANGE_EVENT_NAME, 
+    SURVEY_LOAD_BEFORE_MERGE_EVENT_NAME, SURVEY_LOAD_AFTER_MERGE_EVENT_NAME, SURVEY_QUESTION_AFTER_CHANGE_EVENT_NAME } from "shared";
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from "@angular/material/core";
 import { getCalture } from "@pepperi-addons/ngx-lib/date";
 import { DatetimeAdapter, MAT_DATETIME_FORMATS } from '@mat-datetimepicker/core';
@@ -40,7 +41,6 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
     totalSurveys: number = 0;
     surveys: SurveyTemplateRowProjection[];
     //imagesPath = '';
-    //hasSurevy = true;
     private _subscriptions: Subscription[] = [];
 
     constructor(
@@ -97,7 +97,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                     options += `&where=${params.searchString}`;
                 }
                 
-                this.surveys = await firstValueFrom(this.surveysService.getSurveys(this._navigationService.addonUUID, encodeURI(options)));
+                this.surveys = await firstValueFrom(this.surveysService.getSurveyTemplates(this._navigationService.addonUUID, encodeURI(options)));
 
                 this.surveys.forEach(sur => {
                     let fromDate = '';
@@ -165,7 +165,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                         title: this.translate.instant("ACTIONS.DELETE"),
                         handler: async (data: PepSelectionData) => {
                             if (data?.rows.length > 0) {
-                                this.deleteSurvey(data?.rows[0]);
+                                this.deleteSurveyTemplate(data?.rows[0]);
                             }
                         }
                     }
@@ -192,7 +192,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
     }
 
     onAddSurveyClicked() {
-        this.surveysService.createNewSurvey(this._navigationService.addonUUID, this.totalSurveys).pipe(first()).subscribe((survey: SurveyTemplate) => {
+        this.surveysService.createNewSurveyTemplate(this._navigationService.addonUUID, this.totalSurveys).pipe(first()).subscribe((survey: SurveyTemplate) => {
             if (survey) {
                 this._navigationService.navigateToSurvey(survey.Key);
             } else {
@@ -201,14 +201,14 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         });
     }
 
-    deleteSurvey(surveyID: string) {
+    deleteSurveyTemplate(surveyID: string) {
         const content = this.translate.instant('SURVEYS_MANAGER.DELETE_SURVEY.MSG');
         const title = this.translate.instant('SURVEYS_MANAGER.DELETE_SURVEY.TITLE');
         const dataMsg = new PepDialogData({title, actionsType: "cancel-delete", content});
 
         this.dialog.openDefaultDialog(dataMsg).afterClosed().pipe(first()).subscribe((isDeletePressed) => {
             if (isDeletePressed) {
-                this.surveysService.deleteSurvey(this._navigationService.addonUUID, surveyID).pipe(first()).subscribe((res) => {
+                this.surveysService.deleteSurveyTemplate(this._navigationService.addonUUID, surveyID).pipe(first()).subscribe((res) => {
                          this.dataSource = this.setDataSource();
                  });
             }
@@ -223,18 +223,23 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         const hostObject = {
             AddonUUID: config.AddonUUID,
             PossibleEvents: [{
-                Title: 'on survey load',
-                EventKey: SURVEY_LOAD_EVENT_NAME,
+                Title: 'on survey load before merge',
+                EventKey: SURVEY_LOAD_BEFORE_MERGE_EVENT_NAME,
                 // EventFilter: {},
                 // Fields: []
             }, {
-                Title: 'on survey field change',
-                EventKey: SURVEY_FIELD_CHANGE_EVENT_NAME,
+                Title: 'on survey load after merge',
+                EventKey: SURVEY_LOAD_AFTER_MERGE_EVENT_NAME,
                 // EventFilter: {},
                 // Fields: []
             }, {
-                Title: 'on servey question change',
-                EventKey: SURVEY_QUESTION_CHANGE_EVENT_NAME,
+                Title: 'on survey field change after',
+                EventKey: SURVEY_FIELD_AFTER_CHANGE_EVENT_NAME,
+                // EventFilter: {},
+                // Fields: []
+            }, {
+                Title: 'on servey question change after',
+                EventKey: SURVEY_QUESTION_AFTER_CHANGE_EVENT_NAME,
                 // EventFilter: {},
                 // Fields: []
             }]

@@ -92,7 +92,12 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         if (key.length > 0) {
             const queryParams = this.route?.snapshot?.queryParams;
             
-            this.surveysService.loadSurveyBuilder(addonUUID, key, this.editMode, queryParams);
+            // If it's edit mode get the data of the survey and the relations from the Server side, Else - get the survey from the CPI side.
+            if (this.editMode) {
+                this.surveysService.loadSurveyTemplateBuilder(addonUUID, key, queryParams);
+            } else { 
+                this.surveysService.loadSurvey(key);
+            }
 
             this.layoutService.onResize$.pipe(this.getDestroyer()).subscribe((size: PepScreenSizeType) => {
                 this.screenSize = size;
@@ -119,15 +124,13 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
                     this.isGrabbing = value;
                 });
             } else {
-
-
-                // Load menu items.
-                this.pepMenuItems = new Array<PepMenuItem>();
-                this.pepMenuItems.push({
-                    key: 'key',
-                    text: 'test',
-                    type: 'regular'
-                });
+                // // Load menu items.
+                // this.pepMenuItems = new Array<PepMenuItem>();
+                // this.pepMenuItems.push({
+                //     key: 'key',
+                //     text: 'test',
+                //     type: 'regular'
+                // });
             }
         } else {
             // TODO: Show error message key isn't supply.
@@ -138,7 +141,7 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         this._destroyed.next();
         this._destroyed.complete();
 
-        this.surveysService.unloadSurveyBuilder();
+        this.surveysService.unloadSurveyData();
     }
 
     onSectionDropped(event: CdkDragDrop<any[]>) {
@@ -150,11 +153,11 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     }
 
     onCloseSurvey() {
-        // TODO: Back.
+        this.surveysService.unloadSurvey();
     }
 
     onChangeSurveyStatus() {
-        this.surveysService.onSurveyStatusChange(this.isSubmitted ? 'In Creation' : 'Submitted');
+        this.surveysService.changeSurveyStatus(this.isSubmitted ? 'In Creation' : 'Submitted');
     }
 
     onMenuItemClicked(event: IPepMenuItemClickEvent) {

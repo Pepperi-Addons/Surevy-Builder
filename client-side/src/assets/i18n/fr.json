@@ -6,15 +6,15 @@
         "MAIN_EXPLANATION": "Create new survey with our drag & drop builder that gives you total control of each detail of your survey.",
         "SECONDARY_HEADER": "Surveys",
         "GRID_HEADER": {
-            "NAME": "Name",
+            "NAME": "Nom",
             "DESCRIPTION": "Description",
-            "CREATIONDATE": "Creation Date",
-            "DATERANGE": "Date Range",
-            "MODIFICATIONDATE": "Modification Date",
-            "STATUS": "Status",
-            "PUBLISHED": "Published",
+            "CREATIONDATE": "Date de création",
+            "DATERANGE": "Plage de dates ",
+            "MODIFICATIONDATE": "Date de la modification",
+            "STATUS": "État",
+            "PUBLISHED": "Publiées",
             "DRAFT": "Draft",
-            "ACTIVE": "Active"
+            "ACTIVE": "Actif"
         },
         "DELETE_SURVEY": {
             "TITLE": "Delete survey",
@@ -22,7 +22,7 @@
         }
     },
     "SURVEY_MANAGER": {
-        "PREVIEW_TITLE": "Preview",
+        "PREVIEW_TITLE": "Prévisualiser",
         "PREVIEW_CLICK_HERE": "Click here to edit",
         "SECTION_TITLE_PLACEHOLDER": "Type your section title here...",
         "QUESTION_TYPE_NOT_SUPPORTED": "This question type is not supported",
@@ -31,11 +31,11 @@
             "NAME": "Survey Name",
             "NAME_PLACEHOLDER": "Name of the survey",
             "DESCRIPTION": "Description",
-            "ACTIVATE_TITLE": "Published",
-            "ACTIVATE": "Activate",
+            "ACTIVATE_TITLE": "Publiées",
+            "ACTIVATE": "Activer",
             "ACTIVE_DATE_RANGE_TITLE": "Active date range",
-            "ACTIVE_FROM_DATE": "Start Date",
-            "ACTIVE_TO_DATE": "End Date",
+            "ACTIVE_FROM_DATE": "Date de début",
+            "ACTIVE_TO_DATE": "Date de fin",
             "ADD_ITEM": "Add Items",
             "SECTION": "Section",
             "ADD_SECTION": "Add a Section",
@@ -46,22 +46,18 @@
                     "SHORT_TEXT": "Short Text",
                     "LONG_TEXT": "Long Text",
                     "SINGLE_SELECT": "Single Select",
-                    "CHECKBOX": "Checkbox",
-                    "RADIO": "Radio Group",
                     "MULTI_SELECT": "Multi Select",
-                    "BOOLEAN": "Boolean",
-                    "NUMBER": "Number",
+                    "BOOLEAN": "Booléen",
+                    "NUMBER": "Numéro",
                     "DECIMAL": "Decimal",
-                    "CURRENCY": "Currency",
-                    "PRECENTAGE": "Percentage",
-                    "DATE": "Date",
+                    "CURRENCY": "Devise",
+                    "PRECENTAGE": "Pourcentage",
+                    "DATE": "Heure de l’action",
                     "DATE_TIME": "Date Time"
                 },
                 "SECTION_HEADER": "Section",
-                "KEY": "Key",
+                "KEY": "Clé ",
                 "KEY_NAME": "Key Name",
-                "YES": "Yes",
-                "NO": "No",
                 "SECTION_TITLE": "Section Title",
                 "SECTION_NAME": "Section Name",
                 "QUESTION_TITLE": "Type your question here...",
@@ -69,15 +65,14 @@
                 "SHOW_IF": "Show If",
                 "QUESTION_OPTION": "Question Options",
                 "SECTION_OPTION": "Section Options",
-                "MAX_CHARACTERS": "Max Characters",
+                "MAX_CHARACTERS": "Nbre de caractères max.",
                 "MAX_CHARACTERS_PLACEHOLDER": "Empty for no max",
                 "MAKE_MANDATORY": "Make Mandatory",
                 "ADD_NONE_OPTION": "Add \"None\" option",
-                "COLUMNS": "Columns",
                 "ACTIONS": {
                     "ADD_LOGIC": "Add Logic",
-                    "DUPLICATE": "Duplicate",
-                    "DELETE": "Delete"
+                    "DUPLICATE": "Dupliquer",
+                    "DELETE": "Supprimer"
                 },
                 "SELECT_OPTION": {
                     "TITLE": "Select Options",
@@ -90,10 +85,10 @@
                 },
                 "BOOLEAN": {
                     "TITLE": "Boolean Options",
-                    "TRUE": "True",
-                    "FALSE": "False",
-                    "YES": "Yes",
-                    "NO": "No"
+                    "TRUE": "Vrai",
+                    "FALSE": "Faux",
+                    "YES": "Oui",
+                    "NO": "Non"
                 },
                 "DECIMAL": {
                     "NUMBER_AFTER": "Numbers after the dot"
@@ -102,14 +97,13 @@
         }
     },
     "ACTIONS": {
-        "CLOSE": "Close",
-        "CANCEL": "Cancel",
-        "CONTINUE": "Continue",
-        "DELETE": "Delete",
-        "EDIT": "Edit",
-        "SAVE": "Save",
-        "PREVIEW": "Preview",
-        "PUBLISH": "Publish",
+        "CANCEL": "Annuler",
+        "CONTINUE": "Continuer",
+        "DELETE": "Supprimer",
+        "EDIT": "Modifier",
+        "SAVE": "Enregistrer",
+        "PREVIEW": "Prévisualiser",
+        "PUBLISH": "Publier",
         "IMPORT": "Import a survey",
         "EXPORT": "Export a survey",
         "RESTORE_TO_LAST_PUBLISH": "Restore to last publish"
@@ -123,8 +117,6 @@
         "SURVEY_RESTORED": "Survey Restored"
     },
     "VALIDATION": {
-        "QUESTION": "Question",
-        "OPTION": "Option",
         "FAILED_MSG": "Validation failed",
         "KEY_MISSING": "Key is missing",
         "NAME_MISSING": "Name is missing",
@@ -139,17 +131,13 @@
         "LONG_TEXT": "Long Text",
         "MULTIPLE_SELECTION_DROPDOWN": "Multiple Select",
         "SINGLE_SELECTION_DROPDOWN": "Single Select",
-        "CHECKBOX": "Checkbox",
-        "RADIO_GROUP": "Radio Group",
         "BOOLEAN_TOGGLE": "Yes/No",
-        "NUMBER": "Number",
+        "NUMBER": "Numéro",
         "DECIMAL": "Decimal",
-        "CURRENCY": "Currency",
-        "PERCENTAGE": "Percentage",
-        "DATE": "Date",
-        "DATE_TIME": "Date Time",
-        "PHOTO": "Photo",
-        "SIGNATURE": "Signature"
+        "CURRENCY": "Devise",
+        "PERCENTAGE": "Pourcentage",
+        "DATE": "Heure de l’action",
+        "DATE_TIME": "Date Time"
     },
     "DIALOGS": {
         "SHOW_IF": {
