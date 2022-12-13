@@ -1,6 +1,8 @@
 import { PapiClient, InstalledAddon, AddonDataScheme, Relation, FindOptions } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
-import { DEFAULT_BLANK_SURVEY_DATA, ISurveyTemplateBuilderData, SurveyTemplate, SurveyTemplateRowProjection, SURVEY_TEMPLATES_TABLE_NAME, DRAFT_SURVEY_TEMPLATES_TABLE_NAME, SURVEYS_TABLE_NAME } from 'shared';
+import { DEFAULT_BLANK_SURVEY_DATA, ISurveyTemplateBuilderData, SurveyTemplate, SurveyTemplateRowProjection, 
+    SURVEYS_BASE_TABLE_NAME, SURVEY_TEMPLATES_BASE_TABLE_NAME, 
+    SURVEY_TEMPLATES_TABLE_NAME, DRAFT_SURVEY_TEMPLATES_TABLE_NAME, SURVEYS_TABLE_NAME } from 'shared';
 import { v4 as uuidv4 } from 'uuid';
 import { SurveysValidatorService } from './surveys-validator.service';
 
@@ -40,60 +42,30 @@ export class SurveyApiService {
             Name: SURVEYS_TABLE_NAME,
             Extends: {
                 AddonUUID: this.SURVEY_ADDON_UUID,
-                Name: "baseSurveys"
+                Name: SURVEYS_BASE_TABLE_NAME
             },
             SyncData: {
                 Sync: true
-                // Sync: false
             },
             Type: 'data',
             ...udcTempObject
         };
         const createSurveyTable = await this.papiClient.userDefinedCollections.schemes.upsert(schema as any);
-        // // TODO: Remove this
-        // const createSurveyTableTmp = await this.papiClient.addons.data.schemes.post({
-        //     Name: "surveys",
-        //     Extends: {
-        //         AddonUUID: this.SURVEY_ADDON_UUID,
-        //         Name: "baseSurveys"
-        //     },
-        //     SyncData: {
-        //         Sync: true
-        //         // Sync: false
-        //     },
-        //     Type: 'data',
-        //     "GenericResource":true
-        // } as any);
-
+        
         // Create Survey template table
         const schemaTemplate = {
             Name: SURVEY_TEMPLATES_TABLE_NAME,
             Extends: {
                 AddonUUID: this.SURVEY_ADDON_UUID,
-                Name: "baseSurveyTemplates"
+                Name: SURVEY_TEMPLATES_BASE_TABLE_NAME
             },
             SyncData: {
                 Sync: true
-                // Sync: false
             },
             Type: 'meta_data',
             ...udcTempObject
         };
         const createSurveyTemplateTable = await this.papiClient.userDefinedCollections.schemes.upsert(schemaTemplate as any);
-        // // TODO: Remove this
-        // const createSurveyTemplateTableTmp = await this.papiClient.addons.data.schemes.post({
-        //     Name: "surveyTemplates",
-        //     Extends: {
-        //         AddonUUID: this.SURVEY_ADDON_UUID,
-        //         Name: "baseSurveyTemplates"
-        //     },
-        //     SyncData: {
-        //         Sync: true
-        //         // Sync: false
-        //     },
-        //     Type: 'meta_data',
-        //     "GenericResource":true
-        // } as any);
         
         // Create draft Survey template table
         const schemaDraftTemplate = {

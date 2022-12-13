@@ -1,24 +1,27 @@
 import { AddonData } from "@pepperi-addons/papi-sdk";
 
 export const SURVEYS_TABLE_NAME = 'Surveys';
-// export const SURVEYS_TABLE_NAME = 'surveys';
+export const SURVEYS_BASE_TABLE_NAME = 'base_surveys'; // 'baseSurveys'
 export const SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplates';
-// export const SURVEY_TEMPLATES_TABLE_NAME = 'surveyTemplates';
+export const SURVEY_TEMPLATES_BASE_TABLE_NAME = 'base_surveys_templates'; // 'baseSurveyTemplates'
 export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplatesDrafts';
-// export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'surveyTemplatesDrafts';
 
-export const SURVEY_LOAD_CLIENT_EVENT_NAME = 'OnClientSurveyLoad';
-export const SURVEY_LOAD_BEFORE_MERGE_EVENT_NAME = 'OnSurveyLoad_BeforeMerge'; // TODO: Change to pre and post?
-export const SURVEY_LOAD_AFTER_MERGE_EVENT_NAME = 'OnSurveyLoad_AfterMerge';
+// **********************************************************************************************
+//                          Client & User events const
+// **********************************************************************************************
+export const CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD = 'OnClientSurveyLoad';
+export const USER_ACTION_ON_SURVEY_DATA_LOAD = 'OnSurveyDataLoad';
+export const USER_ACTION_ON_SURVEY_VIEW_LOAD = 'OnSurveyViewLoad';
 
-export const SURVEY_UNLOAD_CLIENT_EVENT_NAME = 'OnClientSurveyUnload';
-export const SURVEY_UNLOAD_EVENT_NAME = 'OnSurveyUnload';
+export const CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD = 'OnClientSurveyUnload';
+export const USER_ACTION_ON_SURVEY_VIEW_UNLOAD = 'OnSurveyUnload';
 
-export const SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyFieldChange';
-export const SURVEY_FIELD_AFTER_CHANGE_EVENT_NAME = 'OnSurveyFieldChange_After';
+export const CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE = 'OnClientSurveyFieldChange';
+export const USER_ACTION_ON_SURVEY_FIELD_CHANGED = 'OnSurveyFieldChanged';
 
-export const SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyQuestionChange';
-export const SURVEY_QUESTION_AFTER_CHANGE_EVENT_NAME = 'OnSurveyQuestionChange_After';
+export const CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE = 'OnClientSurveyQuestionChange';
+export const USER_ACTION_ON_SURVEY_QUESTION_CHANGED = 'OnSurveyQuestionChanged';
+// **********************************************************************************************
 
 export type SurveyStatusType = 'Submitted' | 'In Creation';
 
