@@ -31,8 +31,8 @@
       "cpi-data": "0.5.2",
       "udc": "0.7.23",
       "resource_list": "0.6.4",
-      "abstract_activities": "0.0.4",
-      "survey": "0.0.14",
+      "abstract_activities": "0.0.5",
+      "survey": "0.5.4",
       "pages": "0.9.8",
       "slugs": "1.0.24"
     },
