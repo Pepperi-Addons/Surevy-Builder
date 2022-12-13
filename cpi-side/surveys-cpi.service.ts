@@ -171,30 +171,30 @@ class SurveysService {
         return errorMsg;
     }
 
-    private setSurveyQuestionValue(surveyTemplate: SurveyTemplate, questionKey: string, value: any): boolean {
-        let isValueSet = false;
+    // private setSurveyQuestionValue(surveyTemplate: SurveyTemplate, questionKey: string, value: any): boolean {
+    //     let isValueSet = false;
 
-        for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
-            const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
+    //     for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
+    //         const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
 
-            for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
-                const question = section.Questions[questionIndex];
+    //         for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
+    //             const question = section.Questions[questionIndex];
                 
-                // Set the value for this question.
-                if (question.Key === questionKey) {
-                    question.Value = value;
-                    isValueSet = true;
-                    break;
-                }
-            }
+    //             // Set the value for this question.
+    //             if (question.Key === questionKey) {
+    //                 question.Value = value;
+    //                 isValueSet = true;
+    //                 break;
+    //             }
+    //         }
 
-            if (isValueSet) {
-                break;
-            }
-        }
+    //         if (isValueSet) {
+    //             break;
+    //         }
+    //     }
 
-        return isValueSet;
-    }
+    //     return isValueSet;
+    // }
 
     private async getSurveyDataInternal(client: IClient | undefined, surveyKey: string, calcShowIf = true): Promise<{ survey: Survey, surveyTemplate: SurveyTemplate | null }> {
         let surveyTemplate: SurveyTemplate | null = null;
@@ -223,7 +223,7 @@ class SurveysService {
         return surveyTemplate;
     }
 
-    async onSurveyFieldChange(client: IClient | undefined, surveyKey: string, propertyName: string, value: any): Promise<SurveyTemplate | null> {
+    async onSurveyFieldChange(client: IClient | undefined, surveyKey: string, changedFields: any): Promise<any> {
 
         const hudOptions = {
             // HUD's message
@@ -239,59 +239,91 @@ class SurveysService {
             block: async (updateMessage) => {
                 const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey);
                 let shouldNavigateBack = false;
-                let errorMessage = '';
-        
+                let isValid = true;
+
                 if (surveyTemplate) {
-                    let canChangeProperty = true;
+                    for (let index = 0; index < changedFields.length; index++) {
+                        const propertyName = changedFields[index].FieldID;
+                        const value = changedFields[index].NewValue;
+                        
+                        // If the survey field is Status
+                        if (propertyName === 'Status') {
+                            const status: SurveyStatusType = value as SurveyStatusType;
 
-                    // If the survey field is Status
-                    if (propertyName === 'Status') {
-                        const status: SurveyStatusType = value as SurveyStatusType;
+                            // If the status is 'Submitted' (If there is no error navigate back after save).
+                            if (status === 'Submitted') {
+                                const errorMessage = this.validateSurvey(surveyTemplate);
+                                isValid = shouldNavigateBack = errorMessage.length === 0;
 
-                        // If the status is 'Submitted' (If there is no error navigate back after save).
-                        if (status === 'Submitted') {
-                            errorMessage = this.validateSurvey(surveyTemplate);
-                            canChangeProperty = shouldNavigateBack = errorMessage.length === 0;
+                                if (!isValid) {
+                                    // Wait for delay.
+                                    await new Promise((resolve) => setTimeout(resolve, 150));
+                                    await client?.alert('Notice', errorMessage);
+                                    break;
+                                }
+                            }
                         }
-                    }
 
-                    if (canChangeProperty) {
+                        // Set the old value in the changeFields
+                        changedFields[index].OldValue = survey[propertyName];
+
+                        // Set the new value.
                         survey[propertyName] = surveyTemplate[propertyName] = value;
-                        await this.setSurveyModel(client, survey);
-
-                        // if (needToNavigateBack) {
-                        //     await client?.navigateBack();
-                        // }
-                    } else {
-                        // Wait for delay.
-                        await new Promise((resolve) => setTimeout(resolve, 150));
-                        await client?.alert('Notice', errorMessage);
                     }
+
+                    // Save the survey
+                    if (isValid) {
+                        await this.setSurveyModel(client, survey);
+                    }
+                } else {
+                    isValid = false;
                 }
 
-                return { surveyTemplate, errorMessage, shouldNavigateBack};
+                return { mergedSurvey: surveyTemplate, changedFields, shouldNavigateBack, isValid};
             },
         };
 
         const res = await client?.showHUD(hudOptions);
-
-        // if (res?.result?.errorMessage.length > 0) {
-        //     await client?.alert('Notice', res?.result?.errorMessage);
-        // } else 
-        if (res?.result?.shouldNavigateBack) {
-            await client?.navigateBack();
-        }
-
-        return res?.result?.surveyTemplate;
+        return res?.result;
     }
 
-    async onSurveyQuestionChange(client: IClient | undefined, surveyKey: string, questionKey: string, value: any): Promise<SurveyTemplate | null> {
+    async onSurveyQuestionChange(client: IClient | undefined, surveyKey: string, changedFields: any): Promise<any> {
         const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey, false);
-            
+        let isValid = true;
+
         if (surveyTemplate) {
-            let isValueSet = this.setSurveyQuestionValue(surveyTemplate, questionKey, value);
-    
-            if (isValueSet) {
+            let someQuestionChanged = false;
+
+            for (let index = 0; index < changedFields.length; index++) {
+                const questionKey = changedFields[index].FieldID;
+                const value = changedFields[index].NewValue;
+                let isValueSet = false;
+
+                // Set the question value.
+                for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
+                    const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
+        
+                    for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
+                        const question = section.Questions[questionIndex];
+                        
+                        if (question.Key === questionKey) {
+                            // Set the old value in the changeFields
+                            changedFields[index].OldValue = question.Value;
+                            
+                            // Set the new value for this question.
+                            question.Value = value;
+                            someQuestionChanged = isValueSet = true;
+                            break;
+                        }
+                    }
+        
+                    if (isValueSet) {
+                        break;
+                    }
+                }
+            }
+
+            if (someQuestionChanged) {
                 // Set the new Answers and save in the DB.
                 this.setSurveyAnswers(survey, surveyTemplate);
                 await this.setSurveyModel(client, survey)
@@ -299,9 +331,11 @@ class SurveysService {
                 // Calc the show if
                 this.calcShowIf(surveyTemplate);
             }
+        } else {
+            isValid = false;
         }
 
-        return surveyTemplate;
+        return { mergedSurvey: surveyTemplate, changedFields, isValid};
     }
 
     // Temp function 

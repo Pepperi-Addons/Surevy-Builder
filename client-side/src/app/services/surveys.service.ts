@@ -8,7 +8,7 @@ import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
 import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData,
-    SurveyTemplateQuestion, SurveyTemplateQuestionType, SURVEY_LOAD_CLIENT_EVENT_NAME, SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME, SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME, SurveyStatusType, SURVEY_UNLOAD_CLIENT_EVENT_NAME } from 'shared';
+    SurveyTemplateQuestion, SurveyTemplateQuestionType, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE, SurveyStatusType, CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD } from 'shared';
 
 import * as _ from 'lodash';
 
@@ -650,9 +650,9 @@ export class SurveysService {
 
         const eventData = {
             detail: {
-                eventKey: SURVEY_LOAD_CLIENT_EVENT_NAME,
+                eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD,
                 eventData: {
-                    ObjectKey: surveyKey
+                    SurveyKey: surveyKey
                 },
                 completion: (survey: SurveyTemplate) => {
                     // debugger;
@@ -669,7 +669,7 @@ export class SurveysService {
         if (this._surveyModelKey.length > 0) {
             const eventData = {
                 detail: {
-                    eventKey: SURVEY_UNLOAD_CLIENT_EVENT_NAME,
+                    eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD,
                     eventData: {},
                     completion: (res) => {
                         // debugger;
@@ -686,11 +686,10 @@ export class SurveysService {
         if (this._surveyModelKey.length > 0) {
             const eventData = {
                 detail: {
-                    eventKey: SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME,
+                    eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE,
                     eventData: {
-                        ObjectKey: this._surveyModelKey,
-                        FieldID: 'Status',
-                        Value: status
+                        SurveyKey: this._surveyModelKey,
+                        ChangedFields: [{ FieldID: 'Status', NewValue: status }],
                     },
                     completion: (survey: SurveyTemplate) => {
                         // debugger;
@@ -709,11 +708,10 @@ export class SurveysService {
         if (this._surveyModelKey.length > 0) {
             const eventData = {
                 detail: {
-                    eventKey: SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME,
+                    eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE,
                     eventData: {
-                        ObjectKey: this._surveyModelKey,
-                        FieldID: questionKey,
-                        Value: value
+                        SurveyKey: this._surveyModelKey,
+                        ChangedFields: [{ FieldID: questionKey, NewValue: value }],
                     },
                     completion: (survey: SurveyTemplate) => {
                         // debugger;
