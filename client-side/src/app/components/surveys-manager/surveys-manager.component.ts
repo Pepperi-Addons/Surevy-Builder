@@ -10,8 +10,10 @@ import { NavigationService } from "../../services/navigation.service";
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { SurveysService } from "../../services/surveys.service";
 import { MY_DATE_FORMATS, MomentUtcDateAdapter, MomentUtcDateTimeAdapter } from "../../model/survey.model";
-import { SurveyTemplate, SurveyTemplateRowProjection, SURVEY_FIELD_AFTER_CHANGE_EVENT_NAME, 
-    SURVEY_LOAD_BEFORE_MERGE_EVENT_NAME, SURVEY_LOAD_AFTER_MERGE_EVENT_NAME, SURVEY_QUESTION_AFTER_CHANGE_EVENT_NAME } from "shared";
+import { SurveyTemplate, SurveyTemplateRowProjection, 
+    // SURVEY_FIELD_AFTER_CHANGE_EVENT_NAME, 
+    // SURVEY_LOAD_BEFORE_MERGE_EVENT_NAME, SURVEY_LOAD_AFTER_MERGE_EVENT_NAME, SURVEY_QUESTION_AFTER_CHANGE_EVENT_NAME 
+} from "shared";
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from "@angular/material/core";
 import { getCalture } from "@pepperi-addons/ngx-lib/date";
 import { DatetimeAdapter, MAT_DATETIME_FORMATS } from '@mat-datetimepicker/core';
@@ -219,41 +221,41 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         this._subscriptions.forEach(sub => sub.unsubscribe);
     }
 
-    onAddSurveyScriptClicked() {
-        const hostObject = {
-            AddonUUID: config.AddonUUID,
-            PossibleEvents: [{
-                Title: 'on survey load before merge',
-                EventKey: SURVEY_LOAD_BEFORE_MERGE_EVENT_NAME,
-                // EventFilter: {},
-                // Fields: []
-            }, {
-                Title: 'on survey load after merge',
-                EventKey: SURVEY_LOAD_AFTER_MERGE_EVENT_NAME,
-                // EventFilter: {},
-                // Fields: []
-            }, {
-                Title: 'on survey field change after',
-                EventKey: SURVEY_FIELD_AFTER_CHANGE_EVENT_NAME,
-                // EventFilter: {},
-                // Fields: []
-            }, {
-                Title: 'on servey question change after',
-                EventKey: SURVEY_QUESTION_AFTER_CHANGE_EVENT_NAME,
-                // EventFilter: {},
-                // Fields: []
-            }]
-        };
+    // onAddSurveyScriptClicked() {
+    //     const hostObject = {
+    //         AddonUUID: config.AddonUUID,
+    //         PossibleEvents: [{
+    //             Title: 'on survey load before merge',
+    //             EventKey: SURVEY_LOAD_BEFORE_MERGE_EVENT_NAME,
+    //             // EventFilter: {},
+    //             // Fields: []
+    //         }, {
+    //             Title: 'on survey load after merge',
+    //             EventKey: SURVEY_LOAD_AFTER_MERGE_EVENT_NAME,
+    //             // EventFilter: {},
+    //             // Fields: []
+    //         }, {
+    //             Title: 'on survey field change after',
+    //             EventKey: SURVEY_FIELD_AFTER_CHANGE_EVENT_NAME,
+    //             // EventFilter: {},
+    //             // Fields: []
+    //         }, {
+    //             Title: 'on servey question change after',
+    //             EventKey: SURVEY_QUESTION_AFTER_CHANGE_EVENT_NAME,
+    //             // EventFilter: {},
+    //             // Fields: []
+    //         }]
+    //     };
 
-        this.pepAddonBlockLoader.loadAddonBlockInDialog({
-            name: 'UserEvents',
-            container: this.viewContainerRef,
-            hostObject: hostObject,
-            hostEventsCallback: (event) => { 
-                // if (dialogRef) {
-                //     dialogRef.close(null);
-                // }
-            }
-        });
-    }
+    //     this.pepAddonBlockLoader.loadAddonBlockInDialog({
+    //         name: 'UserEvents',
+    //         container: this.viewContainerRef,
+    //         hostObject: hostObject,
+    //         hostEventsCallback: (event) => { 
+    //             // if (dialogRef) {
+    //             //     dialogRef.close(null);
+    //             // }
+    //         }
+    //     });
+    // }
 }
