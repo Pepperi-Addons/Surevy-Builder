@@ -3,25 +3,33 @@ import { AddonData } from "@pepperi-addons/papi-sdk";
 export const SURVEYS_TABLE_NAME = 'Surveys';
 export const SURVEYS_BASE_TABLE_NAME = 'base_surveys'; // 'baseSurveys'
 export const SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplates';
-export const SURVEY_TEMPLATES_BASE_TABLE_NAME = 'base_surveys_templates'; // 'baseSurveyTemplates'
+export const SURVEY_TEMPLATES_BASE_TABLE_NAME = 'base_survey_templates'; // 'baseSurveyTemplates'
 export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplatesDrafts';
 
-// **********************************************************************************************
-//                          Client & User events const
-// **********************************************************************************************
-export const CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD = 'OnClientSurveyLoad';
-export const USER_ACTION_ON_SURVEY_DATA_LOAD = 'OnSurveyDataLoad';
-export const USER_ACTION_ON_SURVEY_VIEW_LOAD = 'OnSurveyViewLoad';
+export const SURVEY_LOAD_EVENT_NAME = 'OnSurveyLoad';
+export const SURVEY_LOAD_CLIENT_EVENT_NAME = 'OnClientSurveyLoad';
+export const SURVEY_UNLOAD_CLIENT_EVENT_NAME = 'OnClientSurveyUnload';
+export const SURVEY_FIELD_CHANGE_EVENT_NAME = 'OnSurveyFieldChange';
+export const SURVEY_FIELD_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyFieldChange';
+export const SURVEY_QUESTION_CHANGE_EVENT_NAME = 'OnSurveyQuestionChange';
+export const SURVEY_QUESTION_CHANGE_CLIENT_EVENT_NAME = 'OnClientSurveyQuestionChange';
 
-export const CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD = 'OnClientSurveyUnload';
-export const USER_ACTION_ON_SURVEY_VIEW_UNLOAD = 'OnSurveyUnload';
+// // **********************************************************************************************
+// //                          Client & User events const
+// // **********************************************************************************************
+// export const CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD = 'OnClientSurveyLoad';
+// export const USER_ACTION_ON_SURVEY_DATA_LOAD = 'OnSurveyDataLoad';
+// export const USER_ACTION_ON_SURVEY_VIEW_LOAD = 'OnSurveyViewLoad';
 
-export const CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE = 'OnClientSurveyFieldChange';
-export const USER_ACTION_ON_SURVEY_FIELD_CHANGED = 'OnSurveyFieldChanged';
+// export const CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD = 'OnClientSurveyUnload';
+// export const USER_ACTION_ON_SURVEY_VIEW_UNLOAD = 'OnSurveyUnload';
 
-export const CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE = 'OnClientSurveyQuestionChange';
-export const USER_ACTION_ON_SURVEY_QUESTION_CHANGED = 'OnSurveyQuestionChanged';
-// **********************************************************************************************
+// export const CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE = 'OnClientSurveyFieldChange';
+// export const USER_ACTION_ON_SURVEY_FIELD_CHANGED = 'OnSurveyFieldChanged';
+
+// export const CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE = 'OnClientSurveyQuestionChange';
+// export const USER_ACTION_ON_SURVEY_QUESTION_CHANGED = 'OnSurveyQuestionChanged';
+// // **********************************************************************************************
 
 export type SurveyStatusType = 'Submitted' | 'In Creation';
 

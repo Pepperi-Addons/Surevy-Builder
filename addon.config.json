@@ -1,6 +1,6 @@
 {
   "AddonUUID": "cf17b569-1af4-45a9-aac5-99f23cae45d8",
-  "AddonVersion": "0.5.47",
+  "AddonVersion": "0.5.51",
   "DebugPort": 4500,
   "WebappBaseUrl": "https://app.sandbox.pepperi.com",
   "DefaultEditor": "main",
@@ -32,7 +32,7 @@
       "udc": "0.7.23",
       "resource_list": "0.6.4",
       "abstract_activities": "0.0.5",
-      "survey": "0.5.4",
+      "survey": "0.5.5",
       "pages": "0.9.8",
       "slugs": "1.0.24"
     },
