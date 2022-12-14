@@ -219,6 +219,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         this._subscriptions.forEach(sub => sub.unsubscribe);
     }
 
+<<<<<<< HEAD
     onAddSurveyScriptClicked() {
         const hostObject = {
             AddonUUID: config.AddonUUID,
@@ -244,16 +245,43 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                 // Fields: []
             }]
         };
+=======
+    // onAddSurveyScriptClicked() {
+    //     const hostObject = {
+    //         AddonUUID: config.AddonUUID,
+    //         PossibleEvents: [{
+    //             Title: 'on survey load before merge',
+    //             EventKey: SURVEY_LOAD_BEFORE_MERGE_EVENT_NAME,
+    //             // EventFilter: {},
+    //             // Fields: []
+    //         }, {
+    //             Title: 'on survey load after merge',
+    //             EventKey: SURVEY_LOAD_AFTER_MERGE_EVENT_NAME,
+    //             // EventFilter: {},
+    //             // Fields: []
+    //         }, {
+    //             Title: 'on survey field change after',
+    //             EventKey: SURVEY_FIELD_AFTER_CHANGE_EVENT_NAME,
+    //             // EventFilter: {},
+    //             // Fields: []
+    //         }, {
+    //             Title: 'on servey question change after',
+    //             EventKey: SURVEY_QUESTION_AFTER_CHANGE_EVENT_NAME,
+    //             // EventFilter: {},
+    //             // Fields: []
+    //         }]
+    //     };
+>>>>>>> main
 
-        this.pepAddonBlockLoader.loadAddonBlockInDialog({
-            name: 'UserEvents',
-            container: this.viewContainerRef,
-            hostObject: hostObject,
-            hostEventsCallback: (event) => { 
-                // if (dialogRef) {
-                //     dialogRef.close(null);
-                // }
-            }
-        });
-    }
+    //     this.pepAddonBlockLoader.loadAddonBlockInDialog({
+    //         name: 'UserEvents',
+    //         container: this.viewContainerRef,
+    //         hostObject: hostObject,
+    //         hostEventsCallback: (event) => { 
+    //             // if (dialogRef) {
+    //             //     dialogRef.close(null);
+    //             // }
+    //         }
+    //     });
+    // }
 }
