@@ -19,3 +19,21 @@ import { Client, Request } from '@pepperi-addons/debug-server'
 //         throw err;
 //     }
 // }
+
+
+export async function user_events(client:Client, request: Request): Promise<any> {
+    try {
+        const service = new SurveyApiService(client);
+        let res;
+        
+        if (request.method === 'GET') {
+            res = service.getUserEvents(request.query);
+        } else {
+            throw new Error(`Method ${request.method} is not supported.`);
+        }
+
+        return res;
+    } catch(err) {
+        throw err;
+    }
+}

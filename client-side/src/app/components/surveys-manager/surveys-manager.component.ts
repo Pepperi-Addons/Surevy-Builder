@@ -219,33 +219,6 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         this._subscriptions.forEach(sub => sub.unsubscribe);
     }
 
-<<<<<<< HEAD
-    onAddSurveyScriptClicked() {
-        const hostObject = {
-            AddonUUID: config.AddonUUID,
-            PossibleEvents: [{
-                Title: 'on survey load before merge',
-                EventKey: USER_ACTION_ON_SURVEY_DATA_LOAD,
-                // EventFilter: {},
-                // Fields: []
-            }, {
-                Title: 'on survey load after merge',
-                EventKey: USER_ACTION_ON_SURVEY_VIEW_LOAD,
-                // EventFilter: {},
-                // Fields: []
-            }, {
-                Title: 'on survey field change after',
-                EventKey: USER_ACTION_ON_SURVEY_FIELD_CHANGED,
-                // EventFilter: {},
-                // Fields: []
-            }, {
-                Title: 'on servey question change after',
-                EventKey: USER_ACTION_ON_SURVEY_QUESTION_CHANGED,
-                // EventFilter: {},
-                // Fields: []
-            }]
-        };
-=======
     // onAddSurveyScriptClicked() {
     //     const hostObject = {
     //         AddonUUID: config.AddonUUID,
@@ -271,7 +244,6 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
     //             // Fields: []
     //         }]
     //     };
->>>>>>> main
 
     //     this.pepAddonBlockLoader.loadAddonBlockInDialog({
     //         name: 'UserEvents',

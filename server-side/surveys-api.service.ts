@@ -2,7 +2,9 @@ import { PapiClient, InstalledAddon, AddonDataScheme, Relation, FindOptions } fr
 import { Client } from '@pepperi-addons/debug-server';
 import { DEFAULT_BLANK_SURVEY_DATA, ISurveyTemplateBuilderData, SurveyTemplate, SurveyTemplateRowProjection, 
     SURVEYS_BASE_TABLE_NAME, SURVEY_TEMPLATES_BASE_TABLE_NAME, 
-    SURVEY_TEMPLATES_TABLE_NAME, DRAFT_SURVEY_TEMPLATES_TABLE_NAME, SURVEYS_TABLE_NAME } from 'shared';
+    SURVEY_TEMPLATES_TABLE_NAME, DRAFT_SURVEY_TEMPLATES_TABLE_NAME, SURVEYS_TABLE_NAME,
+    USER_ACTION_ON_SURVEY_DATA_LOAD, USER_ACTION_ON_SURVEY_VIEW_LOAD, USER_ACTION_ON_SURVEY_FIELD_CHANGED, USER_ACTION_ON_SURVEY_QUESTION_CHANGED } from 'shared';
+
 import { v4 as uuidv4 } from 'uuid';
 import { SurveysValidatorService } from './surveys-validator.service';
 
@@ -32,8 +34,8 @@ export class SurveyApiService {
 
         const udcTempObject = {
             "DocumentKey":{"Delimiter":"@","Type":"AutoGenerate","Fields":[]},
-            "Fields":{"test":{"Description":"","Mandatory":false,"Type":"String","OptionalValues":[],"Items":{"Type":"String","Mandatory":false,"Description":""},"Resource":"","AddonUUID":"","Indexed":false}},
-            "ListView":{"Type":"Grid","Fields":[{"FieldID":"test","Mandatory":false,"ReadOnly":true,"Title":"test","Type":"TextBox"}],"Columns":[{"Width":10}]},
+            // "Fields":{"test":{"Description":"","Mandatory":false,"Type":"String","OptionalValues":[],"Items":{"Type":"String","Mandatory":false,"Description":""},"Resource":"","AddonUUID":"","Indexed":false}},
+            // "ListView":{"Type":"Grid","Fields":[{"FieldID":"test","Mandatory":false,"ReadOnly":true,"Title":"test","Type":"TextBox"}],"Columns":[{"Width":10}]},
             "GenericResource":true
         };
 
@@ -94,6 +96,19 @@ export class SurveyApiService {
         return await this.papiClient.addons.data.relations.upsert(relation);
     }
     
+    private async upsertUserEventsRelation() {
+        const userEventsRelation: Relation = {
+            RelationName: "UDCEvents",
+            Name: SURVEYS_TABLE_NAME,
+            Description: `The user events`,
+            Type: "AddonAPI",
+            AddonUUID: this.addonUUID,
+            AddonRelativeURL: '/api/user_events',
+        }; 
+        
+        await this.upsertRelation(userEventsRelation);
+    }
+
     private async upsertAddonBlockRelation() {
         const name = 'Surveys';
         const blockName = 'SurveyBuilder';
@@ -231,6 +246,7 @@ export class SurveyApiService {
             await this.createSurveyTablesSchemes();
         }
 
+        await this.upsertUserEventsRelation();
         await this.upsertAddonBlockRelation();
         await this.upsertPageBlockRelation();
         await this.upsertSettingsRelation();
@@ -425,6 +441,34 @@ export class SurveyApiService {
         }
 
         return Promise.reject(null);
+    }
+
+    getUserEvents(query: any) {
+        const events = {
+            "Events": [{
+                Title: 'On survey data load',
+                EventKey: USER_ACTION_ON_SURVEY_DATA_LOAD
+            }, {
+                Title: 'On survey view load',
+                EventKey: USER_ACTION_ON_SURVEY_VIEW_LOAD
+            }, {
+                Title: 'On survey field changed',
+                EventKey: USER_ACTION_ON_SURVEY_FIELD_CHANGED,
+                // Fields: [{
+                //     "FieldID": "Status",
+                //     "Title": "Survey Status"
+                // }],
+            }, {
+                Title: 'On survey question changed',
+                EventKey: USER_ACTION_ON_SURVEY_QUESTION_CHANGED,
+                // Fields: [{
+                //     "FieldID": "QuestionKey",
+                //     "Title": "Question Key"
+                // }],
+            }]
+        }
+
+        return events;
     }
 }
 

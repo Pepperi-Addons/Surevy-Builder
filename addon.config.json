@@ -29,12 +29,14 @@
       "core": "0.5.7",
       "core_resources": "0.5.5",
       "cpi-data": "0.5.2",
-      "udc": "0.7.23",
+      "udc": "0.8.2",
       "resource_list": "0.6.4",
       "abstract_activities": "0.0.5",
       "survey": "0.5.5",
       "pages": "0.9.8",
-      "slugs": "1.0.24"
+      "slugs": "1.0.24",
+      "user_events": "0.5.5",
+      "scripts": "0.6.2"
     },
     "CPISide": [
       "addon-cpi.ts"
