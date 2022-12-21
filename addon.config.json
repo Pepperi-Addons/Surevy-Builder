@@ -36,7 +36,8 @@
       "pages": "0.9.8",
       "slugs": "1.0.26",
       "user_events": "0.5.5",
-      "scripts": "0.6.2"
+      "scripts": "0.6.2",
+      "sync": "0.2.54"
     },
     "CPISide": [
       "addon-cpi.ts"
