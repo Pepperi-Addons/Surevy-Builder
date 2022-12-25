@@ -27,7 +27,7 @@ export async function load(configuration: any) {
             await pepperi.events.emit(USER_ACTION_ON_SURVEY_DATA_LOAD, {
                 SurveyKey: surveyKey,
                 ...objectPropsToAddEventData
-            });
+            }, data);
 
             const service = new SurveysService();
             mergedSurvey = await service.getSurveyData(data.client, surveyKey);
@@ -36,7 +36,7 @@ export async function load(configuration: any) {
             const userEventResult: any = await pepperi.events.emit(USER_ACTION_ON_SURVEY_VIEW_LOAD, {
                 SurveyView: mergedSurvey,
                 ...objectPropsToAddEventData
-            });
+            }, data);
 
             if (userEventResult?.SurveyView) {
                 mergedSurvey = userEventResult.SurveyView;
@@ -49,7 +49,7 @@ export async function load(configuration: any) {
     // Handle on survey unload
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD as any, {}, async (data): Promise<any> => {
         // Emit server event USER_ACTION_ON_SURVEY_VIEW_UNLOAD
-        // await pepperi.events.emit(USER_ACTION_ON_SURVEY_VIEW_UNLOAD, { ...objectPropsToAddEventData });
+        // await pepperi.events.emit(USER_ACTION_ON_SURVEY_VIEW_UNLOAD, { ...objectPropsToAddEventData }, data);
 
         await data.client?.navigateBack();
     });
@@ -69,7 +69,7 @@ export async function load(configuration: any) {
                     SurveyView: res.mergedSurvey,
                     ChangedFields: res.changedFields,
                     ...objectPropsToAddEventData
-                } );
+                }, data);
 
                 if (userEventResult?.SurveyView) {
                     mergedSurvey = userEventResult.SurveyView;
@@ -101,7 +101,7 @@ export async function load(configuration: any) {
                     SurveyView: res.mergedSurvey,
                     ChangedFields: res.changedFields,
                     ...objectPropsToAddEventData
-                });
+                }, data);
                 
                 if (userEventResult?.SurveyView) {
                     mergedSurvey = userEventResult.SurveyView;
