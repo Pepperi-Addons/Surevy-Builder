@@ -65,7 +65,7 @@ export async function load(configuration: any) {
     
             if (res.isValid) {
                 // Emit server event USER_ACTION_ON_SURVEY_FIELD_CHANGED
-                const userEventResult: any = pepperi.events.emit(USER_ACTION_ON_SURVEY_FIELD_CHANGED, {
+                const userEventResult: any = await pepperi.events.emit(USER_ACTION_ON_SURVEY_FIELD_CHANGED, {
                     SurveyView: res.mergedSurvey,
                     ChangedFields: res.changedFields,
                     ...objectPropsToAddEventData
@@ -97,7 +97,7 @@ export async function load(configuration: any) {
             
             if (res.isValid) {
                 // Emit server event USER_ACTION_ON_SURVEY_QUESTION_CHANGED
-                const userEventResult: any = pepperi.events.emit(USER_ACTION_ON_SURVEY_QUESTION_CHANGED, {
+                const userEventResult: any = await pepperi.events.emit(USER_ACTION_ON_SURVEY_QUESTION_CHANGED, {
                     SurveyView: res.mergedSurvey,
                     ChangedFields: res.changedFields,
                     ...objectPropsToAddEventData
