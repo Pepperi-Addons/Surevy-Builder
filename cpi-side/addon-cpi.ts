@@ -64,6 +64,8 @@ export async function load(configuration: any) {
             const res: { mergedSurvey, changedFields, shouldNavigateBack, isValid} = await service.onSurveyFieldChange(data.client, surveyKey, data.ChangedFields);
     
             if (res.isValid) {
+                mergedSurvey = res.mergedSurvey;
+                
                 // Emit server event USER_ACTION_ON_SURVEY_FIELD_CHANGED
                 const userEventResult: any = await pepperi.events.emit(USER_ACTION_ON_SURVEY_FIELD_CHANGED, {
                     SurveyView: res.mergedSurvey,
@@ -96,6 +98,8 @@ export async function load(configuration: any) {
             const res: { mergedSurvey, changedFields, isValid} = await service.onSurveyQuestionChange(data.client, surveyKey, data.ChangedFields);
             
             if (res.isValid) {
+                mergedSurvey = res.mergedSurvey;
+                
                 // Emit server event USER_ACTION_ON_SURVEY_QUESTION_CHANGED
                 const userEventResult: any = await pepperi.events.emit(USER_ACTION_ON_SURVEY_QUESTION_CHANGED, {
                     SurveyView: res.mergedSurvey,
