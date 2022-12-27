@@ -652,7 +652,7 @@ export class SurveysService {
             detail: {
                 eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD,
                 eventData: {
-                    SurveyKey: surveyKey
+                    SurveyKey: this._surveyModelKey,
                 },
                 completion: (survey: SurveyTemplate) => {
                     // debugger;
@@ -670,7 +670,9 @@ export class SurveysService {
             const eventData = {
                 detail: {
                     eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD,
-                    eventData: {},
+                    eventData: {
+                        SurveyKey: this._surveyModelKey,
+                    },
                     completion: (res) => {
                         // debugger;
                     }

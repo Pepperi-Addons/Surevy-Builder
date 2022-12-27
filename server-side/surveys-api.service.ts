@@ -72,15 +72,13 @@ export class SurveyApiService {
         // Create draft Survey template table
         const schemaDraftTemplate = {
             Name: DRAFT_SURVEY_TEMPLATES_TABLE_NAME,
-            Extends: {
-                AddonUUID: this.SURVEY_ADDON_UUID,
-                Name: "baseSurveyTemplates"
-            },
-            SyncData: {
-                Sync: false
-            },
-            Type: 'meta_data',
-            ...udcTempObject
+            Type: 'indexed_data',
+            Fields: {
+                TemplateSchemaName: {
+                    Type: 'String',
+                    Indexed: true
+                }
+            }
         };
         const createSurveyDraftTemplateTable = await this.papiClient.userDefinedCollections.schemes.upsert(schemaDraftTemplate as any);
         // const createSurveyDraftTemplateTable = await this.papiClient.addons.data.schemes.post(schemaDraftTemplate as any);
@@ -99,7 +97,7 @@ export class SurveyApiService {
     private async upsertUserEventsRelation() {
         const userEventsRelation: Relation = {
             RelationName: "UDCEvents",
-            Name: SURVEYS_TABLE_NAME,
+            Name: SURVEYS_BASE_TABLE_NAME,
             Description: `The user events`,
             Type: "AddonAPI",
             AddonUUID: this.addonUUID,

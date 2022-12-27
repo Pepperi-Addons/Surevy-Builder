@@ -1,52 +1,28 @@
 import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
-import { SurveyTemplate, SURVEY_TEMPLATES_TABLE_NAME, SurveyTemplateSection, SurveyStatusType, SURVEYS_TABLE_NAME } from 'shared';
+import { SurveyTemplate, SURVEY_TEMPLATES_BASE_TABLE_NAME, SurveyTemplateSection, SurveyStatusType, SURVEYS_BASE_TABLE_NAME, SURVEYS_TABLE_NAME } from 'shared';
 import { Survey, Answer } from 'shared';
 import { filter } from '@pepperi-addons/pepperi-filters';
-import config from '../addon.config.json';
+// import { FindOptions } from '@pepperi-addons/papi-sdk';
+
 class SurveysService {
-    // private readonly SURVEY_ADDON_UUID = 'dd0a85ea-7ef0-4bc1-b14f-959e0372877a';
-    // private readonly UDC_ADDON_UUID = '122c0e9d-c240-4865-b446-f37ece866c22';
 
     constructor() {}
 
-    private async getSurveyModel(client: IClient | undefined, surveyKey: string): Promise<Survey> {
-        // const survey = await pepperi.api.adal.get({
-        //     addon: this.UDC_ADDON_UUID,
-        //     table: SURVEYS_TABLE_NAME,
-        //     key: surveyKey
-        // });
-        // return survey.object as Survey;
-
-        // const survey = await pepperi.resources.resource(SURVEYS_TABLE_NAME).key(surveyKey).get();
-        const surveys = await pepperi.resources.resource(SURVEYS_TABLE_NAME).get({});// key(surveyKey).get();
-        const survey = surveys.find(s => s.Key === surveyKey);
+    private async getSurveyModel(surveyKey: string): Promise<Survey> {
+        const survey = await pepperi.resources.resource(SURVEYS_BASE_TABLE_NAME).key(surveyKey).get();
+        // const surveys = await pepperi.resources.resource(SURVEYS_BASE_TABLE_NAME).get(findOptions);
+        // const survey = surveys.find(s => s.Key === surveyKey);
         return survey as Survey;
     }
 
-    private async setSurveyModel(client: IClient | undefined, survey: Survey): Promise<Survey> {
-        // const res = await pepperi.api.adal.upsert({
-        //     addon: this.UDC_ADDON_UUID,
-        //     table: SURVEYS_TABLE_NAME,
-        //     object: survey as any,
-        //     indexedField: ''
-        // });
-
-        // return res.object as Survey;
-        const res = await pepperi.resources.resource(SURVEYS_TABLE_NAME).post(survey);
+    private async setSurveyModel(survey: Survey): Promise<Survey> {
+        const res = await pepperi.resources.resource(SURVEYS_BASE_TABLE_NAME).post(survey);
         return res as Survey;
     }
 
     private async getSurveyTemplate(surveyTemplateKey: string): Promise<SurveyTemplate> {
-        // const survey = await pepperi.api.adal.get({
-        //     addon: this.UDC_ADDON_UUID,
-        //     table: SURVEY_TEMPLATES_TABLE_NAME,
-        //     key: surveyTemplateKey
-        // });
-        
-        // return survey.object as SurveyTemplate;
-        
-        // const survey = await pepperi.resources.resource(SURVEY_TEMPLATES_TABLE_NAME).key(surveyTemplateKey).get();
-        const surveyTemplates = await pepperi.resources.resource(SURVEY_TEMPLATES_TABLE_NAME).get({});// key(surveyKey).get();
+        // const survey = await pepperi.resources.resource(SURVEY_TEMPLATES_BASE_TABLE_NAME).key(surveyTemplateKey).get();
+        const surveyTemplates = await pepperi.resources.resource(SURVEY_TEMPLATES_BASE_TABLE_NAME).get({});// key(surveyKey).get();
         const surveyTemplate = surveyTemplates.find(s => s.Key === surveyTemplateKey);
         return surveyTemplate as SurveyTemplate;
     }
@@ -171,34 +147,9 @@ class SurveysService {
         return errorMsg;
     }
 
-    // private setSurveyQuestionValue(surveyTemplate: SurveyTemplate, questionKey: string, value: any): boolean {
-    //     let isValueSet = false;
-
-    //     for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
-    //         const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
-
-    //         for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
-    //             const question = section.Questions[questionIndex];
-                
-    //             // Set the value for this question.
-    //             if (question.Key === questionKey) {
-    //                 question.Value = value;
-    //                 isValueSet = true;
-    //                 break;
-    //             }
-    //         }
-
-    //         if (isValueSet) {
-    //             break;
-    //         }
-    //     }
-
-    //     return isValueSet;
-    // }
-
     private async getSurveyDataInternal(client: IClient | undefined, surveyKey: string, calcShowIf = true): Promise<{ survey: Survey, surveyTemplate: SurveyTemplate | null }> {
         let surveyTemplate: SurveyTemplate | null = null;
-        const survey = await this.getSurveyModel(client, surveyKey);
+        const survey = await this.getSurveyModel(surveyKey);
         
         if (survey && survey.Template) {
             surveyTemplate = await this.getSurveyTemplate(survey.Template);
@@ -273,7 +224,7 @@ class SurveysService {
 
                     // Save the survey
                     if (isValid) {
-                        await this.setSurveyModel(client, survey);
+                        await this.setSurveyModel(survey);
                     }
                 } else {
                     isValid = false;
@@ -326,7 +277,7 @@ class SurveysService {
             if (someQuestionChanged) {
                 // Set the new Answers and save in the DB.
                 this.setSurveyAnswers(survey, surveyTemplate);
-                await this.setSurveyModel(client, survey)
+                await this.setSurveyModel(survey)
     
                 // Calc the show if
                 this.calcShowIf(surveyTemplate);
@@ -338,19 +289,15 @@ class SurveysService {
         return { mergedSurvey: surveyTemplate, changedFields, isValid};
     }
 
-    // Temp function 
-    // removeShowIfs(surveyTemplate: SurveyTemplate) {
-    //     for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
-    //         const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
+    async getObjectPropsForUserEvent(surveyKey: string) {
+        const resourceNameProperty = 'ResourceName';
+        
+        const survey = await this.getSurveyModel(surveyKey);
+        const objectPropsToAddEventData = {
+            ObjectType: survey && survey[resourceNameProperty] ? survey[resourceNameProperty] : SURVEYS_TABLE_NAME
+        }
 
-    //         for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
-    //             const question = section.Questions[questionIndex];
-
-    //             if (question.ShowIf) {
-    //                 delete question.ShowIf;
-    //             }
-    //         }
-    //     }
-    // }
+        return objectPropsToAddEventData;
+    }
 }
 export default SurveysService;
