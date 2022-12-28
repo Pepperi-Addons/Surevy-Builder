@@ -27,7 +27,7 @@ export async function user_events(client:Client, request: Request): Promise<any>
         let res;
         
         if (request.method === 'GET') {
-            res = service.getUserEvents(request.query);
+            res = service.getSurveyUserEvents(request.query);
         } else {
             throw new Error(`Method ${request.method} is not supported.`);
         }

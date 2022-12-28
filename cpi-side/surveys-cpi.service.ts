@@ -292,6 +292,7 @@ class SurveysService {
     async getObjectPropsForUserEvent(surveyKey: string) {
         const resourceNameProperty = 'ResourceName';
         
+        // TODO: Remove the SURVEYS_TABLE_NAME hard coded.
         const survey = await this.getSurveyModel(surveyKey);
         const objectPropsToAddEventData = {
             ObjectType: survey && survey[resourceNameProperty] ? survey[resourceNameProperty] : SURVEYS_TABLE_NAME

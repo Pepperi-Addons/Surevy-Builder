@@ -441,7 +441,7 @@ export class SurveyApiService {
         return Promise.reject(null);
     }
 
-    getUserEvents(query: any) {
+    getSurveyUserEvents(query: any) {
         const events = {
             "Events": [{
                 Title: 'On survey data load',
