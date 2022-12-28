@@ -21,7 +21,7 @@ import { Client, Request } from '@pepperi-addons/debug-server'
 // }
 
 
-export async function user_events(client:Client, request: Request): Promise<any> {
+export async function survey_user_events(client:Client, request: Request): Promise<any> {
     try {
         const service = new SurveyApiService(client);
         let res;
