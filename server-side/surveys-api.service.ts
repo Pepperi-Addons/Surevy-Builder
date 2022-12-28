@@ -101,7 +101,7 @@ export class SurveyApiService {
             Description: `The user events`,
             Type: "AddonAPI",
             AddonUUID: this.addonUUID,
-            AddonRelativeURL: '/api/user_events',
+            AddonRelativeURL: '/api/survey_user_events',
         }; 
         
         await this.upsertRelation(userEventsRelation);
