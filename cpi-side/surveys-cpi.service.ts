@@ -1,6 +1,6 @@
 import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 import { SurveyTemplate, SURVEY_TEMPLATES_BASE_TABLE_NAME, SurveyTemplateSection, SurveyStatusType, 
-    SURVEYS_BASE_TABLE_NAME, SURVEYS_TABLE_NAME } from 'shared';
+    SURVEYS_BASE_TABLE_NAME, SURVEYS_TABLE_NAME, RESOURCE_NAME_PROPERTY } from 'shared';
 import { Survey, Answer } from 'shared';
 import { filter } from '@pepperi-addons/pepperi-filters';
 // import { FindOptions } from '@pepperi-addons/papi-sdk';
@@ -291,12 +291,14 @@ class SurveysService {
     }
 
     async getObjectPropsForUserEvent(surveyKey: string) {
-        const resourceNameProperty = 'ResourceName';
-        
         // TODO: Remove the SURVEYS_TABLE_NAME hard coded.
-        const survey = await this.getSurveyModel(surveyKey);
+        const surveys = await pepperi.resources.resource(SURVEYS_BASE_TABLE_NAME).get({
+            where: `Key='${surveyKey}'`,
+            fields: [RESOURCE_NAME_PROPERTY]
+        });
+        
         const objectPropsToAddEventData = {
-            ObjectType: survey && survey[resourceNameProperty] ? survey[resourceNameProperty] : SURVEYS_TABLE_NAME
+            ObjectType: surveys?.length > 0 ? surveys[0][RESOURCE_NAME_PROPERTY] : SURVEYS_TABLE_NAME
         }
 
         return objectPropsToAddEventData;

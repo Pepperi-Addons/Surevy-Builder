@@ -67,7 +67,7 @@ export class SurveysValidatorService {
     /*                                  Public functions
     /***********************************************************************************************/
     
-    private validateSurveySectionQuestionProperties(sectionsPropertyBreadcrumb: string, question: SurveyTemplateQuestion): void {
+    private validateSurveyTemplateQuestionProperties(sectionsPropertyBreadcrumb: string, question: SurveyTemplateQuestion): void {
         // Validate Key
         this.validateObjectProperty(question, 'Key', sectionsPropertyBreadcrumb);
 
@@ -94,7 +94,7 @@ export class SurveysValidatorService {
         this.validateObjectProperty(question, 'Mandatory', sectionsPropertyBreadcrumb, true, 'boolean');
     }
 
-    private validateSurveySectionProperties(surveyPropertyBreadcrumb: string, section: SurveyTemplateSection, sectionIndex: number): void {
+    private validateSurveyTemplateSectionProperties(surveyPropertyBreadcrumb: string, section: SurveyTemplateSection, sectionIndex: number): void {
         const sectionsPropertyBreadcrumb = `${surveyPropertyBreadcrumb} -> Sections at index ${sectionIndex}`;
 
         // Validate Key
@@ -113,7 +113,7 @@ export class SurveysValidatorService {
         this.validateArrayProperty(section, 'Questions', sectionsPropertyBreadcrumb);
         for (let index = 0; index < section.Questions.length; index++) {
             const question = section.Questions[index];
-            this.validateSurveySectionQuestionProperties(`${sectionsPropertyBreadcrumb} -> Questions at index ${index}`, question);
+            this.validateSurveyTemplateQuestionProperties(`${sectionsPropertyBreadcrumb} -> Questions at index ${index}`, question);
         }
     }
 
@@ -153,7 +153,7 @@ export class SurveysValidatorService {
         // Validate Sections
         this.validateArrayProperty(surveyTemplate, 'Sections', surveyPropertyBreadcrumb);
         for (let index = 0; index < surveyTemplate.Sections.length; index++) {
-            this.validateSurveySectionProperties(surveyPropertyBreadcrumb, surveyTemplate.Sections[index], index);
+            this.validateSurveyTemplateSectionProperties(surveyPropertyBreadcrumb, surveyTemplate.Sections[index], index);
         }
     }
     

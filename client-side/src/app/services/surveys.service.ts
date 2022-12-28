@@ -8,7 +8,7 @@ import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
 import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData,
-    SurveyTemplateQuestion, SurveyTemplateQuestionType, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE, SurveyStatusType, CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD } from 'shared';
+    SurveyTemplateQuestion, SurveyTemplateQuestionType, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE, SurveyStatusType, CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, SURVEY_TEMPLATES_TABLE_NAME } from 'shared';
 
 import * as _ from 'lodash';
 
@@ -277,70 +277,9 @@ export class SurveysService {
         }
     }
 
-    // /**
-    //  * create a question-key array from all questions prior to the selected question with type boolean or select
-    //  * @returns array of questions key
-    //  */
-    // private getShowIfFields() {
-    //     let fields: Array<IPepQueryBuilderField> = new Array<IPepQueryBuilderField>();
-
-    //     const sections = this._sectionsSubject.getValue();
-    //     for (let i = 0; i <= this._selectedSectionIndex; i++) {
-    //         const currentSection = sections[i];
-    //         if (currentSection) {
-    //             const sectionQuestionsLength = i === this._selectedSectionIndex ? this._selectedQuestionIndex : currentSection.Questions.length;
-    //             for (let j = 0; j < sectionQuestionsLength; j++) {
-    //                 const currentQuestion = currentSection.Questions[j];
-    //                 if (currentQuestion &&
-    //                     (currentQuestion.Type === 'single-selection-dropdown' ||
-    //                         currentQuestion.Type === 'multiple-selection-dropdown' ||
-    //                         currentQuestion.Type === 'boolean-toggle')) {
-    //                             fields.push({
-    //                                 FieldID: currentQuestion.Key,
-    //                                 Title: currentQuestion.Title,
-    //                                 FieldType: this.getShowIfQuestionType(currentQuestion.Type),
-    //                                 OptionalValues: currentQuestion.OptionalValues || []
-    //                             } as IPepQueryBuilderField);
-    //                 }
-    
-    //             }
-    //         }            
-    //     }       
-        
-    //     return fields;
-    // }
-
-    // private getShowIfQuestionType(type: string) {
-    //     switch (type) {
-    //         case 'short-text':
-    //         case 'long-text':
-    //             return 'String';
-    //         case 'single-selection-dropdown':
-    //         case 'multiple-selection-dropdown':
-    //             return 'MultipleStringValues';
-    //         case 'boolean-toggle':
-    //             return 'Bool'
-    //         case 'number':
-    //         case 'decimal':
-    //         case 'currency':
-    //         case 'percentage':
-    //             return 'Integer';
-    //         case 'date':
-    //             return 'Date';
-    //         case 'datetime':
-    //             return 'DateTime';
-    //     }
-    // }
-
-    // private getSelectedQuestion(): SurveyTemplateQuestion {
-    //     const sections = this._sectionsSubject.getValue();
-    //     const currentSection = sections[this._selectedSectionIndex];
-    //     if (currentSection) {
-    //         return currentSection.Questions[this._selectedQuestionIndex];
-    //     } 
-
-    //     return null;
-    // }
+    private getCurrentResourceName() {
+        return SURVEY_TEMPLATES_TABLE_NAME;
+    }
 
     /***********************************************************************************************/
     /*                                  Public functions
@@ -587,29 +526,29 @@ export class SurveysService {
     getSurveyTemplates(addonUUID: string, options: any): Observable<SurveyTemplateRowProjection[]> {
         // Get the surveys from the server.
         const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.getHttpCall(`${baseUrl}/get_survey_templates_data?${options}`);
+        return this.httpService.getHttpCall(`${baseUrl}/get_survey_templates_data?resourceName=${this.getCurrentResourceName()}&${options}`);
     }
 
     createNewSurveyTemplate(addonUUID: string, totalSurveys: number = 0): Observable<SurveyTemplate> {
         const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.getHttpCall(`${baseUrl}/create_survey_template?surveyNum=${totalSurveys + 1}`);
+        return this.httpService.getHttpCall(`${baseUrl}/create_survey_template?resourceName=${this.getCurrentResourceName()}&surveyNum=${totalSurveys + 1}`);
     }
 
     // Delete the survey
     deleteSurveyTemplate(addonUUID: string, surveyTemplateKey: string): Observable<any> {
         const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.getHttpCall(`${baseUrl}/remove_survey_template?key=${surveyTemplateKey}`);
+        return this.httpService.getHttpCall(`${baseUrl}/remove_survey_template?resourceName=${this.getCurrentResourceName()}&key=${surveyTemplateKey}`);
     }
 
     loadSurveyTemplateBuilder(addonUUID: string, key: string, queryParameters: Params): void {
         const baseUrl = this.getBaseUrl(addonUUID);
 
-        // Get the survey (sections and the questions data) from the server.
+        // Get the survey template (sections and the questions data) from the server.
         this.httpService.getHttpCall(`${baseUrl}/get_survey_template_builder_data?key=${key}`)
             .subscribe((res: ISurveyTemplateBuilderData) => {
-                if (res && res.survey) {
-                    // Load the survey.
-                    this.notifySurveyChange(res.survey);
+                if (res && res.surveyTemplate) {
+                    // Load the survey template.
+                    this.notifySurveyChange(res.surveyTemplate);
                 }
             });
     }
@@ -628,18 +567,28 @@ export class SurveysService {
     //     return this.httpService.getHttpCall(`${baseUrl}/restore_to_last_publish?key=${survey.Key}`);
     // }
 
-    // Save the current survey in drafts.
+    // Save the current survey template in drafts.
     saveCurrentSurveyTemplate(addonUUID: string, editable: boolean): Observable<SurveyTemplate> {
-        const survey: SurveyTemplate = this._surveySubject.getValue();
-        const body = JSON.stringify(survey);
+        const surveyTemplate: SurveyTemplate = this._surveySubject.getValue();
+        
+        const body = {
+            resourceName: this.getCurrentResourceName(),
+            surveyTemplate: surveyTemplate
+        };
+
         const baseUrl = this.getBaseUrl(addonUUID);
         return this.httpService.postHttpCall(`${baseUrl}/save_draft_survey_template`, body);
     } 
 
     // Publish the current survey.
     publishCurrentSurveyTemplate(addonUUID: string): Observable<SurveyTemplate> {
-        const survey: SurveyTemplate = this._surveySubject.getValue();
-        const body = JSON.stringify(survey);
+        const surveyTemplate: SurveyTemplate = this._surveySubject.getValue();
+        // const body = JSON.stringify(survey);
+        const body = {
+            resourceName: this.getCurrentResourceName(),
+            surveyTemplate: surveyTemplate
+        };
+
         const baseUrl = this.getBaseUrl(addonUUID);
         return this.httpService.postHttpCall(`${baseUrl}/publish_survey_template`, body);
     }

@@ -6,6 +6,8 @@ export const SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplates';
 export const SURVEY_TEMPLATES_BASE_TABLE_NAME = 'survey_templates'; // 'baseSurveyTemplates'
 export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplatesDrafts';
 
+export const RESOURCE_NAME_PROPERTY = 'ResourceName';
+
 // **********************************************************************************************
 //                          Client & User events const
 // **********************************************************************************************
@@ -108,7 +110,7 @@ export interface SurveyTemplateRowProjection {
 
 
 export interface ISurveyTemplateBuilderData {
-    survey: SurveyTemplate, 
+    surveyTemplate: SurveyTemplate, 
 }
 
 export const DEFAULT_BLANK_SURVEY_DATA: SurveyTemplate = {
