@@ -181,22 +181,22 @@ export class SurveyApiService {
         }
 
         survey.Hidden = true;
-        const res = await this.upsertSurveyInternal(survey, tableName);
+        const res = await this.upsertSurveyTemplateInternal(survey, tableName);
         return Promise.resolve(res != null);
     }
 
-    private async validateAndOverrideSurveyAccordingInterface(survey: SurveyTemplate, validateSurveysLimit: boolean): Promise<SurveyTemplate> {
-        // Validate survey object before upsert.
-        this.surveysValidatorService.validateSurveyProperties(survey);
+    private async validateAndOverrideSurveyTemplateAccordingInterface(surveyTemplate: SurveyTemplate, validateSurveysLimit: boolean): Promise<SurveyTemplate> {
+        // Validate survey template object before upsert.
+        this.surveysValidatorService.validateSurveyTemplateProperties(surveyTemplate);
         
-        // Validate survey data.
-        this.surveysValidatorService.validateSurveyData(survey);
+        // Validate survey template data.
+        this.surveysValidatorService.validateSurveyTemplateData(surveyTemplate);
 
-        // Override the survey according the interface.
-        return this.surveysValidatorService.getSurveyCopyAccordingInterface(survey);
+        // Override the survey template according the interface.
+        return this.surveysValidatorService.getSurveyTemplateCopyAccordingInterface(surveyTemplate);
     }
 
-    private async upsertSurveyInternal(survey: SurveyTemplate, tableName = SURVEY_TEMPLATES_TABLE_NAME): Promise<SurveyTemplate> {
+    private async upsertSurveyTemplateInternal(survey: SurveyTemplate, tableName = SURVEY_TEMPLATES_TABLE_NAME): Promise<SurveyTemplate> {
         if (!survey) {
             return Promise.reject(null);
         }
@@ -206,7 +206,7 @@ export class SurveyApiService {
         }
 
         // Validate survey object before upsert.
-        survey = await this.validateAndOverrideSurveyAccordingInterface(survey, tableName === SURVEY_TEMPLATES_TABLE_NAME);
+        survey = await this.validateAndOverrideSurveyTemplateAccordingInterface(survey, tableName === SURVEY_TEMPLATES_TABLE_NAME);
         
         return this.papiClient.userDefinedCollections.documents(tableName).upsert(survey) as Promise<SurveyTemplate>;
         // return this.papiClient.addons.data.uuid(this.addonUUID).table(tableName).upsert(survey) as Promise<SurveyTemplate>;
@@ -256,7 +256,7 @@ export class SurveyApiService {
     
     saveDraftSurvey(survey: SurveyTemplate): Promise<SurveyTemplate>  {
         survey.Hidden = false;
-        return this.upsertSurveyInternal(survey, DRAFT_SURVEY_TEMPLATES_TABLE_NAME);
+        return this.upsertSurveyTemplateInternal(survey, DRAFT_SURVEY_TEMPLATES_TABLE_NAME);
     }
 
     async createTemplateSurvey(query: any): Promise<SurveyTemplate> {
@@ -272,7 +272,7 @@ export class SurveyApiService {
         }
 
         survey.Key = '';
-        return this.upsertSurveyInternal(survey, DRAFT_SURVEY_TEMPLATES_TABLE_NAME);
+        return this.upsertSurveyTemplateInternal(survey, DRAFT_SURVEY_TEMPLATES_TABLE_NAME);
     }
 
     async removeSurvey(query: any): Promise<boolean> {
@@ -427,7 +427,7 @@ export class SurveyApiService {
 
         if (survey) {
             // Save the current survey in surveys table
-            res = await this.upsertSurveyInternal(survey, SURVEY_TEMPLATES_TABLE_NAME);
+            res = await this.upsertSurveyTemplateInternal(survey, SURVEY_TEMPLATES_TABLE_NAME);
 
             // Update the draft survey and hide it.
             if (res != null) {

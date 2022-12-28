@@ -121,50 +121,50 @@ export class SurveysValidatorService {
     /*                                  Public functions
     /***********************************************************************************************/
 
-    // Validate the survey and throw error if not valid.
-    validateSurveyProperties(survey: SurveyTemplate): void {
-        const surveyPropertyBreadcrumb = 'Survey';
+    // Validate the survey template and throw error if not valid.
+    validateSurveyTemplateProperties(surveyTemplate: SurveyTemplate): void {
+        const surveyPropertyBreadcrumb = 'Survey Template';
         
         // Validate Key if exist (Optional)
-        this.validateObjectProperty(survey, 'Key', surveyPropertyBreadcrumb, true);
+        this.validateObjectProperty(surveyTemplate, 'Key', surveyPropertyBreadcrumb, true);
 
         // Validate Hidden if exist (Optional)
-        this.validateObjectProperty(survey, 'Hidden', surveyPropertyBreadcrumb, true, 'boolean');
+        this.validateObjectProperty(surveyTemplate, 'Hidden', surveyPropertyBreadcrumb, true, 'boolean');
 
         // Validate Name if exist
-        this.validateObjectProperty(survey, 'Name', surveyPropertyBreadcrumb);
+        this.validateObjectProperty(surveyTemplate, 'Name', surveyPropertyBreadcrumb);
         
         // Validate Description if exist (Optional)
-        this.validateObjectProperty(survey, 'Description', surveyPropertyBreadcrumb, true);
+        this.validateObjectProperty(surveyTemplate, 'Description', surveyPropertyBreadcrumb, true);
         
         // Validate Active if exist
-        this.validateObjectProperty(survey, 'Active', surveyPropertyBreadcrumb, false, 'boolean');
+        this.validateObjectProperty(surveyTemplate, 'Active', surveyPropertyBreadcrumb, false, 'boolean');
 
         // Validate ActiveDateRange if exist (Optional)
-        this.validateObjectProperty(survey, 'ActiveDateRange', surveyPropertyBreadcrumb, true, 'object');
-        if (survey.ActiveDateRange) {
+        this.validateObjectProperty(surveyTemplate, 'ActiveDateRange', surveyPropertyBreadcrumb, true, 'object');
+        if (surveyTemplate.ActiveDateRange) {
             // Validate From if exist (Optional)
-            this.validateObjectProperty(survey.ActiveDateRange, 'From', surveyPropertyBreadcrumb, true);
+            this.validateObjectProperty(surveyTemplate.ActiveDateRange, 'From', surveyPropertyBreadcrumb, true);
             
             // Validate To if exist (Optional)
-            this.validateObjectProperty(survey.ActiveDateRange, 'To', surveyPropertyBreadcrumb, true);
+            this.validateObjectProperty(surveyTemplate.ActiveDateRange, 'To', surveyPropertyBreadcrumb, true);
         }
 
         // Validate Sections
-        this.validateArrayProperty(survey, 'Sections', surveyPropertyBreadcrumb);
-        for (let index = 0; index < survey.Sections.length; index++) {
-            this.validateSurveySectionProperties(surveyPropertyBreadcrumb, survey.Sections[index], index);
+        this.validateArrayProperty(surveyTemplate, 'Sections', surveyPropertyBreadcrumb);
+        for (let index = 0; index < surveyTemplate.Sections.length; index++) {
+            this.validateSurveySectionProperties(surveyPropertyBreadcrumb, surveyTemplate.Sections[index], index);
         }
     }
     
-    validateSurveyData(survey: SurveyTemplate) {
+    validateSurveyTemplateData(surveyTemplate: SurveyTemplate) {
         // Validate sections and questions.
         const sectionsKeys = new Map<string, string>();
         const questionsKeys = new Map<string, string>();
 
         // Go for all sections and check for uniqe key
-        for (let sectionIndex = 0; sectionIndex < survey.Sections?.length; sectionIndex++) {
-            const section = survey.Sections[sectionIndex];
+        for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections?.length; sectionIndex++) {
+            const section = surveyTemplate.Sections[sectionIndex];
             
             // Validate if the section key is not already exist.
             if (!sectionsKeys.has(section.Key)) {
@@ -187,23 +187,23 @@ export class SurveysValidatorService {
         }
     }
 
-    getSurveyCopyAccordingInterface(survey: SurveyTemplate): SurveyTemplate {
+    getSurveyTemplateCopyAccordingInterface(surveyTemplate: SurveyTemplate): SurveyTemplate {
         // Init with the mandatories properties.
         let res: SurveyTemplate = {
-            Name: survey.Name,
-            Active: survey.Active,
+            Name: surveyTemplate.Name,
+            Active: surveyTemplate.Active,
             Sections: []
         };
 
-        this.addOptionalPropertyIfExist(survey, res, 'Hidden');
-        this.addOptionalPropertyIfExist(survey, res, 'CreationDateTime');
-        this.addOptionalPropertyIfExist(survey, res, 'Key');
-        this.addOptionalPropertyIfExist(survey, res, 'Description');
-        this.addOptionalPropertyIfExist(survey, res, 'ActiveDateRange');
+        this.addOptionalPropertyIfExist(surveyTemplate, res, 'Hidden');
+        this.addOptionalPropertyIfExist(surveyTemplate, res, 'CreationDateTime');
+        this.addOptionalPropertyIfExist(surveyTemplate, res, 'Key');
+        this.addOptionalPropertyIfExist(surveyTemplate, res, 'Description');
+        this.addOptionalPropertyIfExist(surveyTemplate, res, 'ActiveDateRange');
 
         // Add sections specific properties.
-        for (let sectionIndex = 0; sectionIndex < survey.Sections.length; sectionIndex++) {
-            const currentSection = survey.Sections[sectionIndex];
+        for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
+            const currentSection = surveyTemplate.Sections[sectionIndex];
             
             // Remove all values (This property have to be empty to get the value from the Survey activity object only - no default value).
             currentSection.Questions.every(q => delete q.Value);
