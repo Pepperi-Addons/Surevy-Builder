@@ -1,6 +1,6 @@
 {
   "AddonUUID": "cf17b569-1af4-45a9-aac5-99f23cae45d8",
-  "AddonVersion": "0.6.25",
+  "AddonVersion": "0.6.26",
   "DebugPort": 4500,
   "WebappBaseUrl": "https://app.sandbox.pepperi.com",
   "DefaultEditor": "main",
@@ -28,7 +28,7 @@
       "cpi_node": "1.1.67",
       "cpapi": "9.6.10",
       "core": "0.6.20",
-      "core_resources": "0.6.16",
+      "core_resources": "0.6.17",
       "cpi-data": "0.5.2",
       "udc": "0.8.3",
       "resource_list": "0.7.69",
