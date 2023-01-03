@@ -249,7 +249,8 @@ export class SurveyApiService {
         let surveyTemplate;
         
         if (!isDraft) {
-            surveyTemplate = await this.papiClient.resources.resource(SURVEY_TEMPLATES_BASE_TABLE_NAME).key(surveyTemplatekey).get() as SurveyTemplate;
+            const surveyTemplates = await this.papiClient.resources.resource(SURVEY_TEMPLATES_BASE_TABLE_NAME).search({ KeyList: [surveyTemplatekey] });
+            surveyTemplate = surveyTemplates.length > 0 ? surveyTemplates[0] : null;
         } else {
             const draft = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFT_SURVEY_TEMPLATES_TABLE_NAME).key(surveyTemplatekey).get();
 

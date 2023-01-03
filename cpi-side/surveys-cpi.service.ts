@@ -17,14 +17,14 @@ class SurveysService {
     }
 
     private async setSurveyModel(survey: Survey): Promise<Survey> {
-        const res = await pepperi.resources.resource(SURVEYS_BASE_TABLE_NAME).post(survey);
+        const res = await pepperi.resources.resource(survey.ResourceName).post(survey);
         return res as Survey;
     }
 
     private async getSurveyTemplate(surveyTemplateKey: string): Promise<SurveyTemplate> {
         // const survey = await pepperi.resources.resource(SURVEY_TEMPLATES_BASE_TABLE_NAME).key(surveyTemplateKey).get();
-        const surveyTemplates = await pepperi.resources.resource(SURVEY_TEMPLATES_BASE_TABLE_NAME).get({});// key(surveyKey).get();
-        const surveyTemplate = surveyTemplates.find(s => s.Key === surveyTemplateKey);
+        const surveyTemplates = await (await pepperi.resources.resource(SURVEY_TEMPLATES_BASE_TABLE_NAME).search({ KeyList: [surveyTemplateKey] })).Objects;
+        const surveyTemplate = surveyTemplates.length > 0 ? surveyTemplates[0] : null;
         return surveyTemplate as SurveyTemplate;
     }
     
@@ -292,10 +292,15 @@ class SurveysService {
 
     async getObjectPropsForUserEvent(surveyKey: string) {
         // TODO: Remove the SURVEYS_TABLE_NAME hard coded.
-        const surveys = await pepperi.resources.resource(SURVEYS_BASE_TABLE_NAME).get({
-            where: `Key='${surveyKey}'`,
-            fields: [RESOURCE_NAME_PROPERTY]
-        });
+        const surveys = await (await pepperi.resources.resource(SURVEYS_BASE_TABLE_NAME).search({
+            KeyList: [surveyKey],
+            Fields: [RESOURCE_NAME_PROPERTY]
+        })).Objects;
+        
+        // get({
+        //     where: `Key='${surveyKey}'`,
+        //     fields: [RESOURCE_NAME_PROPERTY]
+        // });
         
         const objectPropsToAddEventData = {
             ObjectType: surveys?.length > 0 ? surveys[0][RESOURCE_NAME_PROPERTY] : SURVEYS_TABLE_NAME
