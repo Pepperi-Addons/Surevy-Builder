@@ -1,7 +1,7 @@
 import { PapiClient, InstalledAddon, AddonDataScheme, Relation, FindOptions } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
 import { DEFAULT_BLANK_SURVEY_DATA, ISurveyTemplateBuilderData, SurveyTemplate, SurveyTemplateRowProjection, 
-    SURVEYS_BASE_TABLE_NAME, SURVEY_TEMPLATES_BASE_TABLE_NAME, RESOURCE_NAME_PROPERTY,
+    SURVEYS_BASE_TABLE_NAME, SURVEY_TEMPLATES_BASE_TABLE_NAME,
     SURVEY_TEMPLATES_TABLE_NAME, DRAFT_SURVEY_TEMPLATES_TABLE_NAME, SURVEYS_TABLE_NAME,
     USER_ACTION_ON_SURVEY_DATA_LOAD, USER_ACTION_ON_SURVEY_VIEW_LOAD, USER_ACTION_ON_SURVEY_FIELD_CHANGED, 
     USER_ACTION_ON_SURVEY_QUESTION_CHANGED } from 'shared';
@@ -197,28 +197,7 @@ export class SurveyApiService {
         return this.surveysValidatorService.getSurveyTemplateCopyAccordingInterface(surveyTemplate);
     }
 
-    // private async getResourceName(surveyTemplatekey: string | undefined) {
-    //     // TODO: Remove the SURVEYS_TABLE_NAME hard coded.
-    //     let res = SURVEY_TEMPLATES_TABLE_NAME;
-
-    //     try {
-    //         const surveyTemplates = await this.papiClient.resources.resource(SURVEY_TEMPLATES_BASE_TABLE_NAME).search({ 
-    //             Where: `Key='${surveyTemplatekey}'`,
-    //             Fields: [RESOURCE_NAME_PROPERTY] 
-    //         });
-    //         // const surveyTemplates = await this.papiClient.userDefinedCollections.documents(SURVEY_TEMPLATES_BASE_TABLE_NAME).find({ fields: [RESOURCE_NAME_PROPERTY] });
-    //         // const surveyTemplate = surveyTemplates.find(s => s.Key === surveyTemplatekey);
-    //         if (surveyTemplates?.length > 0) {
-    //             res = surveyTemplates[0][RESOURCE_NAME_PROPERTY];
-    //         }
-    //     } catch {
-
-    //     }
-
-    //     return res;
-    // }
-    
-    private async upsertSurveyTemplateInternal(resourceName: string, surveyTemplate: SurveyTemplate, isDraft: boolean = false): Promise<SurveyTemplate> {
+    private async upsertSurveyTemplateInternal(templateResourceName: string, surveyTemplate: SurveyTemplate, isDraft: boolean = false): Promise<SurveyTemplate> {
         if (!surveyTemplate) {
             return Promise.reject(null);
         }
@@ -231,7 +210,7 @@ export class SurveyApiService {
         surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(surveyTemplate);
         
         if (!isDraft) {
-            return await this.papiClient.resources.resource(resourceName).post(surveyTemplate) as Promise<SurveyTemplate>;
+            return await this.papiClient.resources.resource(templateResourceName).post(surveyTemplate) as Promise<SurveyTemplate>;
         } else {
             // Prepare the object
             const draftToUpsert = {
@@ -239,17 +218,17 @@ export class SurveyApiService {
                 JsonTemplate: JSON.stringify(surveyTemplate)
             }
             
-            draftToUpsert[TEMPLATE_SCHEME_NAME_PROPERTY] = resourceName;//await this.getResourceName(surveyTemplate.Key);
+            draftToUpsert[TEMPLATE_SCHEME_NAME_PROPERTY] = templateResourceName;
             
             return await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFT_SURVEY_TEMPLATES_TABLE_NAME).upsert(draftToUpsert) as Promise<SurveyTemplate>;
         }
     }
 
-    private async getSurveyTemplate(surveyTemplatekey: string, isDraft: boolean = false): Promise<SurveyTemplate> {
+    private async getSurveyTemplate(surveyTemplatekey: string, templateResourceName: string, isDraft: boolean = false): Promise<SurveyTemplate> {
         let surveyTemplate;
         
         if (!isDraft) {
-            const surveyTemplates = await this.papiClient.resources.resource(SURVEY_TEMPLATES_BASE_TABLE_NAME).search({ KeyList: [surveyTemplatekey] });
+            const surveyTemplates = (await this.papiClient.resources.resource(templateResourceName).search({ KeyList: [surveyTemplatekey] })).Objects;
             surveyTemplate = surveyTemplates.length > 0 ? surveyTemplates[0] : null;
         } else {
             const draft = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFT_SURVEY_TEMPLATES_TABLE_NAME).key(surveyTemplatekey).get();
@@ -296,168 +275,206 @@ export class SurveyApiService {
         await this.upsertSettingsRelation();
     }
     
-    async saveDraftSurveyTemplate(resourceName: string, surveyTemplate: SurveyTemplate): Promise<SurveyTemplate>  {
-        surveyTemplate.Hidden = false;
-        return await this.upsertSurveyTemplateInternal(resourceName, surveyTemplate, true);
-    }
+    async saveDraftSurveyTemplate(body: any): Promise<SurveyTemplate>  {
+        const templateResourceName = body['resourceName'] || '';
+        const surveyTemplate: SurveyTemplate = body['surveyTemplate'] || null;
 
-    async createDraftSurveyTemplate(templateResourceName: string, query: any): Promise<SurveyTemplate> {
-        const surveyNum = query['surveyNum'] || '0';
-        
-        let surveyTemplate = JSON.parse(JSON.stringify(DEFAULT_BLANK_SURVEY_DATA)) ;
-        surveyTemplate.Name = `${surveyTemplate.Name} ${surveyNum}`;
-        surveyTemplate.Description = `${surveyTemplate.Description} ${surveyNum}`;
-
-        if (surveyTemplate.Sections.length === 1) {
-            surveyTemplate.Sections[0].Key = uuidv4();
-            surveyTemplate.Sections[0].Title = 'Section 1';
+        if (templateResourceName === '') {
+            throw new Error('resourceName is not supplied.');
+        } else if (surveyTemplate === null) {
+            throw new Error('surveyTemplate is not supplied.');
+        } else {
+            surveyTemplate.Hidden = false;
+            return await this.upsertSurveyTemplateInternal(templateResourceName, surveyTemplate, true);
         }
-
-        surveyTemplate.Key = '';
-        return await this.upsertSurveyTemplateInternal(templateResourceName, surveyTemplate, true);
     }
 
-    async removeSurveyTemplate(templateResourceName: string, query: any): Promise<boolean> {
-        const surveyTemplatekey = query['key'] || '';
+    async createDraftSurveyTemplate(query: any): Promise<SurveyTemplate> {
+        const surveyNum = query['surveyNum'] || '0';
+        const templateResourceName: string = query['resourceName'] || '';
         
-        let draftRes = false;
-        let res = false;
-
-        if (surveyTemplatekey.length > 0) {
-            try {
-                let surveyTemplate = await this.getSurveyTemplate(surveyTemplatekey, true);
-                draftRes = await this.hideSurveyTemplate(templateResourceName, surveyTemplate, true);
-            } catch (e) {
+        if (templateResourceName === '') {
+            throw new Error('resourceName is not supplied.');
+        } else {
+            let surveyTemplate = JSON.parse(JSON.stringify(DEFAULT_BLANK_SURVEY_DATA)) ;
+            surveyTemplate.Name = `${surveyTemplate.Name} ${surveyNum}`;
+            surveyTemplate.Description = `${surveyTemplate.Description} ${surveyNum}`;
+    
+            if (surveyTemplate.Sections.length === 1) {
+                surveyTemplate.Sections[0].Key = uuidv4();
+                surveyTemplate.Sections[0].Title = 'Section 1';
             }
     
-            try {
-                let surveyTemplate = await this.getSurveyTemplate(surveyTemplatekey);
-                res = await this.hideSurveyTemplate(templateResourceName, surveyTemplate);
-            } catch (e) {
-            }
+            surveyTemplate.Key = '';
+            return await this.upsertSurveyTemplateInternal(templateResourceName, surveyTemplate, true);
         }
-
-        return Promise.resolve(draftRes || res);
     }
 
-    async getSurveyTemplatesData(templateResourceName: string, query: any): Promise<SurveyTemplateRowProjection[]> {
-        let surveyTemplates: SurveyTemplate[] = await this.getSurveyTemplatesByResourceName(templateResourceName);
-        let draftSurveyTemplates: SurveyTemplate[] = await this.getSurveyTemplatesByResourceName(templateResourceName, true);
-
-        //  Add the survey templates into map for distinct them.
-        const distinctSurveyTemplatesMap = new Map<string, SurveyTemplate>();
-        surveyTemplates.forEach(surveyTemplate => {
-            if (surveyTemplate.Key) {
-                distinctSurveyTemplatesMap.set(surveyTemplate.Key, surveyTemplate);
-            }
-        });
-        draftSurveyTemplates.forEach(draftSurveyTemplate => {
-            if (draftSurveyTemplate.Key) {
-                distinctSurveyTemplatesMap.set(draftSurveyTemplate.Key, draftSurveyTemplate);
-            }
-        });
-
-        // Convert the map values to array.
-        let distinctSurveyTemplatesArray = Array.from(distinctSurveyTemplatesMap.values());
+    async removeSurveyTemplate(query: any): Promise<boolean> {
+        const surveyTemplatekey = query['key'] || '';
+        const templateResourceName: string = query['resourceName'] || '';
         
-        // Filter.
-        if (query?.where !== undefined && query?.where?.length > 0) {
-            const searchString = query?.where;
-            distinctSurveyTemplatesArray = distinctSurveyTemplatesArray.filter(surveyTemplate => surveyTemplate.Name?.includes(searchString) || surveyTemplate.Description?.includes(searchString))
+        if (templateResourceName === '') {
+            throw new Error('resourceName is not supplied.');
+        } else {
+            let draftRes = false;
+            let res = false;
+
+            if (surveyTemplatekey.length > 0) {
+                try {
+                    let surveyTemplate = await this.getSurveyTemplate(surveyTemplatekey, templateResourceName, true);
+                    draftRes = await this.hideSurveyTemplate(templateResourceName, surveyTemplate, true);
+                } catch (e) {
+                }
+        
+                try {
+                    let surveyTemplate = await this.getSurveyTemplate(surveyTemplatekey, templateResourceName);
+                    res = await this.hideSurveyTemplate(templateResourceName, surveyTemplate);
+                } catch (e) {
+                }
+            }
+
+            return Promise.resolve(draftRes || res);
         }
+    }
 
-        const promise = new Promise<any[]>((resolve, reject): void => {
-            let allSurveyTemplates = distinctSurveyTemplatesArray.map((surveyTemplate: SurveyTemplate) => {
-                const isPublished = surveyTemplates.some(published => published.Key === surveyTemplate.Key);
-                const draftSurvey = draftSurveyTemplates.find(draft => draft.Key === surveyTemplate.Key);
-                const isDraft = draftSurvey != null && !draftSurvey.Hidden;
+    async getSurveyTemplatesData(query: any): Promise<SurveyTemplateRowProjection[]> {
+        const templateResourceName: string = query['resourceName'] || '';
 
-                // Return projection object.
-                const prp: SurveyTemplateRowProjection = {
-                    Key: surveyTemplate.Key,
-                    Name: surveyTemplate.Name,
-                    Description: surveyTemplate.Description,
-                    Active: surveyTemplate.Active,
-                    ActiveDateRange: surveyTemplate.ActiveDateRange,
-                    Draft: isDraft,
-                    Published: isPublished,
-                    ModificationDate: surveyTemplate.ModificationDateTime,
-                };
+        if (templateResourceName === '') {
+            throw new Error('resourceName is not supplied.');
+        } else {
+            let surveyTemplates: SurveyTemplate[] = await this.getSurveyTemplatesByResourceName(templateResourceName);
+            let draftSurveyTemplates: SurveyTemplate[] = await this.getSurveyTemplatesByResourceName(templateResourceName, true);
 
-                return prp;
+            //  Add the survey templates into map for distinct them.
+            const distinctSurveyTemplatesMap = new Map<string, SurveyTemplate>();
+            surveyTemplates.forEach(surveyTemplate => {
+                if (surveyTemplate.Key) {
+                    distinctSurveyTemplatesMap.set(surveyTemplate.Key, surveyTemplate);
+                }
+            });
+            draftSurveyTemplates.forEach(draftSurveyTemplate => {
+                if (draftSurveyTemplate.Key) {
+                    distinctSurveyTemplatesMap.set(draftSurveyTemplate.Key, draftSurveyTemplate);
+                }
             });
 
-            // Sort.
-            if (query?.order_by !== undefined && query?.order_by?.length > 0) {
-                const orderByArr = query?.order_by.split(' ');
-                const orderBy = orderByArr[0] || 'Name';
-                const isAsc = orderByArr.length === 2 ? orderByArr[1] === 'ASC' : true;
-
-                allSurveyTemplates = allSurveyTemplates.sort((p1, p2) =>
-                    p1[orderBy] > p2[orderBy] ? 
-                        (isAsc ? 1 : -1) : 
-                        (p1[orderBy] < p2[orderBy] ? (isAsc ? -1 : 1) : 0)
-                );
+            // Convert the map values to array.
+            let distinctSurveyTemplatesArray = Array.from(distinctSurveyTemplatesMap.values());
+            
+            // Filter.
+            if (query?.where !== undefined && query?.where?.length > 0) {
+                const searchString = query?.where;
+                distinctSurveyTemplatesArray = distinctSurveyTemplatesArray.filter(surveyTemplate => surveyTemplate.Name?.includes(searchString) || surveyTemplate.Description?.includes(searchString))
             }
 
-            resolve(allSurveyTemplates);
-        });
+            const promise = new Promise<any[]>((resolve, reject): void => {
+                let allSurveyTemplates = distinctSurveyTemplatesArray.map((surveyTemplate: SurveyTemplate) => {
+                    const isPublished = surveyTemplates.some(published => published.Key === surveyTemplate.Key);
+                    const draftSurvey = draftSurveyTemplates.find(draft => draft.Key === surveyTemplate.Key);
+                    const isDraft = draftSurvey != null && !draftSurvey.Hidden;
 
-        return promise;
+                    // Return projection object.
+                    const prp: SurveyTemplateRowProjection = {
+                        Key: surveyTemplate.Key,
+                        Name: surveyTemplate.Name,
+                        Description: surveyTemplate.Description,
+                        Active: surveyTemplate.Active,
+                        ActiveDateRange: surveyTemplate.ActiveDateRange,
+                        Draft: isDraft,
+                        Published: isPublished,
+                        ModificationDate: surveyTemplate.ModificationDateTime,
+                    };
+
+                    return prp;
+                });
+
+                // Sort.
+                if (query?.order_by !== undefined && query?.order_by?.length > 0) {
+                    const orderByArr = query?.order_by.split(' ');
+                    const orderBy = orderByArr[0] || 'Name';
+                    const isAsc = orderByArr.length === 2 ? orderByArr[1] === 'ASC' : true;
+
+                    allSurveyTemplates = allSurveyTemplates.sort((p1, p2) =>
+                        p1[orderBy] > p2[orderBy] ? 
+                            (isAsc ? 1 : -1) : 
+                            (p1[orderBy] < p2[orderBy] ? (isAsc ? -1 : 1) : 0)
+                    );
+                }
+
+                resolve(allSurveyTemplates);
+            });
+
+            return promise;
+        }
     }
 
-    async getSurveyTemplateData(query: any, lookForDraft = false): Promise<ISurveyTemplateBuilderData> {
-        let res: any;
+    async getSurveyTemplateData(query: any): Promise<ISurveyTemplateBuilderData> {
+        const templateResourceName: string = query['resourceName'] || '';
         const surveyTemplateKey = query['key'] || '';
-        
-        if (surveyTemplateKey) {
+
+        if (templateResourceName === '') {
+            throw new Error('resourceName is not supplied.');
+        } else if (surveyTemplateKey === '') {
+            throw new Error('key is not supplied.');
+        } else {
+            let res: any;
+            
             let draftSurveyTemplate;
             let surveyTemplate;
             
-            // If lookForDraft try to get the survey template from the draft first (for runtime the lookForDraft will be false).
-            if (lookForDraft) {
-                try {
-                    // Get the survey template from the drafts.
-                    draftSurveyTemplate = await this.getSurveyTemplate(surveyTemplateKey, true);
-                } catch {
-                    // Do nothing
-                }
+            // Try to get the survey template from the draft first.
+            try {
+                // Get the survey template from the drafts.
+                draftSurveyTemplate = await this.getSurveyTemplate(surveyTemplateKey, templateResourceName, true);
+            } catch {
+                // Do nothing
             }
 
             // If draft is hidden or not exist add call to bring the publish survey template.
             if (!draftSurveyTemplate || draftSurveyTemplate.Hidden) {
-                surveyTemplate = await this.getSurveyTemplate(surveyTemplateKey);
+                surveyTemplate = await this.getSurveyTemplate(surveyTemplateKey, templateResourceName);
             }
                 
             res = {
                 surveyTemplate: surveyTemplate ? surveyTemplate : draftSurveyTemplate, // Get the publish survey template if exist in the array cause we populate it only if the draft is hidden or not exist.
             }
+
+            const promise = new Promise<ISurveyTemplateBuilderData>((resolve, reject): void => {
+                resolve(res);
+            });
+
+            return promise;
         }
-
-        const promise = new Promise<ISurveyTemplateBuilderData>((resolve, reject): void => {
-            resolve(res);
-        });
-
-        return promise;
     }
     
-    async publishSurveyTemplate(resourceName: string, surveyTemplate: SurveyTemplate): Promise<SurveyTemplate> {
-        let res: SurveyTemplate | null = null;
+    async publishSurveyTemplate(body: any): Promise<SurveyTemplate> {
+        const templateResourceName = body['resourceName'] || '';
+        const surveyTemplate: SurveyTemplate = body['surveyTemplate'] || null;
 
-        if (surveyTemplate) {
-            // Save the current survey template.
-            res = await this.upsertSurveyTemplateInternal(resourceName, surveyTemplate);
+        if (templateResourceName === '') {
+            throw new Error('resourceName is not supplied.');
+        } else if (surveyTemplate === null) {
+            throw new Error('surveyTemplate is not supplied.');
+        } else {
+            let res: SurveyTemplate | null = null;
 
-            // Update the draft survey template and hide it.
-            if (res != null) {
-                const surveyTemplateCopy = JSON.parse(JSON.stringify(surveyTemplate));
-                this.hideSurveyTemplate(resourceName, surveyTemplateCopy, true);
+            if (surveyTemplate) {
+                // Save the current survey template.
+                res = await this.upsertSurveyTemplateInternal(templateResourceName, surveyTemplate);
+
+                // Update the draft survey template and hide it.
+                if (res != null) {
+                    const surveyTemplateCopy = JSON.parse(JSON.stringify(surveyTemplate));
+                    this.hideSurveyTemplate(templateResourceName, surveyTemplateCopy, true);
+                }
+                
+                return Promise.resolve(res);
             }
-            
-            return Promise.resolve(res);
-        }
 
-        return Promise.reject(null);
+            return Promise.reject(null);
+        }
     }
 
     /***********************************************************************************************/

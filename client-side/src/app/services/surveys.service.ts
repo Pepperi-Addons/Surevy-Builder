@@ -544,9 +544,10 @@ export class SurveysService {
 
     loadSurveyTemplateBuilder(addonUUID: string, key: string, queryParameters: Params): void {
         const baseUrl = this.getBaseUrl(addonUUID);
+        const resourceName = this.getCurrentResourceName();
         
         // Get the survey template (sections and the questions data) from the server.
-        this.httpService.getHttpCall(`${baseUrl}/get_survey_template_builder_data?key=${key}`)
+        this.httpService.getHttpCall(`${baseUrl}/get_survey_template_builder_data?key=${key}&resourceName=${resourceName}`)
             .subscribe({
                 next: (res: ISurveyTemplateBuilderData) => {
                     if (res && res.surveyTemplate) {
