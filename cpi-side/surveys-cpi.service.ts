@@ -1,6 +1,6 @@
 import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 import { SurveyTemplate, SURVEY_TEMPLATES_BASE_TABLE_NAME, SurveyTemplateSection, SurveyStatusType, 
-    SURVEYS_BASE_TABLE_NAME, SURVEYS_TABLE_NAME, RESOURCE_NAME_PROPERTY } from 'shared';
+    SURVEYS_BASE_TABLE_NAME, SURVEYS_TABLE_NAME, RESOURCE_NAME_PROPERTY, SURVEY_TEMPLATES_TABLE_NAME } from 'shared';
 import { Survey, Answer } from 'shared';
 import { filter } from '@pepperi-addons/pepperi-filters';
 // import { FindOptions } from '@pepperi-addons/papi-sdk';
@@ -9,6 +9,10 @@ class SurveysService {
 
     constructor() {}
 
+    /***********************************************************************************************/
+    //                              Private functions
+    /************************************************************************************************/
+    
     private async getSurveyModel(surveyKey: string): Promise<Survey> {
         const survey = await pepperi.resources.resource(SURVEYS_BASE_TABLE_NAME).key(surveyKey).get();
         // const surveys = await pepperi.resources.resource(SURVEYS_BASE_TABLE_NAME).get(findOptions);
@@ -169,9 +173,20 @@ class SurveysService {
         return { survey, surveyTemplate };
     }
 
+    /***********************************************************************************************/
+    //                              Public functions
+    /************************************************************************************************/
+    
     // Load the survey template with the values form the DB.
     async getSurveyData(client: IClient | undefined, surveyKey: string): Promise<SurveyTemplate | null> {
         const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey);
+        return surveyTemplate;
+    }
+
+    // Load the survey template with the values form the DB.
+    async getSurveyTemplateData(client: IClient | undefined, surveyTemplateKey: string): Promise<SurveyTemplate | null> {
+        // TODO: Get the template from the draft also like in the surver side.
+        const surveyTemplate = null; // await this.getSurveyTemplate(surveyTemplateKey);
         return surveyTemplate;
     }
 
@@ -290,20 +305,28 @@ class SurveysService {
         return { mergedSurvey: surveyTemplate, changedFields, isValid};
     }
 
-    async getObjectPropsForUserEvent(surveyKey: string) {
+    async getObjectPropsForSurveyUserEvent(surveyKey: string) {
         // TODO: Remove the SURVEYS_TABLE_NAME hard coded.
         const surveys = await (await pepperi.resources.resource(SURVEYS_BASE_TABLE_NAME).search({
             KeyList: [surveyKey],
             Fields: [RESOURCE_NAME_PROPERTY]
         })).Objects;
         
-        // get({
-        //     where: `Key='${surveyKey}'`,
-        //     fields: [RESOURCE_NAME_PROPERTY]
-        // });
-        
         const objectPropsToAddEventData = {
             ObjectType: surveys?.length > 0 ? surveys[0][RESOURCE_NAME_PROPERTY] : SURVEYS_TABLE_NAME
+        }
+
+        return objectPropsToAddEventData;
+    }
+
+    async getObjectPropsForSurveyTemplateUserEvent(surveyTemplateKey: string) {
+        const surveyTemplates = await (await pepperi.resources.resource(SURVEY_TEMPLATES_BASE_TABLE_NAME).search({
+            KeyList: [surveyTemplateKey],
+            Fields: [RESOURCE_NAME_PROPERTY]
+        })).Objects;
+        
+        const objectPropsToAddEventData = {
+            ObjectType: surveyTemplates?.length > 0 ? surveyTemplates[0][RESOURCE_NAME_PROPERTY] : SURVEY_TEMPLATES_TABLE_NAME
         }
 
         return objectPropsToAddEventData;

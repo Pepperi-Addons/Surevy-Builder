@@ -120,9 +120,6 @@ export class SurveysService {
         });
     }    
 
-    public getSurvey(): SurveyTemplate {
-        return this._surveySubject.getValue();
-    }
     private  getNewSection() {
         
         let section: SurveyTemplateSection = null;
@@ -297,6 +294,10 @@ export class SurveysService {
     /*                                  Public functions
     /***********************************************************************************************/
 
+    getSurvey(): SurveyTemplate {
+        return this._surveySubject.getValue();
+    }
+    
     getSectionContainerKey(sectionIndex: string = '') {
         return `section_${sectionIndex}`;
     }
@@ -547,7 +548,7 @@ export class SurveysService {
                 },
                 completion: (res: any) => {
                     debugger;
-                    this.notifyAdditionalFieldsChange(res.AdditionalFields || []);
+                    this.notifyAdditionalFieldsChange(res.additionalFields || []);
                 }
             }
         };

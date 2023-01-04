@@ -2,16 +2,16 @@ import '@pepperi-addons/cpi-node'
 import SurveysService from './surveys-cpi.service';
 import { USER_ACTION_ON_SURVEY_DATA_LOAD, USER_ACTION_ON_SURVEY_VIEW_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, 
     CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, USER_ACTION_ON_SURVEY_FIELD_CHANGED, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE,
-    CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE, USER_ACTION_ON_SURVEY_QUESTION_CHANGED, SurveyTemplate } from 'shared';
+    CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE, USER_ACTION_ON_SURVEY_QUESTION_CHANGED, SurveyTemplate, CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD, USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD } from 'shared';
 export const router = Router();
 
 export async function load(configuration: any) {
-    // console.log('cpi side works!');
-    // Put your cpi side code here
+    /***********************************************************************************************/
+    //                              Client Events for survey
+    /************************************************************************************************/
     
     // Handle on survey load
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD as any, {}, async (data): Promise<any> => {
-        // Handle on survey load
         const surveyKey = data.SurveyKey || undefined;
         let mergedSurvey: SurveyTemplate | null = null;
         
@@ -21,7 +21,7 @@ export async function load(configuration: any) {
         
         if (surveyKey) { 
             const service = new SurveysService();
-            const objectPropsToAddEventData = await service.getObjectPropsForUserEvent(data.SurveyKey);
+            const objectPropsToAddEventData = await service.getObjectPropsForSurveyUserEvent(data.SurveyKey);
 
             // Emit server event USER_ACTION_ON_SURVEY_DATA_LOAD
             await pepperi.events.emit(USER_ACTION_ON_SURVEY_DATA_LOAD, {
@@ -61,7 +61,7 @@ export async function load(configuration: any) {
         
         if (surveyKey && data.ChangedFields?.length > 0) { 
             const service = new SurveysService();
-            const objectPropsToAddEventData = await service.getObjectPropsForUserEvent(data.SurveyKey);
+            const objectPropsToAddEventData = await service.getObjectPropsForSurveyUserEvent(data.SurveyKey);
             const res: { mergedSurvey, changedFields, shouldNavigateBack, isValid} = await service.onSurveyFieldChange(data.client, surveyKey, data.ChangedFields);
     
             if (res.isValid) {
@@ -96,7 +96,7 @@ export async function load(configuration: any) {
         
         if (surveyKey && data.ChangedFields?.length > 0) { 
             const service = new SurveysService();
-            const objectPropsToAddEventData = await service.getObjectPropsForUserEvent(data.SurveyKey);
+            const objectPropsToAddEventData = await service.getObjectPropsForSurveyUserEvent(data.SurveyKey);
             const res: { mergedSurvey, changedFields, isValid} = await service.onSurveyQuestionChange(data.client, surveyKey, data.ChangedFields);
             
             if (res.isValid) {
@@ -116,6 +116,43 @@ export async function load(configuration: any) {
         }
 
         return mergedSurvey;
+    });
+
+    /***********************************************************************************************/
+    //                              Client Events for survey template
+    /************************************************************************************************/
+    
+     // Handle on survey template load
+     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD as any, {}, async (data): Promise<any> => {
+        const surveyTemplateKey = data.SurveyTemplateKey || undefined;
+        const resourceName = data.ResourceName || undefined;
+        
+        let surveyTemplate: SurveyTemplate | null = null;
+        let additionalFields = [];
+        // debugger;
+        
+        if (surveyTemplateKey) { 
+            const service = new SurveysService();
+            
+            surveyTemplate = await service.getSurveyTemplateData(data.client, surveyTemplateKey);
+            
+            // Emit server event USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD
+            const objectPropsToAddEventData = await service.getObjectPropsForSurveyTemplateUserEvent(surveyTemplateKey);
+            const userEventResult: any = await pepperi.events.emit(USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD, {
+                SurveyTemplateKey: surveyTemplateKey,
+                ResourceName: resourceName,
+                ...objectPropsToAddEventData
+            }, data);
+
+            if (userEventResult?.AdditionalFields) {
+                additionalFields = userEventResult.AdditionalFields;
+            }
+        }
+
+        return {
+            surveyTemplate,
+            additionalFields
+        };
     });
 
 }
