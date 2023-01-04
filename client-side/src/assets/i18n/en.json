@@ -164,5 +164,8 @@
             "TITLE": "Show If",
             "OK": "OK"
         }
+    },
+    "ADDITIONAL_PARAMS": {
+        "TITLE": "Additional Fields"
     }
 }

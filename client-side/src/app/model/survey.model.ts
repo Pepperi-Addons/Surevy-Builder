@@ -8,6 +8,8 @@ export type SurveyOptionStateType =  'collapse' | 'expand';
 
 export type SurveyRowStatusType = 'draft' | 'published';
 
+export type AdditionalFieldType = 'String' | 'Bool' | 'Integer' | 'Double';
+
 export class SurveyObjValidator {
     type: string;
     field: string;
@@ -32,6 +34,15 @@ export interface ISurveyEditor {
     activeDateRange?: { from?: string, to?: string };
 }
 
+export class AdditionalField {
+    type: AdditionalFieldType = 'String';
+    description: string;
+
+    constructor(Type = 'String', Description = '') {
+        this.type = 'String';
+        this.description = Description;
+    }
+}
 @Injectable()
 export class MomentUtcDateTimeAdapter extends MomentDatetimeAdapter {
     constructor(@Optional() @Inject(MAT_DATE_LOCALE) dateLocale: string) {

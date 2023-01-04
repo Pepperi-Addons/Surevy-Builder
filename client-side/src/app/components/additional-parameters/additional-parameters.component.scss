@@ -1,0 +1,6 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
+@import '../../../mixins.scss';
+
+pep-checkbox{
+    margin-block: variables.$spacing-xl variables.$spacing-md;
+}

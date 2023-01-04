@@ -7,6 +7,7 @@ import { PepDialogData, PepDialogService } from '@pepperi-addons/ngx-lib/dialog'
 import { IPepQueryBuilderField } from '@pepperi-addons/ngx-lib/query-builder';
 import { MatDialogRef } from '@angular/material/dialog';
 import { IPepOption } from '@pepperi-addons/ngx-lib';
+import { AdditionalField } from 'src/app/model/survey.model';
 
 @Component({
     selector: 'survey-selected-item-editor',
@@ -19,6 +20,24 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     
     question: SurveyTemplateQuestion = null;
     section: SurveyTemplateSection = null;
+    additionalFields: Record<string,AdditionalField> = {
+        'Color': {
+            type: "String",
+            description: "Account Format"
+        },
+        'QuestionNum': {
+            type: "Integer",
+            description: "Int feild"
+        },
+        'HideQuestion': {
+            type: "Bool",
+            description: "Int feild"
+        },
+        'QuestionDoubleNum': {
+            type: "Double",
+            description: "Double feild"
+        }      
+    };
 
     private _sections: SurveyTemplateSection[] = [];
     protected showIfDialogRef: MatDialogRef<any> = null;
@@ -159,6 +178,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     }
 
     onSectionEditorFieldChanged(key,value) {
+        debugger;
         // const oldValue = this.section[key];
         this.section[key] = value;
         this.surveysService.updateSectionFromEditor(this.section);
