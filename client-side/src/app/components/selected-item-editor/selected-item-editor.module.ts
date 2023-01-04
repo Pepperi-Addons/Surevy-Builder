@@ -13,7 +13,7 @@ import { PepIconRegistry, pepIconSystemFilter2, pepIconSystemCopy} from '@pepper
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepCheckboxModule } from '@pepperi-addons/ngx-lib/checkbox';
-
+import { AdditionalParametersModule } from '../additional-parameters/additional-parameters.module';
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 import { PepSideBarModule } from '@pepperi-addons/ngx-lib/side-bar';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -40,6 +40,7 @@ const pepIcons = [
         PepRemoteLoaderModule,
         PepDraggableItemsModule,
         QuestionSelectOptionsModule,
+        AdditionalParametersModule,
         PepTextboxModule,
         PepSliderModule,
         PepTextareaModule,
