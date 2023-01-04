@@ -29,7 +29,7 @@ export const USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD = 'OnSurveyBuilderLoad'; /
 
 // **********************************************************************************************
 
-export type SurveyStatusType = 'Submitted' | 'In Creation';
+export type SurveyStatusType = 'Submitted' | 'InCreation';
 
 export interface SurveyTemplate extends AddonData {
     Name: string;
