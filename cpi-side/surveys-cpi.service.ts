@@ -58,7 +58,7 @@ class SurveysService {
             }
         }
 
-        surveyTemplate.Status = survey.Status && survey.Status.length > 0 ? survey.Status as SurveyStatusType : 'In Creation';
+        surveyTemplate.Status = survey.Status && survey.Status.length > 0 ? survey.Status as SurveyStatusType : 'InCreation';
 
         // TODO: Add other fields if needed.
     }

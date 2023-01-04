@@ -157,7 +157,7 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     }
 
     onChangeSurveyStatus() {
-        this.surveysService.changeSurveyStatus(this.isSubmitted ? 'In Creation' : 'Submitted');
+        this.surveysService.changeSurveyStatus(this.isSubmitted ? 'InCreation' : 'Submitted');
     }
 
     onMenuItemClicked(event: IPepMenuItemClickEvent) {

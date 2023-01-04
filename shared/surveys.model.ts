@@ -25,7 +25,7 @@ export const CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE = 'OnClientSurveyQue
 export const USER_ACTION_ON_SURVEY_QUESTION_CHANGED = 'OnSurveyQuestionChanged';
 // **********************************************************************************************
 
-export type SurveyStatusType = 'Submitted' | 'In Creation';
+export type SurveyStatusType = 'Submitted' | 'InCreation';
 
 export interface SurveyTemplate extends AddonData {
     Name: string;
