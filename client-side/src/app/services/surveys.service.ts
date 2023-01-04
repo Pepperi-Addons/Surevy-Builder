@@ -11,6 +11,7 @@ import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISu
     SurveyTemplateQuestion, SurveyTemplateQuestionType, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE, SurveyStatusType, CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, SURVEY_TEMPLATES_TABLE_NAME } from 'shared';
 
 import * as _ from 'lodash';
+import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 
 
 @Injectable({
@@ -101,7 +102,8 @@ export class SurveysService {
         private translate: TranslateService,
         private sessionService: PepSessionService,
         private httpService: PepHttpService,
-        private navigationService: NavigationService
+        private navigationService: NavigationService,
+        private dialog: PepDialogService,
     ) {
 
         this.surveyLoad$.subscribe((survey: SurveyTemplate) => {
@@ -542,13 +544,28 @@ export class SurveysService {
 
     loadSurveyTemplateBuilder(addonUUID: string, key: string, queryParameters: Params): void {
         const baseUrl = this.getBaseUrl(addonUUID);
-
+        const resourceName = this.getCurrentResourceName();
+        
         // Get the survey template (sections and the questions data) from the server.
-        this.httpService.getHttpCall(`${baseUrl}/get_survey_template_builder_data?key=${key}`)
-            .subscribe((res: ISurveyTemplateBuilderData) => {
-                if (res && res.surveyTemplate) {
-                    // Load the survey template.
-                    this.notifySurveyChange(res.surveyTemplate);
+        this.httpService.getHttpCall(`${baseUrl}/get_survey_template_builder_data?key=${key}&resourceName=${resourceName}`)
+            .subscribe({
+                next: (res: ISurveyTemplateBuilderData) => {
+                    if (res && res.surveyTemplate) {
+                        // Load the survey template.
+                        this.notifySurveyChange(res.surveyTemplate);
+                    }
+                },
+                error: (err) => {
+                    // debugger;
+                    const title = this.translate.instant('MESSAGES.TITLE_NOTICE');
+                    const dataMsg = new PepDialogData({title, actionsType: "close", content: err});
+
+                    this.dialog.openDefaultDialog(dataMsg).afterClosed().subscribe((res) => {
+                        this.navigationService.back();
+                    });
+                },
+                complete: () => {
+
                 }
             });
     }

@@ -28,17 +28,18 @@
       "cpi_node": "1.1.67",
       "cpapi": "9.6.10",
       "core": "0.6.20",
-      "core_resources": "0.6.17",
-      "cpi-data": "0.5.2",
+      "core_resources": "0.6.20",
+      "cpi-data": "0.6.9",
       "udc": "0.8.3",
       "resource_list": "0.7.69",
       "abstract_activities": "0.0.5",
-      "survey": "0.5.7",
+      "survey": "0.5.11",
       "pages": "0.9.8",
       "slugs": "1.0.26",
       "user_events": "0.5.7",
       "scripts": "0.6.2",
-      "sync": "0.2.57"
+      "sync": "0.2.57",
+      "generic_resource": "0.6.2"
     },
     "CPISide": [
       "addon-cpi.ts"
