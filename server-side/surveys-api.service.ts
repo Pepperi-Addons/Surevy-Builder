@@ -96,16 +96,27 @@ export class SurveyApiService {
     }
     
     private async upsertUserEventsRelation() {
-        const userEventsRelation: Relation = {
+        const surveyUserEventsRelation: Relation = {
             RelationName: "UDCEvents",
             Name: SURVEYS_BASE_TABLE_NAME,
-            Description: `The user events`,
+            Description: `The user events for survey`,
             Type: "AddonAPI",
             AddonUUID: this.addonUUID,
             AddonRelativeURL: '/api/survey_user_events',
         }; 
         
-        await this.upsertRelation(userEventsRelation);
+        await this.upsertRelation(surveyUserEventsRelation);
+
+        const surveyTemplateUserEventsRelation: Relation = {
+            RelationName: "UDCEvents",
+            Name: SURVEY_TEMPLATES_BASE_TABLE_NAME,
+            Description: `The user events for survey template`,
+            Type: "AddonAPI",
+            AddonUUID: this.addonUUID,
+            AddonRelativeURL: '/api/survey_template_user_events',
+        }; 
+        
+        await this.upsertRelation(surveyTemplateUserEventsRelation);
     }
 
     private async upsertAddonBlockRelation() {
@@ -503,6 +514,17 @@ export class SurveyApiService {
                 //     "FieldID": "QuestionKey",
                 //     "Title": "Question Key"
                 // }],
+            }]
+        }
+
+        return events;
+    }
+    
+    getSurveyTemplatesUserEvents(query: any) {
+        const events = {
+            "Events": [{
+                Title: 'On survey template data load',
+                EventKey: USER_ACTION_ON_SURVEY_DATA_LOAD
             }]
         }
 

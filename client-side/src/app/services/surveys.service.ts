@@ -8,7 +8,7 @@ import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
 import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData,
-    SurveyTemplateQuestion, SurveyTemplateQuestionType, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE, SurveyStatusType, CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, SURVEY_TEMPLATES_TABLE_NAME } from 'shared';
+    SurveyTemplateQuestion, SurveyTemplateQuestionType, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE, SurveyStatusType, CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, SURVEY_TEMPLATES_TABLE_NAME, CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD } from 'shared';
 
 import * as _ from 'lodash';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
@@ -74,6 +74,12 @@ export class SurveysService {
     }
     get surveyDataChange$(): Observable<SurveyTemplate> {
         return this._surveySubject.asObservable().pipe(filter(survey => !!survey));
+    }
+
+    // This is the additional fields subject
+    private _additionalFieldsSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+    get additionalFieldsChange$(): Observable<any[]> {
+        return this._additionalFieldsSubject.asObservable();
     }
 
     // // This subject is for edit mode when question is dragging now or not.
@@ -183,6 +189,10 @@ export class SurveysService {
     private notifySelectedQuestionChange(question: SurveyTemplateQuestion, index: number) {
         this._selectedQuestionIndex = index;
         this._selectedQuestionChangeSubject.next(question);
+    }
+
+    private notifyAdditionalFieldsChange(additionalFields: any[]) {
+        this._additionalFieldsSubject.next(additionalFields);
     }
 
     private getBaseUrl(addonUUID: string): string {
@@ -380,17 +390,6 @@ export class SurveysService {
         this.notifySelectedQuestionChange(null, -1);
     }
 
-    // removeSection(sectionId: string) {
-    //     const sections = this._sectionsSubject.getValue();
-    //     const index = sections.findIndex(section => section.Key === sectionId);
-
-    //     // Remove section.
-    //     if (index > -1) {
-    //         sections.splice(index, 1);
-    //         this.notifySectionsChange(sections);
-    //     }
-    // }
-
     onSectionDropped(event: CdkDragDrop<any[]>) {
         const sections = this._sectionsSubject.getValue();
         moveItemInArray(sections, event.previousIndex, event.currentIndex);
@@ -406,23 +405,6 @@ export class SurveysService {
         this.changeCursorOnDragEnd();
         this._draggingSectionIndex.next('');
     }
-
-    // removeQuestion(questionId: string) {
-    //     // Remove the question from section.
-    //     const sections = this._sectionsSubject.getValue();
-
-    //     for (let sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
-    //         const section = sections[sectionIndex];
-
-    //         // Remove the question.
-    //         const questionsIndex = section.Questions.findIndex(question => question?.Key === questionId);
-    //         if (questionsIndex > -1) {
-    //             section.Questions.splice(questionsIndex, 1);
-    //             this.notifySectionsChange(sections);
-    //             return;
-    //         }
-    //     }
-    // }
 
     addQuestion(questionType: SurveyTemplateQuestionType, sectionIndex = -1, questionIndex = -1) {
         // Create new question
@@ -493,32 +475,10 @@ export class SurveysService {
         }
     }
 
-    // Open dialog to set the display condition of the selected question
-    // openShowIfDialog() {        
-    //     const config = this.dialog.getDialogConfig({ minWidth: '30rem' }, 'large');
-    //     const selectedQuestion = this.getSelectedQuestion();
-    //     const query = selectedQuestion?.ShowIf?? null;
-
-    //     const data = new PepDialogData({ 
-    //         actionsType: 'cancel-ok',
-    //         content: { 
-    //             query: query,
-    //             fields: this.getShowIfFields()
-    //         },
-    //         showClose: true 
-    //     });
-
-    //     const dialogRef = this.dialog.openDialog(ShowIfDialogComponent, data, config);        
-    //     dialogRef.afterClosed().subscribe({
-    //         next: (res) => {                             
-    //             const selectedQuestion = this.getSelectedQuestion();
-                
-    //             if (selectedQuestion && res.query) {
-    //                 selectedQuestion.ShowIf = res.query;
-    //             } 
-    //         }     
-    //     });
-    // }
+    dispatchEvent(eventData: CustomEventInit<any>) {
+        const customEvent = new CustomEvent('emit-event', eventData);
+        window.dispatchEvent(customEvent);
+    }
 
     /**************************************************************************************/
     /*                            CPI & Server side calls.
@@ -542,6 +502,7 @@ export class SurveysService {
         return this.httpService.getHttpCall(`${baseUrl}/remove_survey_template?resourceName=${this.getCurrentResourceName()}&key=${surveyTemplateKey}`);
     }
 
+    // TODO: Replate it with loadSurveyTemplateNew function
     loadSurveyTemplateBuilder(addonUUID: string, key: string, queryParameters: Params): void {
         const baseUrl = this.getBaseUrl(addonUUID);
         const resourceName = this.getCurrentResourceName();
@@ -551,6 +512,9 @@ export class SurveysService {
             .subscribe({
                 next: (res: ISurveyTemplateBuilderData) => {
                     if (res && res.surveyTemplate) {
+                        // Load the additional fields.
+                        this.loadSurveyTemplateNew(key);
+                        
                         // Load the survey template.
                         this.notifySurveyChange(res.surveyTemplate);
                     }
@@ -570,10 +534,32 @@ export class SurveysService {
             });
     }
 
+    loadSurveyTemplateNew(templateKey: string): void {
+        // Get the resource name.
+        const resourceName = this.getCurrentResourceName();
+
+        const eventData = {
+            detail: {
+                eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD,
+                eventData: {
+                    SurveyTemplateKey: templateKey,
+                    ResourceName: resourceName
+                },
+                completion: (res: any) => {
+                    debugger;
+                    this.notifyAdditionalFieldsChange(res.AdditionalFields || []);
+                }
+            }
+        };
+
+        this.dispatchEvent(eventData);
+    }
+
     unloadSurveyData() {
         this.notifySectionsChange([], false);
         this.notifySurveyChange(null);
         this._surveyModelKey = '';
+        this.notifyAdditionalFieldsChange([]);
     }
 
     // Restore the survey to tha last publish
@@ -627,8 +613,7 @@ export class SurveysService {
             }
         };
 
-        const customEvent = new CustomEvent('emit-event', eventData);
-        window.dispatchEvent(customEvent);
+        this.dispatchEvent(eventData);
     }
 
     unloadSurvey(): void {
@@ -645,8 +630,7 @@ export class SurveysService {
                 }
             };
         
-            const customEvent = new CustomEvent('emit-event', eventData);
-            window.dispatchEvent(customEvent);
+            this.dispatchEvent(eventData);
         }
     }
 
@@ -667,8 +651,7 @@ export class SurveysService {
                 }
             };
         
-            const customEvent = new CustomEvent('emit-event', eventData);
-            window.dispatchEvent(customEvent);
+            this.dispatchEvent(eventData);
         }
     }
 
@@ -692,8 +675,7 @@ export class SurveysService {
                 }
             };
         
-            const customEvent = new CustomEvent('emit-event', eventData);
-            window.dispatchEvent(customEvent);
+            this.dispatchEvent(eventData);
         }
     }
 
