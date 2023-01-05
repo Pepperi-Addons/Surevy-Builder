@@ -488,7 +488,12 @@ export class SurveyApiService {
                 EventKey: USER_ACTION_ON_SURVEY_DATA_LOAD
             }, {
                 Title: 'On survey view load',
-                EventKey: USER_ACTION_ON_SURVEY_VIEW_LOAD
+                EventKey: USER_ACTION_ON_SURVEY_VIEW_LOAD,
+                EventData: {
+                    SurveyView: {
+                        Type: 'Object'
+                    }
+                }
             }, {
                 Title: 'On survey field changed',
                 EventKey: USER_ACTION_ON_SURVEY_FIELD_CHANGED,
