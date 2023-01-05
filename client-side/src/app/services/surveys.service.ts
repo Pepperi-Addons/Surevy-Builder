@@ -547,8 +547,7 @@ export class SurveysService {
                     ResourceName: resourceName
                 },
                 completion: (res: any) => {
-                    debugger;
-                    this.notifyAdditionalFieldsChange(res.additionalFields || []);
+                    this.notifyAdditionalFieldsChange(res?.additionalFields || []);
                 }
             }
         };

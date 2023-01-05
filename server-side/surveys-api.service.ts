@@ -4,7 +4,8 @@ import { DEFAULT_BLANK_SURVEY_DATA, ISurveyTemplateBuilderData, SurveyTemplate, 
     SURVEYS_BASE_TABLE_NAME, SURVEY_TEMPLATES_BASE_TABLE_NAME,
     SURVEY_TEMPLATES_TABLE_NAME, DRAFT_SURVEY_TEMPLATES_TABLE_NAME, SURVEYS_TABLE_NAME,
     USER_ACTION_ON_SURVEY_DATA_LOAD, USER_ACTION_ON_SURVEY_VIEW_LOAD, USER_ACTION_ON_SURVEY_FIELD_CHANGED, 
-    USER_ACTION_ON_SURVEY_QUESTION_CHANGED } from 'shared';
+    USER_ACTION_ON_SURVEY_QUESTION_CHANGED, 
+    USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD} from 'shared';
 
 import { v4 as uuidv4 } from 'uuid';
 import { SurveysValidatorService } from './surveys-validator.service';
@@ -524,7 +525,7 @@ export class SurveyApiService {
         const events = {
             "Events": [{
                 Title: 'On survey template data load',
-                EventKey: USER_ACTION_ON_SURVEY_DATA_LOAD
+                EventKey: USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD
             }]
         }
 
