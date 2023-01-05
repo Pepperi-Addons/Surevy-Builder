@@ -494,28 +494,70 @@ export class SurveyApiService {
     /************************************************************************************************/
     
     getSurveyUserEvents(query: any) {
+        const changedFieldsSchema = {
+            Type: 'Array',
+            Items: {
+                Type: "Object",
+                Fields: {
+                    FieldID: {
+                        Type: "String"
+                    },
+                    NewValue: {
+                        Type: "String"
+                    },
+                    OldValue: {
+                        Type: "String"
+                    }
+                }
+            }
+        };
+
         const events = {
-            "Events": [{
-                Title: 'On survey data load',
-                EventKey: USER_ACTION_ON_SURVEY_DATA_LOAD
-            }, {
-                Title: 'On survey view load',
-                EventKey: USER_ACTION_ON_SURVEY_VIEW_LOAD
-            }, {
-                Title: 'On survey field changed',
-                EventKey: USER_ACTION_ON_SURVEY_FIELD_CHANGED,
-                // Fields: [{
-                //     "FieldID": "Status",
-                //     "Title": "Survey Status"
-                // }],
-            }, {
-                Title: 'On survey question changed',
-                EventKey: USER_ACTION_ON_SURVEY_QUESTION_CHANGED,
-                // Fields: [{
-                //     "FieldID": "QuestionKey",
-                //     "Title": "Question Key"
-                // }],
-            }]
+            "Events": [
+                {
+                    Title: 'On survey data load',
+                    EventKey: USER_ACTION_ON_SURVEY_DATA_LOAD,
+                    EventData: {
+                        SurveyKey: {
+                            Type: 'String'
+                        }
+                    }
+                }, {
+                    Title: 'On survey view load',
+                    EventKey: USER_ACTION_ON_SURVEY_VIEW_LOAD,
+                    EventData: {
+                        SurveyView: {
+                            Type: 'Object'
+                        }
+                    }
+                }, {
+                    Title: 'On survey field changed',
+                    EventKey: USER_ACTION_ON_SURVEY_FIELD_CHANGED,
+                    EventData: {
+                        SurveyView: {
+                            Type: 'Object'
+                        },
+                        ChangedFields: changedFieldsSchema 
+                    },
+                    // Fields: [{
+                    //     "FieldID": "Status",
+                    //     "Title": "Survey Status"
+                    // }],
+                }, {
+                    Title: 'On survey question changed',
+                    EventKey: USER_ACTION_ON_SURVEY_QUESTION_CHANGED,
+                    EventData: {
+                        SurveyView: {
+                            Type: 'Object'
+                        },
+                        ChangedFields: changedFieldsSchema 
+                    },
+                    // Fields: [{
+                    //     "FieldID": "QuestionKey",
+                    //     "Title": "Question Key"
+                    // }],
+                }
+            ]
         }
 
         return events;

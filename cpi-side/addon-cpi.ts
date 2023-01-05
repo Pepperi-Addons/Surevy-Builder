@@ -37,8 +37,8 @@ export async function load(configuration: any) {
                 ...objectPropsToAddEventData
             }, data);
 
-            if (userEventResult?.SurveyView) {
-                mergedSurvey = userEventResult.SurveyView;
+            if (userEventResult?.data?.SurveyView) {
+                mergedSurvey = userEventResult.data.SurveyView;
             }
         }
 
@@ -74,8 +74,8 @@ export async function load(configuration: any) {
                     ...objectPropsToAddEventData
                 }, data);
 
-                if (userEventResult?.SurveyView) {
-                    mergedSurvey = userEventResult.SurveyView;
+                if (userEventResult?.data?.SurveyView) {
+                    mergedSurvey = userEventResult.data.SurveyView;
                 }
 
                 // If we should navigate back.
@@ -109,8 +109,8 @@ export async function load(configuration: any) {
                     ...objectPropsToAddEventData
                 }, data);
                 
-                if (userEventResult?.SurveyView) {
-                    mergedSurvey = userEventResult.SurveyView;
+                if (userEventResult?.data?.SurveyView) {
+                    mergedSurvey = userEventResult.data.SurveyView;
                 }
             }
         }
