@@ -567,7 +567,15 @@ export class SurveyApiService {
         const events = {
             "Events": [{
                 Title: 'On survey template data load',
-                EventKey: USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD
+                EventKey: USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD,
+                EventData: {
+                    SurveyTemplateKey: {
+                        Type: 'String'
+                    },
+                    ResourceName: {
+                        Type: 'String'
+                    }
+                }
             }]
         }
 

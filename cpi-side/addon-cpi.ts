@@ -144,8 +144,8 @@ export async function load(configuration: any) {
                 ...objectPropsToAddEventData
             }, data);
 
-            if (userEventResult?.AdditionalFields) {
-                additionalFields = userEventResult.AdditionalFields;
+            if (userEventResult?.data?.AdditionalFields) {
+                additionalFields = userEventResult.data.AdditionalFields;
             }
         }
 
