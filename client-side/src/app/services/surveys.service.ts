@@ -8,7 +8,8 @@ import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
 import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData,
-    SurveyTemplateQuestion, SurveyTemplateQuestionType, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE, SurveyStatusType, CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, SURVEY_TEMPLATES_TABLE_NAME, CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD } from 'shared';
+    SurveyTemplateQuestion, SurveyTemplateQuestionType, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE,
+    SurveyStatusType, CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, SURVEY_TEMPLATES_TABLE_NAME, CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD } from 'shared';
 
 import * as _ from 'lodash';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
@@ -641,7 +642,7 @@ export class SurveysService {
                     eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE,
                     eventData: {
                         SurveyKey: this._surveyModelKey,
-                        ChangedFields: [{ FieldID: 'Status', NewValue: status }],
+                        ChangedFields: [{ FieldID: 'StatusName', NewValue: status }],
                     },
                     completion: (survey: SurveyTemplate) => {
                         // debugger;

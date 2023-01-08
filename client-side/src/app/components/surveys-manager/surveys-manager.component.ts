@@ -134,7 +134,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                             this.getRegularReadOnlyColumn('Published', 'Boolean'),
                             //this.getRegularReadOnlyColumn('CreationDate', 'DateAndTime'),
                             this.getRegularReadOnlyColumn('ModificationDate', 'DateAndTime'),
-                            // this.getRegularReadOnlyColumn('Status')
+                            // this.getRegularReadOnlyColumn('StatusName')
                         ],
                         Columns: [
                             { Width: 20 },
