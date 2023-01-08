@@ -33,13 +33,13 @@ export interface SurveyTemplate extends AddonData {
     Active: boolean;
     ActiveDateRange?: SurveyTemplateDateRange;
     Sections: SurveyTemplateSection[];
-    Status?: SurveyStatusType;
+    StatusName?: SurveyStatusType;
 }
 
 // Temp need to remove it when will be integrated with papi-sdk
 export interface Survey extends AddonData {
     // status keyword values (not free text)
-    Status?:string;
+    StatusName?:string;
     // unique ID - ?
     ExternalID?:string;
     // reference to the SurveyTemplate

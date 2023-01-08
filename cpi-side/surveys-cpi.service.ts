@@ -58,7 +58,7 @@ class SurveysService {
             }
         }
 
-        surveyTemplate.Status = survey.Status && survey.Status.length > 0 ? survey.Status as SurveyStatusType : 'InCreation';
+        surveyTemplate.StatusName = survey.StatusName && survey.StatusName.length > 0 ? survey.StatusName as SurveyStatusType : 'InCreation';
 
         // TODO: Add other fields if needed.
     }
@@ -99,8 +99,9 @@ class SurveysService {
                 question.Visible = shouldBeVisible;
             }
 
-            // Set only the visible questions.
-            section.Questions = section.Questions.filter(q => q.Visible);
+            // This logic will be in the UI like Ori.M asked.
+            // // Set only the visible questions.
+            // section.Questions = section.Questions.filter(q => q.Visible);
         }
     }
 
@@ -198,8 +199,8 @@ class SurveysService {
                         const propertyName = changedFields[index].FieldID;
                         const value = changedFields[index].NewValue;
                         
-                        // If the survey field is Status
-                        if (propertyName === 'Status') {
+                        // If the survey field is StatusName
+                        if (propertyName === 'StatusName') {
                             const status: SurveyStatusType = value as SurveyStatusType;
 
                             // If the status is 'Submitted' (If there is no error navigate back after save).

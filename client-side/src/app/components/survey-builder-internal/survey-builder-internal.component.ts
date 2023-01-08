@@ -78,7 +78,7 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
 
     private setSurveyDataProperties(survey: SurveyTemplate) {
         if (survey) {
-            this.isSubmitted = survey?.Status === 'Submitted';
+            this.isSubmitted = survey?.StatusName === 'Submitted';
             this.surveyName = survey?.Name;
         }
     }

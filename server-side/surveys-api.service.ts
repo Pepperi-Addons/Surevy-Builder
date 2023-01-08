@@ -528,8 +528,8 @@ export class SurveyApiService {
                         ChangedFields: changedFieldsSchema 
                     },
                     // Fields: [{
-                    //     "FieldID": "Status",
-                    //     "Title": "Survey Status"
+                    //     "FieldID": "StatusName",
+                    //     "Title": "Survey StatusName"
                     // }],
                 }, {
                     Title: 'On survey question changed',
