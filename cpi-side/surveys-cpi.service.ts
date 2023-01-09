@@ -1,7 +1,7 @@
 import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 import { SurveyTemplate, SURVEY_TEMPLATES_BASE_TABLE_NAME, SurveyTemplateSection, SurveyStatusType, 
     SURVEYS_BASE_TABLE_NAME, SURVEYS_TABLE_NAME, RESOURCE_NAME_PROPERTY } from 'shared';
-import { Survey, Answer } from '@pepperi-addons/papi-sdk';
+import { Survey } from '@pepperi-addons/papi-sdk';
 import { filter } from '@pepperi-addons/pepperi-filters';
 
 class SurveysService {
