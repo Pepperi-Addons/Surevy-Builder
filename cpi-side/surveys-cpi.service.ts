@@ -43,8 +43,8 @@ class SurveysService {
                         const question = section.Questions[questionIndex];
                         
                         // Set the value and break this loop
-                        if (question.Key === answer?.QuestionKey) {
-                            question.Value = answer?.Value;
+                        if (question.Key === answer?.Key) {
+                            question.Value = answer?.Answer;
                             valueIsSet = true;
                             break;
                         }
@@ -117,8 +117,8 @@ class SurveysService {
 
                 if (question.Value?.length > 0) {
                     survey.Answers.push({
-                        QuestionKey: question.Key, 
-                        Value: question.Value
+                        Key: question.Key, 
+                        Answer: question.Value
                     });
                 }
             }
