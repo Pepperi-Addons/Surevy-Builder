@@ -13,6 +13,7 @@ import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISu
 
 import * as _ from 'lodash';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
+import { MatDialogRef } from "@angular/material/dialog";
 
 
 @Injectable({
@@ -289,6 +290,13 @@ export class SurveysService {
 
     private getCurrentResourceName() {
         return SURVEY_TEMPLATES_TABLE_NAME;
+    }
+
+    private showErrorDialog(err: string = ''): MatDialogRef<any> {
+        const title = this.translate.instant('MESSAGES.TITLE_NOTICE');
+        const dataMsg = new PepDialogData({title, actionsType: "close", content: err || this.translate.instant('MESSAGES.FAILED_TO_GET_SURVEY_VIEW_ERROR')});
+
+        return this.dialog.openDefaultDialog(dataMsg);
     }
 
     /***********************************************************************************************/
@@ -609,7 +617,12 @@ export class SurveysService {
                 },
                 completion: (survey: SurveyTemplate) => {
                     // debugger;
-                    this.notifySurveyChange(survey);
+                    if (survey) {
+                        this.notifySurveyChange(survey);
+                    } else {
+                        // Show default error.
+                        this.showErrorDialog();
+                    }
                 }
             }
         };
@@ -646,8 +659,13 @@ export class SurveysService {
                     },
                     completion: (survey: SurveyTemplate) => {
                         // debugger;
-                        // Notify survey change to update survey object with all changes (like show if questions if added or removed).
-                        this.notifySurveyChange(survey);
+                        if (survey) {
+                            // Notify survey change to update survey object with all changes (like show if questions if added or removed).
+                            this.notifySurveyChange(survey);
+                        } else {
+                            // Show default error.
+                            this.showErrorDialog();
+                        }
                     }
                 }
             };
@@ -667,11 +685,16 @@ export class SurveysService {
                     },
                     completion: (survey: SurveyTemplate) => {
                         // debugger;
-                        // Notify survey change to update survey object with all changes (like show if questions if added or removed).
-                        this.notifySurveyChange(survey);
-    
-                        // Notify sections change to update UI.
-                        this.notifySectionsChange(survey.Sections);
+                        if (survey) {
+                            // Notify survey change to update survey object with all changes (like show if questions if added or removed).
+                            this.notifySurveyChange(survey);
+        
+                            // Notify sections change to update UI.
+                            this.notifySectionsChange(survey.Sections);
+                        } else {
+                            // Show default error.
+                            this.showErrorDialog();
+                        }
                     }
                 }
             };
@@ -679,5 +702,4 @@ export class SurveysService {
             this.dispatchEvent(eventData);
         }
     }
-
 }

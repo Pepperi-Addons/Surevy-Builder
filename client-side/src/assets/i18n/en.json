@@ -128,7 +128,8 @@
         "SURVEY_SAVED": "Survey Saved",
         "SURVEY_SAVE_FAILED": "Survey save Failed",
         "SURVEY_PUBLISHED": "Survey Saved and Published",
-        "SURVEY_RESTORED": "Survey Restored"
+        "SURVEY_RESTORED": "Survey Restored",
+        "FAILED_TO_GET_SURVEY_VIEW_ERROR": "Failed to get survey - please contact your Admin"
     },
     "VALIDATION": {
         "QUESTION": "Question",

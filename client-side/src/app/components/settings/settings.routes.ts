@@ -12,7 +12,7 @@ import { SettingsComponent } from './settings.component';
 const routes: Routes = [
     {
         path: ':settingsSectionName/:addonUUID/:slugName',
-        component: SettingsComponent,
+        // component: SettingsComponent,
         children: [
             {
                 path: ':survey_template_key',

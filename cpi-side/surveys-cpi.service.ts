@@ -155,17 +155,20 @@ class SurveysService {
 
     private async getSurveyDataInternal(client: IClient | undefined, surveyKey: string, calcShowIf = true): Promise<{ survey: Survey, surveyTemplate: SurveyTemplate | null }> {
         let surveyTemplate: SurveyTemplate | null = null;
+        console.log(`getSurveyDataInternal getSurveyModel with key - ${surveyKey}`);
         const survey = await this.getSurveyModel(surveyKey);
         
         if (survey && survey.Template) {
+            console.log(`getSurveyDataInternal getSurveyTemplate with key - ${survey.Template}`);
             surveyTemplate = await this.getSurveyTemplate(survey.Template);
     
             if (surveyTemplate) {
                 this.mergeSurveyIntoTemplateData(survey, surveyTemplate);
-
+                
                 if (calcShowIf) {
                     this.calcShowIf(surveyTemplate);
                 }
+                console.log(`getSurveyDataInternal after calculation of the show if the merge survey is - ${JSON.stringify(surveyTemplate)}`);
             }
         } else {
             // TODO: Throw survey has no template.
