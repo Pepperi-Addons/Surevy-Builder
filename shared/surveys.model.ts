@@ -60,8 +60,8 @@ export interface Survey extends AddonData {
     // Performer: string;
 }
 export interface Answer {
-    QuestionKey: string;
-    Value: any;
+    Key: string;
+    Answer: any;
 }
 
 export interface SurveyTemplateDateRange {
