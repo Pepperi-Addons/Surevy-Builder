@@ -193,7 +193,7 @@ export async function load(configuration: any) {
                     additionalFields = userEventResult.data.AdditionalFields;
                 }
                 
-                surveyTemplate = await service.getSurveyTemplateData(data.client, surveyTemplateKey);
+                surveyTemplate = await service.getSurveyTemplateData(data.client, surveyTemplateKey, resourceName);
                 console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD} - after getSurveyTemplateData template is ${JSON.stringify(surveyTemplate)}`);
             } else {
                 throw new Error(`event data isn't supply`);

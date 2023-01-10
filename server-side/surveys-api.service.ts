@@ -422,44 +422,44 @@ export class SurveyApiService {
         }
     }
 
-    async getSurveyTemplateData(query: any): Promise<ISurveyTemplateBuilderData> {
-        const templateResourceName: string = query['resourceName'] || '';
-        const surveyTemplateKey = query['key'] || '';
+    // async getSurveyTemplateData(query: any): Promise<ISurveyTemplateBuilderData> {
+    //     const templateResourceName: string = query['resourceName'] || '';
+    //     const surveyTemplateKey = query['key'] || '';
 
-        if (templateResourceName === '') {
-            throw new Error('resourceName is not supplied.');
-        } else if (surveyTemplateKey === '') {
-            throw new Error('key is not supplied.');
-        } else {
-            let res: any;
+    //     if (templateResourceName === '') {
+    //         throw new Error('resourceName is not supplied.');
+    //     } else if (surveyTemplateKey === '') {
+    //         throw new Error('key is not supplied.');
+    //     } else {
+    //         let res: any;
             
-            let draftSurveyTemplate;
-            let surveyTemplate;
+    //         let draftSurveyTemplate;
+    //         let surveyTemplate;
             
-            // Try to get the survey template from the draft first.
-            try {
-                // Get the survey template from the drafts.
-                draftSurveyTemplate = await this.getSurveyTemplate(surveyTemplateKey, templateResourceName, true);
-            } catch {
-                // Do nothing
-            }
+    //         // Try to get the survey template from the draft first.
+    //         try {
+    //             // Get the survey template from the drafts.
+    //             draftSurveyTemplate = await this.getSurveyTemplate(surveyTemplateKey, templateResourceName, true);
+    //         } catch {
+    //             // Do nothing
+    //         }
 
-            // If draft is hidden or not exist add call to bring the publish survey template.
-            if (!draftSurveyTemplate || draftSurveyTemplate.Hidden) {
-                surveyTemplate = await this.getSurveyTemplate(surveyTemplateKey, templateResourceName);
-            }
+    //         // If draft is hidden or not exist add call to bring the publish survey template.
+    //         if (!draftSurveyTemplate || draftSurveyTemplate.Hidden) {
+    //             surveyTemplate = await this.getSurveyTemplate(surveyTemplateKey, templateResourceName);
+    //         }
                 
-            res = {
-                surveyTemplate: surveyTemplate ? surveyTemplate : draftSurveyTemplate, // Get the publish survey template if exist in the array cause we populate it only if the draft is hidden or not exist.
-            }
+    //         res = {
+    //             surveyTemplate: surveyTemplate ? surveyTemplate : draftSurveyTemplate, // Get the publish survey template if exist in the array cause we populate it only if the draft is hidden or not exist.
+    //         }
 
-            const promise = new Promise<ISurveyTemplateBuilderData>((resolve, reject): void => {
-                resolve(res);
-            });
+    //         const promise = new Promise<ISurveyTemplateBuilderData>((resolve, reject): void => {
+    //             resolve(res);
+    //         });
 
-            return promise;
-        }
-    }
+    //         return promise;
+    //     }
+    // }
     
     async publishSurveyTemplate(body: any): Promise<SurveyTemplate> {
         const templateResourceName = body['resourceName'] || '';

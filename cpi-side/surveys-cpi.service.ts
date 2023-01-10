@@ -1,8 +1,9 @@
 import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 import { SurveyTemplate, SURVEY_TEMPLATES_BASE_TABLE_NAME, SurveyTemplateSection, SurveyStatusType, 
-    SURVEYS_BASE_TABLE_NAME, SURVEYS_TABLE_NAME, RESOURCE_NAME_PROPERTY, SURVEY_TEMPLATES_TABLE_NAME } from 'shared';
+    SURVEYS_BASE_TABLE_NAME, SURVEYS_TABLE_NAME, RESOURCE_NAME_PROPERTY, SURVEY_TEMPLATES_TABLE_NAME, DRAFT_SURVEY_TEMPLATES_TABLE_NAME } from 'shared';
 import { Survey } from '@pepperi-addons/papi-sdk';
 import { filter } from '@pepperi-addons/pepperi-filters';
+import config from '../addon.config.json';
 
 class SurveysService {
 
@@ -24,13 +25,35 @@ class SurveysService {
         return res as Survey;
     }
 
-    private async getSurveyTemplate(surveyTemplateKey: string): Promise<SurveyTemplate> {
-        // const survey = await pepperi.resources.resource(SURVEY_TEMPLATES_BASE_TABLE_NAME).key(surveyTemplateKey).get();
-        const surveyTemplates = await (await pepperi.resources.resource(SURVEY_TEMPLATES_BASE_TABLE_NAME).search({ KeyList: [surveyTemplateKey] })).Objects;
+    private async getSurveyTemplate(surveyTemplateKey: string, resourceName: string = SURVEY_TEMPLATES_BASE_TABLE_NAME): Promise<SurveyTemplate> {
+        // const survey = await pepperi.resources.resource(resourceName).key(surveyTemplateKey).get();
+        const surveyTemplates = await (await pepperi.resources.resource(resourceName).search({ KeyList: [surveyTemplateKey] })).Objects;
         const surveyTemplate = surveyTemplates.length > 0 ? surveyTemplates[0] : null;
         return surveyTemplate as SurveyTemplate;
     }
     
+    private async getSurveyTemplateDraft(surveyTemplateKey: string): Promise<SurveyTemplate | null> {
+        let draftSurveyTemplate = null;
+
+        // Try to get the survey template from the draft first.
+        try {    
+            const draft = (await pepperi.api.adal.get({
+                addon: config.AddonUUID,
+                table: DRAFT_SURVEY_TEMPLATES_TABLE_NAME,
+                key: surveyTemplateKey
+            })).object;
+            
+            // Set surveyTemplate from the draft.JsonTemplate
+            if (draft) {
+                draftSurveyTemplate = JSON.parse(draft.JsonTemplate);
+            }
+        } catch {
+            // Do nothing
+        }
+
+        return draftSurveyTemplate;
+    }
+
     // Calc the merge survey template object.
     private mergeSurveyIntoTemplateData(survey: Survey, surveyTemplate: SurveyTemplate): void {
         if (survey.Answers && survey.Answers?.length > 0) {
@@ -180,17 +203,24 @@ class SurveysService {
     //                              Public functions
     /************************************************************************************************/
     
-    // Load the survey template with the values form the DB.
     async getSurveyData(client: IClient | undefined, surveyKey: string): Promise<SurveyTemplate | null> {
         const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey);
         return surveyTemplate;
     }
 
-    // Load the survey template with the values form the DB.
-    async getSurveyTemplateData(client: IClient | undefined, surveyTemplateKey: string): Promise<SurveyTemplate | null> {
-        // TODO: Get the template from the draft also like in the surver side.
-        const surveyTemplate = null; // await this.getSurveyTemplate(surveyTemplateKey);
-        return surveyTemplate;
+    async getSurveyTemplateData(client: IClient | undefined, surveyTemplateKey: string, resourceName: string): Promise<SurveyTemplate | null> {
+        let surveyTemplate;
+        
+        // Get the survey template from the drafts.
+        const draftSurveyTemplate = await this.getSurveyTemplateDraft(surveyTemplateKey);
+    
+        // If draft is hidden or not exist add call to bring the publish survey template.
+        if (!draftSurveyTemplate || draftSurveyTemplate.Hidden) {
+            surveyTemplate = await this.getSurveyTemplate(surveyTemplateKey, resourceName);
+        }
+            
+        // Return the publish survey template if exist (cause we populate it only if the draft is hidden or not exist).
+        return surveyTemplate ? surveyTemplate : draftSurveyTemplate;
     }
 
     async onSurveyFieldChange(client: IClient | undefined, surveyKey: string, changedFields: any): Promise<any> {

@@ -556,15 +556,15 @@ export class SurveysService {
                 completion: (res: SurveyTemplateClientEventResult) => {
                     // debugger;
                     if (res.Success) {
-                        // this.notifySurveyChange(res.SurveyTemplate);
+                        this.notifySurveyChange(res.SurveyTemplate);
 
                         this.notifyAdditionalFieldsChange(res?.AdditionalFields || []);
                     } else {
-                        // // Show default error.
-                        // const dialogRef = this.showErrorDialog();
-                        // dialogRef.afterClosed().subscribe((res) => {
-                        //     this.navigationService.back();
-                        // });
+                        // Show default error.
+                        const dialogRef = this.showErrorDialog();
+                        dialogRef.afterClosed().subscribe((res) => {
+                            this.navigationService.back();
+                        });
                     }
                 }
             }
