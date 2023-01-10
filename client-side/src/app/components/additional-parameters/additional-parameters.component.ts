@@ -12,12 +12,7 @@ export class AdditionalParametersComponent implements OnInit, AfterViewInit {
     @Input() disabled: boolean = false;
    // @Input() additionalFields = new Map<string, AdditionalField>();
    @Input() additionalFields: Record<string,AdditionalField> = {}
-   @Input() additionalFieldsValues: Record<string,string> = {
-                                                                "Color" : "Red",
-                                                                "QuestionNum": '123',
-                                                                "HideQuestion": 'true',
-                                                                "QuestionDoubleNum": '4.567'
-                                                            }
+   @Input() additionalFieldsValues: Record<string,string> = {}
 
    @Output() additionalFieldsChanged: EventEmitter<any> = new EventEmitter();
 

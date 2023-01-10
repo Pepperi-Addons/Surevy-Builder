@@ -20,24 +20,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     
     question: SurveyTemplateQuestion = null;
     section: SurveyTemplateSection = null;
-    additionalFields: Record<string,AdditionalField> = {
-        'Color': {
-            type: "String",
-            description: "Account Format"
-        },
-        'QuestionNum': {
-            type: "Integer",
-            description: "Int feild"
-        },
-        'HideQuestion': {
-            type: "Bool",
-            description: "Int feild"
-        },
-        'QuestionDoubleNum': {
-            type: "Double",
-            description: "Double feild"
-        }      
-    };
+    @Input() additionalFields: Record<string,AdditionalField> = {};
 
     private _sections: SurveyTemplateSection[] = [];
     protected showIfDialogRef: MatDialogRef<any> = null;
@@ -126,7 +109,6 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     }
 
     ngOnInit(): void {
-      
     }
 
     openShowIfDialog() {
@@ -178,7 +160,6 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     }
 
     onSectionEditorFieldChanged(key,value) {
-        debugger;
         // const oldValue = this.section[key];
         this.section[key] = value;
         this.surveysService.updateSectionFromEditor(this.section);

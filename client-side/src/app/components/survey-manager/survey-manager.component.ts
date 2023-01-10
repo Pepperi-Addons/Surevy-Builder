@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
 import { ValidationService } from '../../services/validation.service';
 import { NavigationService } from '../../services/navigation.service';
-import { ISurveyEditor } from "../../model/survey.model";
+import { AdditionalField, ISurveyEditor } from "../../model/survey.model";
 import { SurveyTemplateQuestionType } from "shared";
 import { DestoyerDirective } from '../../model/destroyer';
 import { PepSnackBarData, PepSnackBarService } from "@pepperi-addons/ngx-lib/snack-bar";
@@ -43,6 +43,8 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     minDateValue: string = null;
     maxDateValue: string = null;    
 
+    additionalFields: Record<string,AdditionalField>;
+    
     constructor(
         public layoutService: PepLayoutService,
         private pepAddonService: PepAddonService,
@@ -71,6 +73,10 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
             this.sectionsQuestionsDropList = [].concat(...res.map((section, sectionIndex) => {
                 return this._surveysService.getSectionContainerKey(sectionIndex.toString())
             }));
+        });
+
+        this._surveysService.additionalFieldsChange$.subscribe((addFields: any) => {
+            this.additionalFields = addFields || [];
         });
     }
 
