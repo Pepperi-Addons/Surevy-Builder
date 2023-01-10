@@ -94,9 +94,7 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
             
             // If it's edit mode get the data of the survey and the relations from the Server side, Else - get the survey from the CPI side.
             if (this.editMode) {
-                // TODO: Remove this.
-                // this.surveysService.loadSurveyTemplateBuilderOld(addonUUID, key, queryParams);
-                this.surveysService.loadSurveyTemplateBuilder(key);
+                this.surveysService.loadSurveyTemplateBuilder(addonUUID, key, queryParams);
             } else { 
                 this.surveysService.loadSurvey(key);
             }

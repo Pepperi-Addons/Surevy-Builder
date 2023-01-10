@@ -208,20 +208,21 @@ class SurveysService {
         return surveyTemplate;
     }
 
-    async getSurveyTemplateData(client: IClient | undefined, surveyTemplateKey: string, resourceName: string): Promise<SurveyTemplate | null> {
-        let surveyTemplate;
+    // Drafts is not sync so we cannot do this here!!!
+    // async getSurveyTemplateData(client: IClient | undefined, surveyTemplateKey: string, resourceName: string): Promise<SurveyTemplate | null> {
+    //     let surveyTemplate;
         
-        // Get the survey template from the drafts.
-        const draftSurveyTemplate = await this.getSurveyTemplateDraft(surveyTemplateKey);
+    //     // Get the survey template from the drafts.
+    //     const draftSurveyTemplate = await this.getSurveyTemplateDraft(surveyTemplateKey);
     
-        // If draft is hidden or not exist add call to bring the publish survey template.
-        if (!draftSurveyTemplate || draftSurveyTemplate.Hidden) {
-            surveyTemplate = await this.getSurveyTemplate(surveyTemplateKey, resourceName);
-        }
+    //     // If draft is hidden or not exist add call to bring the publish survey template.
+    //     if (!draftSurveyTemplate || draftSurveyTemplate.Hidden) {
+    //         surveyTemplate = await this.getSurveyTemplate(surveyTemplateKey, resourceName);
+    //     }
             
-        // Return the publish survey template if exist (cause we populate it only if the draft is hidden or not exist).
-        return surveyTemplate ? surveyTemplate : draftSurveyTemplate;
-    }
+    //     // Return the publish survey template if exist (cause we populate it only if the draft is hidden or not exist).
+    //     return surveyTemplate ? surveyTemplate : draftSurveyTemplate;
+    // }
 
     async onSurveyFieldChange(client: IClient | undefined, surveyKey: string, changedFields: any): Promise<any> {
 
@@ -347,19 +348,6 @@ class SurveysService {
         
         const objectPropsToAddEventData = {
             ObjectType: surveys?.length > 0 ? surveys[0][RESOURCE_NAME_PROPERTY] : SURVEYS_TABLE_NAME
-        }
-
-        return objectPropsToAddEventData;
-    }
-
-    async getObjectPropsForSurveyTemplateUserEvent(surveyTemplateKey: string) {
-        const surveyTemplates = await (await pepperi.resources.resource(SURVEY_TEMPLATES_BASE_TABLE_NAME).search({
-            KeyList: [surveyTemplateKey],
-            Fields: [RESOURCE_NAME_PROPERTY]
-        })).Objects;
-        
-        const objectPropsToAddEventData = {
-            ObjectType: surveyTemplates?.length > 0 ? surveyTemplates[0][RESOURCE_NAME_PROPERTY] : SURVEY_TEMPLATES_TABLE_NAME
         }
 
         return objectPropsToAddEventData;

@@ -37,7 +37,7 @@ export interface SurveyClientEventResult {
 }
 
 export interface SurveyTemplateClientEventResult {
-    SurveyTemplate: SurveyTemplate | null,
+    // SurveyTemplate: SurveyTemplate | null,
     AdditionalFields: any[]
     Success: boolean
 }

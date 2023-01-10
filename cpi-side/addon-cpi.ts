@@ -168,7 +168,7 @@ export async function load(configuration: any) {
     
      // Handle on survey template load
      pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD as any, {}, async (data): Promise<SurveyTemplateClientEventResult> => {
-        let surveyTemplate: SurveyTemplate | null = null;
+        // let surveyTemplate: SurveyTemplate | null = null;
         let additionalFields = [];
         let success = true;
         
@@ -181,11 +181,10 @@ export async function load(configuration: any) {
                 
                 // Emit server event USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD
                 console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD} - before getObjectPropsForSurveyTemplateUserEvent`);
-                const objectPropsToAddEventData = await service.getObjectPropsForSurveyTemplateUserEvent(surveyTemplateKey);
                 const userEventResult: any = await pepperi.events.emit(USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD, {
                     SurveyTemplateKey: surveyTemplateKey,
                     ResourceName: resourceName,
-                    ...objectPropsToAddEventData
+                    ObjectType: resourceName,
                 }, data);
                 console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD} - after fire ${USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD} event the userEventResult is ${JSON.stringify(userEventResult)}`);
 
@@ -193,8 +192,8 @@ export async function load(configuration: any) {
                     additionalFields = userEventResult.data.AdditionalFields;
                 }
                 
-                surveyTemplate = await service.getSurveyTemplateData(data.client, surveyTemplateKey, resourceName);
-                console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD} - after getSurveyTemplateData template is ${JSON.stringify(surveyTemplate)}`);
+                // surveyTemplate = await service.getSurveyTemplateData(data.client, surveyTemplateKey, resourceName);
+                // console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD} - after getSurveyTemplateData template is ${JSON.stringify(surveyTemplate)}`);
             } else {
                 throw new Error(`event data isn't supply`);
             }
@@ -204,7 +203,7 @@ export async function load(configuration: any) {
         }
 
         return {
-            SurveyTemplate: surveyTemplate,
+            // SurveyTemplate: surveyTemplate,
             AdditionalFields: additionalFields,
             Success: success   
         };

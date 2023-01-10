@@ -511,7 +511,7 @@ export class SurveysService {
     }
 
     // TODO: Replate it with loadSurveyTemplateNew function
-    loadSurveyTemplateBuilderOld(addonUUID: string, key: string, queryParameters: Params): void {
+    loadSurveyTemplateBuilder(addonUUID: string, key: string, queryParameters: Params): void {
         const baseUrl = this.getBaseUrl(addonUUID);
         const resourceName = this.getCurrentResourceName();
         
@@ -520,19 +520,17 @@ export class SurveysService {
             .subscribe({
                 next: (res: ISurveyTemplateBuilderData) => {
                     if (res && res.surveyTemplate) {
-                        // Load the additional fields.
-                        this.loadSurveyTemplateBuilder(key);
-                        
                         // Load the survey template.
                         this.notifySurveyChange(res.surveyTemplate);
+
+                        // Load the additional fields.
+                        this.loadSurveyTemplateBuilderAdditionalFields(key);
                     }
                 },
                 error: (err) => {
                     // debugger;
-                    const title = this.translate.instant('MESSAGES.TITLE_NOTICE');
-                    const dataMsg = new PepDialogData({title, actionsType: "close", content: err});
-
-                    this.dialog.openDefaultDialog(dataMsg).afterClosed().subscribe((res) => {
+                    const dialogRef = this.showErrorDialog(err);
+                    dialogRef.afterClosed().subscribe((res) => {
                         this.navigationService.back();
                     });
                 },
@@ -542,7 +540,7 @@ export class SurveysService {
             });
     }
 
-    loadSurveyTemplateBuilder(templateKey: string): void {
+    loadSurveyTemplateBuilderAdditionalFields(templateKey: string): void {
         // Get the resource name.
         const resourceName = this.getCurrentResourceName();
 
@@ -556,15 +554,13 @@ export class SurveysService {
                 completion: (res: SurveyTemplateClientEventResult) => {
                     // debugger;
                     if (res.Success) {
-                        this.notifySurveyChange(res.SurveyTemplate);
+                        // TODO: currently the SurveyTemplate draft is not sync so we cannot do this here.
+                        // this.notifySurveyChange(res.SurveyTemplate);
 
                         this.notifyAdditionalFieldsChange(res?.AdditionalFields || []);
                     } else {
                         // Show default error.
-                        const dialogRef = this.showErrorDialog();
-                        dialogRef.afterClosed().subscribe((res) => {
-                            this.navigationService.back();
-                        });
+                        this.showErrorDialog();
                     }
                 }
             }

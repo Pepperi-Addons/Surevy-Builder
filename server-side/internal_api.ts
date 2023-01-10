@@ -28,14 +28,14 @@ export async function get_survey_templates_data(client: Client, request: Request
     }
 };
 
-// export async function get_survey_template_builder_data(client: Client, request: Request): Promise<any> {
-//     try {
-//         const service = new SurveyApiService(client);
-//         return service.getSurveyTemplateData(request.query);
-//     } catch(err) {
-//         throw new Error(`Failed to get survey builder data. error - ${err}`);
-//     }
-// };
+export async function get_survey_template_builder_data(client: Client, request: Request): Promise<any> {
+    try {
+        const service = new SurveyApiService(client);
+        return service.getSurveyTemplateData(request.query);
+    } catch(err) {
+        throw new Error(`Failed to get survey builder data. error - ${err}`);
+    }
+};
 
 export async function save_draft_survey_template(client: Client, request: Request): Promise<any> {
     try {
