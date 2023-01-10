@@ -7,15 +7,13 @@ import { Observable, BehaviorSubject, from } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
-import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData,
+import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData, SurveyClientEventResult,
     SurveyTemplateQuestion, SurveyTemplateQuestionType, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE,
     SurveyStatusType, CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, SURVEY_TEMPLATES_TABLE_NAME } from 'shared';
-
-import * as _ from 'lodash';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { MatDialogRef } from "@angular/material/dialog";
-
-
+    
+import * as _ from 'lodash';
 @Injectable({
     providedIn: 'root',
 })
@@ -615,10 +613,10 @@ export class SurveysService {
                 eventData: {
                     SurveyKey: this._surveyModelKey,
                 },
-                completion: (survey: SurveyTemplate) => {
+                completion: (res: SurveyClientEventResult) => {
                     // debugger;
-                    if (survey) {
-                        this.notifySurveyChange(survey);
+                    if (res.Success) {
+                        this.notifySurveyChange(res.SurveyView);
                     } else {
                         // Show default error.
                         this.showErrorDialog();
@@ -657,11 +655,11 @@ export class SurveysService {
                         SurveyKey: this._surveyModelKey,
                         ChangedFields: [{ FieldID: 'StatusName', NewValue: status }],
                     },
-                    completion: (survey: SurveyTemplate) => {
+                    completion: (res: SurveyClientEventResult) => {
                         // debugger;
-                        if (survey) {
+                        if (res.Success) {
                             // Notify survey change to update survey object with all changes (like show if questions if added or removed).
-                            this.notifySurveyChange(survey);
+                            this.notifySurveyChange(res.SurveyView);
                         } else {
                             // Show default error.
                             this.showErrorDialog();
@@ -683,14 +681,14 @@ export class SurveysService {
                         SurveyKey: this._surveyModelKey,
                         ChangedFields: [{ FieldID: questionKey, NewValue: value }],
                     },
-                    completion: (survey: SurveyTemplate) => {
+                    completion: (res: SurveyClientEventResult) => {
                         // debugger;
-                        if (survey) {
+                        if (res.Success) {
                             // Notify survey change to update survey object with all changes (like show if questions if added or removed).
-                            this.notifySurveyChange(survey);
-        
+                            this.notifySurveyChange(res.SurveyView);
+
                             // Notify sections change to update UI.
-                            this.notifySectionsChange(survey.Sections);
+                            this.notifySectionsChange(res.SurveyView?.Sections);
                         } else {
                             // Show default error.
                             this.showErrorDialog();
