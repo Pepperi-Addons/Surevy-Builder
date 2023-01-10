@@ -31,6 +31,16 @@ export const USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD = 'OnSurveyTemplateViewLoa
 
 export type SurveyStatusType = 'Submitted' | 'InCreation';
 
+export interface SurveyClientEventResult {
+    SurveyView: SurveyTemplate | null,
+    Success: boolean
+}
+
+export interface SurveyTemplateClientEventResult {
+    SurveyTemplate: SurveyTemplate | null,
+    AdditionalFields: any[]
+    Success: boolean
+}
 export interface SurveyTemplate extends AddonData {
     Name: string;
     Description?: string;
