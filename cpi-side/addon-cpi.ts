@@ -68,10 +68,11 @@ export async function load(configuration: any) {
             const objectPropsToAddEventData = await service.getObjectPropsForSurveyUserEvent(data.SurveyKey);
             const res: { mergedSurvey, changedFields, shouldNavigateBack, isValid} = await service.onSurveyFieldChange(data.client, surveyKey, data.ChangedFields);
             console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE} - after onSurveyFieldChange res is ${JSON.stringify(res)}`);
+
+            // Set this for the UI keep getting the lateast mergedSurvey
+            mergedSurvey = res.mergedSurvey;
     
             if (res.isValid) {
-                mergedSurvey = res.mergedSurvey;
-                
                 // Emit server event USER_ACTION_ON_SURVEY_FIELD_CHANGED
                 const userEventResult: any = await pepperi.events.emit(USER_ACTION_ON_SURVEY_FIELD_CHANGED, {
                     SurveyView: res.mergedSurvey,
