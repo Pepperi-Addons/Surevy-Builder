@@ -215,6 +215,7 @@ export class SurveyApiService {
             // Prepare the object
             const draftToUpsert = {
                 Key: surveyTemplate.Key,
+                Hidden: surveyTemplate.Hidden,
                 JsonTemplate: JSON.stringify(surveyTemplate)
             }
             
