@@ -560,7 +560,7 @@ export class SurveysService {
                         this.notifyAdditionalFieldsChange(res?.AdditionalFields || []);
                     } else {
                         // Show default error.
-                        this.showErrorDialog();
+                        this.showErrorDialog(this.translate.instant('MESSAGES.FAILED_TO_GET_SURVEY_TEMPLATE_ERROR'));
                     }
                 }
             }
