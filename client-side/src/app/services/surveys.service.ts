@@ -19,7 +19,9 @@ import * as _ from 'lodash';
 })
 export class SurveysService {
     private _surveyModelKey = '';
-    
+    private _processingSurvey = false;
+    private readonly _maxMilisecondsToWait = 3000;
+
     private _defaultSectionTitle = '';
     set defaultSectionTitle(value: string) {
         if (this._defaultSectionTitle === '') {
@@ -297,6 +299,17 @@ export class SurveysService {
         return this.dialog.openDefaultDialog(dataMsg);
     }
 
+    private async waitWhileProccessing(): Promise<void> {
+        const milisecondsToWait = 50;
+        let waitingTimes = 0;
+
+        // Wait for delay while this._processingSurvey is true and the time is not pass the _maxMilisecondsToWait.
+        while (this._processingSurvey && (waitingTimes * milisecondsToWait < this._maxMilisecondsToWait)) {
+            await new Promise((resolve) => setTimeout(resolve, milisecondsToWait));
+            waitingTimes++;
+        }
+    }
+
     /***********************************************************************************************/
     /*                                  Public functions
     /***********************************************************************************************/
@@ -355,7 +368,7 @@ export class SurveysService {
     }
 
     async setSelected(sectionIndex: number, questionIndex: number = -1) {
-        // Wait for delay to update properties in the lase chosen and not this.
+        // Wait for delay to update properties in the last chosen and not this.
         await new Promise((resolve) => setTimeout(resolve, 50));
 
         const sections = this._sectionsSubject.getValue();
@@ -646,8 +659,13 @@ export class SurveysService {
         }
     }
 
-    changeSurveyStatus(status: SurveyStatusType): void {
+    async changeSurveyStatus(status: SurveyStatusType): Promise<void> {
         if (this._surveyModelKey.length > 0) {
+            await this.waitWhileProccessing();
+
+            // Now after wait set the processing flag to true and back to false in the completion function.
+            this._processingSurvey = true;
+
             const eventData = {
                 detail: {
                     eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE,
@@ -656,6 +674,8 @@ export class SurveysService {
                         ChangedFields: [{ FieldID: 'StatusName', NewValue: status }],
                     },
                     completion: (res: SurveyClientEventResult) => {
+                        this._processingSurvey = false;
+
                         // debugger;
                         if (res.Success) {
                             // Notify survey change to update survey object with all changes (like show if questions if added or removed).
@@ -672,8 +692,13 @@ export class SurveysService {
         }
     }
 
-    changeSurveyQuestionValue(questionKey: string, value: any): void {
+    async changeSurveyQuestionValue(questionKey: string, value: any): Promise<void> {
         if (this._surveyModelKey.length > 0) {
+            await this.waitWhileProccessing();
+
+            // Now after wait set the processing flag to true and back to false in the completion function.
+            this._processingSurvey = true;
+
             const eventData = {
                 detail: {
                     eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE,
@@ -682,6 +707,8 @@ export class SurveysService {
                         ChangedFields: [{ FieldID: questionKey, NewValue: value }],
                     },
                     completion: (res: SurveyClientEventResult) => {
+                        this._processingSurvey = false;
+
                         // debugger;
                         if (res.Success) {
                             // Notify survey change to update survey object with all changes (like show if questions if added or removed).
