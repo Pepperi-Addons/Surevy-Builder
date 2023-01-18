@@ -66,7 +66,7 @@
                         (buttonClick)="onItemDeleteClicked()"></pep-button>
         </div>
     </div>
-    <survey-additional-parameters *ngIf="surveysService.selectedItemType === 'question' && additionalFields"
+    <survey-additional-parameters *ngIf="surveysService.selectedItemType === 'question' && additionalFields?.length > 0"
                                   [additionalFields]="additionalFields"
                                   [additionalFieldsValues]="question?.AdditionalFields ? question?.AdditionalFields : null"
                                   (additionalFieldsChanged)="surveysService.selectedItemType === 'question' ? onQuestionEditorFieldChanged('AdditionalFields',$event) : onSectionEditorFieldChanged('AdditionalFields',$event)">
