@@ -565,15 +565,13 @@ export class SurveysService {
                     ResourceName: resourceName
                 },
                 completion: (res: SurveyTemplateClientEventResult) => {
-                    // debugger;
-                    if (res?.Success === false) {
-                        // Show default error.
-                        this.showErrorDialog(this.translate.instant('MESSAGES.FAILED_TO_GET_SURVEY_TEMPLATE_ERROR'));
-                    } else {
+                    if (res.Success) {
                         // TODO: currently the SurveyTemplate draft is not sync so we cannot do this here.
                         // this.notifySurveyChange(res.SurveyTemplate);
-
                         this.notifyAdditionalFieldsChange(res?.AdditionalFields || []);
+                    } else {
+                        // Show default error.
+                        this.showErrorDialog(this.translate.instant('MESSAGES.FAILED_TO_GET_SURVEY_TEMPLATE_ERROR'));
                     }
                 }
             }
