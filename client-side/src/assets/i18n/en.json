@@ -120,7 +120,8 @@
         "PUBLISH": "Publish",
         "IMPORT": "Import a survey",
         "EXPORT": "Export a survey",
-        "RESTORE_TO_LAST_PUBLISH": "Restore to last publish"
+        "RESTORE_TO_LAST_PUBLISH": "Restore to last publish",
+        "DUPLICATE": "Duplicate"
     },
     "MESSAGES": {
         "TITLE_NOTICE": "Notice",

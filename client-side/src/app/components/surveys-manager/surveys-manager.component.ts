@@ -162,6 +162,13 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                             this._navigationService.navigateToSurvey(data?.rows[0]);
                         }
                     }, {
+                        title: this.translate.instant("ACTIONS.DUPLICATE"),
+                        handler: async (data: PepSelectionData) => {
+                            if (data?.rows.length > 0) {
+                                this.duplicateSurveyTemplate(data?.rows[0]);
+                            }
+                        }
+                    }, {
                         title: this.translate.instant("ACTIONS.DELETE"),
                         handler: async (data: PepSelectionData) => {
                             if (data?.rows.length > 0) {
@@ -212,6 +219,12 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                          this.dataSource = this.setDataSource();
                  });
             }
+        });
+    }
+
+    duplicateSurveyTemplate(surveyID: string) {
+        this.surveysService.duplicateSurveyTemplate(this._navigationService.addonUUID, surveyID).pipe(first()).subscribe((res) => {
+            this.dataSource = this.setDataSource();
         });
     }
 

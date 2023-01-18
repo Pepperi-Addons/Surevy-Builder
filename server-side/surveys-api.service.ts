@@ -350,6 +350,21 @@ export class SurveyApiService {
             return Promise.resolve(draftRes || res);
         }
     }
+    
+    async duplicateSurveyTemplate(query: any): Promise<SurveyTemplate> {
+        const templateResourceName: string = query['resourceName'] || '';
+
+        if (templateResourceName === '') {
+            throw new Error('resourceName is not supplied.');
+        } else {
+            const surveyTemplateData: ISurveyTemplateBuilderData = await this.getSurveyTemplateData(query);
+
+            const dupplicateTemplate: SurveyTemplate = JSON.parse(JSON.stringify(surveyTemplateData.surveyTemplate));
+            dupplicateTemplate.Name = `${dupplicateTemplate.Name} copy`;
+            delete dupplicateTemplate.Key;
+            return await this.upsertSurveyTemplateInternal(templateResourceName, dupplicateTemplate, true);
+        }
+    }
 
     async getSurveyTemplatesData(query: any): Promise<SurveyTemplateRowProjection[]> {
         const templateResourceName: string = query['resourceName'] || '';

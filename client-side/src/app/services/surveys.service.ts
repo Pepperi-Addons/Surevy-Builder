@@ -523,6 +523,12 @@ export class SurveysService {
         return this.httpService.getHttpCall(`${baseUrl}/remove_survey_template?resourceName=${this.getCurrentResourceName()}&key=${surveyTemplateKey}`);
     }
 
+    // Delete the survey
+    duplicateSurveyTemplate(addonUUID: string, surveyTemplateKey: string): Observable<any> {
+        const baseUrl = this.getBaseUrl(addonUUID);
+        return this.httpService.getHttpCall(`${baseUrl}/duplicate_survey_template?resourceName=${this.getCurrentResourceName()}&key=${surveyTemplateKey}`);
+    }
+    
     // TODO: Replate it with loadSurveyTemplateNew function
     loadSurveyTemplateBuilder(addonUUID: string, key: string, queryParameters: Params): void {
         const baseUrl = this.getBaseUrl(addonUUID);

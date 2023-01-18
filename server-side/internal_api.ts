@@ -19,6 +19,15 @@ export async function remove_survey_template(client: Client, request: Request): 
     }
 }
 
+export async function duplicate_survey_template(client: Client, request: Request): Promise<any> {
+    try {
+        const service = new SurveyApiService(client);
+        return service.duplicateSurveyTemplate(request.query);
+    } catch(err) {
+        throw new Error(`Failed to duplicate survey. error - ${err}`);
+    }
+}
+
 export async function get_survey_templates_data(client: Client, request: Request): Promise<any> {
     try {
         const service = new SurveyApiService(client);
