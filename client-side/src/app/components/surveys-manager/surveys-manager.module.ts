@@ -21,6 +21,8 @@ import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
 
 
 import { ServeysManagerComponent } from './surveys-manager.component';
+import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
+import { PepNgxCompositeLibModule } from '@pepperi-addons/ngx-composite-lib';
 
 const pepIcons = [
     pepIconSystemClose,
@@ -44,6 +46,7 @@ export const routes: Routes = [
         HttpClientModule,
         MatIconModule,        
         PepNgxLibModule,
+        PepNgxCompositeLibModule,
         PepGenericListModule,
         PepSizeDetectorModule,
         PepTopBarModule,
@@ -52,7 +55,8 @@ export const routes: Routes = [
         PepButtonModule,
         PepTextboxModule,
         PepTextareaModule,
-        PepSelectModule,        
+        PepSelectModule,
+        PepMenuModule,
         TranslateModule.forChild(),
         RouterModule.forChild(routes)
     ],

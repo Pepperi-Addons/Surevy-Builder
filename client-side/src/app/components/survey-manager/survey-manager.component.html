@@ -62,6 +62,7 @@
                     <ng-container *ngIf="showEditor; then editorButtonsTemplate; else previewButtonsTemplate"></ng-container>
                     <ng-template #editorButtonsTemplate>
                         <div class="header-end">
+                            <pep-menu sizeType="sm" classNames="pep-spacing-element" [items]="menuItems" (menuItemClick)="onMenuItemClick($event)"></pep-menu>
                             <pep-button key='Preview' [value]="'ACTIONS.PREVIEW' | translate" sizeType="sm" classNames="pep-spacing-element" (buttonClick)="togglePreviewMode()"></pep-button>
                             <pep-button key='Save' [value]="'ACTIONS.SAVE' | translate" sizeType="sm" classNames="pep-spacing-element" (buttonClick)="onSaveClicked()"></pep-button>
                             <pep-button key='Publish' [value]="'ACTIONS.PUBLISH' | translate" sizeType="sm" classNames="pep-spacing-element" styleType="strong" (buttonClick)="onPublishClicked();"></pep-button>

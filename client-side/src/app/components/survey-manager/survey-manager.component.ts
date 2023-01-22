@@ -1,21 +1,26 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewContainerRef } from "@angular/core";
 import { PepAddonService, PepLayoutService, PepScreenSizeType } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { SurveysService } from "../../services/surveys.service";
 import { ValidationService } from '../../services/validation.service';
 import { NavigationService } from '../../services/navigation.service';
 import { AdditionalField, ISurveyEditor } from "../../model/survey.model";
-import { SurveyTemplateQuestionType } from "shared";
+import { SurveyTemplate, SurveyTemplateQuestionType } from "shared";
 import { DestoyerDirective } from '../../model/destroyer';
 import { PepSnackBarData, PepSnackBarService } from "@pepperi-addons/ngx-lib/snack-bar";
-
+import { DIMXService } from "../../../app/services/dimx.service";
+import { IPepMenuItemClickEvent, PepMenuItem } from "@pepperi-addons/ngx-lib/menu";
 
 @Component({
     selector: 'survey-manager',
     templateUrl: './survey-manager.component.html',
-    styleUrls: ['./survey-manager.component.scss', './survey-manager.component.theme.scss']
+    styleUrls: ['./survey-manager.component.scss', './survey-manager.component.theme.scss'],
+    providers: [DIMXService]
 })
 export class ServeyManagerComponent extends DestoyerDirective implements OnInit, OnDestroy {
+    private readonly IMPORT_KEY = 'import';
+    private readonly EXPORT_KEY = 'export';
+
     get isActive() {
         if (this.surveyEditor) {            
             return this.surveyEditor.active !== undefined ? this.surveyEditor.active : false;
@@ -44,7 +49,9 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     maxDateValue: string = null;    
 
     additionalFields: Record<string,AdditionalField>;
-    
+    menuItems: Array<PepMenuItem>;
+    currentSurveyTemplate: SurveyTemplate;
+
     constructor(
         public layoutService: PepLayoutService,
         private pepAddonService: PepAddonService,
@@ -52,11 +59,17 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         private validationService: ValidationService,
         private _navigationService: NavigationService,
         private pepSnackBarService: PepSnackBarService,        
+        private viewContainerRef: ViewContainerRef,
+        private dimxService: DIMXService,
         public translate: TranslateService
     ) {
         super();
 
         this.pepAddonService.setShellRouterData({ showSidebar: false, addPadding: false});
+        this.dimxService.register(this.viewContainerRef, this.onDIMXProcessDone.bind(this));
+    }
+
+    private subscribeEvents() {
 
         this.layoutService.onResize$.pipe(this.destroy$).subscribe(size => {
             this.screenSize = size;
@@ -78,10 +91,24 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         this._surveysService.additionalFieldsChange$.subscribe((addFields: any) => {
             this.additionalFields = addFields || [];
         });
+
+        // For update the survey template data
+        this._surveysService.surveyDataChange$.subscribe((surveyTemplate: SurveyTemplate) => {
+            if (surveyTemplate) {
+                this.currentSurveyTemplate = surveyTemplate;
+            }
+        });
     }
 
     ngOnInit() {
         console.log('loading ServeyManagerComponent');
+
+        this.menuItems = [
+            // TODO: { key: this.IMPORT_KEY, text: this.translate.instant('ACTIONS.IMPORT') },
+            { key: this.EXPORT_KEY, text: this.translate.instant('ACTIONS.EXPORT') }
+        ];
+
+        this.subscribeEvents();
     }
 
     togglePreviewMode() {
@@ -175,6 +202,16 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         //this._surveysService.clearSelected();
     }
 
+    onMenuItemClick(action: IPepMenuItemClickEvent) {
+        // Import survey template
+        if (action.source.key === this.IMPORT_KEY) { 
+            // TODO: Should work only for the same survey template Key (override this survey template).
+            // this.dimxService.import();
+        } else if (action.source.key === this.EXPORT_KEY) { // Export survey template
+            this.dimxService.export(this.currentSurveyTemplate.Key, this.currentSurveyTemplate.Name);
+        }
+    }
+
     onSaveClicked() {
         //validate mandatory fields
         if(this.validationService.validateSurvey()){
@@ -212,5 +249,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         });
     }
 
-
+    onDIMXProcessDone(dimxEvent: any) {
+        console.log(`DIMXProcessDone: ${JSON.stringify(dimxEvent)}`);
+    }
 }

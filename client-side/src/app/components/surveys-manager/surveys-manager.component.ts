@@ -16,15 +16,18 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from "@angular/materia
 import { getCalture } from "@pepperi-addons/ngx-lib/date";
 import { DatetimeAdapter, MAT_DATETIME_FORMATS } from '@mat-datetimepicker/core';
 import { PepAddonBlockLoaderService } from "@pepperi-addons/ngx-lib/remote-loader";
+import { DIMXService } from "../../../app/services/dimx.service";
 
 import { utc } from "moment";
 import { config } from "../addon.config";
+import { IPepMenuItemClickEvent } from "@pepperi-addons/ngx-lib/menu";
 
 @Component({
     selector: 'surveys-manager',
     templateUrl: './surveys-manager.component.html',
     styleUrls: ['./surveys-manager.component.scss'],
     providers: [
+        DIMXService,
         { provide: MAT_DATE_LOCALE, useFactory: getCalture, deps:[PepLayoutService] },
         { provide: DateAdapter, useClass: MomentUtcDateAdapter },
         { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
@@ -33,6 +36,8 @@ import { config } from "../addon.config";
     ],
 })
 export class ServeysManagerComponent implements OnInit, OnDestroy {
+    private readonly IMPORT_KEY = 'import';
+
     screenSize: PepScreenSizeType;
 
     dataSource: IPepGenericListDataSource;
@@ -53,9 +58,12 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         private dialog: PepDialogService,
         private adapter: DateAdapter<any>,
         private utilitiesService: PepUtilitiesService,
+        private dimxService: DIMXService,
         private pepAddonBlockLoader: PepAddonBlockLoaderService,
         private viewContainerRef: ViewContainerRef
     ) {
+        this.dimxService.register(this.viewContainerRef, this.onDIMXProcessDone.bind(this));
+
         this.pepAddonService.setShellRouterData({ showSidebar: true, addPadding: true});
        
         this._subscriptions.push(this.layoutService.onResize$.subscribe(size => {
@@ -67,6 +75,25 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         //
         this.dataSource = this.setDataSource();
         //this.actions = this.setActions();
+    }
+
+    ngOnDestroy(): void {
+        this._subscriptions.forEach(sub => sub.unsubscribe);
+    }
+
+    onDIMXProcessDone(event:any) {
+        this.dataSource = this.setDataSource();
+        console.log(`DIMXProcessDone: ${JSON.stringify(event)}`);
+    }
+
+    onMenuItemClicked(event: IPepMenuItemClickEvent = null) {
+        const menuItem = event.source;
+        switch(menuItem.key) {
+            case this.IMPORT_KEY: {
+                this.dimxService.import();
+                break;
+            }
+        }
     }
 
     formatDate(value,isDateTime){
@@ -82,6 +109,7 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
             return this.adapter.format(dateModel, format);
         }
     }
+
     setDataSource() {
         return {
             init: async (params) => {
@@ -228,45 +256,5 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         });
     }
 
-    ngOnDestroy(): void {
-        this._subscriptions.forEach(sub => sub.unsubscribe);
-    }
 
-    // onAddSurveyScriptClicked() {
-    //     const hostObject = {
-    //         AddonUUID: config.AddonUUID,
-    //         PossibleEvents: [{
-    //             Title: 'on survey load before merge',
-    //             EventKey: SURVEY_LOAD_BEFORE_MERGE_EVENT_NAME,
-    //             // EventFilter: {},
-    //             // Fields: []
-    //         }, {
-    //             Title: 'on survey load after merge',
-    //             EventKey: SURVEY_LOAD_AFTER_MERGE_EVENT_NAME,
-    //             // EventFilter: {},
-    //             // Fields: []
-    //         }, {
-    //             Title: 'on survey field change after',
-    //             EventKey: SURVEY_FIELD_AFTER_CHANGE_EVENT_NAME,
-    //             // EventFilter: {},
-    //             // Fields: []
-    //         }, {
-    //             Title: 'on servey question change after',
-    //             EventKey: SURVEY_QUESTION_AFTER_CHANGE_EVENT_NAME,
-    //             // EventFilter: {},
-    //             // Fields: []
-    //         }]
-    //     };
-
-    //     this.pepAddonBlockLoader.loadAddonBlockInDialog({
-    //         name: 'UserEvents',
-    //         container: this.viewContainerRef,
-    //         hostObject: hostObject,
-    //         hostEventsCallback: (event) => { 
-    //             // if (dialogRef) {
-    //             //     dialogRef.close(null);
-    //             // }
-    //         }
-    //     });
-    // }
 }

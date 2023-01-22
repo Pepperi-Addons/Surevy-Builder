@@ -36,6 +36,7 @@ import { ServeyManagerComponent } from './survey-manager.component';
 import { config } from '../addon.config';
 import { SurveysService } from 'src/app/services/surveys.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { PepNgxCompositeLibModule } from '@pepperi-addons/ngx-composite-lib';
 
 const pepIcons = [
     pepIconSystemClose,
@@ -66,6 +67,7 @@ export const routes: Routes = [
         MatRadioModule,
         MatIconModule,
         PepNgxLibModule,
+        PepNgxCompositeLibModule,
         PepSizeDetectorModule,
         PepTopBarModule,
         PepSideBarModule,

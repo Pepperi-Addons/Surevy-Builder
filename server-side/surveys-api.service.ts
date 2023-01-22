@@ -1,4 +1,4 @@
-import { PapiClient, InstalledAddon, AddonDataScheme, Relation, FindOptions } from '@pepperi-addons/papi-sdk'
+import { PapiClient, InstalledAddon, AddonDataScheme, Relation, FindOptions, FileImportInput, FileExportInput } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
 import { DEFAULT_BLANK_SURVEY_DATA, ISurveyTemplateBuilderData, SurveyTemplate, SurveyTemplateRowProjection, 
     SURVEYS_BASE_TABLE_NAME, SURVEY_TEMPLATES_BASE_TABLE_NAME,
@@ -282,6 +282,8 @@ export class SurveyApiService {
             await this.createSchemeTables();
         }
 
+        await this.upsertImportRelation();
+        await this.upsertExportRelation();
         await this.upsertUserEventsRelation();
         await this.upsertAddonBlockRelation();
         await this.upsertPageBlockRelation();
@@ -503,6 +505,90 @@ export class SurveyApiService {
 
             return Promise.reject(null);
         }
+    }
+
+    /***********************************************************************************************/
+    //                              Import & Export functions
+    /************************************************************************************************/
+    
+    private async upsertImportRelation(): Promise<void> {
+        const importRelation: Relation = {
+            RelationName: 'DataImportResource',
+            Name: DRAFT_SURVEY_TEMPLATES_TABLE_NAME,
+            Description: 'Survey templates import',
+            Type: 'AddonAPI',
+            AddonUUID: this.addonUUID,
+            AddonRelativeURL: '/internal_api/draft_survey_templates_import',
+            MappingRelativeURL: ''
+        };                
+
+        await this.upsertRelation(importRelation);
+    }
+
+    private async upsertExportRelation(): Promise<void> {
+        const exportRelation: Relation = {
+            RelationName: 'DataExportResource',
+            Name: DRAFT_SURVEY_TEMPLATES_TABLE_NAME,
+            Description: 'Survey templates export',
+            Type: 'AddonAPI',
+            AddonUUID: this.addonUUID,
+            AddonRelativeURL: '/internal_api/draft_survey_templates_export',
+        };
+
+        await this.upsertRelation(exportRelation);
+    }
+
+    private async getDIMXResult(body: any, isImport: boolean): Promise<any> {
+        // Validate the templates.
+        if (body.DIMXObjects?.length > 0) {
+            console.log('@@@@@@@@ getDIMXResult - enter ', JSON.stringify(body));
+            console.log('@@@@@@@@ getDIMXResult - isImport = ', isImport);
+
+            for (let index = 0; index < body.DIMXObjects.length; index++) {
+                const dimxObject = body.DIMXObjects[index];
+                try {
+                    const surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(dimxObject['Object']);
+                    
+                    // For import always generate new Key and set the Hidden to false.
+                    if (isImport) {
+                        surveyTemplate.Key = surveyTemplate.Key && surveyTemplate.Key.length > 0 ? surveyTemplate.Key : uuidv4();
+                        surveyTemplate.Hidden = false;
+                    }
+                    dimxObject['Object'] = surveyTemplate;
+                } catch (err) {
+                    // Set the error on the page.
+                    dimxObject['Status'] = 'Error';
+                    dimxObject['Details'] = err;
+                }
+            }
+
+            console.log('@@@@@@@@ getDIMXResult - exit ', JSON.stringify(body));
+        }
+        
+        return body;
+    }
+
+    async importSurveyTemplates(body: any, draft = true): Promise<any> {
+        console.log('@@@@@@@@ importSurveyTemplates - before getDIMXResult');
+
+        const res = await this.getDIMXResult(body, true);
+        
+        console.log('@@@@@@@@ importSurveyTemplates - after getDIMXResult');
+
+        return res;
+    }
+    
+    async exportSurveyTemplates(body: any, draft = true): Promise<any> {
+        const res = await this.getDIMXResult(body, false);
+        return res;
+    }
+
+    async importSurveyTemplateFile(body: FileImportInput) {
+        return await this.papiClient.addons.data.import.file.uuid(this.addonUUID).table(DRAFT_SURVEY_TEMPLATES_TABLE_NAME).upsert(body);
+    }
+
+    async exportSurveyTemplateFile(body: FileExportInput) {
+        return await this.papiClient.addons.data.export.file.uuid(this.addonUUID).table(DRAFT_SURVEY_TEMPLATES_TABLE_NAME).get(body);
     }
 
     /***********************************************************************************************/
