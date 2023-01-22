@@ -39,20 +39,20 @@ export async function survey_template_user_events(client:Client, request: Reques
 //                              Import & Export functions
 /************************************************************************************************/
   
-export async function pages_import_file(client:Client, request: Request): Promise<any> {
-    try {
-        const service = new SurveyApiService(client);
-        return await service.importSurveyTemplateFile(request.body);
-    } catch(err) {
-        throw err;
-    }
-}
+// export async function survey_templates_import_file(client:Client, request: Request): Promise<any> {
+//     try {
+//         const service = new SurveyApiService(client);
+//         return await service.importSurveyTemplateFile(request.body);
+//     } catch(err) {
+//         throw err;
+//     }
+// }
 
-export async function pages_export_file(client:Client, request: Request): Promise<any> {
-    try {
-        const service = new SurveyApiService(client);
-        return await service.exportSurveyTemplateFile(request.body);
-    } catch(err) {
-        throw err;
-    }
-}
+// export async function survey_templates_export_file(client:Client, request: Request): Promise<any> {
+//     try {
+//         const service = new SurveyApiService(client);
+//         return await service.exportSurveyTemplateFile(request.body);
+//     } catch(err) {
+//         throw err;
+//     }
+// }

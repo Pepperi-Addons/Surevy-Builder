@@ -209,6 +209,18 @@ export class SurveyApiService {
         return this.surveysValidatorService.getSurveyTemplateCopyAccordingInterface(surveyTemplate);
     }
 
+    private prepareDraftForUpsert(surveyTemplate: SurveyTemplate, templateResourceName: string): any {
+        const draftToUpsert = {
+            Key: surveyTemplate.Key,
+            Hidden: surveyTemplate.Hidden,
+            JsonTemplate: JSON.stringify(surveyTemplate)
+        }
+
+        draftToUpsert[TEMPLATE_SCHEME_NAME_PROPERTY] = templateResourceName || SURVEY_TEMPLATES_TABLE_NAME;
+
+        return draftToUpsert;
+    }
+
     private async upsertSurveyTemplateInternal(templateResourceName: string, surveyTemplate: SurveyTemplate, isDraft: boolean = false): Promise<SurveyTemplate> {
         if (!surveyTemplate) {
             return Promise.reject(null);
@@ -224,15 +236,7 @@ export class SurveyApiService {
         if (!isDraft) {
             return await this.papiClient.resources.resource(templateResourceName).post(surveyTemplate) as Promise<SurveyTemplate>;
         } else {
-            // Prepare the object
-            const draftToUpsert = {
-                Key: surveyTemplate.Key,
-                Hidden: surveyTemplate.Hidden,
-                JsonTemplate: JSON.stringify(surveyTemplate)
-            }
-            
-            draftToUpsert[TEMPLATE_SCHEME_NAME_PROPERTY] = templateResourceName;
-            
+            const draftToUpsert = this.prepareDraftForUpsert(surveyTemplate, templateResourceName);
             return await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFT_SURVEY_TEMPLATES_TABLE_NAME).upsert(draftToUpsert) as Promise<SurveyTemplate>;
         }
     }
@@ -538,22 +542,52 @@ export class SurveyApiService {
         await this.upsertRelation(exportRelation);
     }
 
-    private async getDIMXResult(body: any, isImport: boolean): Promise<any> {
+    private async getDIMXResultForImport(body: any): Promise<any> {
         // Validate the templates.
         if (body.DIMXObjects?.length > 0) {
-            console.log('@@@@@@@@ getDIMXResult - enter ', JSON.stringify(body));
-            console.log('@@@@@@@@ getDIMXResult - isImport = ', isImport);
-
+            console.log('@@@@@@@@ getDIMXResultForImport - enter ', JSON.stringify(body));
+            
             for (let index = 0; index < body.DIMXObjects.length; index++) {
                 const dimxObject = body.DIMXObjects[index];
                 try {
-                    const surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(dimxObject['Object']);
-                    
+                    // Get the template for validate and set some properties.
+                    const draftTemplate = dimxObject['Object'];
+                    const templateResourceName = draftTemplate[TEMPLATE_SCHEME_NAME_PROPERTY] || '';
+                    const surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(draftTemplate);
+
                     // For import always generate new Key and set the Hidden to false.
-                    if (isImport) {
-                        surveyTemplate.Key = surveyTemplate.Key && surveyTemplate.Key.length > 0 ? surveyTemplate.Key : uuidv4();
-                        surveyTemplate.Hidden = false;
-                    }
+                    surveyTemplate.Key = surveyTemplate.Key && surveyTemplate.Key.length > 0 ? surveyTemplate.Key : uuidv4();
+                    surveyTemplate.Hidden = false;
+
+                    dimxObject['Object'] = this.prepareDraftForUpsert(surveyTemplate, templateResourceName);
+                } catch (err) {
+                    // Set the error on the page.
+                    dimxObject['Status'] = 'Error';
+                    dimxObject['Details'] = err;
+                }
+            }
+
+            console.log('@@@@@@@@ getDIMXResultForImport - exit ', JSON.stringify(body));
+        }
+        
+        return body;
+    }
+
+    private async getDIMXResultForExport(body: any): Promise<any> {
+        // Validate the templates.
+        if (body.DIMXObjects?.length > 0) {
+            console.log('@@@@@@@@ getDIMXResultForExport - enter ', JSON.stringify(body));
+            
+            for (let index = 0; index < body.DIMXObjects.length; index++) {
+                const dimxObject = body.DIMXObjects[index];
+                try {
+                    // Get the template from the draft for validate and set some properties.
+                    const draft = dimxObject['Object'];
+                    const surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(JSON.parse(draft.JsonTemplate));
+                    
+                    // Copy the template scheme to set it later in the import.
+                    surveyTemplate[TEMPLATE_SCHEME_NAME_PROPERTY] = draft[TEMPLATE_SCHEME_NAME_PROPERTY];
+
                     dimxObject['Object'] = surveyTemplate;
                 } catch (err) {
                     // Set the error on the page.
@@ -562,7 +596,7 @@ export class SurveyApiService {
                 }
             }
 
-            console.log('@@@@@@@@ getDIMXResult - exit ', JSON.stringify(body));
+            console.log('@@@@@@@@ getDIMXResultForExport - exit ', JSON.stringify(body));
         }
         
         return body;
@@ -570,26 +604,23 @@ export class SurveyApiService {
 
     async importSurveyTemplates(body: any, draft = true): Promise<any> {
         console.log('@@@@@@@@ importSurveyTemplates - before getDIMXResult');
-
-        const res = await this.getDIMXResult(body, true);
-        
+        const res = await this.getDIMXResultForImport(body);
         console.log('@@@@@@@@ importSurveyTemplates - after getDIMXResult');
-
         return res;
     }
     
     async exportSurveyTemplates(body: any, draft = true): Promise<any> {
-        const res = await this.getDIMXResult(body, false);
+        const res = await this.getDIMXResultForExport(body);
         return res;
     }
 
-    async importSurveyTemplateFile(body: FileImportInput) {
-        return await this.papiClient.addons.data.import.file.uuid(this.addonUUID).table(DRAFT_SURVEY_TEMPLATES_TABLE_NAME).upsert(body);
-    }
+    // async importSurveyTemplateFile(body: FileImportInput) {
+    //     return await this.papiClient.addons.data.import.file.uuid(this.addonUUID).table(DRAFT_SURVEY_TEMPLATES_TABLE_NAME).upsert(body);
+    // }
 
-    async exportSurveyTemplateFile(body: FileExportInput) {
-        return await this.papiClient.addons.data.export.file.uuid(this.addonUUID).table(DRAFT_SURVEY_TEMPLATES_TABLE_NAME).get(body);
-    }
+    // async exportSurveyTemplateFile(body: FileExportInput) {
+    //     return await this.papiClient.addons.data.export.file.uuid(this.addonUUID).table(DRAFT_SURVEY_TEMPLATES_TABLE_NAME).get(body);
+    // }
 
     /***********************************************************************************************/
     //                              User Events functions

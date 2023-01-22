@@ -71,9 +71,9 @@ export async function publish_survey_template(client: Client, request: Request):
 export async function draft_survey_templates_import(client:Client, request: Request): Promise<any> {
     try {
         const service = new SurveyApiService(client);
-        console.log('@@@@@@@@ draft_pages_import - before importPages ', JSON.stringify(request.body));
+        console.log('@@@@@@@@ draft_survey_templates_import - before import survey templates', JSON.stringify(request.body));
         const res = await service.importSurveyTemplates(request.body);
-        console.log('@@@@@@@@ draft_pages_import - after importPages ', JSON.stringify(res));
+        console.log('@@@@@@@@ draft_survey_templates_import - after import survey templates', JSON.stringify(res));
         return res;
     } catch(err) {
         throw err;
