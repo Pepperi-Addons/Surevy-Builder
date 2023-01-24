@@ -41,6 +41,8 @@ export class SectionComponent implements OnInit {
         return this._editable;
     }
 
+    @Input() previewMode: boolean = false;
+
     private _screenSize: PepScreenSizeType;
     @Input()
     set screenSize(value: PepScreenSizeType) {
@@ -75,7 +77,7 @@ export class SectionComponent implements OnInit {
     }
 
     onSectionClicked(event: any) {
-        this.surveysService.setSelected(this.index);
+        this.surveysService.setSelected(this.editable, this.index);
         // This is for click.
         // event.stopPropagation();
     }
@@ -93,7 +95,7 @@ export class SectionComponent implements OnInit {
     }
 
     onQuestionClicked(questionIndex: number) {
-        this.surveysService.setSelected(this.index, questionIndex);
+        this.surveysService.setSelected(this.editable, this.index, questionIndex);
     }
     
     onAddSectionClicked() {

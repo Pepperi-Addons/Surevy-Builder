@@ -25,6 +25,8 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     private _sections: SurveyTemplateSection[] = [];
     protected showIfDialogRef: MatDialogRef<any> = null;
 
+    protected isTemplatePublished = false;
+
     constructor(
         protected surveysService: SurveysService,
         private validationService: ValidationService,
@@ -42,6 +44,10 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
 
         this.surveysService.sectionsChange$.pipe(this.destroy$).subscribe((sections: SurveyTemplateSection[]) => {
             this._sections = sections;
+        });
+
+        this.surveysService.isTemplatePublished$.pipe(this.destroy$).subscribe((isTemplatePublished: boolean) => {
+            this.isTemplatePublished = isTemplatePublished;
         });
     }
 
@@ -109,6 +115,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     }
 
     ngOnInit(): void {
+        //
     }
 
     openShowIfDialog() {

@@ -1,6 +1,6 @@
 <div class="survey-container">
-    <pep-page-layout [showShadow]="showEditor">
-        <div pep-side-area *ngIf="showEditor" >
+    <pep-page-layout [showShadow]="!previewMode">
+        <div pep-side-area *ngIf="!previewMode" >
             <pep-side-bar [ignoreResize]="true" (stateChange)="onSidebarStateChange($event)">
                 <div header-content class="side-bar-title ellipsis">
                     <pep-button class="back-button" sizeType="sm" iconName="arrow_left_alt"
@@ -48,8 +48,8 @@
         </div>
         <ng-container pep-main-area>
             <div class="main-area-container">
-                <div class="header-container" [ngClass]="{'header-container-preview': !showEditor }">
-                    <ng-container *ngIf="showEditor; then editorTitleTemplate; else previewTitleTemplate"></ng-container>
+                <div class="header-container" [ngClass]="{'header-container-preview': previewMode }">
+                    <ng-container *ngIf="!previewMode; then editorTitleTemplate; else previewTitleTemplate"></ng-container>
                     <ng-template #editorTitleTemplate>
                         <div></div>
                     </ng-template>
@@ -59,7 +59,7 @@
                         </div>
                     </ng-template>
     
-                    <ng-container *ngIf="showEditor; then editorButtonsTemplate; else previewButtonsTemplate"></ng-container>
+                    <ng-container *ngIf="!previewMode; then editorButtonsTemplate; else previewButtonsTemplate"></ng-container>
                     <ng-template #editorButtonsTemplate>
                         <div class="header-end">
                             <pep-menu sizeType="sm" classNames="pep-spacing-element" [items]="menuItems" (menuItemClick)="onMenuItemClick($event)"></pep-menu>
@@ -73,12 +73,12 @@
                     </ng-template>
                 </div>
                 <div class="survey-builder-wrapper" (click)="onWrapperClicked($event)">
-                    <survey-builder-internal [editMode]="showEditor" [screenSize]="screenSize"
+                    <survey-builder-internal [editMode]="!previewMode" [previewMode]="previewMode" [screenSize]="screenSize"
                         [sectionsQuestionsDropList]="sectionsQuestionsDropList"></survey-builder-internal>
                 </div>
             </div>
         </ng-container>
-        <div pep-side-area-end *ngIf="showEditor">
+        <div pep-side-area-end *ngIf="!previewMode">
             <survey-selected-item-editor [additionalFields]="additionalFields"></survey-selected-item-editor>
         </div>
     </pep-page-layout>

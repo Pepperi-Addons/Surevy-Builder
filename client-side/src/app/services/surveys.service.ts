@@ -69,6 +69,12 @@ export class SurveysService {
         return this._selectedQuestionChangeSubject.asObservable().pipe(distinctUntilChanged());
     }
 
+    // This subject is for is template published.
+    private _isTemplatePublishedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    get isTemplatePublished$(): Observable<boolean> {
+        return this._isTemplatePublishedSubject.asObservable().pipe(distinctUntilChanged());
+    }
+
     // This subject is for survey change.
     private _surveySubject: BehaviorSubject<SurveyTemplate> = new BehaviorSubject<SurveyTemplate>(null);
     get surveyLoad$(): Observable<SurveyTemplate> {
@@ -117,7 +123,7 @@ export class SurveysService {
         this.surveyLoad$.subscribe((survey: SurveyTemplate) => {
             this.loadSurveyEditor(survey);
             this.notifySectionsChange(survey?.Sections ?? []);
-            this.setSelected(0);
+            this.setSelected(false, 0);
             // this.loadQuestions(survey);
         });
     }    
@@ -160,6 +166,10 @@ export class SurveysService {
         }
     }
 
+    private notifyIsTemplatePublished(isTemplatePublished: boolean) {
+        this._isTemplatePublishedSubject.next(isTemplatePublished);
+    }
+
     private notifySurveyChange(survey: SurveyTemplate) {
         this._surveySubject.next(survey);
     }
@@ -169,7 +179,7 @@ export class SurveysService {
 
         if (survey) {
             survey.Sections = sections;
-
+            
             if (addDefualtSection && sections.length === 0) {
                 const section = this.getNewSection();
                 survey.Sections.push(section);
@@ -367,9 +377,11 @@ export class SurveysService {
         }
     }
 
-    async setSelected(sectionIndex: number, questionIndex: number = -1) {
-        // Wait for delay to update properties in the last chosen and not this.
-        await new Promise((resolve) => setTimeout(resolve, 50));
+    async setSelected(waitForDelay: boolean, sectionIndex: number, questionIndex: number = -1) {
+        if (waitForDelay) {
+            // Wait for delay to update properties in the last chosen and not this.
+            await new Promise((resolve) => setTimeout(resolve, 50));
+        }
 
         const sections = this._sectionsSubject.getValue();
         if (sectionIndex >= 0 && sectionIndex < sections.length) {
@@ -390,7 +402,7 @@ export class SurveysService {
     }
 
     clearSelected() {
-        this.setSelected(-1);
+        this.setSelected(false, -1);
     }
 
     addSection(sectionIndex: number = -1, section: SurveyTemplateSection = null) {
@@ -463,7 +475,7 @@ export class SurveysService {
             transferArrayItem(previuosSection.Questions, currentSection.Questions, event.previousIndex, event.currentIndex);
 
             // Update the selected index.
-            this.setSelected(sectionIndex, event.currentIndex);
+            this.setSelected(false, sectionIndex, event.currentIndex);
         } else {
             moveItemInArray(currentSection.Questions, event.previousIndex, event.currentIndex);
         }
@@ -536,6 +548,8 @@ export class SurveysService {
             .subscribe({
                 next: (res: ISurveyTemplateBuilderData) => {
                     if (res && res.surveyTemplate) {
+                        this.notifyIsTemplatePublished(res.published);
+                        
                         // Load the survey template.
                         this.notifySurveyChange(res.surveyTemplate);
 
@@ -587,6 +601,7 @@ export class SurveysService {
         this.notifySectionsChange([], false);
         this.notifySurveyChange(null);
         this._surveyModelKey = '';
+        this.notifyIsTemplatePublished(false);
         this.notifyAdditionalFieldsChange([]);
     }
 
@@ -635,7 +650,6 @@ export class SurveysService {
                     SurveyKey: this._surveyModelKey,
                 },
                 completion: (res: SurveyClientEventResult) => {
-                    // debugger;
                     if (res.Success) {
                         this.notifySurveyChange(res.SurveyView);
                     } else {

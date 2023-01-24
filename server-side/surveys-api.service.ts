@@ -454,25 +454,24 @@ export class SurveyApiService {
             throw new Error('key is not supplied.');
         } else {
             let res: any;
-            
             let draftSurveyTemplate;
-            let surveyTemplate;
             
             // Try to get the survey template from the draft first.
             try {
-                // Get the survey template from the drafts.
                 draftSurveyTemplate = await this.getSurveyTemplate(surveyTemplateKey, templateResourceName, true);
             } catch {
                 // Do nothing
             }
 
-            // If draft is hidden or not exist add call to bring the publish survey template.
-            if (!draftSurveyTemplate || draftSurveyTemplate.Hidden) {
-                surveyTemplate = await this.getSurveyTemplate(surveyTemplateKey, templateResourceName);
-            }
-                
+            // Get the publish survey template.
+            const surveyTemplate = await this.getSurveyTemplate(surveyTemplateKey, templateResourceName);
+
+            // Get the draft survey template if exist and not hidden, Else get the survey template from the published table.
+            const templateToReturn = draftSurveyTemplate && !draftSurveyTemplate.Hidden ? draftSurveyTemplate : surveyTemplate;
+            
             res = {
-                surveyTemplate: surveyTemplate ? surveyTemplate : draftSurveyTemplate, // Get the publish survey template if exist in the array cause we populate it only if the draft is hidden or not exist.
+                surveyTemplate: templateToReturn,
+                published: surveyTemplate != null,
             }
 
             const promise = new Promise<ISurveyTemplateBuilderData>((resolve, reject): void => {

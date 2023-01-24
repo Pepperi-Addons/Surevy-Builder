@@ -99,9 +99,9 @@ export interface SurveyTemplateRowProjection {
     ModificationDate?: string,
 }
 
-
 export interface ISurveyTemplateBuilderData {
-    surveyTemplate: SurveyTemplate, 
+    surveyTemplate: SurveyTemplate,
+    published: boolean,
 }
 
 export const DEFAULT_BLANK_SURVEY_DATA: SurveyTemplate = {

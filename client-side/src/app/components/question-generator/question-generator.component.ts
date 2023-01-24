@@ -11,7 +11,20 @@ import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
     styleUrls: ['./question-generator.component.scss', './question-generator.component.theme.scss']
 })
 export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
-    @Input() question: SurveyTemplateQuestion;
+    private _question: SurveyTemplateQuestion;
+    @Input() 
+    set question(value: SurveyTemplateQuestion) {
+        this._question = value;
+
+        // if (this.selectedQuestionKey !== this.question.Key) {
+            this.questionValue = this.question.Value;
+            this.valueLength = this.questionValue ? this.questionValue.length : 0;
+        // }
+    }
+    get question(): SurveyTemplateQuestion {
+        return this._question;
+    }
+
     @Input() sequenceNumber: string;
     @Input() isActive: boolean = false;
     @Input() hasError: boolean = false;
@@ -33,11 +46,18 @@ export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
     protected isQuestionTypeMenuOpen = false;
 
     protected valueLength = 0;
+    protected questionValue: any = '';
+
+    protected selectedQuestionKey = '';
 
     constructor(
         private surveysService: SurveysService,
         private validationService: ValidationService
-    ) { }
+    ) { 
+        this.surveysService.selectedQuestionChange$.subscribe((question: SurveyTemplateQuestion) => {
+            this.selectedQuestionKey = question?.Key || '';
+        });
+    }
     
     ngOnInit(): void {
         if (this.editable) {
@@ -45,6 +65,8 @@ export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
                 this.isGrabbing = value;
             });
         }
+
+        
     }
 
     ngAfterViewInit(): void {
@@ -71,7 +93,7 @@ export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
     
     onQuestionValueChanged(value: any): void {
         // console.log(`value change - ${value}`);
-        this.question.Value = value;
+        this.question.Value = this.questionValue = value;
         this.surveysService.changeSurveyQuestionValue(this.question.Key, value);
     }
 
