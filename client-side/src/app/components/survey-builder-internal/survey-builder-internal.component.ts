@@ -8,6 +8,7 @@ import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@peppe
 import { NavigationService } from '../../services/navigation.service';
 import { SurveyTemplate, SurveyTemplateSection } from "shared";
 import { IPepMenuItemClickEvent, PepMenuItem } from '@pepperi-addons/ngx-lib/menu';
+import * as _ from 'lodash';
 
 export interface ISurveyRuntimeHostObject {
     // surveyParams: any;
@@ -26,6 +27,7 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     @ViewChild('sectionsCont', { static: true }) sectionsContainer: ElementRef;
 
     @Input() editMode: boolean = false;
+    @Input() previewMode: boolean = false;
     @Input() sectionsQuestionsDropList = [];
     
     // For loading the survey in runtime.
@@ -104,7 +106,14 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
             });
             
             this.surveysService.sectionsChange$.pipe(this.getDestroyer()).subscribe((sections: SurveyTemplateSection[]) => {
-                this._sectionsSubject.next(sections);
+                if (this.editMode) {
+                    this._sectionsSubject.next(sections);
+                } else {
+                    // Use the merge for let UI update and not override the existing.
+                    // NOTICE: I use _.merge only cause in runtime the sections are not change only the questions inside. 
+                    const tmp = _.merge(this._sectionsSubject.value, sections);
+                    this._sectionsSubject.next(tmp);
+                }
             });
             
             this.surveysService.surveyLoad$.subscribe((survey: SurveyTemplate) => {

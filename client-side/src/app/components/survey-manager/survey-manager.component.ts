@@ -36,7 +36,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         return this.isActive && this.surveyEditor?.activeDateRange?.to ? this.surveyEditor.activeDateRange.to : null;
     }
 
-    showEditor = true;
+    previewMode = false;
     screenSize: PepScreenSizeType;
     sectionsQuestionsDropList = [];
     surveyEditor: ISurveyEditor;
@@ -79,7 +79,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     }
 
     togglePreviewMode() {
-        this.showEditor = !this.showEditor;
+        this.previewMode = !this.previewMode;
     }
 
     onSidebarStateChange(state) {
