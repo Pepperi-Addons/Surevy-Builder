@@ -77,6 +77,7 @@ export type SurveyTemplateQuestionType = 'short-text' | 'long-text'
 
 export interface SurveyTemplateQuestion {
     Key: string;
+    KeyDisabled?: boolean;
     // Name?: string;
     Title: string;  
     Description?: string;
@@ -101,7 +102,6 @@ export interface SurveyTemplateRowProjection {
 
 export interface ISurveyTemplateBuilderData {
     surveyTemplate: SurveyTemplate,
-    published: boolean,
 }
 
 export const DEFAULT_BLANK_SURVEY_DATA: SurveyTemplate = {

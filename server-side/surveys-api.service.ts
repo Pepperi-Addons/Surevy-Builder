@@ -277,6 +277,39 @@ export class SurveyApiService {
         }
     }
     
+    private getSurveyTemplateDataInternal(draftSurveyTemplate: SurveyTemplate, surveyTemplate: SurveyTemplate): SurveyTemplate {
+        // Get the draft survey template if exist and not hidden, Else get the published survey template.
+        const templateToReturn = draftSurveyTemplate && !draftSurveyTemplate.Hidden ? draftSurveyTemplate : surveyTemplate;
+            
+        // If there is published template, then set KeyDisabled to true on the questions that already published.
+        if (surveyTemplate != null) {
+            // Create a map of the published questions keys.
+            const publishedQuestionsKeys = new Map<string, string>();
+            
+            for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
+                const section = surveyTemplate.Sections[sectionIndex];
+                
+                for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
+                    const question = section.Questions[questionIndex];
+                    publishedQuestionsKeys.set(question.Key, question.Key);
+                }
+            }
+            
+            // Set KeyDisabled to true on the questions that already published.
+            for (let sectionIndex = 0; sectionIndex < templateToReturn.Sections.length; sectionIndex++) {
+                const section = templateToReturn.Sections[sectionIndex];
+                
+                for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
+                    const question = section.Questions[questionIndex];
+                    question.KeyDisabled = publishedQuestionsKeys.has(question.Key);
+                }
+
+            }
+        }
+
+        return templateToReturn;
+    }
+
     /***********************************************************************************************/
     /*                                  Public functions
     /***********************************************************************************************/
@@ -465,13 +498,10 @@ export class SurveyApiService {
 
             // Get the publish survey template.
             const surveyTemplate = await this.getSurveyTemplate(surveyTemplateKey, templateResourceName);
-
-            // Get the draft survey template if exist and not hidden, Else get the survey template from the published table.
-            const templateToReturn = draftSurveyTemplate && !draftSurveyTemplate.Hidden ? draftSurveyTemplate : surveyTemplate;
             
             res = {
-                surveyTemplate: templateToReturn,
-                published: surveyTemplate != null,
+                surveyTemplate: this.getSurveyTemplateDataInternal(draftSurveyTemplate, surveyTemplate),
+                // published: surveyTemplate != null,
             }
 
             const promise = new Promise<ISurveyTemplateBuilderData>((resolve, reject): void => {

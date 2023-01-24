@@ -69,12 +69,6 @@ export class SurveysService {
         return this._selectedQuestionChangeSubject.asObservable().pipe(distinctUntilChanged());
     }
 
-    // This subject is for is template published.
-    private _isTemplatePublishedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    get isTemplatePublished$(): Observable<boolean> {
-        return this._isTemplatePublishedSubject.asObservable().pipe(distinctUntilChanged());
-    }
-
     // This subject is for survey change.
     private _surveySubject: BehaviorSubject<SurveyTemplate> = new BehaviorSubject<SurveyTemplate>(null);
     get surveyLoad$(): Observable<SurveyTemplate> {
@@ -164,10 +158,6 @@ export class SurveysService {
         } else {
             this._surveyEditorSubject.next(null);
         }
-    }
-
-    private notifyIsTemplatePublished(isTemplatePublished: boolean) {
-        this._isTemplatePublishedSubject.next(isTemplatePublished);
     }
 
     private notifySurveyChange(survey: SurveyTemplate) {
@@ -548,8 +538,6 @@ export class SurveysService {
             .subscribe({
                 next: (res: ISurveyTemplateBuilderData) => {
                     if (res && res.surveyTemplate) {
-                        this.notifyIsTemplatePublished(res.published);
-                        
                         // Load the survey template.
                         this.notifySurveyChange(res.surveyTemplate);
 
@@ -601,7 +589,6 @@ export class SurveysService {
         this.notifySectionsChange([], false);
         this.notifySurveyChange(null);
         this._surveyModelKey = '';
-        this.notifyIsTemplatePublished(false);
         this.notifyAdditionalFieldsChange([]);
     }
 
