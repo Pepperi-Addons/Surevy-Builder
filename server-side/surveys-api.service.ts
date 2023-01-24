@@ -580,15 +580,25 @@ export class SurveyApiService {
                 const dimxObject = body.DIMXObjects[index];
                 try {
                     // Get the template for validate and set some properties.
-                    const draftTemplate = dimxObject['Object'];
-                    const templateResourceName = draftTemplate[TEMPLATE_SCHEME_NAME_PROPERTY] || '';
-                    const surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(draftTemplate);
+                    const draft = dimxObject['Object'];
+                    const surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(draft.JsonTemplate);
 
-                    // For import always generate new Key and set the Hidden to false.
+                    // Validate that the resource exist.
+                    const scheme = await this.papiClient.userDefinedCollections.schemes.name(draft[TEMPLATE_SCHEME_NAME_PROPERTY]).get();
+                    console.log('@@@@@@@@ getDIMXResultForImport - scheme ', scheme ? JSON.stringify(scheme) : 'null');
+                    if (!scheme) {
+                        throw new Error(`The scheme ${draft[TEMPLATE_SCHEME_NAME_PROPERTY]} does not exist.`);
+                    }
+                    
+                    // For import generate new Key if not exist and set the Hidden to false.
                     surveyTemplate.Key = surveyTemplate.Key && surveyTemplate.Key.length > 0 ? surveyTemplate.Key : uuidv4();
                     surveyTemplate.Hidden = false;
 
-                    dimxObject['Object'] = this.prepareDraftForUpsert(surveyTemplate, templateResourceName);
+                    draft.Key = surveyTemplate.Key;
+                    draft.Hidden = surveyTemplate.Hidden;
+                    draft.JsonTemplate = JSON.stringify(surveyTemplate);
+
+                    // dimxObject['Object'] = draft;
                 } catch (err) {
                     // Set the error on the page.
                     dimxObject['Status'] = 'Error';
@@ -612,12 +622,16 @@ export class SurveyApiService {
                 try {
                     // Get the template from the draft for validate and set some properties.
                     const draft = dimxObject['Object'];
-                    const surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(JSON.parse(draft.JsonTemplate));
-                    
-                    // Copy the template scheme to set it later in the import.
-                    surveyTemplate[TEMPLATE_SCHEME_NAME_PROPERTY] = draft[TEMPLATE_SCHEME_NAME_PROPERTY];
+                    const draftTemplate = JSON.parse(draft.JsonTemplate);
+                    await this.validateAndOverrideSurveyTemplateAccordingInterface(draftTemplate);
+                    draft.JsonTemplate = draftTemplate; // Set the parsed template as object.
 
-                    dimxObject['Object'] = surveyTemplate;
+                    // Do not touch the dimxObject['Object'] keep the draft as is.
+                    // ***********************************************************************************************
+                    // const surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(JSON.parse(draft.JsonTemplate));
+                    // // Copy the template scheme to set it later in the import.
+                    // surveyTemplate[TEMPLATE_SCHEME_NAME_PROPERTY] = draft[TEMPLATE_SCHEME_NAME_PROPERTY];
+                    // dimxObject['Object'] = surveyTemplate;
                 } catch (err) {
                     // Set the error on the page.
                     dimxObject['Status'] = 'Error';
