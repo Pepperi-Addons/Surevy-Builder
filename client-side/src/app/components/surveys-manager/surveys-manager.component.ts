@@ -203,6 +203,15 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
                                 this.deleteSurveyTemplate(data?.rows[0]);
                             }
                         }
+                    }, {
+                        title: this.translate.instant("ACTIONS.EXPORT"),
+                        handler: async (data: PepSelectionData) => {
+                            if (data?.rows.length > 0) {
+                                const key = data?.rows[0];
+                                const survey = this.surveys.find(s => s.Key === key);
+                                this.dimxService.export(key, survey?.Name || '');
+                            }
+                        }
                     }
                 ]
             } 
@@ -236,14 +245,14 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         });
     }
 
-    deleteSurveyTemplate(surveyID: string) {
+    deleteSurveyTemplate(surveyKey: string) {
         const content = this.translate.instant('SURVEYS_MANAGER.DELETE_SURVEY.MSG');
         const title = this.translate.instant('SURVEYS_MANAGER.DELETE_SURVEY.TITLE');
         const dataMsg = new PepDialogData({title, actionsType: "cancel-delete", content});
 
         this.dialog.openDefaultDialog(dataMsg).afterClosed().pipe(first()).subscribe((isDeletePressed) => {
             if (isDeletePressed) {
-                this.surveysService.deleteSurveyTemplate(this._navigationService.addonUUID, surveyID).pipe(first()).subscribe((res) => {
+                this.surveysService.deleteSurveyTemplate(this._navigationService.addonUUID, surveyKey).pipe(first()).subscribe((res) => {
                          this.dataSource = this.setDataSource();
                  });
             }
