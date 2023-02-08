@@ -21,6 +21,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     question: SurveyTemplateQuestion = null;
     section: SurveyTemplateSection = null;
     @Input() additionalFields: Record<string,AdditionalField> = {};
+    objectKeys = Object.keys;
 
     private _sections: SurveyTemplateSection[] = [];
     protected showIfDialogRef: MatDialogRef<any> = null;
@@ -31,7 +32,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
         private dialog: PepDialogService
     ) { 
         super();
-
+  
         this.surveysService.selectedSectionChange$.pipe(this.destroy$).subscribe(res => {
             this.section = res;
         });
