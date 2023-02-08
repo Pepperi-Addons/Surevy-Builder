@@ -89,7 +89,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
         });
 
         this._surveysService.additionalFieldsChange$.subscribe((addFields: any) => {
-            this.additionalFields = addFields || [];
+            this.additionalFields = addFields || {};
         });
 
         // For update the survey template data

@@ -79,8 +79,8 @@ export class SurveysService {
     }
 
     // This is the additional fields subject
-    private _additionalFieldsSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-    get additionalFieldsChange$(): Observable<any[]> {
+    private _additionalFieldsSubject: BehaviorSubject<any> = new BehaviorSubject<any>({});
+    get additionalFieldsChange$(): Observable<any> {
         return this._additionalFieldsSubject.asObservable();
     }
 
@@ -190,7 +190,7 @@ export class SurveysService {
         this._selectedQuestionChangeSubject.next(question);
     }
 
-    private notifyAdditionalFieldsChange(additionalFields: any[]) {
+    private notifyAdditionalFieldsChange(additionalFields: any) {
         this._additionalFieldsSubject.next(additionalFields);
     }
 
@@ -573,7 +573,7 @@ export class SurveysService {
                     if (res.Success) {
                         // TODO: currently the SurveyTemplate draft is not sync so we cannot do this here.
                         // this.notifySurveyChange(res.SurveyTemplate);
-                        this.notifyAdditionalFieldsChange(res?.AdditionalFields || []);
+                        this.notifyAdditionalFieldsChange(res?.AdditionalFields || {});
                     } else {
                         // Show default error.
                         this.showErrorDialog(this.translate.instant('MESSAGES.FAILED_TO_GET_SURVEY_TEMPLATE_ERROR'));
@@ -589,7 +589,7 @@ export class SurveysService {
         this.notifySectionsChange([], false);
         this.notifySurveyChange(null);
         this._surveyModelKey = '';
-        this.notifyAdditionalFieldsChange([]);
+        this.notifyAdditionalFieldsChange({});
     }
 
     // Restore the survey to tha last publish
