@@ -1,4 +1,4 @@
-import { PapiClient, InstalledAddon, AddonDataScheme, Relation, FindOptions, FileImportInput, FileExportInput } from '@pepperi-addons/papi-sdk'
+import { PapiClient, InstalledAddon, AddonDataScheme, Relation, FindOptions, FileImportInput, FileExportInput, AddonData } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
 import { DEFAULT_BLANK_SURVEY_DATA, ISurveyTemplateBuilderData, SurveyTemplate, SurveyTemplateRowProjection, 
     SURVEYS_BASE_TABLE_NAME, SURVEY_TEMPLATES_BASE_TABLE_NAME,
@@ -209,6 +209,19 @@ export class SurveyApiService {
         return this.surveysValidatorService.getSurveyTemplateCopyAccordingInterface(surveyTemplate);
     }
 
+    private getSurveyTemplateFromDraft(draft: AddonData) {
+        let surveyTemplate;
+
+        // Set surveyTemplate from the draft.JsonTemplate
+        if (draft) {
+            surveyTemplate = JSON.parse(draft.JsonTemplate);
+            surveyTemplate['CreationDateTime'] = draft.CreationDateTime;
+            surveyTemplate['ModificationDateTime'] = draft.ModificationDateTime;
+        }
+        
+        return surveyTemplate;
+    }
+
     private prepareDraftForUpsert(surveyTemplate: SurveyTemplate, templateResourceName: string): any {
         const draftToUpsert = {
             Key: surveyTemplate.Key,
@@ -249,11 +262,7 @@ export class SurveyApiService {
             surveyTemplate = surveyTemplates.length > 0 ? surveyTemplates[0] : null;
         } else {
             const draft = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFT_SURVEY_TEMPLATES_TABLE_NAME).key(surveyTemplatekey).get();
-
-            // Set surveyTemplate from the draft.JsonTemplate
-            if (draft) {
-                surveyTemplate = JSON.parse(draft.JsonTemplate);
-            }
+            surveyTemplate = this.getSurveyTemplateFromDraft(draft);
         }
 
         return surveyTemplate;
@@ -270,7 +279,7 @@ export class SurveyApiService {
             // Build the drafts array.
             for (let index = 0; index < drafts.length; index++) {
                 const draft = drafts[index];
-                surveyTemplates.push(JSON.parse(draft.JsonTemplate));
+                surveyTemplates.push(this.getSurveyTemplateFromDraft(draft));
             }
 
             return surveyTemplates;
