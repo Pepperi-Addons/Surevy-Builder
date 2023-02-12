@@ -181,7 +181,7 @@ class SurveysService {
         const survey = await this.getSurveyModel(surveyKey);
         
         if (survey && survey.Template) {
-            console.log(`getSurveyDataInternal getSurveyTemplate with key - ${survey.Template}`);
+            console.log(`getSurveyDataInternal getSurveyTemplate with template - ${survey.Template}`);
             surveyTemplate = await this.getSurveyTemplate(survey.Template);
     
             if (surveyTemplate) {
