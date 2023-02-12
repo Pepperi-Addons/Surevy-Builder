@@ -161,7 +161,7 @@ class SurveysService {
                 const question = section.Questions[questionIndex];
             
                 // If this questions is mandatory and the value is empty.
-                if (question.Mandatory && (question.Value === undefined || question.Value === null || question.Value.length === 0)) {
+                if (question.Visible && question.Mandatory && (question.Value === undefined || question.Value === null || question.Value.length === 0)) {
                     errorMsg = `"${question.Title}" is mandatory`;
                     break;
                 }
