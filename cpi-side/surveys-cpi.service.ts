@@ -14,48 +14,54 @@ class SurveysService {
     /************************************************************************************************/
     
     private async getSurveyModel(surveyKey: string): Promise<Survey> {
+        this.printLog(`getSurveyModel with key = ${surveyKey} -> before`);
         const survey = await pepperi.resources.resource(SURVEYS_BASE_TABLE_NAME).key(surveyKey).get();
-        // const surveys = await pepperi.resources.resource(SURVEYS_BASE_TABLE_NAME).get(findOptions);
-        // const survey = surveys.find(s => s.Key === surveyKey);
+        this.printLog(`getSurveyModel with key = ${surveyKey} -> after`);
         return survey as Survey;
     }
 
     private async setSurveyModel(survey: Survey): Promise<Survey> {
+        this.printLog(`setSurveyModel -> before`);
         const res = await pepperi.resources.resource(survey.ResourceName).post(survey);
+        this.printLog(`setSurveyModel -> after`);
         return res as Survey;
     }
 
     private async getSurveyTemplate(surveyTemplateKey: string, resourceName: string = SURVEY_TEMPLATES_BASE_TABLE_NAME): Promise<SurveyTemplate> {
         // const survey = await pepperi.resources.resource(resourceName).key(surveyTemplateKey).get();
+        this.printLog(`getSurveyTemplate with key = ${surveyTemplateKey} -> before`);
         const surveyTemplates = await (await pepperi.resources.resource(resourceName).search({ KeyList: [surveyTemplateKey] })).Objects;
         const surveyTemplate = surveyTemplates.length > 0 ? surveyTemplates[0] : null;
+        this.printLog(`getSurveyTemplate with key = ${surveyTemplateKey} -> after`);
         return surveyTemplate as SurveyTemplate;
     }
     
-    private async getSurveyTemplateDraft(surveyTemplateKey: string): Promise<SurveyTemplate | null> {
-        let draftSurveyTemplate = null;
+    // private async getSurveyTemplateDraft(surveyTemplateKey: string): Promise<SurveyTemplate | null> {
+    //     let draftSurveyTemplate = null;
 
-        // Try to get the survey template from the draft first.
-        try {    
-            const draft = (await pepperi.api.adal.get({
-                addon: config.AddonUUID,
-                table: DRAFT_SURVEY_TEMPLATES_TABLE_NAME,
-                key: surveyTemplateKey
-            })).object;
+    //     // Try to get the survey template from the draft first.
+    //     try {    
+    //         const draft = (await pepperi.api.adal.get({
+    //             addon: config.AddonUUID,
+    //             table: DRAFT_SURVEY_TEMPLATES_TABLE_NAME,
+    //             key: surveyTemplateKey
+    //         })).object;
             
-            // Set surveyTemplate from the draft.JsonTemplate
-            if (draft) {
-                draftSurveyTemplate = JSON.parse(draft.JsonTemplate);
-            }
-        } catch {
-            // Do nothing
-        }
+    //         // Set surveyTemplate from the draft.JsonTemplate
+    //         if (draft) {
+    //             draftSurveyTemplate = JSON.parse(draft.JsonTemplate);
+    //         }
+    //     } catch {
+    //         // Do nothing
+    //     }
 
-        return draftSurveyTemplate;
-    }
+    //     return draftSurveyTemplate;
+    // }
 
-    // Calc the merge survey template object.
     private mergeSurveyIntoTemplateData(survey: Survey, surveyTemplate: SurveyTemplate): void {
+        this.printLog(`mergeSurveyIntoTemplateData -> before`);
+
+        // Calc the merge survey template object.
         if (survey.Answers && survey.Answers?.length > 0) {
             // For each answer set it in the right question.
             for (let answerIndex = 0; answerIndex < survey.Answers.length; answerIndex++) {
@@ -87,9 +93,12 @@ class SurveysService {
         surveyTemplate.StatusName = survey.StatusName && survey.StatusName.length > 0 ? survey.StatusName as SurveyStatusType : 'InCreation';
 
         // TODO: Add other fields if needed.
+        this.printLog(`mergeSurveyIntoTemplateData -> after`);
     }
 
     private createMapQuestionObject(surveyTemplate: SurveyTemplate): any {
+        this.printLog(`createMapQuestionObject -> before`);
+
         const ret = {};
 
         for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
@@ -100,11 +109,14 @@ class SurveysService {
                 ret[question.Key] = question.Value ?? undefined;
             }
         }
+        this.printLog(`createMapQuestionObject -> after`);
 
         return ret;
     }
 
     private calcShowIf(surveyTemplate: SurveyTemplate): void {
+        this.printLog(`calcShowIf -> before`);
+
         // Prepare the questions value data object
         const questionsObject = this.createMapQuestionObject(surveyTemplate);
 
@@ -129,9 +141,13 @@ class SurveysService {
             // // Set only the visible questions.
             // section.Questions = section.Questions.filter(q => q.Visible);
         }
+
+        this.printLog(`calcShowIf -> after`);
     }
 
     private setSurveyAnswers(survey: Survey, surveyTemplate: SurveyTemplate): void {
+        this.printLog(`setSurveyAnswers -> before`);
+
         // Remove old answers
         survey.Answers = [];
 
@@ -149,9 +165,13 @@ class SurveysService {
                 }
             }
         }
+        
+        this.printLog(`setSurveyAnswers -> after`);
     }
 
     private validateSurvey(surveyTemplate: SurveyTemplate): string {
+        this.printLog(`validateSurvey -> before`);
+
         let errorMsg = '';
 
         for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
@@ -171,17 +191,17 @@ class SurveysService {
                 break;
             }
         }
+        this.printLog(`validateSurvey -> after`);
 
         return errorMsg;
     }
 
     private async getSurveyDataInternal(client: IClient | undefined, surveyKey: string, calcShowIf = true): Promise<{ survey: Survey, surveyTemplate: SurveyTemplate | null }> {
         let surveyTemplate: SurveyTemplate | null = null;
-        console.log(`getSurveyDataInternal getSurveyModel with key - ${surveyKey}`);
+        this.printLog(`getSurveyDataInternal getSurveyModel with key = ${surveyKey} -> before`);
         const survey = await this.getSurveyModel(surveyKey);
         
         if (survey && survey.Template) {
-            console.log(`getSurveyDataInternal getSurveyTemplate with template - ${survey.Template}`);
             surveyTemplate = await this.getSurveyTemplate(survey.Template);
     
             if (surveyTemplate) {
@@ -190,18 +210,24 @@ class SurveysService {
                 if (calcShowIf) {
                     this.calcShowIf(surveyTemplate);
                 }
-                console.log(`getSurveyDataInternal after calculation of the show if the merge survey is - ${JSON.stringify(surveyTemplate)}`);
             }
         } else {
             // TODO: Throw survey has no template.
         }
 
+        this.printLog(`getSurveyDataInternal getSurveyModel with key = ${surveyKey} -> after`);
+
         return { survey, surveyTemplate };
     }
-
+    
     /***********************************************************************************************/
     //                              Public functions
     /************************************************************************************************/
+
+    printLog(message: string, withMiliseconds: boolean = true) {
+        const miliAsString = withMiliseconds ? `, miliseconds - ${new Date().getTime()}` : '';
+        console.log(`${message}${miliAsString}`);
+    }
     
     async getSurveyData(client: IClient | undefined, surveyKey: string): Promise<SurveyTemplate | null> {
         const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey);
@@ -225,6 +251,7 @@ class SurveysService {
     // }
 
     async onSurveyFieldChange(client: IClient | undefined, surveyKey: string, changedFields: any): Promise<any> {
+        this.printLog(`onSurveyFieldChange with surveyKey = ${surveyKey} -> before`);
 
         const hudOptions = {
             // HUD's message
@@ -285,10 +312,14 @@ class SurveysService {
         };
 
         const res = await client?.showHUD(hudOptions);
+        this.printLog(`onSurveyFieldChange with surveyKey = ${surveyKey} -> after`);
+
         return res?.result;
     }
 
     async onSurveyQuestionChange(client: IClient | undefined, surveyKey: string, changedFields: any): Promise<any> {
+        this.printLog(`onSurveyQuestionChange with surveyKey = ${surveyKey} -> before`);
+
         const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey, false);
         let isValid = true;
 
@@ -336,11 +367,14 @@ class SurveysService {
             isValid = false;
         }
 
+        this.printLog(`onSurveyQuestionChange with surveyKey = ${surveyKey} -> after`);
+
         return { mergedSurvey: surveyTemplate, changedFields, isValid};
     }
 
     async getObjectPropsForSurveyUserEvent(surveyKey: string) {
-        // TODO: Remove the SURVEYS_TABLE_NAME hard coded.
+        this.printLog(`getObjectPropsForSurveyUserEvent with surveyKey = ${surveyKey} -> before`);
+
         const surveys = await (await pepperi.resources.resource(SURVEYS_BASE_TABLE_NAME).search({
             KeyList: [surveyKey],
             Fields: [RESOURCE_NAME_PROPERTY]
@@ -349,6 +383,8 @@ class SurveysService {
         const objectPropsToAddEventData = {
             ObjectType: surveys?.length > 0 ? surveys[0][RESOURCE_NAME_PROPERTY] : SURVEYS_TABLE_NAME
         }
+
+        this.printLog(`getObjectPropsForSurveyUserEvent with surveyKey = ${surveyKey} -> after`);
 
         return objectPropsToAddEventData;
     }
