@@ -39,4 +39,12 @@
             width: 100%;
         }
     }
+
+    ::ng-deep{
+        pep-select{
+            .mat-form-field-infix{
+                z-index: 1;
+            }
+        }
+    }
 }
