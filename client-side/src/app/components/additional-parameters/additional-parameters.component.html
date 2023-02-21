@@ -4,23 +4,23 @@
 <ng-container *ngFor="let field of additionalFields | keyvalue: originalOrder">
     <ng-container [ngSwitch]="field.value?.Type?.toLowerCase()">
         <ng-container *ngSwitchCase="'integer'">
-            <pep-textbox [label]="field.value?.Description || ''" [value]="additionalFieldsValues != null ? additionalFieldsValues[field.key] : ''"  [type]="'int'"
+            <pep-textbox [label]="field.value?.Description || ''" [value]="additionalFieldsValues !== null ? additionalFieldsValues[field.key] : ''"  [type]="'int'"
                          (valueChange)="onSectionEditorFieldChanged(field.key,$event)">
             </pep-textbox>
         </ng-container>
         <ng-container *ngSwitchCase="'double'">
-            <pep-textbox [label]="field.value?.Description || ''" [value]="additionalFieldsValues != null ? additionalFieldsValues[field.key] : ''"  [type]="'real'"
+            <pep-textbox [label]="field.value?.Description || ''" [value]="additionalFieldsValues !== null ? additionalFieldsValues[field.key] : ''"  [type]="'real'"
                          (valueChange)="onSectionEditorFieldChanged(field.key,$event)">
             </pep-textbox>
         </ng-container>
         <ng-container *ngSwitchCase="'bool'">
             <pep-checkbox [label]="field.value?.Description || ''"
-                    [value]="additionalFieldsValues != null ? additionalFieldsValues[field.key] : false" [renderTitle]="false" xAlignment="left"
+                    [value]="additionalFieldsValues !== null ? additionalFieldsValues[field.key] : false" [renderTitle]="false" xAlignment="left"
                     (valueChange)="onSectionEditorFieldChanged(field.key,$event)">
                 </pep-checkbox>
         </ng-container>
         <ng-container *ngSwitchDefault>
-            <pep-textbox [label]="field.value?.Description || ''"  [type]="'text'" [value]="additionalFieldsValues != null ? additionalFieldsValues[field.key] : ''"
+            <pep-textbox [label]="field.value?.Description || ''"  [type]="'text'" [value]="additionalFieldsValues !== null ? additionalFieldsValues[field.key] : ''"
                          (valueChange)="onSectionEditorFieldChanged(field.key,$event)">
             </pep-textbox>
         </ng-container>
