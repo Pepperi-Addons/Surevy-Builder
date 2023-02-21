@@ -252,7 +252,7 @@ class SurveysService {
 
     async onSurveyFieldChange(client: IClient | undefined, surveyKey: string, changedFields: any): Promise<any> {
         this.printLog(`onSurveyFieldChange with surveyKey = ${surveyKey} -> before`);
-
+        
         const hudOptions = {
             // HUD's message
             message: 'Waiting....', // optional (default value is '')
@@ -268,6 +268,7 @@ class SurveysService {
                 const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey);
                 let shouldNavigateBack = false;
                 let isValid = true;
+                let errorMessage = '';
 
                 if (surveyTemplate) {
                     for (let index = 0; index < changedFields.length; index++) {
@@ -280,13 +281,10 @@ class SurveysService {
 
                             // If the status is 'Submitted' (If there is no error navigate back after save).
                             if (status === 'Submitted') {
-                                const errorMessage = this.validateSurvey(surveyTemplate);
+                                errorMessage = this.validateSurvey(surveyTemplate);
                                 isValid = shouldNavigateBack = errorMessage.length === 0;
 
                                 if (!isValid) {
-                                    // Wait for delay.
-                                    await new Promise((resolve) => setTimeout(resolve, 150));
-                                    await client?.alert('Notice', errorMessage);
                                     break;
                                 }
                             }
@@ -304,15 +302,23 @@ class SurveysService {
                         await this.setSurveyModel(survey);
                     }
                 } else {
+                    errorMessage = `Survey template not exist for surveyKey = ${surveyKey}`;
                     isValid = false;
                 }
 
-                return { mergedSurvey: surveyTemplate, changedFields, shouldNavigateBack, isValid};
+                return { mergedSurvey: surveyTemplate, changedFields, shouldNavigateBack, isValid, errorMessage};
             },
         };
 
         const res = await client?.showHUD(hudOptions);
         this.printLog(`onSurveyFieldChange with surveyKey = ${surveyKey} -> after`);
+
+        // If there is an error message show it.
+        if (res?.result?.errorMessage.length > 0) {
+            // // Wait for delay.
+            // await new Promise((resolve) => setTimeout(resolve, 150));
+            await client?.alert('Notice', res?.result.errorMessage);
+        }
 
         return res?.result;
     }

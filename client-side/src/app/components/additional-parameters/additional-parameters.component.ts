@@ -10,30 +10,33 @@ import { SurveysService } from 'src/app/services/surveys.service';
 })
 export class AdditionalParametersComponent implements OnInit, AfterViewInit {
     @Input() disabled: boolean = false;
-   // @Input() additionalFields = new Map<string, AdditionalField>();
-   @Input() additionalFields: Record<string,AdditionalField> = {}
-   @Input() additionalFieldsValues: Record<string,string> = {}
+    // @Input() additionalFields = new Map<string, AdditionalField>();
+    @Input() additionalFields: Record<string,AdditionalField> = {}
+    @Input() additionalFieldsValues: Record<string,string> = {}
 
-   @Output() additionalFieldsChanged: EventEmitter<any> = new EventEmitter();
+    @Output() additionalFieldsChanged: EventEmitter<any> = new EventEmitter();
 
-   //Original property order
-   originalOrder = (a: KeyValue<string,object>, b: KeyValue<string,object>): number => {
-    return 0;
-  }
+    //Original property order
+    originalOrder = (a: KeyValue<string,object>, b: KeyValue<string,object>): number => {
+        return 0;
+    }
 
     constructor(
         private surveysService: SurveysService
-    ) { }
+    ) { 
+    }
     
     ngOnInit(): void {
-        this.additionalFieldsValues = this.additionalFieldsValues === null ? {} : this.additionalFieldsValues;
-
     }
 
     ngAfterViewInit(): void {
     }
 
     onSectionEditorFieldChanged(key,value) {
+        if (this.additionalFieldsValues === null) {
+            this.additionalFieldsValues = {};
+        }
+
         this.additionalFieldsValues[key] = value;
         this.additionalFieldsChanged.emit(this.additionalFieldsValues);
     }

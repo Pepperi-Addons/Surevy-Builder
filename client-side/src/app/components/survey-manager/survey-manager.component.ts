@@ -48,7 +48,7 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
     minDateValue: string = null;
     maxDateValue: string = null;    
 
-    additionalFields: Record<string,AdditionalField>;
+    additionalFields: Record<string,AdditionalField> = {};
     menuItems: Array<PepMenuItem>;
     currentSurveyTemplate: SurveyTemplate;
 
