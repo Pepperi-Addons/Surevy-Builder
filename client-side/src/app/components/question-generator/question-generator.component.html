@@ -98,7 +98,8 @@
                 </ng-container>
                 <ng-container *ngSwitchCase="'photo'">
                     <pep-image
-                        src="questionValue"
+                        [src]="questionValue"
+                        [mandatory]="question?.Mandatory" 
                         [disabled]="disabled"
                         [rowSpan]="4"
                         [renderTitle]="false"
@@ -106,7 +107,8 @@
                 </ng-container>
                 <ng-container *ngSwitchCase="'signature'">
                     <pep-signature
-                        src="questionValue"
+                        [src]="questionValue"
+                        [mandatory]="question?.Mandatory" 
                         [rowSpan]="4"
                         [disabled]="disabled"
                         [renderTitle]="false"

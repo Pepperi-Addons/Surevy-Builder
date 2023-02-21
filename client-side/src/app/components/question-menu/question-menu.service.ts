@@ -85,18 +85,17 @@ export class QuestionMenuService {
                     key: `datetime`,
                     text: await firstValueFrom(this._translate.get('QUESTION_MENU.DATE_TIME')),
                     iconName: 'time_datetime'
+                },
+                {
+                     key: `photo`,
+                     text: await firstValueFrom(this._translate.get('QUESTION_MENU.PHOTO')),
+                     iconName: 'system_image'
+                },
+                {
+                     key: `signature`,
+                     text: await firstValueFrom(this._translate.get('QUESTION_MENU.SIGNATURE')),
+                    iconName: 'system_signature'
                 }
-                // ,
-                // {
-                //      key: `photo`,
-                //      text: await firstValueFrom(this._translate.get('QUESTION_MENU.PHOTO')),
-                //      iconName: 'system_image'
-                // },
-                // {
-                //      key: `signature`,
-                //      text: await firstValueFrom(this._translate.get('QUESTION_MENU.SIGNATURE')),
-                //     iconName: 'system_signature'
-                // }
             ]
         } 
 
