@@ -94,6 +94,8 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
                 return 'String';
             case 'single-selection-dropdown':
             case 'multiple-selection-dropdown':
+            case 'single-selection-radiobuttons':
+            case 'multiple-selection-checkboxes':
                 return 'MultipleStringValues';
             case 'boolean-toggle':
                 return 'Bool'
