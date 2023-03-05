@@ -91,8 +91,8 @@ class SurveysService {
         }
 
         surveyTemplate.StatusName = survey.StatusName && survey.StatusName.length > 0 ? survey.StatusName as SurveyStatusType : 'InCreation';
-
-        // TODO: Add other fields if needed.
+        surveyTemplate.SurveyKey = survey.Key;
+        
         this.printLog(`mergeSurveyIntoTemplateData -> after`);
     }
 
