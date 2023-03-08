@@ -114,6 +114,28 @@ class SurveysService {
         return ret;
     }
 
+    private convertShowIfQueryValuesToString(query: any) {
+        if (query) {
+            // If the query has values.
+            if (query.Values) {
+                // If the values is more then one, convert them to array of one string item with ';' delimiter for the comparation.
+                if (query.Values.length > 1 && query.Operation === "IsEqual") {
+                    query.Values = [query.Values.join(';')];
+                }
+            } else {
+                // Convert the left and right nodes if exist.
+                if (query.LeftNode) {
+                    this.convertShowIfQueryValuesToString(query.LeftNode);
+                } 
+                if (query.RightNode) {
+                    this.convertShowIfQueryValuesToString(query.RightNode);
+                }
+            }
+        }
+
+        return query
+    }
+
     private calcShowIf(surveyTemplate: SurveyTemplate): void {
         this.printLog(`calcShowIf -> before`);
 
@@ -128,7 +150,7 @@ class SurveysService {
                 const question = section.Questions[questionIndex];
 
                 if (question.ShowIf) {
-                    const showIf = question.ShowIf;
+                    const showIf = this.convertShowIfQueryValuesToString(question.ShowIf);
                     
                     // Call pepperi filters to apply this.
                     shouldBeVisible = filter([questionsObject], showIf).length > 0;
