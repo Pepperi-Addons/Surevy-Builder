@@ -93,8 +93,8 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
             case 'long-text':
                 return 'String';
             case 'single-selection-dropdown':
-            case 'multiple-selection-dropdown':
             case 'single-selection-radiobuttons':
+            case 'multiple-selection-dropdown':
             case 'multiple-selection-checkboxes':
                 return 'MultipleStringValues';
             case 'boolean-toggle':
@@ -118,15 +118,15 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     openShowIfDialog() {
         // this.surveysService.openShowIfDialog();
         const config = this.dialog.getDialogConfig({ minWidth: '30rem' }, 'large');
-        const query = this.question?.ShowIf?? null;
-
+        const query = this.question?.ShowIf ?? null;
+        
         const data = {
             query: query,
             fields: this.getShowIfFields(),
             isValid: true,
             outputData: { query: '' }
         };
-
+        
         this.showIfDialogRef = this.dialog.openDialog(this.showIfDialogTemplate, data, config);        
         this.showIfDialogRef.afterClosed().subscribe({
             next: (res) => {
