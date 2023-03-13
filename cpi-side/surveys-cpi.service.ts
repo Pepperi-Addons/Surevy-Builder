@@ -6,7 +6,7 @@ import { filter } from '@pepperi-addons/pepperi-filters';
 import config from '../addon.config.json';
 
 class SurveysService {
-
+    
     constructor() {}
 
     /***********************************************************************************************/
@@ -158,10 +158,6 @@ class SurveysService {
 
                 question.Visible = shouldBeVisible;
             }
-
-            // This logic will be in the UI like Ori.M asked.
-            // // Set only the visible questions.
-            // section.Questions = section.Questions.filter(q => q.Visible);
         }
 
         this.printLog(`calcShowIf -> after`);
@@ -218,30 +214,6 @@ class SurveysService {
         return errorMsg;
     }
 
-    private async getSurveyDataInternal(client: IClient | undefined, surveyKey: string, calcShowIf = true): Promise<{ survey: Survey, surveyTemplate: SurveyTemplate | null }> {
-        let surveyTemplate: SurveyTemplate | null = null;
-        this.printLog(`getSurveyDataInternal getSurveyModel with key = ${surveyKey} -> before`);
-        const survey = await this.getSurveyModel(surveyKey);
-        
-        if (survey && survey.Template) {
-            surveyTemplate = await this.getSurveyTemplate(survey.Template);
-    
-            if (surveyTemplate) {
-                this.mergeSurveyIntoTemplateData(survey, surveyTemplate);
-                
-                if (calcShowIf) {
-                    this.calcShowIf(surveyTemplate);
-                }
-            }
-        } else {
-            // TODO: Throw survey has no template.
-        }
-
-        this.printLog(`getSurveyDataInternal getSurveyModel with key = ${surveyKey} -> after`);
-
-        return { survey, surveyTemplate };
-    }
-    
     /***********************************************************************************************/
     //                              Public functions
     /************************************************************************************************/
@@ -252,8 +224,23 @@ class SurveysService {
     }
     
     async getSurveyData(client: IClient | undefined, surveyKey: string): Promise<SurveyTemplate | null> {
-        const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey);
-        return surveyTemplate;
+        let mergedSurvey: SurveyTemplate | null = null;
+        this.printLog(`getSurveyData getSurveyModel with key = ${surveyKey} -> before`);
+        const survey = await this.getSurveyModel(surveyKey);
+        
+        if (survey && survey.Template) {
+            mergedSurvey = await this.getSurveyTemplate(survey.Template);
+    
+            if (mergedSurvey) {
+                this.mergeSurveyIntoTemplateData(survey, mergedSurvey);
+                this.calcShowIf(mergedSurvey);
+            }
+        } else {
+            // TODO: Throw survey has no template.
+        }
+
+        this.printLog(`getSurveyData getSurveyModel with key = ${surveyKey} -> after`);
+        return mergedSurvey;
     }
 
     // Drafts is not sync so we cannot do this here!!!
@@ -272,8 +259,8 @@ class SurveysService {
     //     return surveyTemplate ? surveyTemplate : draftSurveyTemplate;
     // }
 
-    async onSurveyFieldChange(client: IClient | undefined, surveyKey: string, changedFields: any): Promise<any> {
-        this.printLog(`onSurveyFieldChange with surveyKey = ${surveyKey} -> before`);
+    async onSurveyFieldChange(client: IClient | undefined, mergedSurvey: SurveyTemplate | null, changedFields: any): Promise<any> {
+        this.printLog(`onSurveyFieldChange with surveyKey = ${mergedSurvey?.SurveyKey} -> before`);
         
         const hudOptions = {
             // HUD's message
@@ -287,12 +274,13 @@ class SurveysService {
         
             // block of code that will run in background while the HUD is showing.
             block: async (updateMessage) => {
-                const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey);
                 let shouldNavigateBack = false;
                 let isValid = true;
                 let errorMessage = '';
+                
+                if (mergedSurvey?.SurveyKey) {
+                    const survey = await this.getSurveyModel(mergedSurvey.SurveyKey);
 
-                if (surveyTemplate) {
                     for (let index = 0; index < changedFields.length; index++) {
                         const propertyName = changedFields[index].FieldID;
                         const value = changedFields[index].NewValue;
@@ -303,7 +291,7 @@ class SurveysService {
 
                             // If the status is 'Submitted' (If there is no error navigate back after save).
                             if (status === 'Submitted') {
-                                errorMessage = this.validateSurvey(surveyTemplate);
+                                errorMessage = this.validateSurvey(mergedSurvey);
                                 isValid = shouldNavigateBack = errorMessage.length === 0;
 
                                 if (!isValid) {
@@ -316,7 +304,7 @@ class SurveysService {
                         changedFields[index].OldValue = survey[propertyName];
 
                         // Set the new value.
-                        survey[propertyName] = surveyTemplate[propertyName] = value;
+                        survey[propertyName] = mergedSurvey[propertyName] = value;
                     }
 
                     // Save the survey
@@ -324,16 +312,16 @@ class SurveysService {
                         await this.setSurveyModel(survey);
                     }
                 } else {
-                    errorMessage = `Survey template not exist for surveyKey = ${surveyKey}`;
+                    errorMessage = `Error, Survey not exist in memory`;
                     isValid = false;
                 }
 
-                return { mergedSurvey: surveyTemplate, changedFields, shouldNavigateBack, isValid, errorMessage};
+                return { mergedSurvey: mergedSurvey, changedFields, shouldNavigateBack, isValid, errorMessage};
             },
         };
 
         const res = await client?.showHUD(hudOptions);
-        this.printLog(`onSurveyFieldChange with surveyKey = ${surveyKey} -> after`);
+        this.printLog(`onSurveyFieldChange with surveyKey = ${mergedSurvey?.SurveyKey} -> after`);
 
         // If there is an error message show it.
         if (res?.result?.errorMessage.length > 0) {
@@ -345,13 +333,14 @@ class SurveysService {
         return res?.result;
     }
 
-    async onSurveyQuestionChange(client: IClient | undefined, surveyKey: string, changedFields: any): Promise<any> {
-        this.printLog(`onSurveyQuestionChange with surveyKey = ${surveyKey} -> before`);
+    async onSurveyQuestionChange(client: IClient | undefined, mergedSurvey: SurveyTemplate | null, changedFields: any): Promise<any> {
+        this.printLog(`onSurveyQuestionChange with surveyKey = ${mergedSurvey?.SurveyKey} -> before`);
 
-        const { survey, surveyTemplate } = await this.getSurveyDataInternal(client, surveyKey, false);
         let isValid = true;
 
-        if (surveyTemplate) {
+        if (mergedSurvey?.SurveyKey) {
+            const survey = await this.getSurveyModel(mergedSurvey.SurveyKey);
+
             let someQuestionChanged = false;
 
             for (let index = 0; index < changedFields.length; index++) {
@@ -360,8 +349,8 @@ class SurveysService {
                 let isValueSet = false;
 
                 // Set the question value.
-                for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
-                    const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
+                for (let sectionIndex = 0; sectionIndex < mergedSurvey.Sections.length; sectionIndex++) {
+                    const section: SurveyTemplateSection = mergedSurvey.Sections[sectionIndex];
         
                     for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
                         const question = section.Questions[questionIndex];
@@ -385,19 +374,19 @@ class SurveysService {
 
             if (someQuestionChanged) {
                 // Set the new Answers and save in the DB.
-                this.setSurveyAnswers(survey, surveyTemplate);
+                this.setSurveyAnswers(survey, mergedSurvey);
                 await this.setSurveyModel(survey)
     
                 // Calc the show if
-                this.calcShowIf(surveyTemplate);
+                this.calcShowIf(mergedSurvey);
             }
         } else {
             isValid = false;
         }
 
-        this.printLog(`onSurveyQuestionChange with surveyKey = ${surveyKey} -> after`);
+        this.printLog(`onSurveyQuestionChange with surveyKey = ${mergedSurvey?.SurveyKey} -> after`);
 
-        return { mergedSurvey: surveyTemplate, changedFields, isValid};
+        return { mergedSurvey: mergedSurvey, changedFields, isValid};
     }
 
     async getObjectPropsForSurveyUserEvent(surveyKey: string) {
