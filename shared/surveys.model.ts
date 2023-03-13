@@ -47,9 +47,11 @@ export interface SurveyTemplate extends AddonData {
     Active: boolean;
     ActiveDateRange?: SurveyTemplateDateRange;
     Sections: SurveyTemplateSection[];
-    StatusName?: SurveyStatusType;
-}
 
+    // Those fields are for the merged survey.
+    StatusName?: SurveyStatusType;
+    SurveyKey?: string;
+}
 
 export interface SurveyTemplateDateRange {
     From?: string;

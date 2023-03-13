@@ -6,6 +6,8 @@ import { USER_ACTION_ON_SURVEY_DATA_LOAD, USER_ACTION_ON_SURVEY_VIEW_LOAD, CLIEN
     CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD, USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD, SurveyTemplateClientEventResult } from 'shared';
 export const router = Router();
 
+const mergedSurveys = new Map<string, SurveyTemplate | null>();
+
 export async function load(configuration: any) {
     /***********************************************************************************************/
     //                              Client Events for survey
@@ -13,7 +15,7 @@ export async function load(configuration: any) {
 
     // Handle on survey load
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD as any, {}, async (data): Promise<SurveyClientEventResult> => {
-        debugger;
+        // debugger;
         const service = new SurveysService();
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD} -> before`);
 
@@ -51,6 +53,8 @@ export async function load(configuration: any) {
                 if (userEventResult?.data?.SurveyView) {
                     mergedSurvey = userEventResult.data.SurveyView;
                 }
+
+                mergedSurveys.set(surveyKey, mergedSurvey);
             } else {
                 throw new Error(`event data isn't supply`);
             }
@@ -72,6 +76,11 @@ export async function load(configuration: any) {
         // Emit server event USER_ACTION_ON_SURVEY_VIEW_UNLOAD
         // const objectPropsToAddEventData = await service.getObjectPropsForSurveyUserEvent(data.SurveyKey);
         // await pepperi.events.emit(USER_ACTION_ON_SURVEY_VIEW_UNLOAD, { ...objectPropsToAddEventData }, data);
+        const surveyKey = data.SurveyKey || undefined;
+
+        if (surveyKey && mergedSurveys.has(surveyKey)) {
+            mergedSurveys.delete(surveyKey);
+        }
 
         await data.client?.navigateBack();
     });
@@ -81,15 +90,14 @@ export async function load(configuration: any) {
         const service = new SurveysService();
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE} -> before`);
 
-        let mergedSurvey: SurveyTemplate | null = null;
+        const surveyKey = data.SurveyKey || undefined;
+        let mergedSurvey: SurveyTemplate | null = mergedSurveys.get(surveyKey) || null;
         let success = true;
 
         try {
-            const surveyKey = data.SurveyKey || undefined;
-            
             if (surveyKey && data.ChangedFields?.length > 0) { 
                 const objectPropsToAddEventData = await service.getObjectPropsForSurveyUserEvent(data.SurveyKey);
-                const res: { mergedSurvey, changedFields, shouldNavigateBack, isValid} = await service.onSurveyFieldChange(data.client, surveyKey, data.ChangedFields);
+                const res: { mergedSurvey, changedFields, shouldNavigateBack, isValid} = await service.onSurveyFieldChange(data.client, mergedSurvey, data.ChangedFields);
                 // console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE} - after onSurveyFieldChange res is ${JSON.stringify(res)}`);
 
                 if (res.isValid) {
@@ -108,6 +116,8 @@ export async function load(configuration: any) {
                     if (userEventResult?.data?.SurveyView) {
                         mergedSurvey = userEventResult.data.SurveyView;
                     }
+
+                    mergedSurveys.set(surveyKey, mergedSurvey);
 
                     // If we should navigate back.
                     if (res.shouldNavigateBack) {
@@ -135,15 +145,15 @@ export async function load(configuration: any) {
         const service = new SurveysService();
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE} -> before`);
 
-        let mergedSurvey: SurveyTemplate | null = null;
+        const surveyKey = data.SurveyKey || undefined;
+        let mergedSurvey: SurveyTemplate | null = mergedSurveys.get(surveyKey) || null;
         let success = true;
         
         try {
-            const surveyKey = data.SurveyKey || undefined;
             
             if (surveyKey && data.ChangedFields?.length > 0) { 
                 const objectPropsToAddEventData = await service.getObjectPropsForSurveyUserEvent(data.SurveyKey);
-                const res: { mergedSurvey, changedFields, isValid} = await service.onSurveyQuestionChange(data.client, surveyKey, data.ChangedFields);
+                const res: { mergedSurvey, changedFields, isValid} = await service.onSurveyQuestionChange(data.client, mergedSurvey, data.ChangedFields);
                 // console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE} - after onSurveyQuestionChange res is ${JSON.stringify(res)}`);
                 
                 if (res.isValid) {
@@ -162,6 +172,8 @@ export async function load(configuration: any) {
                     if (userEventResult?.data?.SurveyView) {
                         mergedSurvey = userEventResult.data.SurveyView;
                     }
+
+                    mergedSurveys.set(surveyKey, mergedSurvey);
                 }
             } else {
                 throw new Error(`event data isn't supply`);
