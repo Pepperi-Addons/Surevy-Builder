@@ -6,7 +6,11 @@ import { USER_ACTION_ON_SURVEY_DATA_LOAD, USER_ACTION_ON_SURVEY_VIEW_LOAD, CLIEN
     CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD, USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD, SurveyTemplateClientEventResult } from 'shared';
 export const router = Router();
 
-const mergedSurveys = new Map<string, SurveyTemplate | null>();
+if (!global['mergedSurveys']) {
+    global['mergedSurveys'] = new Map<string, SurveyTemplate | null>();
+}
+
+const mergedSurveys = global['mergedSurveys'];
 
 export async function load(configuration: any) {
     /***********************************************************************************************/
