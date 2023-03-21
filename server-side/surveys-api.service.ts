@@ -67,7 +67,7 @@ export class SurveyApiService {
             SyncData: {
                 Sync: true
             },
-            Type: 'meta_data',
+            Type: 'data',
             ...udcTempObject
         };
         const createSurveyTemplateTable = await this.papiClient.userDefinedCollections.schemes.upsert(schemaTemplate as any);
