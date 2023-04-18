@@ -3,7 +3,8 @@ import SurveysService from './surveys-cpi.service';
 import { USER_ACTION_ON_SURVEY_DATA_LOAD, USER_ACTION_ON_SURVEY_VIEW_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, 
     CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, USER_ACTION_ON_SURVEY_FIELD_CHANGED, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE,
     CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE, USER_ACTION_ON_SURVEY_QUESTION_CHANGED, SurveyTemplate, SurveyClientEventResult, 
-    CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD, USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD, SurveyTemplateClientEventResult } from 'shared';
+    CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD, USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD, SurveyTemplateClientEventResult,
+    CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK } from 'shared';
 export const router = Router();
 
 if (!global['mergedSurveys']) {
@@ -19,7 +20,7 @@ export async function load(configuration: any) {
 
     // Handle on survey load
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD as any, {}, async (data): Promise<SurveyClientEventResult> => {
-        // debugger;
+        debugger;
         const service = new SurveysService();
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD} -> before`);
 
@@ -195,6 +196,41 @@ export async function load(configuration: any) {
         };
     });
 
+    pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK as any, {}, async (data): Promise<SurveyClientEventResult> => {
+        const service = new SurveysService();
+        service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK} -> before`);
+
+        const surveyKey = data.SurveyKey || undefined;
+        let mergedSurvey: SurveyTemplate | null = mergedSurveys.get(surveyKey) || null;
+        let success = true;
+        
+        try {
+            if (surveyKey && data.FieldID && data.Action > 0) { 
+                const res: { mergedSurvey, isValid, errorMessage} = await service.onSurveyQuestionClick(data.client, mergedSurvey, data.FieldID, data.Action);
+                // console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK} - after onSurveyQuestionClick res is ${JSON.stringify(res)}`);
+                
+                if (res.isValid) {
+                    mergedSurvey = res.mergedSurvey;
+                    mergedSurveys.set(surveyKey, mergedSurvey);
+                } else if (res.errorMessage.length > 0) {
+                    throw new Error(res.errorMessage);
+                }
+            } else {
+                throw new Error(`event data isn't supply`);
+            }
+        } catch(error) {
+            console.log(`Failed in survey question click, error: ${error}`);
+            success = false;
+        }
+
+        service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK} -> after`);
+
+        return {
+            SurveyView: mergedSurvey,
+            Success: success   
+        };
+    });
+    
     /***********************************************************************************************/
     //                              Client Events for survey template
     /************************************************************************************************/

@@ -1,8 +1,11 @@
 import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 import { SurveyTemplate, SURVEY_TEMPLATES_BASE_TABLE_NAME, SurveyTemplateSection, SurveyStatusType, 
-    SURVEYS_BASE_TABLE_NAME, SURVEYS_TABLE_NAME, RESOURCE_NAME_PROPERTY, SURVEY_TEMPLATES_TABLE_NAME, DRAFT_SURVEY_TEMPLATES_TABLE_NAME } from 'shared';
+    SURVEYS_BASE_TABLE_NAME, SURVEYS_TABLE_NAME, RESOURCE_NAME_PROPERTY, SURVEY_TEMPLATES_TABLE_NAME, DRAFT_SURVEY_TEMPLATES_TABLE_NAME, 
+    SurveyQuestionClickActionType, 
+    SurveyTemplateQuestion} from 'shared';
 import { Survey } from '@pepperi-addons/papi-sdk';
 import { filter } from '@pepperi-addons/pepperi-filters';
+import { FilePickerOptions, FilesSource } from '@pepperi-addons/cpi-node/build/cpi-side/app/components/file-picker';
 import config from '../addon.config.json';
 
 class SurveysService {
@@ -214,6 +217,22 @@ class SurveysService {
         return errorMsg;
     }
 
+    private getQuestionByKey(surveyTemplate: SurveyTemplate, questionKey: string): SurveyTemplateQuestion | undefined {
+        let currentQuestion: SurveyTemplateQuestion | undefined = undefined;
+
+        for (let sectionIndex = 0; sectionIndex < surveyTemplate?.Sections?.length; sectionIndex++) {
+            const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
+
+            currentQuestion = section.Questions.find(q => q.Key === questionKey);
+            
+            if (currentQuestion) {
+                break;
+            }
+        }
+
+        return currentQuestion;
+    }
+
     /***********************************************************************************************/
     //                              Public functions
     /************************************************************************************************/
@@ -387,6 +406,98 @@ class SurveysService {
         this.printLog(`onSurveyQuestionChange with surveyKey = ${mergedSurvey?.SurveyKey} -> after`);
 
         return { mergedSurvey: mergedSurvey, changedFields, isValid};
+    }
+
+    async onSurveyQuestionClick(client: IClient | undefined, mergedSurvey: SurveyTemplate | null, questionKey: string, action: SurveyQuestionClickActionType): Promise<any> {
+        this.printLog(`onSurveyQuestionClick with surveyKey = ${mergedSurvey?.SurveyKey} -> before`);
+
+        let isValid = true;
+        let errorMessage = '';
+
+        if (mergedSurvey?.SurveyKey) {
+            let someQuestionChanged = false;
+            const survey = await this.getSurveyModel(mergedSurvey.SurveyKey);
+
+            // Get the question
+            let currentQuestion = this.getQuestionByKey(mergedSurvey, questionKey);
+
+            // If the question exist and the type is allowed for click.
+            if (currentQuestion && (currentQuestion.Type === 'photo' || currentQuestion.Type === 'signature')) {
+                if (action === 'View') {
+                    // TODO: Raise client event for view.
+                    const options = {
+                        uri: currentQuestion.Value,
+                    };
+
+                    const res =  await client?.openURI(options);
+                    if (res?.sucsess) { // res?.success
+                        console.log('URI opened successfully');
+                    }
+                    else {
+                        console.log('URI failed to open: ', res?.reason);
+                        isValid = false;
+                        errorMessage = `URI failed to open: ${res?.reason}`;
+                    }
+
+                } else if (action === 'Set') {
+                    const allowedFilesSources: FilesSource[] = []; // FileSourceType = 'Camera' | 'PhotoLibrary' | 'Files' | 'SignaturePad';
+                    if (currentQuestion.Type === 'photo') {
+                        allowedFilesSources.push({ type: 'PhotoLibrary', title: 'Select Photo'});
+                        allowedFilesSources.push({ type: 'Files', title: 'Select File'});
+                        allowedFilesSources.push({ type: 'Camera', title: 'Take Photo'});
+                    } else { // if it's signature
+                        allowedFilesSources.push({ type: 'SignaturePad', title: 'Select Signature'});
+                    }
+
+                    const allowedExtensions = ["bmp", "gif", "jpg", "jpeg", "png"];
+
+                    const options: FilePickerOptions = {
+                        title: `Select ${currentQuestion.Type === 'photo' ? 'Image' : 'Signature'}`,
+                        allowedFilesSources: allowedFilesSources,
+                        allowedExtensions: allowedExtensions,
+                        sizeLimit: 1024 * 10,
+                        compression: {
+                            quality: 50,
+                            megapixels: 2,
+                        }
+                    };
+
+                    // Raise client event for choose an image || signature.
+                    const res = await client?.openFilePicker(options);
+                    if (res?.success) {
+                        console.log(`filePicker, mimeType: ${res.mimeType}, uri: ${res.uri}`);
+
+                        // TODO: Add this temp url to a real one (PFS) and save it in the survey model.
+                        currentQuestion.Value = res.uri;
+                        someQuestionChanged = true;
+                    }
+                    else {
+                        console.log('filePicker failed: ', res?.reason); // reason can be 'UserCanceled', 'AccessDenied' or 'SizeLimitExceeded'
+                        isValid = false;
+                        errorMessage = `URI failed to open: ${res?.reason}`;
+                    }
+                } else if (action === 'Delete') {
+                    // TODO: Delete this PFS url and save '' in the survey model.
+                    currentQuestion.Value = '';
+                    someQuestionChanged = true;
+                }
+    
+                if (someQuestionChanged) {
+                    // Set the new Answers and save in the DB.
+                    this.setSurveyAnswers(survey, mergedSurvey);
+                    await this.setSurveyModel(survey)
+        
+                    // Calc the show if
+                    this.calcShowIf(mergedSurvey);
+                }
+            }
+        } else {
+            isValid = false;
+        }
+
+        this.printLog(`onSurveyQuestionClick with surveyKey = ${mergedSurvey?.SurveyKey} -> after`);
+
+        return { mergedSurvey: mergedSurvey, isValid, errorMessage};
     }
 
     async getObjectPropsForSurveyUserEvent(surveyKey: string) {

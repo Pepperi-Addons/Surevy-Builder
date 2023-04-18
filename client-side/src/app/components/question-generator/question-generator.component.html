@@ -103,6 +103,10 @@
                         [disabled]="disabled"
                         [rowSpan]="4"
                         [renderTitle]="false"
+                        [handleActions]="false"
+                        (fileChange)="onDeleteFile($event)"
+                        (elementClick)="onFileClick($event)"
+                        (chooseFile)="onChooseFile($event)"
                   ></pep-image>
                 </ng-container>
                 <ng-container *ngSwitchCase="'signature'">
@@ -112,7 +116,11 @@
                         [rowSpan]="4"
                         [disabled]="disabled"
                         [renderTitle]="false"
-                  ></pep-signature>
+                        [handleActions]="false"
+                        (fileChange)="onDeleteFile($event)"
+                        (elementClick)="onFileClick($event)"
+                        (chooseFile)="onChooseFile($event)"
+                    ></pep-signature>
                 </ng-container>
                 <ng-container *ngSwitchDefault>{{question.Type}}
                     <span>{{ 'SURVEY_MANAGER.QUESTION_TYPE_NOT_SUPPORTED' | translate }}</span>

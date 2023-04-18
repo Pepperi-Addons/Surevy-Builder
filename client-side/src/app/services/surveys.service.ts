@@ -9,7 +9,7 @@ import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
 import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData, SurveyClientEventResult, SurveyTemplateClientEventResult,
     SurveyTemplateQuestion, SurveyTemplateQuestionType, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE,
-    SurveyStatusType, CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, SURVEY_TEMPLATES_TABLE_NAME, CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD } from 'shared';
+    SurveyStatusType, CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, SURVEY_TEMPLATES_TABLE_NAME, CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK, SurveyQuestionClickActionType } from 'shared';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { MatDialogRef } from "@angular/material/dialog";
     
@@ -714,6 +714,43 @@ export class SurveysService {
                     eventData: {
                         SurveyKey: this._surveyModelKey,
                         ChangedFields: [{ FieldID: questionKey, NewValue: value }],
+                    },
+                    completion: (res: SurveyClientEventResult) => {
+                        this._processingSurvey = false;
+
+                        // debugger;
+                        if (res.Success) {
+                            // Notify survey change to update survey object with all changes (like show if questions if added or removed).
+                            this.notifySurveyChange(res.SurveyView);
+
+                            // Notify sections change to update UI.
+                            this.notifySectionsChange(res.SurveyView?.Sections);
+                        } else {
+                            // Show default error.
+                            this.showErrorDialog();
+                        }
+                    }
+                }
+            };
+        
+            this.dispatchEvent(eventData);
+        }
+    }
+
+    async handleSurveyQuestionClick(questionKey: string, actionType: SurveyQuestionClickActionType): Promise<void> {
+        if (this._surveyModelKey.length > 0) {
+            await this.waitWhileProccessing();
+
+            // Now after wait set the processing flag to true and back to false in the completion function.
+            this._processingSurvey = true;
+
+            const eventData = {
+                detail: {
+                    eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK,
+                    eventData: {
+                        SurveyKey: this._surveyModelKey,
+                        FieldID: questionKey, 
+                        Action: actionType
                     },
                     completion: (res: SurveyClientEventResult) => {
                         this._processingSurvey = false;

@@ -24,12 +24,16 @@ export const USER_ACTION_ON_SURVEY_FIELD_CHANGED = 'OnSurveyFieldChanged';
 export const CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE = 'OnClientSurveyQuestionChange';
 export const USER_ACTION_ON_SURVEY_QUESTION_CHANGED = 'OnSurveyQuestionChanged';
 
+export const CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK = 'OnClientSurveyQuestionClick';
+
 export const CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD = 'OnClientSurveyTemplateLoad'; // OnClientSurveyTemplateLoad Or OnClientSurveyBuilderLoad ?
 export const USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD = 'OnSurveyTemplateViewLoad'; // OnSurveyTemplateViewLoad Or OnSurveyBuilderLoad ?
 
 // **********************************************************************************************
 
 export type SurveyStatusType = 'Submitted' | 'InCreation';
+
+export type SurveyQuestionClickActionType = 'Set' | 'Delete' | 'View';
 
 export interface SurveyClientEventResult {
     SurveyView: SurveyTemplate | null,

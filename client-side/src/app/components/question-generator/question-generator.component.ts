@@ -4,6 +4,7 @@ import { SurveysService } from 'src/app/services/surveys.service';
 import { ValidationService } from 'src/app/services/validation.service';
 import { SurveyTemplateQuestion, SurveyTemplateQuestionType } from 'shared';
 import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
+import { IPepFieldClickEvent } from '@pepperi-addons/ngx-lib';
 
 @Component({
     selector: 'survey-question-generator',
@@ -108,5 +109,21 @@ export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
 
     isValidQuestion(){
         return !this.validationService?.failedOnValidation?.includes('question'+this.sequenceNumber);
+    }
+
+    onDeleteFile(event: any) {
+        // Handle delete of the file
+        this.surveysService.handleSurveyQuestionClick(this.question.Key, 'Delete');
+    }
+
+    onFileClick(event: IPepFieldClickEvent) {
+        // Handle view of the file.
+        this.surveysService.handleSurveyQuestionClick(this.question.Key, 'View');
+    }
+    
+    onChooseFile(event: any) {
+        // Handle for choose file.
+        this.surveysService.handleSurveyQuestionClick(this.question.Key, 'Set');
+
     }
 }
