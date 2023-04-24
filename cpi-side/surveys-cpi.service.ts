@@ -430,7 +430,7 @@ class SurveysService {
                     };
 
                     const res =  await client?.openURI(options);
-                    if (res?.sucsess) { // res?.success
+                    if (res?.success) {
                         console.log('URI opened successfully');
                     }
                     else {

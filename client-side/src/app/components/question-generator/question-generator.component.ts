@@ -61,6 +61,12 @@ export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
     }
     
     ngOnInit(): void {
+        this.surveysService.questionChange$.subscribe((question: SurveyTemplateQuestion) => {
+            if (question && this.question.Key === question.Key) {
+                this.question = question;
+            }
+        });
+
         if (this.editable) {
             this.surveysService.isGrabbingChange$.subscribe((value: boolean) => {
                 this.isGrabbing = value;

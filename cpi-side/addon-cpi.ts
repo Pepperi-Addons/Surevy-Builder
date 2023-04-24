@@ -197,6 +197,7 @@ export async function load(configuration: any) {
     });
 
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK as any, {}, async (data): Promise<SurveyClientEventResult> => {
+        debugger;
         const service = new SurveysService();
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK} -> before`);
 
@@ -205,7 +206,7 @@ export async function load(configuration: any) {
         let success = true;
         
         try {
-            if (surveyKey && data.FieldID && data.Action > 0) { 
+            if (surveyKey && data.FieldID && data.Action.length > 0) { 
                 const res: { mergedSurvey, isValid, errorMessage} = await service.onSurveyQuestionClick(data.client, mergedSurvey, data.FieldID, data.Action);
                 // console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK} - after onSurveyQuestionClick res is ${JSON.stringify(res)}`);
                 

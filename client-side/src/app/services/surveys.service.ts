@@ -47,6 +47,12 @@ export class SurveysService {
         return this._sectionsSubject.asObservable();
     }
 
+    // This subject is for question change.
+    private _questionSubject: BehaviorSubject<SurveyTemplateQuestion> = new BehaviorSubject<SurveyTemplateQuestion>(null);
+    get questionChange$(): Observable<SurveyTemplateQuestion> {
+        return this._questionSubject.asObservable();
+    }
+
     // This is the selected section index
     private _selectedSectionIndex = -1;
     get selectedSectionIndex(): number {
@@ -177,6 +183,21 @@ export class SurveysService {
 
             this._sectionsSubject.next(survey.Sections);
             this.notifySurveyChange(survey);
+        }
+    }
+
+    private notifyQuestionChange(questionKey: string) {
+        let question = null;
+        const sections = this._sectionsSubject.value;
+
+        for (let sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
+            const section: SurveyTemplateSection = sections[sectionIndex];
+            
+            question = section.Questions.find(q => q.Key === questionKey);
+
+            if (question) {
+                this._questionSubject.next(question);
+            }
         }
     }
 
@@ -685,7 +706,6 @@ export class SurveysService {
                     completion: (res: SurveyClientEventResult) => {
                         this._processingSurvey = false;
 
-                        // debugger;
                         if (res.Success) {
                             // Notify survey change to update survey object with all changes (like show if questions if added or removed).
                             this.notifySurveyChange(res.SurveyView);
@@ -718,13 +738,15 @@ export class SurveysService {
                     completion: (res: SurveyClientEventResult) => {
                         this._processingSurvey = false;
 
-                        // debugger;
                         if (res.Success) {
                             // Notify survey change to update survey object with all changes (like show if questions if added or removed).
                             this.notifySurveyChange(res.SurveyView);
 
                             // Notify sections change to update UI.
                             this.notifySectionsChange(res.SurveyView?.Sections);
+
+                            // Notify question change. 
+                            this.notifyQuestionChange(questionKey);
                         } else {
                             // Show default error.
                             this.showErrorDialog();
@@ -738,6 +760,7 @@ export class SurveysService {
     }
 
     async handleSurveyQuestionClick(questionKey: string, actionType: SurveyQuestionClickActionType): Promise<void> {
+        debugger;
         if (this._surveyModelKey.length > 0) {
             await this.waitWhileProccessing();
 
@@ -754,14 +777,17 @@ export class SurveysService {
                     },
                     completion: (res: SurveyClientEventResult) => {
                         this._processingSurvey = false;
+                        debugger;
 
-                        // debugger;
                         if (res.Success) {
                             // Notify survey change to update survey object with all changes (like show if questions if added or removed).
                             this.notifySurveyChange(res.SurveyView);
 
                             // Notify sections change to update UI.
                             this.notifySectionsChange(res.SurveyView?.Sections);
+
+                            // Notify question change. 
+                            this.notifyQuestionChange(questionKey);
                         } else {
                             // Show default error.
                             this.showErrorDialog();
