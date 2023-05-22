@@ -442,9 +442,13 @@ class SurveysService {
                 } else if (action === 'Set') {
                     const allowedFilesSources: FilesSource[] = []; // FileSourceType = 'Camera' | 'PhotoLibrary' | 'Files' | 'SignaturePad';
                     if (currentQuestion.Type === 'photo') {
-                        allowedFilesSources.push({ type: 'PhotoLibrary', title: 'Select Photo'});
-                        allowedFilesSources.push({ type: 'Files', title: 'Select File'});
                         allowedFilesSources.push({ type: 'Camera', title: 'Take Photo'});
+                        
+                        // If currentQuestion.AllowOnlyCameraPhoto is not true then allow only camera
+                        if (currentQuestion.AllowOnlyCameraPhoto !== true) {
+                            allowedFilesSources.push({ type: 'PhotoLibrary', title: 'Select Photo'});
+                            allowedFilesSources.push({ type: 'Files', title: 'Select File'});
+                        }
                     } else { // if it's signature
                         allowedFilesSources.push({ type: 'SignaturePad', title: 'Select Signature'});
                     }
