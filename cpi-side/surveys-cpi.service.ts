@@ -457,8 +457,8 @@ class SurveysService {
                         allowedExtensions: allowedExtensions,
                         sizeLimit: 1024 * 10,
                         compression: {
-                            quality: 50,
-                            megapixels: 2,
+                            quality: currentQuestion.PhotoQuality || 50,
+                            megapixels: currentQuestion.MaxMegapixel || 2,
                         }
                     };
 
@@ -470,8 +470,7 @@ class SurveysService {
                         // TODO: Add this temp url to a real one (PFS) and save it in the survey model.
                         currentQuestion.Value = res.uri;
                         someQuestionChanged = true;
-                    }
-                    else {
+                    } else {
                         console.log('filePicker failed: ', res?.reason); // reason can be 'UserCanceled', 'AccessDenied' or 'SizeLimitExceeded'
                         isValid = false;
                         errorMessage = `URI failed to open: ${res?.reason}`;

@@ -154,23 +154,22 @@
             [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('Mandatory',$event)"></pep-checkbox>
         
         <ng-container *ngIf="question?.Type == 'photo'">
-            <pep-checkbox class="checkbox-no-background" [value]="question?.allowOnlyCameraPhoto || false" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.PHOTO.ALLOW_CAMERA_PHOTO_ONLY' | translate" 
-                [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('allowOnlyCameraPhoto',$event)"></pep-checkbox>
+            <pep-checkbox class="checkbox-no-background" [value]="question?.AllowOnlyCameraPhoto || false" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.PHOTO.ALLOW_CAMERA_PHOTO_ONLY' | translate" 
+                [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('AllowOnlyCameraPhoto',$event)"></pep-checkbox>
 
             <pep-textbox 
                 [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.PHOTO.MAX_MEGAPIXEL' | translate" [type]="'int'"
                 [value]="question?.MaxMegapixel || ''" (valueChange)="onQuestionEditorFieldChanged('MaxMegapixel',$event)">
             </pep-textbox>
-
             
             <pep-slider #photoQuality [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.PHOTO.QUALITY' | translate" 
                     [hint]="photoQuality.value" 
                     [minValue]="10" 
                     [maxValue]="100"
                     [disabled]="false" 
-                    [value]="question?.photoQuality?.toString() || '10'"
+                    [value]="question?.PhotoQuality?.toString() || '10'"
                     [background]="'RGBA(0,0,0,50%)'"
-                    (inputChange)="onQuestionEditorFieldChanged('photoQuality',$event)">
+                    (inputChange)="onQuestionEditorFieldChanged('PhotoQuality',$event)">
             </pep-slider>
         </ng-container>
     </ng-container>
