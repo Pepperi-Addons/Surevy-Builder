@@ -6,6 +6,8 @@ export const SURVEY_TEMPLATES_TABLE_NAME = 'MySurveyTemplates';
 export const SURVEY_TEMPLATES_BASE_TABLE_NAME = 'survey_templates'; // 'baseSurveyTemplates'
 export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplatesDrafts';
 
+export const SURVEY_PFS_TABLE_NAME = 'SurveyPFS';
+
 export const RESOURCE_NAME_PROPERTY = 'ResourceName';
 
 // **********************************************************************************************

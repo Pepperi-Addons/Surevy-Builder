@@ -2,11 +2,13 @@ import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 import { SurveyTemplate, SURVEY_TEMPLATES_BASE_TABLE_NAME, SurveyTemplateSection, SurveyStatusType, 
     SURVEYS_BASE_TABLE_NAME, SURVEYS_TABLE_NAME, RESOURCE_NAME_PROPERTY, SURVEY_TEMPLATES_TABLE_NAME, DRAFT_SURVEY_TEMPLATES_TABLE_NAME, 
     SurveyQuestionClickActionType, 
-    SurveyTemplateQuestion} from 'shared';
-import { Survey } from '@pepperi-addons/papi-sdk';
+    SurveyTemplateQuestion,
+    SURVEY_PFS_TABLE_NAME} from 'shared';
+import { AddonFile, Survey } from '@pepperi-addons/papi-sdk';
 import { filter } from '@pepperi-addons/pepperi-filters';
 import { FilePickerOptions, FilesSource } from '@pepperi-addons/cpi-node/build/cpi-side/app/components/file-picker';
 import config from '../addon.config.json';
+const mime = require('mime-types')
 
 class SurveysService {
     
@@ -139,10 +141,32 @@ class SurveysService {
         return query
     }
 
+    private async calcSurveyTemplate(surveyTemplate: SurveyTemplate): Promise<void> {
+        this.printLog(`calcSurveyTemplate -> before`);
+
+        // Prepare the questions value data object
+        for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
+            const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
+
+            for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
+                const question = section.Questions[questionIndex];
+
+                // If the question is photo or signature, get the file from the pfs and set the URL in the value.
+                if (question.Value && (question.Type === 'photo' || question.Type === 'signature')) {
+                    const pfsFile = await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).key(question.Value).get();
+                    question.Value = pfsFile?.URL ;
+                }
+            }
+        }
+
+        this.calcShowIf(surveyTemplate);
+
+        this.printLog(`calcSurveyTemplate -> after`);
+    }
+
     private calcShowIf(surveyTemplate: SurveyTemplate): void {
         this.printLog(`calcShowIf -> before`);
 
-        // Prepare the questions value data object
         const questionsObject = this.createMapQuestionObject(surveyTemplate);
 
         for (let sectionIndex = 0; sectionIndex < surveyTemplate.Sections.length; sectionIndex++) {
@@ -233,6 +257,10 @@ class SurveysService {
         return currentQuestion;
     }
 
+    private async isWebapp(): Promise<boolean> {
+        return await global["app"]["wApp"]["isWebApp"]();
+    }
+
     /***********************************************************************************************/
     //                              Public functions
     /************************************************************************************************/
@@ -252,7 +280,7 @@ class SurveysService {
     
             if (mergedSurvey) {
                 this.mergeSurveyIntoTemplateData(survey, mergedSurvey);
-                this.calcShowIf(mergedSurvey);
+                this.calcSurveyTemplate(mergedSurvey);
             }
         } else {
             // TODO: Throw survey has no template.
@@ -397,7 +425,7 @@ class SurveysService {
                 await this.setSurveyModel(survey)
     
                 // Calc the show if
-                this.calcShowIf(mergedSurvey);
+                this.calcSurveyTemplate(mergedSurvey);
             }
         } else {
             isValid = false;
@@ -424,21 +452,23 @@ class SurveysService {
             // If the question exist and the type is allowed for click.
             if (currentQuestion && (currentQuestion.Type === 'photo' || currentQuestion.Type === 'signature')) {
                 if (action === 'View') {
-                    // TODO: Raise client event for view.
-                    const options = {
-                        uri: currentQuestion.Value,
-                    };
+                    if (currentQuestion.Value?.length > 0) {
+                        // Get the pfs file.
+                        const pfsFile = await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).key(currentQuestion.Value).get();
+                        const options = {
+                            uri: pfsFile?.URL || '',
+                        };
 
-                    const res =  await client?.openURI(options);
-                    if (res?.success) {
-                        console.log('URI opened successfully');
+                        // Raise client event for view.
+                        const res =  await client?.openURI(options);
+                        if (res?.success) {
+                            console.log('URI opened successfully');
+                        } else {
+                            console.log('URI failed to open: ', res?.reason);
+                            isValid = false;
+                            errorMessage = `URI failed to open: ${res?.reason}`;
+                        }
                     }
-                    else {
-                        console.log('URI failed to open: ', res?.reason);
-                        isValid = false;
-                        errorMessage = `URI failed to open: ${res?.reason}`;
-                    }
-
                 } else if (action === 'Set') {
                     const allowedFilesSources: FilesSource[] = []; // FileSourceType = 'Camera' | 'PhotoLibrary' | 'Files' | 'SignaturePad';
                     if (currentQuestion.Type === 'photo') {
@@ -471,8 +501,23 @@ class SurveysService {
                     if (res?.success) {
                         console.log(`filePicker, mimeType: ${res.mimeType}, uri: ${res.uri}`);
 
-                        // TODO: Add this temp url to a real one (PFS) and save it in the survey model.
-                        currentQuestion.Value = res.uri;
+                        // Add this temp url to a real one (PFS) and save it in the survey model.
+                        const pfsBody: AddonFile = {
+                            Key: this.getPfsFileKey(mergedSurvey, currentQuestion, res.mimeType),
+                            MIME: res.mimeType,
+                            Sync: 'Always',
+                            Cache: false,
+                        };
+
+                        if (await this.isWebapp()) {
+                            pfsBody.TemporaryFileURLs = [res.uri];
+                        } else {
+                            pfsBody.URI = res.uri;
+                        }
+                        
+                        const pfsResult: AddonFile = await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).post(pfsBody);
+
+                        currentQuestion.Value = pfsResult.Key;
                         someQuestionChanged = true;
                     } else {
                         console.log('filePicker failed: ', res?.reason); // reason can be 'UserCanceled', 'AccessDenied' or 'SizeLimitExceeded'
@@ -480,7 +525,13 @@ class SurveysService {
                         errorMessage = `URI failed to open: ${res?.reason}`;
                     }
                 } else if (action === 'Delete') {
-                    // TODO: Delete this PFS url and save '' in the survey model.
+                    // Delete this PFS url and save '' in the survey model.
+                    const pfsFileKey = currentQuestion.Value;
+                    await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).post({
+                        Key: pfsFileKey,
+                        Hidden: true,
+                    });
+
                     currentQuestion.Value = '';
                     someQuestionChanged = true;
                 }
@@ -488,10 +539,10 @@ class SurveysService {
                 if (someQuestionChanged) {
                     // Set the new Answers and save in the DB.
                     this.setSurveyAnswers(survey, mergedSurvey);
-                    await this.setSurveyModel(survey)
+                    await this.setSurveyModel(survey);
         
                     // Calc the show if
-                    this.calcShowIf(mergedSurvey);
+                    this.calcSurveyTemplate(mergedSurvey);
                 }
             }
         } else {
@@ -501,6 +552,11 @@ class SurveysService {
         this.printLog(`onSurveyQuestionClick with surveyKey = ${mergedSurvey?.SurveyKey} -> after`);
 
         return { mergedSurvey: mergedSurvey, isValid, errorMessage};
+    }
+
+    private getPfsFileKey(mergedSurvey: SurveyTemplate, currentQuestion: SurveyTemplateQuestion, mimeType: string): string | undefined {
+        const extension = mime.extension(mimeType);
+        return `${mergedSurvey.SurveyKey}_${currentQuestion.Key}_${extension}`;
     }
 
     async getObjectPropsForSurveyUserEvent(surveyKey: string) {

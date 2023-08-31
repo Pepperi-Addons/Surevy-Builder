@@ -4,7 +4,7 @@ import { DEFAULT_BLANK_SURVEY_DATA, ISurveyTemplateBuilderData, SurveyTemplate, 
     SURVEYS_BASE_TABLE_NAME, SURVEY_TEMPLATES_BASE_TABLE_NAME,
     SURVEY_TEMPLATES_TABLE_NAME, DRAFT_SURVEY_TEMPLATES_TABLE_NAME, SURVEYS_TABLE_NAME,
     USER_ACTION_ON_SURVEY_DATA_LOAD, USER_ACTION_ON_SURVEY_VIEW_LOAD, USER_ACTION_ON_SURVEY_FIELD_CHANGED, 
-    USER_ACTION_ON_SURVEY_QUESTION_CHANGED, 
+    USER_ACTION_ON_SURVEY_QUESTION_CHANGED, SURVEY_PFS_TABLE_NAME,
     USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD} from 'shared';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -73,7 +73,7 @@ export class SurveyApiService {
         const createSurveyTemplateTable = await this.papiClient.userDefinedCollections.schemes.upsert(schemaTemplate as any);
         
         // Create draft Survey template table
-        const schemaDraftTemplate = {
+        const schemaDraftTemplate: AddonDataScheme = {
             Name: DRAFT_SURVEY_TEMPLATES_TABLE_NAME,
             Type: 'indexed_data',
             Fields: {
@@ -83,13 +83,21 @@ export class SurveyApiService {
                 }
             }
         };
-        const createSurveyDraftTemplateTable = await this.papiClient.addons.data.schemes.post(schemaDraftTemplate as any);
+        const createSurveyDraftTemplateTable = await this.papiClient.addons.data.schemes.post(schemaDraftTemplate);
         // const createSurveyDraftTemplateTable = await this.papiClient.userDefinedCollections.schemes.upsert(schemaDraftTemplate as any);
+    }
 
-        // promises.push(createSurveyTable);
-        // promises.push(createSurveyTemplateTable);
-        // promises.push(createSurveyDraftTemplateTable);
-        // return Promise.all(promises);
+    private async createPfsSchemeTables(): Promise<void> {
+        // Create pfs table
+        const schemaPfs: AddonDataScheme = {
+            Name: SURVEY_PFS_TABLE_NAME,
+            Type: 'pfs',
+            SyncData: {
+                Sync: true
+            }
+        };
+
+        await this.papiClient.addons.data.schemes.post(schemaPfs);
     }
 
     private async upsertRelation(relation): Promise<any> {
@@ -327,6 +335,8 @@ export class SurveyApiService {
         if (install) {
             await this.createSchemeTables();
         }
+
+        await this.createPfsSchemeTables();
 
         await this.upsertImportRelation();
         await this.upsertExportRelation();
