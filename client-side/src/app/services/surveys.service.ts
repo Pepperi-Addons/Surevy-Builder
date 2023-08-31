@@ -521,9 +521,16 @@ export class SurveysService {
         }
     }
 
-    dispatchEvent(eventData: CustomEventInit<any>) {
+    emitEvent(event: any) {
+        const eventData = {
+            detail: event,
+        };
+
         const customEvent = new CustomEvent('emit-event', eventData);
         window.dispatchEvent(customEvent);
+
+        // const customEvent = new CustomEvent('emit-event', eventData);
+        // window.dispatchEvent(customEvent);
     }
 
     /**************************************************************************************/
@@ -586,26 +593,24 @@ export class SurveysService {
         const resourceName = this.getCurrentResourceName();
 
         const eventData = {
-            detail: {
-                eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD,
-                eventData: {
-                    SurveyTemplateKey: templateKey,
-                    ResourceName: resourceName
-                },
-                completion: (res: SurveyTemplateClientEventResult) => {
-                    if (res.Success) {
-                        // TODO: currently the SurveyTemplate draft is not sync so we cannot do this here.
-                        // this.notifySurveyChange(res.SurveyTemplate);
-                        this.notifyAdditionalFieldsChange(res?.AdditionalFields || {});
-                    } else {
-                        // Show default error.
-                        this.showErrorDialog(this.translate.instant('MESSAGES.FAILED_TO_GET_SURVEY_TEMPLATE_ERROR'));
-                    }
+            eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD,
+            eventData: {
+                SurveyTemplateKey: templateKey,
+                ResourceName: resourceName
+            },
+            completion: (res: SurveyTemplateClientEventResult) => {
+                if (res.Success) {
+                    // TODO: currently the SurveyTemplate draft is not sync so we cannot do this here.
+                    // this.notifySurveyChange(res.SurveyTemplate);
+                    this.notifyAdditionalFieldsChange(res?.AdditionalFields || {});
+                } else {
+                    // Show default error.
+                    this.showErrorDialog(this.translate.instant('MESSAGES.FAILED_TO_GET_SURVEY_TEMPLATE_ERROR'));
                 }
             }
         };
 
-        this.dispatchEvent(eventData);
+        this.emitEvent(eventData);
     }
 
     unloadSurveyData() {
@@ -654,40 +659,36 @@ export class SurveysService {
         this._surveyModelKey = surveyKey;
 
         const eventData = {
-            detail: {
-                eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD,
-                eventData: {
-                    SurveyKey: this._surveyModelKey,
-                },
-                completion: (res: SurveyClientEventResult) => {
-                    if (res.Success) {
-                        this.notifySurveyChange(res.SurveyView);
-                    } else {
-                        // Show default error.
-                        this.showErrorDialog();
-                    }
+            eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD,
+            eventData: {
+                SurveyKey: this._surveyModelKey,
+            },
+            completion: (res: SurveyClientEventResult) => {
+                if (res.Success) {
+                    this.notifySurveyChange(res.SurveyView);
+                } else {
+                    // Show default error.
+                    this.showErrorDialog();
                 }
             }
         };
 
-        this.dispatchEvent(eventData);
+        this.emitEvent(eventData);
     }
 
     unloadSurvey(): void {
         if (this._surveyModelKey.length > 0) {
             const eventData = {
-                detail: {
-                    eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD,
-                    eventData: {
-                        SurveyKey: this._surveyModelKey,
-                    },
-                    completion: (res) => {
-                        // debugger;
-                    }
+                eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD,
+                eventData: {
+                    SurveyKey: this._surveyModelKey,
+                },
+                completion: (res) => {
+                    // debugger;
                 }
             };
         
-            this.dispatchEvent(eventData);
+            this.emitEvent(eventData);
         }
     }
 
@@ -699,27 +700,25 @@ export class SurveysService {
             this._processingSurvey = true;
 
             const eventData = {
-                detail: {
-                    eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE,
-                    eventData: {
-                        SurveyKey: this._surveyModelKey,
-                        ChangedFields: [{ FieldID: 'StatusName', NewValue: status }],
-                    },
-                    completion: (res: SurveyClientEventResult) => {
-                        this._processingSurvey = false;
+                eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE,
+                eventData: {
+                    SurveyKey: this._surveyModelKey,
+                    ChangedFields: [{ FieldID: 'StatusName', NewValue: status }],
+                },
+                completion: (res: SurveyClientEventResult) => {
+                    this._processingSurvey = false;
 
-                        if (res.Success) {
-                            // Notify survey change to update survey object with all changes (like show if questions if added or removed).
-                            this.notifySurveyChange(res.SurveyView);
-                        } else {
-                            // Show default error.
-                            this.showErrorDialog();
-                        }
+                    if (res.Success) {
+                        // Notify survey change to update survey object with all changes (like show if questions if added or removed).
+                        this.notifySurveyChange(res.SurveyView);
+                    } else {
+                        // Show default error.
+                        this.showErrorDialog();
                     }
                 }
             };
         
-            this.dispatchEvent(eventData);
+            this.emitEvent(eventData);
         }
     }
 
@@ -731,33 +730,31 @@ export class SurveysService {
             this._processingSurvey = true;
 
             const eventData = {
-                detail: {
-                    eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE,
-                    eventData: {
-                        SurveyKey: this._surveyModelKey,
-                        ChangedFields: [{ FieldID: questionKey, NewValue: value }],
-                    },
-                    completion: (res: SurveyClientEventResult) => {
-                        this._processingSurvey = false;
+                eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE,
+                eventData: {
+                    SurveyKey: this._surveyModelKey,
+                    ChangedFields: [{ FieldID: questionKey, NewValue: value }],
+                },
+                completion: (res: SurveyClientEventResult) => {
+                    this._processingSurvey = false;
 
-                        if (res.Success) {
-                            // Notify survey change to update survey object with all changes (like show if questions if added or removed).
-                            this.notifySurveyChange(res.SurveyView);
+                    if (res.Success) {
+                        // Notify survey change to update survey object with all changes (like show if questions if added or removed).
+                        this.notifySurveyChange(res.SurveyView);
 
-                            // Notify sections change to update UI.
-                            this.notifySectionsChange(res.SurveyView?.Sections);
+                        // Notify sections change to update UI.
+                        this.notifySectionsChange(res.SurveyView?.Sections);
 
-                            // Notify question change. 
-                            this.notifyQuestionChange(questionKey);
-                        } else {
-                            // Show default error.
-                            this.showErrorDialog();
-                        }
+                        // Notify question change. 
+                        this.notifyQuestionChange(questionKey);
+                    } else {
+                        // Show default error.
+                        this.showErrorDialog();
                     }
                 }
             };
         
-            this.dispatchEvent(eventData);
+            this.emitEvent(eventData);
         }
     }
 
@@ -770,35 +767,33 @@ export class SurveysService {
             this._processingSurvey = true;
 
             const eventData = {
-                detail: {
-                    eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK,
-                    eventData: {
-                        SurveyKey: this._surveyModelKey,
-                        FieldID: questionKey, 
-                        Action: actionType
-                    },
-                    completion: (res: SurveyClientEventResult) => {
-                        this._processingSurvey = false;
-                        debugger;
+                eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK,
+                eventData: {
+                    SurveyKey: this._surveyModelKey,
+                    FieldID: questionKey, 
+                    Action: actionType
+                },
+                completion: (res: SurveyClientEventResult) => {
+                    this._processingSurvey = false;
+                    debugger;
 
-                        if (res.Success) {
-                            // Notify survey change to update survey object with all changes (like show if questions if added or removed).
-                            this.notifySurveyChange(res.SurveyView);
+                    if (res.Success) {
+                        // Notify survey change to update survey object with all changes (like show if questions if added or removed).
+                        this.notifySurveyChange(res.SurveyView);
 
-                            // Notify sections change to update UI.
-                            this.notifySectionsChange(res.SurveyView?.Sections);
+                        // Notify sections change to update UI.
+                        this.notifySectionsChange(res.SurveyView?.Sections);
 
-                            // Notify question change. 
-                            this.notifyQuestionChange(questionKey);
-                        } else {
-                            // Show default error.
-                            this.showErrorDialog();
-                        }
+                        // Notify question change. 
+                        this.notifyQuestionChange(questionKey);
+                    } else {
+                        // Show default error.
+                        this.showErrorDialog();
                     }
                 }
             };
         
-            this.dispatchEvent(eventData);
+            this.emitEvent(eventData);
         }
     }
 }

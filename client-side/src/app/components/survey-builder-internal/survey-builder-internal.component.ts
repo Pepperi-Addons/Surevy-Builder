@@ -12,6 +12,7 @@ import * as _ from 'lodash';
 
 export interface ISurveyRuntimeHostObject {
     // surveyParams: any;
+    [key: string]: any;
     pageParameters: {
         survey_key: string,
         [key: string]: any;
@@ -86,9 +87,13 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        debugger;
         const addonUUID = this.navigationService.addonUUID;
         // This is survey key if it's runtime an if not it's the survey template key (for builder)
-        const key = this.hostObject?.pageParameters?.survey_key || this.route?.snapshot?.params['survey_template_key'] || '';
+        const key = 
+            this.hostObject?.state?.survey_key || // This is the new pages way to pass the parameters (Pages 1.0).
+            this.hostObject?.pageParameters?.survey_key || 
+            this.route?.snapshot?.params['survey_template_key'] || '';
 
         console.log((this.editMode ? 'surveyTemplateKey - ' : 'surveyKey - ') + key);
         if (key.length > 0) {
