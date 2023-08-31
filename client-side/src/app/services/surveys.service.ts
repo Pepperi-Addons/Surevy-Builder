@@ -236,7 +236,8 @@ export class SurveysService {
     private duplicateSelectedSection() {
         if (this._selectedSectionIndex > -1) {
             const sections = this._sectionsSubject.getValue();
-            const duplicated: SurveyTemplateSection = _.cloneDeep(sections[this._selectedSectionIndex]);
+            // const duplicated: SurveyTemplateSection = _.cloneDeep(sections[this._selectedSectionIndex]);
+            const duplicated: SurveyTemplateSection = JSON.parse(JSON.stringify(sections[this._selectedSectionIndex]));
             duplicated.Key = PepGuid.newGuid();
             const newSelectedIndex = this._selectedSectionIndex > -1 && this._selectedSectionIndex < sections.length ?
                 this._selectedSectionIndex + 1 : sections.length;
@@ -263,7 +264,9 @@ export class SurveysService {
             const sections = this._sectionsSubject.getValue();
             const currentSection = sections[this._selectedSectionIndex];
             if (currentSection?.Questions?.length > this._selectedQuestionIndex) {
-                const duplicated: SurveyTemplateQuestion = _.clone(currentSection.Questions[this._selectedQuestionIndex]);
+                // const duplicated: SurveyTemplateQuestion = _.clone(currentSection.Questions[this._selectedQuestionIndex]);
+                const duplicated: SurveyTemplateQuestion = JSON.parse(JSON.stringify(currentSection.Questions[this._selectedQuestionIndex]));
+                
                 duplicated.Key = PepGuid.newGuid();
                 const newSelectedIndex = this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ?
                     this._selectedQuestionIndex + 1 : currentSection.Questions.length;
