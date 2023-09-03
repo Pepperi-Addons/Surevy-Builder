@@ -8,7 +8,6 @@ import { AddonFile, Survey } from '@pepperi-addons/papi-sdk';
 import { filter } from '@pepperi-addons/pepperi-filters';
 import { FilePickerOptions, FilesSource } from '@pepperi-addons/cpi-node/build/cpi-side/app/components/file-picker';
 import config from '../addon.config.json';
-const mime = require('mime-types')
 
 class SurveysService {
     
@@ -555,7 +554,21 @@ class SurveysService {
     }
 
     private getPfsFileKey(mergedSurvey: SurveyTemplate, currentQuestion: SurveyTemplateQuestion, mimeType: string): string | undefined {
-        const extension = mime.extension(mimeType);
+        const imagesMimeTypes = {
+            "image/bmp": ".bmp",
+            "image/x-icon": ".ico",
+            "image/vnd.microsoft.icon": ".ico",
+            "image/tiff": ".tiff",
+            "image/apng": ".apng",
+            "image/avif": ".avif",
+            "image/gif": ".gif",
+            "image/jpeg": ".jpg",
+            "image/png": ".png",
+            "image/svg+xml": ".svg",
+            "image/webp": ".webp",
+        }
+
+        const extension = imagesMimeTypes[mimeType] || '';
         return `${mergedSurvey.SurveyKey}_${currentQuestion.Key}_${extension}`;
     }
 

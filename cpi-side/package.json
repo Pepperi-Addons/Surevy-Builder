@@ -17,7 +17,6 @@
     "@pepperi-addons/cpi-node": "^1.4.1",
     "@pepperi-addons/papi-sdk": "^1.57.5",
     "@pepperi-addons/pepperi-filters": "^1.0.17",
-    "mime-types": "^2.1.35",
     "rollup-plugin-typescript2": "^0.30.0",
     "shared": "file:../shared"
   },
