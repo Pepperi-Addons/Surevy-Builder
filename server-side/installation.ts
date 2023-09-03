@@ -30,6 +30,7 @@ export async function upgrade(client: Client, request: Request): Promise<any> {
     try {
         const service = new SurveyApiService(client)
         await service.upsertRelationsAndScheme(false);
+        await service.performMigration(request.body.FromVersion, request.body.ToVersion);
     } catch (err) {
         throw new Error(`Failed to create ADAL Tables. error - ${err}`);
     }
