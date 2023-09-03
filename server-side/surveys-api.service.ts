@@ -9,6 +9,7 @@ import { DEFAULT_BLANK_SURVEY_DATA, ISurveyTemplateBuilderData, SurveyTemplate, 
 
 import { v4 as uuidv4 } from 'uuid';
 import { SurveysValidatorService } from './surveys-validator.service';
+import semver from 'semver';
 
 const bundleFileName = 'survey_builder';
 const TEMPLATE_SCHEME_NAME_PROPERTY = 'TemplateSchemaName';
@@ -53,6 +54,7 @@ export class SurveyApiService {
                 Sync: true
             },
             Type: 'data',
+            PushLocalChanges: true,
             ...udcTempObject
         };
         const createSurveyTable = await this.papiClient.userDefinedCollections.schemes.upsert(schema as any);
@@ -327,10 +329,22 @@ export class SurveyApiService {
         return templateToReturn;
     }
 
+    private async migrateToV0_7_40(fromVersion: string) {
+        // check if the upgrade is from versions before 0_7_40
+        console.log('semver comperation' + semver.lt(fromVersion, '0_7_40') + ' fromVersion: ' + fromVersion);
+        if (fromVersion && semver.lt(fromVersion, '0_7_40')) {
+            await this.createSchemeTables();
+        }
+    }
+
     /***********************************************************************************************/
     /*                                  Public functions
     /***********************************************************************************************/
     
+    async performMigration(fromVersion, toVersion) {
+        await this.migrateToV0_7_40(fromVersion);
+    }
+
     async upsertRelationsAndScheme(install = true): Promise<void> {
         if (install) {
             await this.createSchemeTables();
