@@ -330,9 +330,9 @@ export class SurveyApiService {
     }
 
     private async migrateToV0_7_40(fromVersion: string) {
-        // check if the upgrade is from versions before 0_7_40
-        console.log('semver comperation' + semver.lt(fromVersion, '0_7_40') + ' fromVersion: ' + fromVersion);
-        if (fromVersion && semver.lt(fromVersion, '0_7_40')) {
+        // check if the upgrade is from versions before 0.7.41
+        console.log('semver comperation' + semver.lt(fromVersion, '0.7.41') + ' fromVersion: ' + fromVersion);
+        if (fromVersion && semver.lt(fromVersion, '0.7.41')) {
             await this.createSchemeTables();
         }
     }
