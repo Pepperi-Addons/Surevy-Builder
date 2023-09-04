@@ -16,9 +16,9 @@
         "start": "tsc -w app.local.ts"
     },
     "devDependencies": {
-        "@rollup/plugin-commonjs": "^25.0.4",
+        "@rollup/plugin-commonjs": "^12.0.0",
         "@rollup/plugin-json": "^4.1.0",
-        "@rollup/plugin-node-resolve": "^15.2.1",
+        "@rollup/plugin-node-resolve": "^8.0.0",
         "@types/dotenv": "^8.2.0",
         "@types/node": "^10.17.24",
         "nodemon": "^2.0.4",
@@ -33,6 +33,6 @@
         "@types/uuid": "^8.3.4",
         "semver": "^7.5.4",
         "shared": "file:../shared",
-        "uuid": "^9.0.0"
+        "uuid": "^8.3.2"
     }
 }
