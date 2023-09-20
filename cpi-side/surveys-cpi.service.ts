@@ -558,7 +558,7 @@ class SurveysService {
                     await this.setSurveyModel(survey);
         
                     // Calc the show if
-                    this.calcSurveyTemplate(mergedSurvey);
+                    await this.calcSurveyTemplate(mergedSurvey);
                 }
             }
         } else {
