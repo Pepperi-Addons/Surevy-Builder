@@ -759,7 +759,7 @@ export class SurveysService {
     }
 
     async handleSurveyQuestionClick(questionKey: string, actionType: SurveyQuestionClickActionType): Promise<void> {
-        debugger;
+        // debugger;
         if (this._surveyModelKey.length > 0) {
             await this.waitWhileProccessing();
 
@@ -775,7 +775,7 @@ export class SurveysService {
                 },
                 completion: (res: SurveyClientEventResult) => {
                     this._processingSurvey = false;
-                    debugger;
+                    // debugger;
 
                     if (res.Success) {
                         // Notify survey change to update survey object with all changes (like show if questions if added or removed).

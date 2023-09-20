@@ -20,7 +20,7 @@ export async function load(configuration: any) {
 
     // Handle on survey load
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD as any, {}, async (data): Promise<SurveyClientEventResult> => {
-        debugger;
+        // debugger;
         const service = new SurveysService();
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD} -> before`);
 
@@ -197,7 +197,7 @@ export async function load(configuration: any) {
     });
 
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK as any, {}, async (data): Promise<SurveyClientEventResult> => {
-        debugger;
+        // debugger;
         const service = new SurveysService();
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK} -> before`);
 

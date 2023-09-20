@@ -108,6 +108,11 @@ export interface SurveyTemplateRowProjection {
     ModificationDate?: string,
 }
 
+export interface SurveyTemplateQuestionFileValue {
+    Key: string,
+    URL?: string,
+}
+
 export interface ISurveyTemplateBuilderData {
     surveyTemplate: SurveyTemplate,
 }
