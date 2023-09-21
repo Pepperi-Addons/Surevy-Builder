@@ -1,7 +1,7 @@
 import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 import { SurveyTemplate, SURVEY_TEMPLATES_BASE_TABLE_NAME, SurveyTemplateSection, SurveyStatusType, 
     SURVEYS_BASE_TABLE_NAME, SURVEYS_TABLE_NAME, RESOURCE_NAME_PROPERTY, SURVEY_TEMPLATES_TABLE_NAME, DRAFT_SURVEY_TEMPLATES_TABLE_NAME, 
-    SurveyQuestionClickActionType, SurveyTemplateQuestionFileValue,
+    SurveyQuestionClickActionType,
     SurveyTemplateQuestion,
     SURVEY_PFS_TABLE_NAME} from 'shared';
 import { AddonFile, Survey } from '@pepperi-addons/papi-sdk';
@@ -152,17 +152,18 @@ class SurveysService {
 
                 // If the question is photo or signature, get the file from the pfs and set the URL in the value.
                 if (question.Value && (question.Type === 'photo' || question.Type === 'signature')) {
-                    const questionValue: SurveyTemplateQuestionFileValue = { Key: question.Value, URL: '' };
+                    // const questionValue: SurveyTemplateQuestionFileValue = { Key: question.Value, URL: '' };
+                    let pfsURL = '';
                     try {
                         const pfsFile = await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).key(question.Value).get();
-                        questionValue.URL = pfsFile?.URL || '';
+                        pfsURL = pfsFile?.URL || '';
                     } catch {
                         // Do nothing
                     }
 
                     // *** Important ***
-                    // Here we override the template value to be of SurveyTemplateQuestionFileValue type.
-                    question.Value = questionValue; 
+                    // Here we override the template value to be the URL of the file in the pfs.
+                    question.Value = pfsURL; 
                 }
             }
         }
@@ -432,7 +433,7 @@ class SurveysService {
                 this.setSurveyAnswers(survey, mergedSurvey);
                 await this.setSurveyModel(survey)
     
-                // Calc the show if
+                // Calc the survey template.
                 await this.calcSurveyTemplate(mergedSurvey);
             }
         } else {
@@ -454,19 +455,19 @@ class SurveysService {
             let someQuestionChanged = false;
             const survey = await this.getSurveyModel(mergedSurvey.SurveyKey);
 
-            // Get the question
-            let currentQuestion = this.getQuestionByKey(mergedSurvey, questionKey);
+            // Get the question template
+            let currentTemplateQuestion = this.getQuestionByKey(mergedSurvey, questionKey);
 
             // If the question exist and the type is allowed for click.
-            if (currentQuestion && (currentQuestion.Type === 'photo' || currentQuestion.Type === 'signature')) {
+            if (currentTemplateQuestion && (currentTemplateQuestion.Type === 'photo' || currentTemplateQuestion.Type === 'signature')) {
                 if (action === 'View') {
-                    if (currentQuestion.Value) {
+                    if (currentTemplateQuestion.Value) {
                         // *** Important *** 
                         // Here the currentQuestion.Value is SurveyTemplateQuestionFileValue type.
-                        const pfsKey = (currentQuestion.Value as SurveyTemplateQuestionFileValue).Key;
-                        const pfsFile = await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).key(pfsKey).get();
+                        // const pfsKey = (currentQuestion.Value as SurveyTemplateQuestionFileValue).Key;
+                        // const pfsFile = await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).key(pfsKey).get();
                         const options = {
-                            uri: pfsFile?.URL || '',
+                            uri: currentTemplateQuestion.Value || '',
                         };
 
                         // Raise client event for view.
@@ -481,11 +482,11 @@ class SurveysService {
                     }
                 } else if (action === 'Set') {
                     const allowedFilesSources: FilesSource[] = []; // FileSourceType = 'Camera' | 'PhotoLibrary' | 'Files' | 'SignaturePad';
-                    if (currentQuestion.Type === 'photo') {
+                    if (currentTemplateQuestion.Type === 'photo') {
                         allowedFilesSources.push({ type: 'Camera', title: 'Take Photo'});
                         
                         // If currentQuestion.AllowOnlyCameraPhoto is not true then allow only camera
-                        if (currentQuestion.AllowOnlyCameraPhoto !== true) {
+                        if (currentTemplateQuestion.AllowOnlyCameraPhoto !== true) {
                             allowedFilesSources.push({ type: 'PhotoLibrary', title: 'Select Photo'});
                             allowedFilesSources.push({ type: 'Files', title: 'Select File'});
                         }
@@ -496,13 +497,13 @@ class SurveysService {
                     const allowedExtensions = ["bmp", "gif", "jpg", "jpeg", "png"];
 
                     const options: FilePickerOptions = {
-                        title: `Select ${currentQuestion.Type === 'photo' ? 'Image' : 'Signature'}`,
+                        title: `Select ${currentTemplateQuestion.Type === 'photo' ? 'Image' : 'Signature'}`,
                         allowedFilesSources: allowedFilesSources,
                         allowedExtensions: allowedExtensions,
                         sizeLimit: 1024 * 10,
                         compression: {
-                            quality: currentQuestion.PhotoQuality || 50,
-                            megapixels: currentQuestion.MaxMegapixel || 2,
+                            quality: currentTemplateQuestion.PhotoQuality || 50,
+                            megapixels: currentTemplateQuestion.MaxMegapixel || 2,
                         }
                     };
 
@@ -513,7 +514,7 @@ class SurveysService {
 
                         // Add this temp url to a real one (PFS) and save it in the survey model.
                         const pfsBody: AddonFile = {
-                            Key: this.getPfsFileKey(mergedSurvey, currentQuestion, res.mimeType),
+                            Key: this.getPfsFileKey(mergedSurvey, currentTemplateQuestion, res.mimeType),
                             MIME: res.mimeType,
                             Sync: 'Always',
                             Cache: false,
@@ -528,8 +529,8 @@ class SurveysService {
                         const pfsResult: AddonFile = await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).post(pfsBody);
 
                         // *** Important *** 
-                        // Set only the key in the survey model.
-                        currentQuestion.Value = pfsResult.Key; 
+                        // Set only the key and later replace it to URL in (calcSurveyTemplate function).
+                        currentTemplateQuestion.Value = pfsResult.Key; 
                         someQuestionChanged = true;
                     } else {
                         console.log('filePicker failed: ', res?.reason); // reason can be 'UserCanceled', 'AccessDenied' or 'SizeLimitExceeded'
@@ -537,27 +538,29 @@ class SurveysService {
                         errorMessage = `URI failed to open: ${res?.reason}`;
                     }
                 } else if (action === 'Delete') {
+                    // Get the value from the servey model cause in the template we return the URL.
+                    const currentQuestionModelValue = survey.Answers?.find(a => a.Key === questionKey)?.Answer || '';
+
                     // Delete this PFS url and save '' in the survey model.
-                    if (currentQuestion.Value) {
+                    if (currentQuestionModelValue) {
                         // *** Important *** 
-                        // Here the currentQuestion.Value is SurveyTemplateQuestionFileValue type.
-                        const pfsKey = (currentQuestion.Value as SurveyTemplateQuestionFileValue).Key;
+                        // The currentQuestionModelValue is the pfs key.
                         await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).post({
-                            Key: pfsKey, 
+                            Key: currentQuestionModelValue, 
                             Hidden: true,
                         });
 
-                        currentQuestion.Value = '';
+                        currentTemplateQuestion.Value = '';
                         someQuestionChanged = true;
                     }
                 }
     
                 if (someQuestionChanged) {
-                    // Set the new Answers and save in the DB.
+                    // Set the new Answers and save in the DB. When the value of the question here must be the PFS Key and we replace it to URL in (calcSurveyTemplate function).
                     this.setSurveyAnswers(survey, mergedSurvey);
                     await this.setSurveyModel(survey);
         
-                    // Calc the show if
+                    // Calc the survey template
                     await this.calcSurveyTemplate(mergedSurvey);
                 }
             }

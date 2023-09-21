@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewIni
 import { CdkDragEnd, CdkDragStart } from '@angular/cdk/drag-drop';
 import { SurveysService } from 'src/app/services/surveys.service';
 import { ValidationService } from 'src/app/services/validation.service';
-import { SurveyTemplateQuestion, SurveyTemplateQuestionFileValue, SurveyTemplateQuestionType } from 'shared';
+import { SurveyTemplateQuestion, SurveyTemplateQuestionType } from 'shared';
 import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
 import { IPepFieldClickEvent } from '@pepperi-addons/ngx-lib';
 
@@ -17,12 +17,7 @@ export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
     set question(value: SurveyTemplateQuestion) {
         this._question = value;
 
-        if (this._question && this._question.Type === 'photo' || this._question.Type === 'signature') {
-            const questionValue: SurveyTemplateQuestionFileValue = (this._question.Value as SurveyTemplateQuestionFileValue);
-            this.questionValue = questionValue.URL;
-        } else {
-            this.questionValue = this.question.Value;
-        }
+        this.questionValue = this.question.Value;
         this.valueLength = this.questionValue ? this.questionValue.length : 0;
     }
     get question(): SurveyTemplateQuestion {
