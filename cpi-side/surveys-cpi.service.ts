@@ -1,6 +1,6 @@
 import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 import { SurveyTemplate, SURVEY_TEMPLATES_BASE_TABLE_NAME, SurveyTemplateSection, SurveyStatusType, 
-    SURVEYS_BASE_TABLE_NAME, SURVEYS_TABLE_NAME, RESOURCE_NAME_PROPERTY, SURVEY_TEMPLATES_TABLE_NAME, DRAFT_SURVEY_TEMPLATES_TABLE_NAME, 
+    SURVEYS_BASE_TABLE_NAME, SURVEYS_TABLE_NAME, RESOURCE_NAME_PROPERTY, 
     SurveyQuestionClickActionType,
     SurveyTemplateQuestion,
     SURVEY_PFS_TABLE_NAME} from 'shared';
@@ -152,7 +152,6 @@ class SurveysService {
 
                 // If the question is photo or signature, get the file from the pfs and set the URL in the value.
                 if (question.Value && (question.Type === 'photo' || question.Type === 'signature')) {
-                    // const questionValue: SurveyTemplateQuestionFileValue = { Key: question.Value, URL: '' };
                     let pfsURL = '';
                     try {
                         const pfsFile = await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).key(question.Value).get();
@@ -463,9 +462,7 @@ class SurveysService {
                 if (action === 'View') {
                     if (currentTemplateQuestion.Value) {
                         // *** Important *** 
-                        // Here the currentQuestion.Value is SurveyTemplateQuestionFileValue type.
-                        // const pfsKey = (currentQuestion.Value as SurveyTemplateQuestionFileValue).Key;
-                        // const pfsFile = await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).key(pfsKey).get();
+                        // Here the currentQuestion.Value is the URL of the pfs.
                         const options = {
                             uri: currentTemplateQuestion.Value || '',
                         };
@@ -518,6 +515,7 @@ class SurveysService {
                             MIME: res.mimeType,
                             Sync: 'Always',
                             Cache: false,
+                            Hidden: false,
                         };
 
                         if (await this.isWebapp()) {

@@ -87,7 +87,7 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        debugger;
+        // debugger;
         const addonUUID = this.navigationService.addonUUID;
         // This is survey key if it's runtime an if not it's the survey template key (for builder)
         const key = 
