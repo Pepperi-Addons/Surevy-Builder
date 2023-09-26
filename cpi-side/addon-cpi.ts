@@ -7,11 +7,18 @@ import { USER_ACTION_ON_SURVEY_DATA_LOAD, USER_ACTION_ON_SURVEY_VIEW_LOAD, CLIEN
     CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK } from 'shared';
 export const router = Router();
 
+// For keep all merged surveys in memory
 if (!global['mergedSurveys']) {
     global['mergedSurveys'] = new Map<string, SurveyTemplate | null>();
 }
-
 const mergedSurveys = global['mergedSurveys'];
+
+// For keep all questions keys and values (relations from PFS etc) in memory
+// For example: { "SurveyKey": { "QuestionKey": "QuestionValue" } } QuestionValue is the value from relation (like PFS etc).
+if (!global['mergedSurveysQuestionsRelationValue']) {
+    global['mergedSurveysQuestionsRelationValue'] = new Map<string, Map<string, string>>();
+}
+const mergedSurveysQuestionsRelationValue = global['mergedSurveysQuestionsRelationValue'];
 
 export async function load(configuration: any) {
     /***********************************************************************************************/
@@ -21,7 +28,7 @@ export async function load(configuration: any) {
     // Handle on survey load
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD as any, {}, async (data): Promise<SurveyClientEventResult> => {
         // debugger;
-        const service = new SurveysService();
+        const service = new SurveysService(mergedSurveysQuestionsRelationValue);
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD} -> before`);
 
         let mergedSurvey: SurveyTemplate | null = null;
@@ -85,6 +92,11 @@ export async function load(configuration: any) {
 
         if (surveyKey && mergedSurveys.has(surveyKey)) {
             mergedSurveys.delete(surveyKey);
+
+            // Delete also all questions keys and values (relations from PFS etc) if exist.
+            if (mergedSurveysQuestionsRelationValue.has(surveyKey)) {
+                mergedSurveysQuestionsRelationValue.delete(surveyKey);
+            }
         }
 
         await data.client?.navigateBack();
@@ -92,7 +104,7 @@ export async function load(configuration: any) {
 
     // Handle on survey field change
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE as any, {}, async (data): Promise<SurveyClientEventResult> => {
-        const service = new SurveysService();
+        const service = new SurveysService(mergedSurveysQuestionsRelationValue);
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE} -> before`);
 
         const surveyKey = data.SurveyKey || undefined;
@@ -147,7 +159,7 @@ export async function load(configuration: any) {
 
     // Handle on survey question change
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE as any, {}, async (data): Promise<SurveyClientEventResult> => {
-        const service = new SurveysService();
+        const service = new SurveysService(mergedSurveysQuestionsRelationValue);
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE} -> before`);
 
         const surveyKey = data.SurveyKey || undefined;
@@ -198,7 +210,7 @@ export async function load(configuration: any) {
 
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK as any, {}, async (data): Promise<SurveyClientEventResult> => {
         // debugger;
-        const service = new SurveysService();
+        const service = new SurveysService(mergedSurveysQuestionsRelationValue);
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK} -> before`);
 
         const surveyKey = data.SurveyKey || undefined;
@@ -247,7 +259,7 @@ export async function load(configuration: any) {
             const resourceName = data.ResourceName || undefined;
             
             if (surveyTemplateKey && resourceName) { 
-                const service = new SurveysService();
+                const service = new SurveysService(mergedSurveysQuestionsRelationValue);
                 
                 // Emit server event USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD
                 console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD} - before getObjectPropsForSurveyTemplateUserEvent`);
@@ -286,7 +298,7 @@ export async function load(configuration: any) {
 //     try {
 //         const surveyKey = req.query['survey_key']?.toString();
 //         if (surveyKey) {
-//             const service = new SurveysService();
+//             const service = new SurveysService(mergedSurveysQuestionsRelationValue);
 //             result = await service.getSurveyData(surveyKey);
 //         }
 //     } catch (err) {

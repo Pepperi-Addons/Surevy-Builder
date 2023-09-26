@@ -10,8 +10,14 @@ import { FilePickerOptions, FilesSource } from '@pepperi-addons/cpi-node/build/c
 import config from '../addon.config.json';
 
 class SurveysService {
-    
-    constructor() {}
+    private _mergedSurveysQuestionsRelationValue: Map<string, Map<string, string>>;
+    get mergedSurveysQuestionsRelationValue(): Map<string, Map<string, string>> {
+        return this._mergedSurveysQuestionsRelationValue;
+    }
+
+    constructor(mergedSurveysQuestionsRelationValue: Map<string, Map<string, string>>) {
+        this._mergedSurveysQuestionsRelationValue = mergedSurveysQuestionsRelationValue || new Map<string, Map<string, string>>();
+    }
 
     /***********************************************************************************************/
     //                              Private functions
@@ -62,11 +68,48 @@ class SurveysService {
     //     return draftSurveyTemplate;
     // }
 
-    private mergeSurveyIntoTemplateData(survey: Survey, surveyTemplate: SurveyTemplate): void {
+    private setMergedSurveysQuestionsRelationValue(surveyKey: string, questionKey: string, relationKey: string | undefined) {
+        if (!this.mergedSurveysQuestionsRelationValue.has(surveyKey)) {
+            this.mergedSurveysQuestionsRelationValue.set(surveyKey, new Map<string, string>());
+        }
+
+        const currentSurveyQuestions = this.mergedSurveysQuestionsRelationValue.get(surveyKey);
+
+        if (relationKey) {
+            currentSurveyQuestions?.set(questionKey, relationKey);
+        }
+    }
+
+    private async setQuestionTemplateValue(surveyKey: string, question: SurveyTemplateQuestion, value: string): Promise<void> {
+        question.Value = value;
+
+        // If the question is photo or signature, get the file from the pfs and set the URL in the value.
+        if (value && (question.Type === 'photo' || question.Type === 'signature')) {
+            let pfsURL = '';
+            try {
+                const pfsFile = await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).key(value).get();
+                pfsURL = pfsFile?.URL || '';
+
+                // *** Important ***
+                // Here we set the mapping between the survey key and the question key to the pfs file key.
+                this.setMergedSurveysQuestionsRelationValue(surveyKey, question.Key, pfsFile.Key);
+            } catch {
+                // Do nothing
+            }
+
+            // Here we override the template value to be the URL of the file in the pfs.
+            question.Value = pfsURL; 
+        }
+    }
+
+    private async mergeSurveyIntoTemplateData(survey: Survey, surveyTemplate: SurveyTemplate): Promise<void> {
         this.printLog(`mergeSurveyIntoTemplateData -> before`);
 
+        surveyTemplate.StatusName = survey.StatusName && survey.StatusName.length > 0 ? survey.StatusName as SurveyStatusType : 'InCreation';
+        surveyTemplate.SurveyKey = survey.Key;
+
         // Calc the merge survey template object.
-        if (survey.Answers && survey.Answers?.length > 0) {
+        if (surveyTemplate.SurveyKey && survey.Answers && survey.Answers?.length > 0) {
             // For each answer set it in the right question.
             for (let answerIndex = 0; answerIndex < survey.Answers.length; answerIndex++) {
                 const answer = survey.Answers[answerIndex];
@@ -78,9 +121,9 @@ class SurveysService {
                     for (let questionIndex = 0; questionIndex < section.Questions?.length; questionIndex++) {
                         const question = section.Questions[questionIndex];
                         
-                        // Set the value and break this loop
+                        // Set the value and break this loop 
                         if (question.Key === answer?.Key) {
-                            question.Value = answer?.Answer;
+                            await this.setQuestionTemplateValue(surveyTemplate.SurveyKey, question, answer.Answer);
                             valueIsSet = true;
                             break;
                         }
@@ -93,9 +136,6 @@ class SurveysService {
                 }
             }
         }
-
-        surveyTemplate.StatusName = survey.StatusName && survey.StatusName.length > 0 ? survey.StatusName as SurveyStatusType : 'InCreation';
-        surveyTemplate.SurveyKey = survey.Key;
         
         this.printLog(`mergeSurveyIntoTemplateData -> after`);
     }
@@ -150,20 +190,24 @@ class SurveysService {
             for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
                 const question = section.Questions[questionIndex];
 
-                // If the question is photo or signature, get the file from the pfs and set the URL in the value.
-                if (question.Value && (question.Type === 'photo' || question.Type === 'signature')) {
-                    let pfsURL = '';
-                    try {
-                        const pfsFile = await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).key(question.Value).get();
-                        pfsURL = pfsFile?.URL || '';
-                    } catch {
-                        // Do nothing
-                    }
+                // Do some manipulation on the question if needed.
+                // ...
 
-                    // *** Important ***
-                    // Here we override the template value to be the URL of the file in the pfs.
-                    question.Value = pfsURL; 
-                }
+                // Don't needed anymore.
+                // // If the question is photo or signature, get the file from the pfs and set the URL in the value.
+                // if (question.Value && (question.Type === 'photo' || question.Type === 'signature')) {
+                //     let pfsURL = '';
+                //     try {
+                //         const pfsFile = await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).key(question.Value).get();
+                //         pfsURL = pfsFile?.URL || '';
+                //     } catch {
+                //         // Do nothing
+                //     }
+
+                //     // *** Important ***
+                //     // Here we override the template value to be the URL of the file in the pfs.
+                //     question.Value = pfsURL; 
+                // }
             }
         }
 
@@ -211,9 +255,14 @@ class SurveysService {
                 const question = section.Questions[questionIndex];
 
                 if (question.Value?.length > 0) {
+                    let valueToSet = question.Value;
+                    if (surveyTemplate.SurveyKey && (question.Type === 'photo' || question.Type === 'signature')) {
+                        valueToSet = this.mergedSurveysQuestionsRelationValue.get(surveyTemplate.SurveyKey)?.get(question.Key) || '';
+                    }
+
                     survey.Answers.push({
                         Key: question.Key, 
-                        Answer: question.Value
+                        Answer: valueToSet
                     });
                 }
             }
@@ -287,7 +336,7 @@ class SurveysService {
             mergedSurvey = await this.getSurveyTemplate(survey.Template);
     
             if (mergedSurvey) {
-                this.mergeSurveyIntoTemplateData(survey, mergedSurvey);
+                await this.mergeSurveyIntoTemplateData(survey, mergedSurvey);
                 await this.calcSurveyTemplate(mergedSurvey);
             }
         } else {
@@ -461,8 +510,7 @@ class SurveysService {
             if (currentTemplateQuestion && (currentTemplateQuestion.Type === 'photo' || currentTemplateQuestion.Type === 'signature')) {
                 if (action === 'View') {
                     if (currentTemplateQuestion.Value) {
-                        // *** Important *** 
-                        // Here the currentQuestion.Value is the URL of the pfs.
+                        // The currentQuestion.Value is always the URL of the pfs.
                         const options = {
                             uri: currentTemplateQuestion.Value || '',
                         };
@@ -526,9 +574,10 @@ class SurveysService {
                         
                         const pfsResult: AddonFile = await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).post(pfsBody);
 
-                        // *** Important *** 
-                        // Set only the key and later replace it to URL in (calcSurveyTemplate function).
-                        currentTemplateQuestion.Value = pfsResult.Key; 
+                        // *** Important ***
+                        // Set new map entry for the relation between the survey and the question.
+                        this.setMergedSurveysQuestionsRelationValue(mergedSurvey.SurveyKey, questionKey, pfsResult.Key);
+                        currentTemplateQuestion.Value = pfsResult.URL;
                         someQuestionChanged = true;
                     } else {
                         console.log('filePicker failed: ', res?.reason); // reason can be 'UserCanceled', 'AccessDenied' or 'SizeLimitExceeded'
@@ -536,25 +585,27 @@ class SurveysService {
                         errorMessage = `URI failed to open: ${res?.reason}`;
                     }
                 } else if (action === 'Delete') {
-                    // Get the value from the servey model cause in the template we return the URL.
-                    const currentQuestionModelValue = survey.Answers?.find(a => a.Key === questionKey)?.Answer || '';
+                    // Get the pfs key from the mergedSurveysQuestionsRelationValue map.
+                    const pfsKey = this.mergedSurveysQuestionsRelationValue.get(mergedSurvey.SurveyKey)?.get(questionKey);
+                    // survey.Answers?.find(a => a.Key === questionKey)?.Answer || '';
 
                     // Delete this PFS url and save '' in the survey model.
-                    if (currentQuestionModelValue) {
-                        // *** Important *** 
-                        // The currentQuestionModelValue is the pfs key.
+                    if (pfsKey) {
                         await pepperi.addons.pfs.uuid(config.AddonUUID).schema(SURVEY_PFS_TABLE_NAME).post({
-                            Key: currentQuestionModelValue, 
+                            Key: pfsKey, 
                             Hidden: true,
                         });
 
+                        // *** Important ***
+                        // Set new map entry for the relation between the survey and the question.
+                        this.setMergedSurveysQuestionsRelationValue(mergedSurvey.SurveyKey, questionKey, '');
                         currentTemplateQuestion.Value = '';
                         someQuestionChanged = true;
                     }
                 }
     
                 if (someQuestionChanged) {
-                    // Set the new Answers and save in the DB. When the value of the question here must be the PFS Key and we replace it to URL in (calcSurveyTemplate function).
+                    // Set the new Answers and save in the DB.
                     this.setSurveyAnswers(survey, mergedSurvey);
                     await this.setSurveyModel(survey);
         
