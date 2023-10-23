@@ -20,7 +20,7 @@ export const USER_ACTION_ON_SURVEY_VIEW_LOAD = 'OnSurveyViewLoad';
 export const CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD = 'OnClientSurveyUnload';
 export const USER_ACTION_ON_SURVEY_VIEW_UNLOAD = 'OnSurveyUnload';
 
-export const CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE = 'OnClientSurveyFieldChange';
+export const CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE = 'OnClientSurveyFieldChange';
 export const USER_ACTION_ON_SURVEY_FIELD_CHANGED = 'OnSurveyFieldChanged';
 
 export const CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE = 'OnClientSurveyQuestionChange';

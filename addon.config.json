@@ -7,7 +7,8 @@
   "Endpoints": [
     "installation.ts",
     "api.ts",
-    "internal_api.ts"
+    "internal_api.ts",
+    "event_filters.ts"
   ],
   "Editors": [
     "main"

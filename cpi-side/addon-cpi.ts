@@ -1,7 +1,7 @@
 import '@pepperi-addons/cpi-node'
 import SurveysService from './surveys-cpi.service';
 import { USER_ACTION_ON_SURVEY_DATA_LOAD, USER_ACTION_ON_SURVEY_VIEW_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, 
-    CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, USER_ACTION_ON_SURVEY_FIELD_CHANGED, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE,
+    CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, USER_ACTION_ON_SURVEY_FIELD_CHANGED, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE,
     CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE, USER_ACTION_ON_SURVEY_QUESTION_CHANGED, SurveyTemplate, SurveyClientEventResult, 
     CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD, USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD, SurveyTemplateClientEventResult,
     CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK } from 'shared';
@@ -103,9 +103,9 @@ export async function load(configuration: any) {
     });
 
     // Handle on survey field change
-    pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE as any, {}, async (data): Promise<SurveyClientEventResult> => {
+    pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE as any, {}, async (data): Promise<SurveyClientEventResult> => {
         const service = new SurveysService(mergedSurveysQuestionsRelationValue);
-        service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE} -> before`);
+        service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE} -> before`);
 
         const surveyKey = data.SurveyKey || undefined;
         let mergedSurvey: SurveyTemplate | null = mergedSurveys.get(surveyKey) || null;
@@ -115,20 +115,20 @@ export async function load(configuration: any) {
             if (surveyKey && data.ChangedFields?.length > 0) { 
                 const objectPropsToAddEventData = await service.getObjectPropsForSurveyUserEvent(data.SurveyKey);
                 const res: { mergedSurvey, changedFields, shouldNavigateBack, isValid} = await service.onSurveyFieldChange(data.client, mergedSurvey, data.ChangedFields);
-                // console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE} - after onSurveyFieldChange res is ${JSON.stringify(res)}`);
+                // console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE} - after onSurveyFieldChange res is ${JSON.stringify(res)}`);
 
                 if (res.isValid) {
                     mergedSurvey = res.mergedSurvey;
 
                     // Emit server event USER_ACTION_ON_SURVEY_FIELD_CHANGED
-                    service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE} - fire ${USER_ACTION_ON_SURVEY_FIELD_CHANGED} event -> before`);
+                    service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE} - fire ${USER_ACTION_ON_SURVEY_FIELD_CHANGED} event -> before`);
                     const userEventResult: any = await pepperi.events.emit(USER_ACTION_ON_SURVEY_FIELD_CHANGED, {
                         SurveyView: res.mergedSurvey,
                         ChangedFields: res.changedFields,
                         ...objectPropsToAddEventData
                     }, data);
-                    service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE} - fire ${USER_ACTION_ON_SURVEY_FIELD_CHANGED} event -> after`);
-                    console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE} - ${USER_ACTION_ON_SURVEY_FIELD_CHANGED} event result is ${JSON.stringify(userEventResult)}`);
+                    service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE} - fire ${USER_ACTION_ON_SURVEY_FIELD_CHANGED} event -> after`);
+                    console.log(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE} - ${USER_ACTION_ON_SURVEY_FIELD_CHANGED} event result is ${JSON.stringify(userEventResult)}`);
                     
                     if (userEventResult?.data?.SurveyView) {
                         mergedSurvey = userEventResult.data.SurveyView;
@@ -149,7 +149,7 @@ export async function load(configuration: any) {
             success = false;
         }
 
-        service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE} -> after`);
+        service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE} -> after`);
 
         return {
             SurveyView: mergedSurvey,

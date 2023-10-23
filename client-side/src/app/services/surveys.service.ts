@@ -8,7 +8,7 @@ import { NavigationService } from "./navigation.service";
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
 import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData, SurveyClientEventResult, SurveyTemplateClientEventResult,
-    SurveyTemplateQuestion, SurveyTemplateQuestionType, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE,
+    SurveyTemplateQuestion, SurveyTemplateQuestionType, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE,
     SurveyStatusType, CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, SURVEY_TEMPLATES_TABLE_NAME, CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK, SurveyQuestionClickActionType } from 'shared';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { MatDialogRef } from "@angular/material/dialog";
@@ -700,7 +700,7 @@ export class SurveysService {
             this._processingSurvey = true;
 
             const eventData = {
-                eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHAGE,
+                eventKey: CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE,
                 eventData: {
                     SurveyKey: this._surveyModelKey,
                     ChangedFields: [{ FieldID: 'StatusName', NewValue: status }],
