@@ -343,30 +343,32 @@ export class SurveyApiService {
         }
     }
 
-    private async upsertEventsRelation(eventName, displayEventName, fields) {
-        const relation = {
-            Type: "AddonAPI",
-            AddonUUID: this.addonUUID,
-            DisplayEventName: displayEventName,
-            RelationName: JOURNEY_EVENTS_RELATION_NAME,
-            Name: eventName,
-            Description: "",
-            AddonRelativeURL: `/event_filters/get_filter_by_event?event=${eventName}&resourceName=${SURVEY_TEMPLATES_TABLE_NAME}`,
-            Fields: fields,
-        };
+    // TODO: Add Journey code when needed.
+    // private async upsertEventsRelation(eventName, displayEventName, fields) {
+    //     const relation = {
+    //         Type: "AddonAPI",
+    //         AddonUUID: this.addonUUID,
+    //         DisplayEventName: displayEventName,
+    //         RelationName: JOURNEY_EVENTS_RELATION_NAME,
+    //         Name: eventName,
+    //         Description: "",
+    //         AddonRelativeURL: `/event_filters/get_filter_by_event?event=${eventName}&resourceName=${SURVEY_TEMPLATES_TABLE_NAME}`,
+    //         Fields: fields,
+    //     };
 
-        await this.upsertRelation(relation);
-    }
+    //     await this.upsertRelation(relation);
+    // }
 
-    private async upsertJourneyEventsRelation() {
-        const promises = [
-            this.upsertEventsRelation(CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, "Survey load", [{"FieldID": "SurveyKey"}]),
-            this.upsertEventsRelation(CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE, "Survey field change", [{"FieldID": "SurveyKey"}, {"FieldID": "ChangedFields"}]),
-            this.upsertEventsRelation(CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE, "Survey question change", [{"FieldID": "SurveyKey"}, {"FieldID": "ChangedFields"}]),
-            this.upsertEventsRelation(CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK, "Survey question click", [{"FieldID": "SurveyKey"}, {"FieldID": "FieldID"}, {"FieldID": "Action"}]),
-        ];
-        Promise.all(promises);
-    }
+    // TODO: Add Journey code when needed.
+    // private async upsertJourneyEventsRelation() {
+    //     const promises = [
+    //         this.upsertEventsRelation(CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, "Survey load", [{"FieldID": "SurveyKey"}]),
+    //         this.upsertEventsRelation(CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE, "Survey field change", [{"FieldID": "SurveyKey"}, {"FieldID": "ChangedFields"}]),
+    //         this.upsertEventsRelation(CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE, "Survey question change", [{"FieldID": "SurveyKey"}, {"FieldID": "ChangedFields"}]),
+    //         this.upsertEventsRelation(CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK, "Survey question click", [{"FieldID": "SurveyKey"}, {"FieldID": "FieldID"}, {"FieldID": "Action"}]),
+    //     ];
+    //     Promise.all(promises);
+    // }
 
     /***********************************************************************************************/
     /*                                  Public functions
@@ -389,7 +391,9 @@ export class SurveyApiService {
         await this.upsertAddonBlockRelation();
         await this.upsertPageBlockRelation();
         await this.upsertSettingsRelation();
-        await this.upsertJourneyEventsRelation();
+
+        // TODO: Add Journey code when needed.
+        // await this.upsertJourneyEventsRelation();
     }
     
     async saveDraftSurveyTemplate(body: any): Promise<SurveyTemplate>  {
@@ -828,19 +832,20 @@ export class SurveyApiService {
     //                              Journey functions
     /************************************************************************************************/
     
-    async getSurveysOptionalValues(query: any): Promise<{Key: string, Value: any}[]> {
-        let res: {Key: string, Value: any}[] = [];
-        const templateResourceName: string = query['resourceName'] || SURVEY_TEMPLATES_TABLE_NAME;
-        const drafts = await this.getSurveyTemplatesByResourceName(templateResourceName, true);
+    // TODO: Add Journey code when needed.
+    // async getSurveysOptionalValues(query: any): Promise<{Key: string, Value: any}[]> {
+    //     let res: {Key: string, Value: any}[] = [];
+    //     const templateResourceName: string = query['resourceName'] || SURVEY_TEMPLATES_TABLE_NAME;
+    //     const drafts = await this.getSurveyTemplatesByResourceName(templateResourceName, true);
 
-        if (drafts?.length > 0) {
-            res = drafts.map(draft => {
-                return { Key: draft.Key || '', Value: draft.Name }
-            });
-        }
+    //     if (drafts?.length > 0) {
+    //         res = drafts.map(draft => {
+    //             return { Key: draft.Key || '', Value: draft.Name }
+    //         });
+    //     }
 
-        return res;
-    }
+    //     return res;
+    // }
 }
 
 export default SurveyApiService;
