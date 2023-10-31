@@ -12,7 +12,7 @@ import { SurveyApiService } from './surveys-api.service'
 //         const eventString = request.query.event;
 //         const fields: any[] = [{
 //             FieldID: "SurveyKey",
-//             FieldType: "String",
+//             FieldType: "MultipleStringValues",
 //             Title: "Survey key",
 //             OptionalValues: surveysOptionalValues
 //         }];

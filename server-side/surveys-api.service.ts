@@ -380,9 +380,9 @@ export class SurveyApiService {
 
     async upsertRelationsAndScheme(install = true): Promise<void> {
         if (install) {
-            await this.createSchemeTables();
         }
-
+        
+        await this.createSchemeTables();
         await this.createPfsSchemeTables();
 
         await this.upsertImportRelation();
