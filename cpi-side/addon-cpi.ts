@@ -33,6 +33,7 @@ export async function load(configuration: any) {
 
         let mergedSurvey: SurveyTemplate | null = null;
         let success = true;
+        let error;
 
         try {
             const surveyKey = data.SurveyKey || undefined;
@@ -73,13 +74,15 @@ export async function load(configuration: any) {
         } catch(error) {
             console.log(`Failed in survey load, error: ${error}`);
             success = false;
+            error = error;
         }
 
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD} -> after`);
 
         return {
             SurveyView: mergedSurvey,
-            Success: success   
+            Success: success,
+            Error: error
         };
     });
 
@@ -110,6 +113,7 @@ export async function load(configuration: any) {
         const surveyKey = data.SurveyKey || undefined;
         let mergedSurvey: SurveyTemplate | null = mergedSurveys.get(surveyKey) || null;
         let success = true;
+        let error;
 
         try {
             if (surveyKey && data.ChangedFields?.length > 0) { 
@@ -147,13 +151,15 @@ export async function load(configuration: any) {
         } catch(error) {
             console.log(`Failed in survey field change, error: ${error}`);
             success = false;
+            error = error;
         }
 
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE} -> after`);
 
         return {
             SurveyView: mergedSurvey,
-            Success: success   
+            Success: success,
+            Error: error
         };
     });
 
@@ -165,7 +171,8 @@ export async function load(configuration: any) {
         const surveyKey = data.SurveyKey || undefined;
         let mergedSurvey: SurveyTemplate | null = mergedSurveys.get(surveyKey) || null;
         let success = true;
-        
+        let error;
+
         try {
             
             if (surveyKey && data.ChangedFields?.length > 0) { 
@@ -198,13 +205,15 @@ export async function load(configuration: any) {
         } catch(error) {
             console.log(`Failed in survey question change, error: ${error}`);
             success = false;
+            error = error;
         }
 
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE} -> after`);
 
         return {
             SurveyView: mergedSurvey,
-            Success: success   
+            Success: success,
+            Error: error
         };
     });
 
@@ -216,6 +225,7 @@ export async function load(configuration: any) {
         const surveyKey = data.SurveyKey || undefined;
         let mergedSurvey: SurveyTemplate | null = mergedSurveys.get(surveyKey) || null;
         let success = true;
+        let error;
         
         try {
             if (surveyKey && data.FieldID && data.Action.length > 0) { 
@@ -234,13 +244,15 @@ export async function load(configuration: any) {
         } catch(error) {
             console.log(`Failed in survey question click, error: ${error}`);
             success = false;
+            error = error;
         }
 
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK} -> after`);
 
         return {
             SurveyView: mergedSurvey,
-            Success: success   
+            Success: success,
+            Error: error
         };
     });
     
@@ -253,6 +265,7 @@ export async function load(configuration: any) {
         // let surveyTemplate: SurveyTemplate | null = null;
         let additionalFields = [];
         let success = true;
+        let error;
         
         try {
             const surveyTemplateKey = data.SurveyTemplateKey || undefined;
@@ -282,12 +295,14 @@ export async function load(configuration: any) {
         } catch(error) {
             console.log(`Failed in survey template load, error: ${error}`);
             success = false;
+            error = error;
         }
 
         return {
             // SurveyTemplate: surveyTemplate,
             AdditionalFields: additionalFields,
             Success: success   
+            Error: error
         };
     });
 }

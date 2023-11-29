@@ -39,13 +39,15 @@ export type SurveyQuestionClickActionType = 'Set' | 'Delete' | 'View';
 
 export interface SurveyClientEventResult {
     SurveyView: SurveyTemplate | null,
-    Success: boolean
+    Success: boolean,
+    Error: any
 }
 
 export interface SurveyTemplateClientEventResult {
     // SurveyTemplate: SurveyTemplate | null,
     AdditionalFields: any[]
-    Success: boolean
+    Success: boolean,
+    Error: any
 }
 export interface SurveyTemplate extends AddonData {
     Name: string;

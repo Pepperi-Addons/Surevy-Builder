@@ -158,8 +158,8 @@
                 [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('AllowOnlyCameraPhoto',$event)"></pep-checkbox>
 
             <pep-textbox 
-                [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.PHOTO.MAX_MEGAPIXEL' | translate" [type]="'real'" [minValue]="0.5" [maxValue]="20"
-                [value]="question?.MaxMegapixel || '0.5'" (valueChange)="onQuestionEditorFieldChanged('MaxMegapixel',$event)">
+                [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.PHOTO.MAX_MEGAPIXEL' | translate" [type]="'real'" [minValue]="1" [maxValue]="10"
+                [value]="question?.MaxMegapixel || '1'" (valueChange)="onQuestionEditorFieldChanged('MaxMegapixel',$event)">
             </pep-textbox>
             
             <pep-slider #photoQuality [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.PHOTO.QUALITY' | translate" 
