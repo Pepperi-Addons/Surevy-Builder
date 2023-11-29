@@ -301,7 +301,7 @@ export async function load(configuration: any) {
         return {
             // SurveyTemplate: surveyTemplate,
             AdditionalFields: additionalFields,
-            Success: success   
+            Success: success,
             Error: error
         };
     });
