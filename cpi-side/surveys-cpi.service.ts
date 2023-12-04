@@ -522,7 +522,12 @@ class SurveysService {
                         } else {
                             console.log('URI failed to open: ', res?.reason);
                             isValid = false;
-                            errorMessage = `URI failed to open: ${res?.reason}`;
+                            // If there is an error message show it.
+                            if (res?.reason) {
+                                errorMessage = `URI failed to open: ${res?.reason}`;
+                                await client?.alert('Notice', errorMessage);
+                            }
+
                         }
                     }
                 } else if (action === 'Set') {
@@ -539,8 +544,8 @@ class SurveysService {
                         allowedFilesSources.push({ type: 'SignaturePad', title: 'Select Signature'});
                     }
 
-                    const allowedExtensions = ["bmp", "gif", "jpg", "jpeg", "png"];
-
+                    const allowedExtensions = ["bmp", "gif", "jpg", "jpeg", "png", "svg"];
+                    
                     const options: FilePickerOptions = {
                         title: `Select ${currentTemplateQuestion.Type === 'photo' ? 'Image' : 'Signature'}`,
                         allowedFilesSources: allowedFilesSources,
@@ -580,9 +585,27 @@ class SurveysService {
                         currentTemplateQuestion.Value = pfsResult.URL;
                         someQuestionChanged = true;
                     } else {
-                        console.log('filePicker failed: ', res?.reason); // reason can be 'UserCanceled', 'AccessDenied' or 'SizeLimitExceeded'
+                        console.log('filePicker: ', res?.reason); // reason can be 'UserCanceled', 'AccessDenied' or 'SizeLimitExceeded'
                         isValid = false;
-                        errorMessage = `URI failed to open: ${res?.reason}`;
+                        
+                        if (res?.reason && res.reason !== 'UserCanceled') {
+                            // TODO: Translate this error.
+                            let msg = '';
+
+                            if (res.reason === 'UploadFileUnknownError') {
+                                msg = 'Failed to upload file, Please try again later.';
+                            } else if (res.reason === 'NotAllowedExtension') {
+                                msg = 'Invalid file type, the allowed file types are: ' + allowedExtensions.join(', ') + '.';
+                            } else if (res.reason === 'SizeLimitExceeded') {
+                                msg = `File size limit exceeded, max allowed is ${options.sizeLimit} KB.`;
+                            } else if (res.reason === 'CameraNotAvailable') {
+                                msg = 'Camera not available.';
+                            } else if (res.reason === 'AllowedFilesSources') {
+                                msg = 'Cannot find files sources.';
+                            } 
+                            
+                            await client?.alert('Notice', msg);
+                        }
                     }
                 } else if (action === 'Delete') {
                     // Get the pfs key from the mergedSurveysQuestionsRelationValue map.

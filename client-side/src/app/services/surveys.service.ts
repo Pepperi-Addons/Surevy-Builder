@@ -780,15 +780,22 @@ export class SurveysService {
                     if (res.Success) {
                         // Notify survey change to update survey object with all changes (like show if questions if added or removed).
                         this.notifySurveyChange(res.SurveyView);
-
+                        
                         // Notify sections change to update UI.
                         this.notifySectionsChange(res.SurveyView?.Sections);
-
+                        
                         // Notify question change. 
                         this.notifyQuestionChange(questionKey);
                     } else {
-                        // Show default error.
-                        this.showErrorDialog();
+                        // if (!res.Error) {
+                            // Show default error.
+                            this.showErrorDialog();
+                        // } else {
+                        //     if (res.Error !== 'UserCanceled') {
+                        //         // Show error dialog.
+                        //         this.showErrorDialog(res.Error);
+                        //     }
+                        // }
                     }
                 }
             };

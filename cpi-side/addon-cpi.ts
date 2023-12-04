@@ -71,10 +71,10 @@ export async function load(configuration: any) {
             } else {
                 throw new Error(`event data isn't supply`);
             }
-        } catch(error) {
-            console.log(`Failed in survey load, error: ${error}`);
+        } catch(err) {
+            console.log(`Failed in survey load, error: ${err}`);
             success = false;
-            error = error;
+            error = err;
         }
 
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD} -> after`);
@@ -148,10 +148,10 @@ export async function load(configuration: any) {
             } else {
                 throw new Error(`event data isn't supply`);
             }
-        } catch(error) {
-            console.log(`Failed in survey field change, error: ${error}`);
+        } catch(err) {
+            console.log(`Failed in survey field change, error: ${err}`);
             success = false;
-            error = error;
+            error = err;
         }
 
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE} -> after`);
@@ -202,10 +202,10 @@ export async function load(configuration: any) {
             } else {
                 throw new Error(`event data isn't supply`);
             }
-        } catch(error) {
-            console.log(`Failed in survey question change, error: ${error}`);
+        } catch(err) {
+            console.log(`Failed in survey question change, error: ${err}`);
             success = false;
-            error = error;
+            error = err;
         }
 
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE} -> after`);
@@ -235,16 +235,17 @@ export async function load(configuration: any) {
                 if (res.isValid) {
                     mergedSurvey = res.mergedSurvey;
                     mergedSurveys.set(surveyKey, mergedSurvey);
-                } else if (res.errorMessage.length > 0) {
-                    throw new Error(res.errorMessage);
-                }
+                } 
+                // else if (res.errorMessage.length > 0) {
+                //     error = res.errorMessage;
+                // }
             } else {
                 throw new Error(`event data isn't supply`);
             }
-        } catch(error) {
-            console.log(`Failed in survey question click, error: ${error}`);
+        } catch(err) {
+            console.log(`Failed in survey question click, error: ${err}`);
             success = false;
-            error = error;
+            error = err;
         }
 
         service.printLog(`${CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK} -> after`);
@@ -292,10 +293,10 @@ export async function load(configuration: any) {
             } else {
                 throw new Error(`event data isn't supply`);
             }
-        } catch(error) {
-            console.log(`Failed in survey template load, error: ${error}`);
+        } catch(err) {
+            console.log(`Failed in survey template load, error: ${err}`);
             success = false;
-            error = error;
+            error = err;
         }
 
         return {
