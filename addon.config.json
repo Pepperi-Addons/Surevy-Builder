@@ -23,7 +23,7 @@
       }
     ],
     "Dependencies": {
-      "webapp": "18.0.19",
+      "webapp": "18.0.20",
       "adal": "1.4.77",
       "nebula": "0.4.61",
       "cpi_node": "1.2.11",
