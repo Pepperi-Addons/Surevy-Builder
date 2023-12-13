@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { SurveysValidatorService } from './surveys-validator.service';
 import semver from 'semver';
 
-const bundleFileName = 'survey_builder';
+// const bundleFileName = 'survey_builder';
 const TEMPLATE_SCHEME_NAME_PROPERTY = 'TemplateSchemaName';
 export const JOURNEY_EVENTS_RELATION_NAME = 'JourneyEvent'
 
@@ -24,6 +24,7 @@ export class SurveyApiService {
     papiClient: PapiClient
     surveysValidatorService: SurveysValidatorService;
     private readonly SURVEY_ADDON_UUID = 'dd0a85ea-7ef0-4bc1-b14f-959e0372877a';
+    bundleFileName = '';
 
     constructor(private client: Client) {
         this.addonUUID = client.AddonUUID;
@@ -36,6 +37,8 @@ export class SurveyApiService {
             addonSecretKey: client.AddonSecretKey,
             actionUUID: client.ActionUUID
         });
+
+        this.bundleFileName = `file_${this.addonUUID}`;
     }
 
     private async createSchemeTables(): Promise<void> {
@@ -147,7 +150,7 @@ export class SurveyApiService {
             Type: "NgComponent",
             SubType: "NG14",
             AddonUUID: this.addonUUID,
-            AddonRelativeURL: bundleFileName,
+            AddonRelativeURL: this.bundleFileName,
             ComponentName: `${blockName}Component`,
             ModuleName: `${blockName}Module`,
             ElementsModule: 'WebComponents',
@@ -168,7 +171,7 @@ export class SurveyApiService {
             Type: "NgComponent",
             SubType: "NG14",
             AddonUUID: this.client.AddonUUID,
-            AddonRelativeURL: bundleFileName,
+            AddonRelativeURL: this.bundleFileName,
             ComponentName: `${blockName}Component`, // This is should be the block component name (from the client-side)
             ModuleName: `${blockName}Module`, // This is should be the block module name (from the client-side)
             EditorComponentName: `${blockName}EditorComponent`, // This is should be the block editor component name (from the client-side)
@@ -194,7 +197,7 @@ export class SurveyApiService {
             Type: "NgComponent",
             SubType: "NG14",
             AddonUUID: this.addonUUID,
-            AddonRelativeURL: bundleFileName,
+            AddonRelativeURL: this.bundleFileName,
             ComponentName: `${blockName}Component`,
             ModuleName: `${blockName}Module`,
             ElementsModule: 'WebComponents',

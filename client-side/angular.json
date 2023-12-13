@@ -43,7 +43,7 @@
                         ],
                         "styles": [],
                         "scripts": [],
-                        "commonChunk": false,
+                        "commonChunk": true,
                         "extraWebpackConfig": "./webpack.config.js"
                     },
                     "configurations": {
@@ -58,7 +58,7 @@
                         "production": {
                             "optimization": true,
                             "sourceMap": false,
-                            "namedChunks": false,
+                            "namedChunks": true,
                             "extractLicenses": true,
                             "vendorChunk": false,
                             "buildOptimizer": true,
