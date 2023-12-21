@@ -51,10 +51,10 @@ export class SurveyApiService {
                 Name: SURVEYS_BASE_TABLE_NAME
             },
             SyncData: {
-                Sync: true
+                Sync: true,
+                PushLocalChanges: true,
             },
             Type: 'data',
-            PushLocalChanges: true,
             ...udcTempObject
         };
         const createSurveyTable = await this.papiClient.userDefinedCollections.schemes.upsert(schema as any);
