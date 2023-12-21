@@ -339,9 +339,9 @@ export class SurveyApiService {
 
     async upsertRelationsAndScheme(install = true): Promise<void> {
         if (install) {
-            await this.createSchemeTables();
         }
-
+        
+        await this.createSchemeTables();
         await this.upsertImportRelation();
         await this.upsertExportRelation();
         await this.upsertUserEventsRelation();
