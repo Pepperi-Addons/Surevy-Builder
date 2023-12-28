@@ -11,7 +11,7 @@ import { SurveysService } from "./surveys.service";
 })
 export class ValidationService {
 
-    public mandaitoryfields: Array<SurveyObjValidator>;
+    public mandatoryfields: Array<SurveyObjValidator>;
     public failedOnValidation: Array<string> = [];
     private keysValidation = [];
 
@@ -29,7 +29,7 @@ export class ValidationService {
         this.failedOnValidation = [];
         
         const survey: SurveyTemplate = this.surveysService.getSurvey();
-        this.mandaitoryfields =  [];
+        this.mandatoryfields =  [];
         this.keysValidation = [];
         const mandetoryFieldsArr = ['multiple-selection-dropdown','multiple-selection-checkboxes','single-selection-radiobuttons','single-selection-dropdown','boolean-toggle'];
 
@@ -62,15 +62,15 @@ export class ValidationService {
                     dupArr.forEach( (obj,index) => {
                         let type = obj.type.charAt(0).toUpperCase() + obj.type.slice(1);
                         text += `${type} ${obj.index} `+ (index < dupArr.length -1 ? '& ' : '');
-                        this.mandaitoryfields.push( (new SurveyObjValidator(obj.type,'Key', obj.index ,'',true)));
+                        this.mandatoryfields.push( (new SurveyObjValidator(obj.type,'Key', obj.index ,'',true)));
                     });
         
                     const msg = `${text} ${this.translate.instant('VALIDATION.USING_SAME_KEY')}`;
-                    this.mandaitoryfields.push( (new SurveyObjValidator('question','Key', dupKeys ,msg)));
+                    this.mandatoryfields.push( (new SurveyObjValidator('question','Key', dupKeys ,msg)));
                 }
         });
 
-        return this.mandaitoryfields.length ? false : true;
+        return this.mandatoryfields.length ? false : true;
     }
 
     checkQuestionMandatoryFields(question: SurveyTemplateQuestion, secIndex, quesIndex){
@@ -87,13 +87,13 @@ export class ValidationService {
                         const index = `${secIndex.toString()}.${quesIndex.toString()}`; // .${(optIndex+1).toString()}
                         if(opt.key.trim() == ''){
                             const msg = `'${this.translate.instant('VALIDATION.QUESTION')}' ${index} '${this.translate.instant('VALIDATION.OPTION')}' ${optIndex+1} ${this.translate.instant('VALIDATION.KEY_MISSING')}`;
-                            this.mandaitoryfields.push( (new SurveyObjValidator('question','Key', index , msg)));
+                            this.mandatoryfields.push( (new SurveyObjValidator('question','Key', index , msg)));
                             
                         }
 
                         // if(opt.value.trim() == ''){
                         //     const msg = `'question' ${index} ${this.translate.instant('VALIDATION.VALUE_MISSING')}`;
-                        //     this.mandaitoryfields.push( new SurveyObjValidator('question','Value', index , msg));
+                        //     this.mandatoryfields.push( new SurveyObjValidator('question','Value', index , msg));
                         // }
                     });
                 }
@@ -113,25 +113,25 @@ export class ValidationService {
         
         if(obj.Key.trim() == ''){
             const msg = `${type} ${index} ${this.translate.instant('VALIDATION.KEY_MISSING')}`;
-            this.mandaitoryfields.push( new SurveyObjValidator(type,'Key', index, msg));
+            this.mandatoryfields.push( new SurveyObjValidator(type,'Key', index, msg));
         }
 
         if(obj.Title.trim() == ''){
             const msg = `${type} ${index} ${type == 'section' ? this.translate.instant('VALIDATION.NAME_MISSING') : this.translate.instant('VALIDATION.QUESTION_MISSING')}`;
-            this.mandaitoryfields.push( (new SurveyObjValidator(type,'Title', index, msg)));
+            this.mandatoryfields.push( (new SurveyObjValidator(type,'Title', index, msg)));
         }
     }
 
     showValidationInfo(){
-        
+        debugger;
         let content = '';
         
-        this.mandaitoryfields.forEach((field,index) => { 
+        this.mandatoryfields.forEach((field,index) => { 
                 if(!this.failedOnValidation.includes((field.type)+(field.index))){
                     this.failedOnValidation.push((field.type)+(field.index));
                 }
                 if(!field.hidden){
-                    content +=  `${(field.error)}.${index < (this.mandaitoryfields.length - 1) ? '</br>' : ''}`;
+                    content +=  `${(field.error)}.${index < (this.mandatoryfields.length - 1) ? '</br>' : ''}`;
 
                 }
         });

@@ -8,6 +8,7 @@ import { IPepQueryBuilderField } from '@pepperi-addons/ngx-lib/query-builder';
 import { MatDialogRef } from '@angular/material/dialog';
 import { IPepOption } from '@pepperi-addons/ngx-lib';
 import { AdditionalField } from 'src/app/model/survey.model';
+import { coerceNumberProperty } from '@angular/cdk/coercion';
 
 @Component({
     selector: 'survey-selected-item-editor',
@@ -25,6 +26,9 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
 
     private _sections: SurveyTemplateSection[] = [];
     protected showIfDialogRef: MatDialogRef<any> = null;
+
+    protected megapixelMinValue = 1;
+    protected megapixelMaxValue = 10;
 
     constructor(
         protected surveysService: SurveysService,
@@ -142,6 +146,13 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
     }
 
     onQuestionEditorFieldChanged(key,value) {
+        if (key === 'MaxMegapixel') {
+            const numberValue = coerceNumberProperty(value);
+            if (numberValue < this.megapixelMinValue || numberValue > this.megapixelMaxValue) {
+                return; // Don't update the value in case of error.
+            }
+        }
+
         // const oldValue = this.question[key];
         this.question[key] = value;
 

@@ -158,7 +158,7 @@
                 [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('AllowOnlyCameraPhoto',$event)"></pep-checkbox>
 
             <pep-textbox 
-                [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.PHOTO.MAX_MEGAPIXEL' | translate" [type]="'real'" [minValue]="1" [maxValue]="10"
+                [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.PHOTO.MAX_MEGAPIXEL' | translate" [type]="'real'" [minValue]="megapixelMinValue" [maxValue]="megapixelMaxValue"
                 [value]="question?.MaxMegapixel || '1'" (valueChange)="onQuestionEditorFieldChanged('MaxMegapixel',$event)">
             </pep-textbox>
             
