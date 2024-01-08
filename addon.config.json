@@ -42,7 +42,7 @@
       "sync": "0.2.57",
       "generic_resource": "0.6.2",
       "pfs": "1.3.29",
-      "pepperi_pack": "1.1.2"
+      "pepperi_pack": "1.1.6"
     },
     "CPISide": [
       "addon-cpi.ts"
@@ -72,7 +72,8 @@
       "ngx-quill": "12",
       "ngx-signaturepad": "0",
       "ngx-virtual-scroller": "4",
-      "quill": "1"
+      "quill": "1",
+      "rxjs": "7"
     }
   }
 }
