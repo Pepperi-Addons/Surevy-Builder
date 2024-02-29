@@ -32,6 +32,7 @@ export const CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD = 'OnClientSurveyTempl
 export const USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD = 'OnSurveyTemplateViewLoad'; // OnSurveyTemplateViewLoad Or OnSurveyBuilderLoad ?
 
 // **********************************************************************************************
+export const QUESTIONS_NUBER_LIMITATION = 100;
 
 export type SurveyStatusType = 'Submitted' | 'InCreation';
 

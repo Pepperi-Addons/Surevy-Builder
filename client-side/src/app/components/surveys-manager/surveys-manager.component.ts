@@ -90,7 +90,10 @@ export class ServeysManagerComponent implements OnInit, OnDestroy {
         const menuItem = event.source;
         switch(menuItem.key) {
             case this.IMPORT_KEY: {
-                this.dimxService.import();
+                // // Only if can add question.
+                // if (this.surveysService.canAddQuestion()) {
+                    this.dimxService.import();
+                // }
                 break;
             }
         }

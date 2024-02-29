@@ -96,10 +96,10 @@ export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
         this.addQuestionClick.emit(type);
     }
     
-    onQuestionValueChanged(value: any): void {
+    async onQuestionValueChanged(value: any): Promise<void> {
         // console.log(`value change - ${value}`);
         this.question.Value = this.questionValue = value;
-        this.surveysService.changeSurveyQuestionValue(this.question.Key, value);
+        await this.surveysService.changeSurveyQuestionValue(this.question.Key, value);
     }
 
     onKeyup(event) {

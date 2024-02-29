@@ -18,7 +18,7 @@ import { IPepMenuItemClickEvent, PepMenuItem } from "@pepperi-addons/ngx-lib/men
     providers: [DIMXService]
 })
 export class ServeyManagerComponent extends DestoyerDirective implements OnInit, OnDestroy {
-    private readonly IMPORT_KEY = 'import';
+    // private readonly IMPORT_KEY = 'import';
     private readonly EXPORT_KEY = 'export';
 
     get isActive() {
@@ -204,10 +204,11 @@ export class ServeyManagerComponent extends DestoyerDirective implements OnInit,
 
     onMenuItemClick(action: IPepMenuItemClickEvent) {
         // Import survey template
-        if (action.source.key === this.IMPORT_KEY) { 
-            // TODO: Should work only for the same survey template Key (override this survey template).
-            // this.dimxService.import();
-        } else if (action.source.key === this.EXPORT_KEY) { // Export survey template
+        // if (action.source.key === this.IMPORT_KEY) { 
+        //     // TODO: Should work only for the same survey template Key (override this survey template).
+        //     // this.dimxService.import();
+        // } else 
+        if (action.source.key === this.EXPORT_KEY) { // Export survey template
             this.dimxService.export(this.currentSurveyTemplate.Key, this.currentSurveyTemplate.Name);
         }
     }

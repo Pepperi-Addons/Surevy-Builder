@@ -1,4 +1,4 @@
-import { SurveyTemplate, SurveyTemplateQuestion, SurveyTemplateSection } from 'shared';
+import { QUESTIONS_NUBER_LIMITATION, SurveyTemplate, SurveyTemplateQuestion, SurveyTemplateSection } from 'shared';
 
 export class SurveysValidatorService {
 
@@ -120,6 +120,15 @@ export class SurveysValidatorService {
     /***********************************************************************************************/
     /*                                  Public functions
     /***********************************************************************************************/
+
+    validateQuestionsLimitNumber(surveyTemplate: SurveyTemplate): void {
+        // Validate if questions number allow.
+        const questionsNumber = surveyTemplate.Sections.reduce((count, innerArray) => count + innerArray.Questions.length, 0);
+    
+        if (questionsNumber > QUESTIONS_NUBER_LIMITATION) {
+            throw new Error(`Survey can have up to (${QUESTIONS_NUBER_LIMITATION}) questions.`);
+        }
+    }
 
     // Validate the survey template and throw error if not valid.
     validateSurveyTemplateProperties(surveyTemplate: SurveyTemplate): void {

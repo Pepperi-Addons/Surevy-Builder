@@ -9,11 +9,12 @@ import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { ISurveyEditor, SurveyObjValidator } from "../model/survey.model";
 import { SurveyTemplateRowProjection, SurveyTemplate, SurveyTemplateSection, ISurveyTemplateBuilderData, SurveyClientEventResult, SurveyTemplateClientEventResult,
     SurveyTemplateQuestion, SurveyTemplateQuestionType, CLIENT_ACTION_ON_CLIENT_SURVEY_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_FIELD_CHANGE, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CHANGE,
-    SurveyStatusType, CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, SURVEY_TEMPLATES_TABLE_NAME, CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK, SurveyQuestionClickActionType } from 'shared';
+    SurveyStatusType, CLIENT_ACTION_ON_CLIENT_SURVEY_UNLOAD, SURVEY_TEMPLATES_TABLE_NAME, CLIENT_ACTION_ON_CLIENT_SURVEY_TEMPLATE_LOAD, CLIENT_ACTION_ON_CLIENT_SURVEY_QUESTION_CLICK, SurveyQuestionClickActionType, QUESTIONS_NUBER_LIMITATION } from 'shared';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { MatDialogRef } from "@angular/material/dialog";
     
 import * as _ from 'lodash';
+import { UtilitiesService } from "./utilities.service";
 @Injectable({
     providedIn: 'root',
 })
@@ -113,6 +114,7 @@ export class SurveysService {
     }
 
     constructor(
+        private utilitiesService: UtilitiesService,
         private translate: TranslateService,
         private sessionService: PepSessionService,
         private httpService: PepHttpService,
@@ -257,14 +259,19 @@ export class SurveysService {
     private duplicateSelectedSection() {
         if (this._selectedSectionIndex > -1) {
             const sections = this._sectionsSubject.getValue();
-            // const duplicated: SurveyTemplateSection = _.cloneDeep(sections[this._selectedSectionIndex]);
-            const duplicated: SurveyTemplateSection = JSON.parse(JSON.stringify(sections[this._selectedSectionIndex]));
-            duplicated.Key = PepGuid.newGuid();
-            const newSelectedIndex = this._selectedSectionIndex > -1 && this._selectedSectionIndex < sections.length ?
-                this._selectedSectionIndex + 1 : sections.length;
-            sections.splice(newSelectedIndex, 0, duplicated);
-            this.notifySectionsChange(sections);
-            this.notifySelectedSectionChange(duplicated, newSelectedIndex);
+            const currentSection = sections[this._selectedSectionIndex];
+
+            if (this.canAddQuestion(currentSection?.Questions?.length)) {
+                // const duplicated: SurveyTemplateSection = _.cloneDeep(sections[this._selectedSectionIndex]);
+                const duplicated: SurveyTemplateSection = JSON.parse(JSON.stringify(currentSection));
+                duplicated.Key = PepGuid.newGuid();
+                const newSelectedIndex = this._selectedSectionIndex > -1 && this._selectedSectionIndex < sections.length ?
+                    this._selectedSectionIndex + 1 : sections.length;
+                sections.splice(newSelectedIndex, 0, duplicated);
+
+                this.notifySectionsChange(sections);
+                this.notifySelectedSectionChange(duplicated, newSelectedIndex);
+            }
         }
     }
 
@@ -281,18 +288,21 @@ export class SurveysService {
     }
 
     private duplicateSelectedQuestion() {        
-        if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
-            const sections = this._sectionsSubject.getValue();
-            const currentSection = sections[this._selectedSectionIndex];
-            if (currentSection?.Questions?.length > this._selectedQuestionIndex) {
-                // const duplicated: SurveyTemplateQuestion = _.clone(currentSection.Questions[this._selectedQuestionIndex]);
-                const duplicated: SurveyTemplateQuestion = JSON.parse(JSON.stringify(currentSection.Questions[this._selectedQuestionIndex]));
-                duplicated.Key = PepGuid.newGuid();
-                const newSelectedIndex = this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ?
-                    this._selectedQuestionIndex + 1 : currentSection.Questions.length;
-                currentSection.Questions.splice(newSelectedIndex, 0, duplicated);
-                this.notifySectionsChange(sections);
-                this.notifySelectedQuestionChange(duplicated, newSelectedIndex);
+        if (this.canAddQuestion()) {
+            if (this._selectedSectionIndex > -1 && this._selectedQuestionIndex > -1) {
+                const sections = this._sectionsSubject.getValue();
+                const currentSection = sections[this._selectedSectionIndex];
+                if (currentSection?.Questions?.length > this._selectedQuestionIndex) {
+                    // const duplicated: SurveyTemplateQuestion = _.clone(currentSection.Questions[this._selectedQuestionIndex]);
+                    const duplicated: SurveyTemplateQuestion = JSON.parse(JSON.stringify(currentSection.Questions[this._selectedQuestionIndex]));
+                    duplicated.Key = PepGuid.newGuid();
+                    const newSelectedIndex = this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ?
+                        this._selectedQuestionIndex + 1 : currentSection.Questions.length;
+                    currentSection.Questions.splice(newSelectedIndex, 0, duplicated);
+
+                    this.notifySectionsChange(sections);
+                    this.notifySelectedQuestionChange(duplicated, newSelectedIndex);
+                }
             }
         } 
     }
@@ -452,28 +462,47 @@ export class SurveysService {
         this._draggingSectionIndex.next('');
     }
 
-    addQuestion(questionType: SurveyTemplateQuestionType, sectionIndex = -1, questionIndex = -1) {
-        // Create new question
-        const title = this.translate.get('SURVEY_MANAGER.QUESTION_TITLE_PLACEHOLDER').subscribe((title: string) => {
-
-            const question: SurveyTemplateQuestion = {
-                Name: PepGuid.newGuid(),
-                Key: PepGuid.newGuid(),
-                Title: title.toString() || '',
-                Type: questionType,
+    canAddQuestion(questionsCount: number = 1) {
+        const survey = this._surveySubject.getValue();
+        
+        if (survey) {
+            // Validate if questions number allow.
+            const questionsNumber = survey.Sections.reduce((count, innerArray) => count + innerArray.Questions.length, 0);
+    
+            if ((questionsNumber + questionsCount) > QUESTIONS_NUBER_LIMITATION) {
+                this.utilitiesService.showDialogMsg(this.translate.instant('MESSAGES.QUESTIONS_COUNT_LIMIT_MESSAGE'));
+                return false;
             }
+        }
 
-            // Get the sections.
-            const sections = this._surveySubject.getValue().Sections;
-            const currentSection = (sectionIndex > -1 && sectionIndex < sections.length) ? sections[sectionIndex] : sections[this._selectedSectionIndex];
+        return true;
+    }
 
-            const newSelectedIndex = questionIndex > -1 && questionIndex < currentSection.Questions.length ? questionIndex :
-                (this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ? this._selectedQuestionIndex + 1 : currentSection.Questions.length);
-            currentSection.Questions.splice(newSelectedIndex, 0, question);
+    addQuestion(questionType: SurveyTemplateQuestionType, sectionIndex = -1, questionIndex = -1) {
+        // Only if can add question.
+        if (this.canAddQuestion()) {
+            // Create new question
+            const title = this.translate.get('SURVEY_MANAGER.QUESTION_TITLE_PLACEHOLDER').subscribe((title: string) => {
 
-            this.notifySectionsChange(sections);
-            this.notifySelectedQuestionChange(question, newSelectedIndex);
-        });
+                const question: SurveyTemplateQuestion = {
+                    Name: PepGuid.newGuid(),
+                    Key: PepGuid.newGuid(),
+                    Title: title.toString() || '',
+                    Type: questionType,
+                }
+
+                // Get the sections.
+                const sections = this._surveySubject.getValue().Sections;
+                const currentSection = (sectionIndex > -1 && sectionIndex < sections.length) ? sections[sectionIndex] : sections[this._selectedSectionIndex];
+
+                const newSelectedIndex = questionIndex > -1 && questionIndex < currentSection.Questions.length ? questionIndex :
+                    (this._selectedQuestionIndex > -1 && this._selectedQuestionIndex < currentSection.Questions.length ? this._selectedQuestionIndex + 1 : currentSection.Questions.length);
+                currentSection.Questions.splice(newSelectedIndex, 0, question);
+
+                this.notifySectionsChange(sections);
+                this.notifySelectedQuestionChange(question, newSelectedIndex);
+            });
+        }
     }
 
     onQuestionDropped(event: CdkDragDrop<any[]>, sectionIndex: number) {

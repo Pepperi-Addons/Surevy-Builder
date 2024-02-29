@@ -217,7 +217,12 @@ export class SurveyApiService {
         return Promise.resolve(res != null);
     }
 
-    private async validateAndOverrideSurveyTemplateAccordingInterface(surveyTemplate: SurveyTemplate): Promise<SurveyTemplate> {
+    private async validateAndOverrideSurveyTemplateAccordingInterface(surveyTemplate: SurveyTemplate, validateQuestionsLimit: boolean): Promise<SurveyTemplate> {
+        // Validate questions limit number.
+        if (validateQuestionsLimit) {
+            this.surveysValidatorService.validateQuestionsLimitNumber(surveyTemplate);
+        }
+
         // Validate survey template object before upsert.
         this.surveysValidatorService.validateSurveyTemplateProperties(surveyTemplate);
         
@@ -263,7 +268,7 @@ export class SurveyApiService {
         }
 
         // Validate survey template object before upsert.
-        surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(surveyTemplate);
+        surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(surveyTemplate, true);
         
         if (!isDraft) {
             return await this.papiClient.resources.resource(templateResourceName).post(surveyTemplate) as Promise<SurveyTemplate>;
@@ -653,7 +658,7 @@ export class SurveyApiService {
                 try {
                     // Get the template for validate and set some properties.
                     const draft = dimxObject['Object'];
-                    const surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(draft.JsonTemplate);
+                    const surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(draft.JsonTemplate, true);
 
                     // Validate that the resource exist.
                     const scheme = await this.papiClient.userDefinedCollections.schemes.name(draft[TEMPLATE_SCHEME_NAME_PROPERTY]).get();
@@ -695,7 +700,7 @@ export class SurveyApiService {
                     // Get the template from the draft for validate and set some properties.
                     const draft = dimxObject['Object'];
                     const draftTemplate = JSON.parse(draft.JsonTemplate);
-                    await this.validateAndOverrideSurveyTemplateAccordingInterface(draftTemplate);
+                    await this.validateAndOverrideSurveyTemplateAccordingInterface(draftTemplate, false);
                     draft.JsonTemplate = draftTemplate; // Set the parsed template as object.
 
                     // Do not touch the dimxObject['Object'] keep the draft as is.
