@@ -36,6 +36,8 @@
             flex-direction: column;
             gap: variables.$spacing-sm;
         }
+
+        @include checkbox-as-title();
     }
 
     .main-area-container {

@@ -80,7 +80,7 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
                             FieldID: currentQuestion.Key,
                             Title: currentQuestion.Title,
                             FieldType: this.getShowIfQuestionType(currentQuestion.Type),
-                            OptionalValues: currentQuestion.OptionalValues?.map((ov: IPepOption) => { return { Key: ov.key, Value: ov.value } }) || []
+                            OptionalValues: currentQuestion.OptionalValues?.filter((opt: any) => !opt.hide).map((ov: IPepOption) => { return { Key: ov.key, Value: ov.value } }) || []
                         } as IPepQueryBuilderField);
                     }
     
@@ -202,7 +202,11 @@ export class SelectedItemEditorComponent extends DestoyerDirective implements On
         let options: Array<any> = [];
         event.forEach(opt => {
             opt.option.value = opt.option.value.trim() == '' ? opt.option.key : opt.option.value;
-            options.push({key: opt.option.key, value: opt.option.value});
+            options.push({
+                key: opt.option.key, 
+                value: opt.option.value,
+                hide: opt.hide
+            });
         });
 
         this.question['OptionalValues'] = options;

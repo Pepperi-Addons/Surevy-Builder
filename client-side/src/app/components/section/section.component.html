@@ -26,7 +26,7 @@
         (cdkDropListDropped)="onQuestionDropped($event)">
         
         <ng-container *ngFor="let question of questions; let i=index;">
-            <survey-question-generator *ngIf="editable || previewMode || question.Visible" [editable]="editable" [disabled]="disabled" [question]="question" [sequenceNumber]="(index + 1) + '.' + (i + 1)" 
+            <survey-question-generator *ngIf="editable || previewMode || !question.Hide || question.ShowIfResult" [editable]="editable" [disabled]="disabled" [question]="question" [sequenceNumber]="(index + 1) + '.' + (i + 1)" 
                 [isActive]="isActive && selectedQuestion === question" 
                 (questionClick)="onQuestionClicked(i)" (addQuestionClick)="onAddQuestionClicked($event, i)"></survey-question-generator>
         </ng-container>

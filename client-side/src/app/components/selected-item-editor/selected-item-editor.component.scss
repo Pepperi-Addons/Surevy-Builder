@@ -33,4 +33,6 @@ pep-side-bar {
         flex-direction: column;
         gap: variables.$spacing-sm;
     }
+
+    @include checkbox-as-title();
 }

@@ -13,6 +13,7 @@ import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepCheckboxModule } from '@pepperi-addons/ngx-lib/checkbox';
 import { PepGroupButtonsSettingsModule } from '@pepperi-addons/ngx-composite-lib/group-buttons-settings';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
 
 const pepIcons = [
     pepIconSystemFilter2,
@@ -35,6 +36,7 @@ const pepIcons = [
         PepTextareaModule,
         PepCheckboxModule,
         PepGroupButtonsSettingsModule,
+        PepMenuModule,
         TranslateModule.forChild()
     ],
     exports: [QuestionSelectOptionsComponent]

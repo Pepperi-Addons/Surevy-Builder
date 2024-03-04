@@ -131,12 +131,12 @@
         
         <div class="showIfCont">
             <pep-checkbox class="checkbox-as-title" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF' | translate"
-                [value]="question?.IsShowIf || false" [renderTitle]="false" xAlignment="left"
+                [value]="question?.IsShowIf || false" [renderTitle]="false" xAlignment="left" [disabled]="question.Hide"
                 (valueChange)="onQuestionEditorFieldChanged('IsShowIf', $event)">
             </pep-checkbox>
             <!-- <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SHOW_IF" | translate}}</label> -->
             <pep-button  value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.ADD_LOGIC' | translate}}" 
-                                iconName="system_filter_2" iconPosition="end" [disabled]="!question?.IsShowIf"
+                                iconName="system_filter_2" iconPosition="end" [disabled]="question.Hide || !question?.IsShowIf"
                                 (buttonClick)="openShowIfDialog()"></pep-button>
 
 
@@ -152,6 +152,9 @@
        
         <pep-checkbox class="checkbox-no-background" [value]="question?.Mandatory || false" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.MAKE_MANDATORY' | translate" 
             [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('Mandatory',$event)"></pep-checkbox>
+        
+        <pep-checkbox class="checkbox-no-background" [value]="question?.Hide || false" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.HIDE_QUESTION' | translate" 
+            [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('Hide',$event)"></pep-checkbox>
         
         <ng-container *ngIf="question?.Type == 'photo'">
             <pep-checkbox class="checkbox-no-background" [value]="question?.AllowOnlyCameraPhoto || false" [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.PHOTO.ALLOW_CAMERA_PHOTO_ONLY' | translate" 

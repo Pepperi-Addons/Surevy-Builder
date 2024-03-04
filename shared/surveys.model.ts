@@ -94,9 +94,10 @@ export interface SurveyTemplateQuestion {
     Description?: string;
     Type: SurveyTemplateQuestionType;
     Mandatory?: boolean; 
+    Hide?: boolean; 
     ShowIf?: any;
+    ShowIfResult?: boolean;
     Value?: any;
-    Visible?: boolean;
     [key: string]: any;
 }
 

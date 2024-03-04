@@ -123,7 +123,6 @@ export class ValidationService {
     }
 
     showValidationInfo(){
-        debugger;
         let content = '';
         
         this.mandatoryfields.forEach((field,index) => { 

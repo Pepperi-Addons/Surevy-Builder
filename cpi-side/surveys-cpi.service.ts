@@ -225,17 +225,17 @@ class SurveysService {
             const section: SurveyTemplateSection = surveyTemplate.Sections[sectionIndex];
 
             for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
-                let shouldBeVisible = true;
                 const question = section.Questions[questionIndex];
+                let shouldBeVisible = !question.Hide;
 
-                if (question.ShowIf) {
+                if (shouldBeVisible && question.ShowIf) {
                     const showIf = this.convertShowIfQueryValuesToString(question.ShowIf);
                     
                     // Call pepperi filters to apply this.
                     shouldBeVisible = filter([questionsObject], showIf).length > 0;
                 }
 
-                question.Visible = shouldBeVisible;
+                question.ShowIfResult = shouldBeVisible;
             }
         }
 
@@ -282,10 +282,12 @@ class SurveysService {
             for (let questionIndex = 0; questionIndex < section.Questions.length; questionIndex++) {
                 const question = section.Questions[questionIndex];
             
-                // If this questions is mandatory and the value is empty.
-                if (question.Visible && question.Mandatory && (question.Value === undefined || question.Value === null || question.Value.length === 0)) {
-                    errorMsg = `"${question.Title}" is mandatory`;
-                    break;
+                if (!question.Hide) {
+                    // If this questions is mandatory and the value is empty.
+                    if (question.ShowIfResult && question.Mandatory && (question.Value === undefined || question.Value === null || question.Value.length === 0)) {
+                        errorMsg = `"${question.Title}" is mandatory`;
+                        break;
+                    }
                 }
             }
 

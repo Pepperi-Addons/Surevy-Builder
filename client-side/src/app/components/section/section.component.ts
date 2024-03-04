@@ -27,7 +27,15 @@ export class SectionComponent implements OnInit {
     @Input() isActive: boolean = false;
     @Input() hasError: boolean = false;
 
-    @Input() questions: Array<SurveyTemplateQuestion>;
+    private _questions: Array<SurveyTemplateQuestion>;
+    @Input()
+    set questions(value: Array<SurveyTemplateQuestion>) {
+        this._questions = value;
+    }
+    get questions(): Array<SurveyTemplateQuestion> {
+        return this._questions;
+    }
+
     @Input() showIf: boolean = false;
     
     @Input() sectionsQuestionsDropList = [];
@@ -63,7 +71,6 @@ export class SectionComponent implements OnInit {
         // private translate: TranslateService,
     ) { }
 
-   
     ngOnInit(): void {
         if (this.editable) {
             this.surveysService.selectedQuestionChange$.subscribe((question: SurveyTemplateQuestion) => {

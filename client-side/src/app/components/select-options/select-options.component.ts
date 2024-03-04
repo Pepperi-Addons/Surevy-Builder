@@ -6,16 +6,20 @@ import { SurveyOptionStateType } from '../../model/survey.model';
 import { SurveyTemplateQuestion } from 'shared';
 import { CdkDragDrop, CdkDragEnd, CdkDragStart, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import { PepButton } from '@pepperi-addons/ngx-lib/button';
+import { IPepMenuItemClickEvent, PepMenuItem } from '@pepperi-addons/ngx-lib/menu';
+import { TranslateService } from '@ngx-translate/core';
 
 class SelectOption {
     state: SurveyOptionStateType; 
     id: number;
     option: IPepOption;
+    hide: boolean;
 
-    constructor(state: SurveyOptionStateType, id: number, option: IPepOption) { 
+    constructor(state: SurveyOptionStateType, id: number, option: IPepOption, hide: boolean) { 
         this.id = id || 0;
         this.state = state || 'collapse';
         this.option = option || { key: '', value: '' };
+        this.hide = hide ?? false;
     }
 }
     
@@ -42,8 +46,10 @@ export class QuestionSelectOptionsComponent implements OnInit {
     selectOptions: Array<SelectOption> = [];
     optionsDropList = [];
     public numOfColumn : Array<PepButton> = [];
+    actionsMenu: Array<PepMenuItem> = [];
 
     constructor(
+        private translate: TranslateService,
         private surveysService: SurveysService,
         // private validationService: ValidationService
     ) { }
@@ -53,7 +59,13 @@ export class QuestionSelectOptionsComponent implements OnInit {
             { key: '1', value: '1', callback: (event: any) => this.onQuestionEditorFieldChanged('selectionColumns',event.source.key)},
             { key: '2', value: '2', callback: (event: any) => this.onQuestionEditorFieldChanged('selectionColumns',event.source.key)},
             { key: '3', value: '3', callback: (event: any) => this.onQuestionEditorFieldChanged('selectionColumns',event.source.key)}
-        ] 
+        ];
+
+        this.actionsMenu = [
+            { key: 'delete', text: this.translate.instant('SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.DELETE') },
+            { key: 'hide', text: this.translate.instant('SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.HIDE') },
+            { key: 'show', text: this.translate.instant('SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ACTIONS.SHOW') }
+        ]
     }
 
     setOptionalValues(){
@@ -61,7 +73,7 @@ export class QuestionSelectOptionsComponent implements OnInit {
         this._question?.OptionalValues?.forEach((optVal, index) => {
             const optSel: IPepOption = { key: optVal.key, value: optVal.value };
             
-            const opt = new SelectOption('collapse',this.selectOptions.length, optSel);
+            const opt = new SelectOption('collapse',this.selectOptions.length, optSel, optVal.hide);
             this.selectOptions.push(opt);
         });
 
@@ -70,6 +82,7 @@ export class QuestionSelectOptionsComponent implements OnInit {
             
         }
     }
+
     onQuestionValueChanged(value: any): void {
         // TODO: implement
     }
@@ -92,31 +105,52 @@ export class QuestionSelectOptionsComponent implements OnInit {
 
     addNewSelectOption(event){
         const optSel = { key: `Key_${this.selectOptions.length + 1}`, value: `Value ${this.selectOptions.length + 1}` };
-        const opt = new SelectOption('collapse', this.selectOptions.length,optSel);
+        const opt = new SelectOption('collapse', this.selectOptions.length,optSel, false);
         this.selectOptions.push(opt);
         this.optionChanged.emit(this.selectOptions);
-        
     }
 
-    onRemoveClick(option) {
-        const index = this.selectOptions.findIndex(opt => opt.id === option.id);
+    // onRemoveClick(option: SelectOption) {
+    //     const index = this.selectOptions.findIndex(opt => opt.id === option.id);
 
-        this.selectOptions.splice(index, 1);
-        this.selectOptions.forEach((opt, index) => {opt.id = index; });
+    //     this.selectOptions.splice(index, 1);
+    //     this.selectOptions.forEach((opt, index) => {opt.id = index; });
 
-        this.optionChanged.emit(this.selectOptions);
-
-        
+    //     this.optionChanged.emit(this.selectOptions);
+    // }
+    
+    getActionsMenuForOption(option: SelectOption): Array<PepMenuItem> {
+        if (option.hide) {
+            return this.actionsMenu.filter(action => action.key !== 'hide');
+        } else {
+            return this.actionsMenu.filter(action => action.key !== 'show');
+        }
     }
 
-    onEditClick(option) {
+    onMenuItemClick(item: IPepMenuItemClickEvent, option: SelectOption){
+        if(item?.source?.key == 'delete') {
+            const index = this.selectOptions.findIndex(opt => opt.id === option.id);
+            this.selectOptions.splice(index, 1);
+            this.selectOptions.forEach((opt, index) => {opt.id = index; });
+            this.optionChanged.emit(this.selectOptions);
+
+        } else if(item?.source?.key == 'show') {
+            option.hide = false;
+            this.optionChanged.emit(this.selectOptions);
+        } else if(item?.source?.key == 'hide') {
+            option.hide = true;
+            this.optionChanged.emit(this.selectOptions);
+        }
+    }
+
+    onEditClick(event: any, option: SelectOption) {
         option['state'] = option['state'] === 'collapse' ? 'expand' : 'collapse';
     }
 
     drop(event: CdkDragDrop<string[]>) {
         if (event.previousContainer === event.container) {
-             moveItemInArray(this.selectOptions, event.previousIndex, event.currentIndex);
-             this.optionChanged.emit(this.selectOptions);
+            moveItemInArray(this.selectOptions, event.previousIndex, event.currentIndex);
+            this.optionChanged.emit(this.selectOptions);
         } 
     }
 

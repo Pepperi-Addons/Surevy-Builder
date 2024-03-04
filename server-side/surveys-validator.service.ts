@@ -67,23 +67,23 @@ export class SurveysValidatorService {
     /*                                  Public functions
     /***********************************************************************************************/
     
-    private validateSurveyTemplateQuestionProperties(sectionsPropertyBreadcrumb: string, question: SurveyTemplateQuestion): void {
+    private validateSurveyTemplateQuestionProperties(questionPropertyBreadcrumb: string, question: SurveyTemplateQuestion): void {
         // Validate Key
-        this.validateObjectProperty(question, 'Key', sectionsPropertyBreadcrumb);
+        this.validateObjectProperty(question, 'Key', questionPropertyBreadcrumb);
 
         // Validate Name if exist (Optional)
-        this.validateObjectProperty(question, 'Name', sectionsPropertyBreadcrumb, true);
+        this.validateObjectProperty(question, 'Name', questionPropertyBreadcrumb, true);
         
         // Validate Title if exist
-        this.validateObjectProperty(question, 'Title', sectionsPropertyBreadcrumb);
+        this.validateObjectProperty(question, 'Title', questionPropertyBreadcrumb);
         
         // Validate Description if exist (Optional)
-        this.validateObjectProperty(question, 'Description', sectionsPropertyBreadcrumb, true);
+        this.validateObjectProperty(question, 'Description', questionPropertyBreadcrumb, true);
 
         // Validate Type if exist
-        this.validateObjectProperty(question, 'Type', sectionsPropertyBreadcrumb);
+        this.validateObjectProperty(question, 'Type', questionPropertyBreadcrumb);
         if (typeof question.Type !== 'string') {
-            throw new Error(this.getWrongTypeError(sectionsPropertyBreadcrumb, 'Type', 'string'));
+            throw new Error(this.getWrongTypeError(questionPropertyBreadcrumb, 'Type', 'string'));
         }
         // TODO:
         //  else if (!SurveyQuestionType.some(pst => pst === question.Type)) {
@@ -91,7 +91,10 @@ export class SurveysValidatorService {
         // }
 
         // Validate Mandatory if exist (Optional)
-        this.validateObjectProperty(question, 'Mandatory', sectionsPropertyBreadcrumb, true, 'boolean');
+        this.validateObjectProperty(question, 'Mandatory', questionPropertyBreadcrumb, true, 'boolean');
+
+        // Validate Hide if exist (Optional)
+        this.validateObjectProperty(question, 'Hide', questionPropertyBreadcrumb, true, 'boolean');
     }
 
     private validateSurveyTemplateSectionProperties(surveyPropertyBreadcrumb: string, section: SurveyTemplateSection, sectionIndex: number): void {

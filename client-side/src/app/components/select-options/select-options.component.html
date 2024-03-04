@@ -1,19 +1,42 @@
 <label class="title body-lg">{{ "SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TITLE" | translate}}</label>
 
-<!-- <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT' | translate"
-             [value]="_question?.placeHolderText || ''"
-             [placeholder]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.PLACEHOLDER_TEXT_DEFAULT' | translate"
-             (valueChange)="onQuestionEditorFieldChanged('placeHolderText',$event)">
-</pep-textbox> -->
-
 <ng-container *ngIf="_question?.Type === 'single-selection-radiobuttons' || _question?.Type === 'multiple-selection-checkboxes'">
     <pep-group-buttons-settings 
-    [subHeader]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.COLUMNS' | translate"
-    [btnKey]="_question?.selectionColumns || '1'" 
-    [groupType]="'custom'" [btnsArray]="numOfColumn"
-    (btnkeyChange)="onQuestionEditorFieldChanged('selectionColumns',$event)">
-</pep-group-buttons-settings>
+        [subHeader]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.COLUMNS' | translate"
+        [btnKey]="_question?.selectionColumns || '1'" 
+        [groupType]="'custom'" [btnsArray]="numOfColumn"
+        (btnkeyChange)="onQuestionEditorFieldChanged('selectionColumns',$event)">
+    </pep-group-buttons-settings>
 </ng-container>
+
+<div (cdkDropListDropped)="drop($event)" cdkDropList class="available-options">
+    <pep-draggable-item *ngFor="let opt of selectOptions; let i=index;" [ngClass]="{ 'hidden-option': opt.hide }"
+        titlePrefix="{{ opt?.id + 1 }}.&nbsp;" title="{{ opt?.option?.key || ''}}"  styleType="weak" [toggleContent]="true" 
+        [actionsMenu]="getActionsMenuForOption(opt)" [shadow]="false" titleClassNames="color-link" [isToggleContentOpen]="opt?.state == 'expand'" 
+        (contentToggle)="onEditClick($event, opt);" (actionsMenuItemClick)="onMenuItemClick($event, opt)"
+        cdkDrag  style="cursor: grab;" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)">
+        <ng-container pep-toggle-content>
+            <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_KEY' | translate"
+                [value]="opt.option.key" (valueChange)="onQuestionOptionChanged('key',$event,opt)" [mandatory]="true">
+            </pep-textbox>
+            <pep-textarea [key]="'question'" (valueChange)="onQuestionOptionChanged('value',$event,opt)" 
+                [value]="opt.option.value" [mandatory]="false" [rowSpan]="1.5"
+                [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.TYPE_YOUR_OPTION' | translate">
+            </pep-textarea>
+        </ng-container>
+    </pep-draggable-item>
+
+    <pep-checkbox *ngIf="_question?.Type === 'single-selection-dropdown'" class="checkbox-no-background withPaddingBot" [value]="_question?.AddNoneOption || true" 
+              [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.ADD_NONE_OPTION' | translate" 
+              [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('AddNoneOption',$event)"></pep-checkbox>
+
+    <pep-button class="add-content-button" value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_ITEM' | translate}}" styleType="regular" 
+        iconName="number_plus" iconPosition="end" (buttonClick)="addNewSelectOption($event)"></pep-button>
+</div>
+
+
+
+<!-- 
 <div class="options-container" (cdkDropListDropped)="drop($event)"  cdkDropList style="margin-top:1rem;">
     <div  *ngFor="let opt of selectOptions; let i=index;">
         <div class="select-option-container" cdkDrag [cdkDragData]="opt?.id" (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)">
@@ -40,7 +63,6 @@
             </div>
         </div>
     </div>
-    <!-- <ng-container [ngTemplateOutlet]="selectOptionsTemplate" [ngTemplateOutletContext]="{opt:opt}"></ng-container> -->
 </div>
 
 <pep-checkbox *ngIf="_question?.Type === 'single-selection-dropdown'" class="checkbox-no-background withPaddingBot" [value]="_question?.AddNoneOption || true" 
@@ -48,8 +70,4 @@
               [renderTitle]="false" (valueChange)="onQuestionEditorFieldChanged('AddNoneOption',$event)"></pep-checkbox>
 
  <pep-button class="add-content-button" value="{{'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.SELECT_OPTION.ADD_ITEM' | translate}}" styleType="regular" iconName="number_plus" iconPosition="end"
-             (buttonClick)="addNewSelectOption($event)"></pep-button>
-
-<!-- <ng-template #selectOptionsTemplate let-opt='opt'>
-  
-</ng-template> -->
+             (buttonClick)="addNewSelectOption($event)"></pep-button> -->

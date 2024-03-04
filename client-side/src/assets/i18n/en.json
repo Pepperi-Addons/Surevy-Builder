@@ -74,12 +74,15 @@
                 "MAX_CHARACTERS": "Max Characters",
                 "MAX_CHARACTERS_PLACEHOLDER": "Empty for no max",
                 "MAKE_MANDATORY": "Make Mandatory",
+                "HIDE_QUESTION": "Hide Question",
                 "ADD_NONE_OPTION": "Add \"None\" option",
                 "COLUMNS": "Columns",
                 "ACTIONS": {
                     "ADD_LOGIC": "Add Logic",
                     "DUPLICATE": "Duplicate",
-                    "DELETE": "Delete"
+                    "DELETE": "Delete",
+                    "HIDE": "Hide",
+                    "SHOW": "Show"
                 },
                 "PHOTO":{
                     "ALLOW_CAMERA_PHOTO_ONLY": "Allow camera photos only",

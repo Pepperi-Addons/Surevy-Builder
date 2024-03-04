@@ -6,6 +6,17 @@
     &.cdk-drag-placeholder {
         opacity: 0.5;
     }
+
+    &.hidden-question {
+        .question-with-sequence-container {
+            opacity: 0.35;
+
+            .question-field-container > * {
+                pointer-events: none;
+            }
+        }
+        
+    }
     
     .add-separator-container {
         @include add-separator-container();

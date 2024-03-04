@@ -54,6 +54,12 @@ export class SurveysService {
         return this._questionSubject.asObservable();
     }
 
+    // This subject is for question change.
+    private _questionFromEditorSubject: BehaviorSubject<SurveyTemplateQuestion> = new BehaviorSubject<SurveyTemplateQuestion>(null);
+    get questionFromEditorChange$(): Observable<SurveyTemplateQuestion> {
+        return this._questionFromEditorSubject.asObservable();
+    }
+
     // This is the selected section index
     private _selectedSectionIndex = -1;
     get selectedSectionIndex(): number {
@@ -201,6 +207,10 @@ export class SurveysService {
                 this._questionSubject.next(question);
             }
         }
+    }
+
+    private notifyQuestionFromEditorChange(question: SurveyTemplateQuestion) {
+        this._questionFromEditorSubject.next(question);
     }
 
     private notifySelectedSectionChange(section: SurveyTemplateSection, index: number) {
@@ -398,6 +408,8 @@ export class SurveysService {
                 this.notifySectionsChange(sections);
             }
         }
+
+        this.notifyQuestionFromEditorChange(surveyQuestion);
     }
 
     async setSelected(waitForDelay: boolean, sectionIndex: number, questionIndex: number = -1) {

@@ -4,7 +4,7 @@ import { SurveysService } from 'src/app/services/surveys.service';
 import { ValidationService } from 'src/app/services/validation.service';
 import { SurveyTemplateQuestion, SurveyTemplateQuestionType } from 'shared';
 import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
-import { IPepFieldClickEvent } from '@pepperi-addons/ngx-lib';
+import { IPepFieldClickEvent, IPepOption } from '@pepperi-addons/ngx-lib';
 
 @Component({
     selector: 'survey-question-generator',
@@ -18,6 +18,7 @@ export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
         this._question = value;
 
         this.questionValue = this.question.Value;
+        this.setOptionalValues(this.question.OptionalValues);
         this.valueLength = this.questionValue ? this.questionValue.length : 0;
     }
     get question(): SurveyTemplateQuestion {
@@ -47,15 +48,16 @@ export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
     protected valueLength = 0;
     protected questionValue: any = '';
 
-    protected selectedQuestionKey = '';
+    optionalValues: IPepOption[] = [];
+
+    private setOptionalValues(options): void {
+        this.optionalValues = options?.filter((option: any) => !option.hide) || [];
+    }
 
     constructor(
         private surveysService: SurveysService,
         private validationService: ValidationService
     ) { 
-        this.surveysService.selectedQuestionChange$.subscribe((question: SurveyTemplateQuestion) => {
-            this.selectedQuestionKey = question?.Key || '';
-        });
     }
     
     ngOnInit(): void {
@@ -69,8 +71,13 @@ export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
             this.surveysService.isGrabbingChange$.subscribe((value: boolean) => {
                 this.isGrabbing = value;
             });
-        }
 
+            this.surveysService.questionFromEditorChange$.subscribe((question: SurveyTemplateQuestion) => {
+                if (question && this.question.Key === question.Key) {
+                    this.question = question;
+                }
+            });
+        }
         
     }
 

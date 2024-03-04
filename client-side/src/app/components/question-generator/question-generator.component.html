@@ -1,4 +1,5 @@
 <div class="question-container" cdkDrag [cdkDragDisabled]="!editable" [cdkDragData]="question"
+    [ngClass]="{ 'hidden-question': question.Hide }"
     (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)">
     <div *ngIf="editable" class="add-separator-container" [ngClass]="{ 'is-grabbing': isGrabbing, 'state-open': isQuestionTypeMenuOpen }">
         <survey-question-menu class="add-button" sizeType="sm" styleType="regular" (onStateChange)="onStateChange($event)"
@@ -34,12 +35,12 @@
                 </ng-container>
                 <ng-container *ngSwitchCase="'single-selection-dropdown'">
                     <pep-select [value]="questionValue" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
-                        [options]="question?.OptionalValues" (valueChange)="onQuestionValueChanged($event)" [emptyOption]="question?.AddNoneOption">
+                        [options]="optionalValues" (valueChange)="onQuestionValueChanged($event)" [emptyOption]="question?.AddNoneOption">
                     </pep-select>
                 </ng-container>
                 <ng-container *ngSwitchCase="'multiple-selection-dropdown'">
                     <pep-select [value]="questionValue" [mandatory]="question?.Mandatory" [renderTitle]="false" [disabled]="disabled"
-                        type="multi" [options]="question?.OptionalValues" [emptyOption]="question?.AddNoneOption"
+                        type="multi" [options]="optionalValues" [emptyOption]="question?.AddNoneOption"
                         (valueChange)="onQuestionValueChanged($event)"></pep-select>
                 </ng-container>
                 <ng-container *ngSwitchCase="'single-selection-radiobuttons'">
@@ -50,7 +51,7 @@
                         [isMultiSelect]="false"
                         [disabled]="disabled"
                         [numOfCol]="question?.selectionColumns"
-                        [options]="question?.OptionalValues"
+                        [options]="optionalValues"
                         (valueChange)="onQuestionValueChanged($event)">
                     </pep-select-panel>
                 </ng-container>
@@ -62,7 +63,7 @@
                         [isMultiSelect]="true"
                         [disabled]="disabled"
                         [numOfCol]="question.selectionColumns"
-                        [options]="question?.OptionalValues"
+                        [options]="optionalValues"
                         (valueChange)="onQuestionValueChanged($event)">
                     </pep-select-panel>
                 </ng-container>

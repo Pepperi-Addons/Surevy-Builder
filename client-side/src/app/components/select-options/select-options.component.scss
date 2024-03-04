@@ -6,6 +6,22 @@
 //     margin-bottom: ngx-variables.$spacing-lg;
 // }
 
+.available-options {
+    display: flex;
+    flex-flow: column;
+    gap: ngx-variables.$spacing-sm;
+
+    .hidden-option {
+        opacity: 0.35;
+    }
+
+    ::ng-deep {
+        .pep-field { 
+            margin-bottom: 0;
+        }
+    }
+}
+
 .add-content-button{
     margin-bottom: ngx-variables.$spacing-lg;
 }
