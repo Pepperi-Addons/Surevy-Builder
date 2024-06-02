@@ -17,7 +17,7 @@ export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
     set question(value: SurveyTemplateQuestion) {
         this._question = value;
 
-        this.questionValue = this.question.Value;
+        this.questionValue = this.question.Value || '';
         this.valueLength = this.questionValue ? this.questionValue.length : 0;
     }
     get question(): SurveyTemplateQuestion {
