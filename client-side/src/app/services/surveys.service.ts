@@ -129,9 +129,16 @@ export class SurveysService {
     ) {
 
         this.surveyLoad$.subscribe((survey: SurveyTemplate) => {
+            // Init the question subject.
+            this._questionSubject.next(null);
+
+            // Init additional fields.
+            this.notifyAdditionalFieldsChange({});
+
             this.loadSurveyEditor(survey);
             this.notifySectionsChange(survey?.Sections ?? []);
             this.setSelected(false, 0);
+
             // this.loadQuestions(survey);
         });
     }    

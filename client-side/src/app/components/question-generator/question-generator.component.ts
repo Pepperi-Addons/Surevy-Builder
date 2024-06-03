@@ -4,20 +4,20 @@ import { SurveysService } from 'src/app/services/surveys.service';
 import { ValidationService } from 'src/app/services/validation.service';
 import { SurveyTemplateQuestion, SurveyTemplateQuestionType } from 'shared';
 import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
-import { IPepFieldClickEvent, IPepOption } from '@pepperi-addons/ngx-lib';
+import { BaseDestroyerDirective, IPepFieldClickEvent, IPepOption } from '@pepperi-addons/ngx-lib';
 
 @Component({
     selector: 'survey-question-generator',
     templateUrl: './question-generator.component.html',
     styleUrls: ['./question-generator.component.scss', './question-generator.component.theme.scss']
 })
-export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
+export class QuestionGeneratorComponent extends BaseDestroyerDirective implements OnInit, AfterViewInit {
     private _question: SurveyTemplateQuestion;
     @Input() 
     set question(value: SurveyTemplateQuestion) {
         this._question = value;
 
-        this.questionValue = this.question.Value;
+        this.questionValue = this.question?.Value || '';
         this.setOptionalValues(this.question.OptionalValues);
         this.valueLength = this.questionValue ? this.questionValue.length : 0;
     }
@@ -58,17 +58,18 @@ export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
         private surveysService: SurveysService,
         private validationService: ValidationService
     ) { 
+        super();
     }
     
     ngOnInit(): void {
-        this.surveysService.questionChange$.subscribe((question: SurveyTemplateQuestion) => {
+        this.surveysService.questionChange$.pipe(this.getDestroyer()).subscribe((question: SurveyTemplateQuestion) => {
             if (question && this.question.Key === question.Key) {
                 this.question = question;
             }
         });
 
         if (this.editable) {
-            this.surveysService.isGrabbingChange$.subscribe((value: boolean) => {
+            this.surveysService.isGrabbingChange$.pipe(this.getDestroyer()).subscribe((value: boolean) => {
                 this.isGrabbing = value;
             });
 
