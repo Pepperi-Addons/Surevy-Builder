@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, Subject, takeUntil } from "rxjs";
 import { CdkDragDrop, CdkDragEnd, CdkDragStart  } from '@angular/cdk/drag-drop';
 import { SurveysService } from '../../services/surveys.service';
 import { ValidationService } from 'src/app/services/validation.service';
-import { PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
+import { BaseDestroyerDirective, PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
 import { NavigationService } from '../../services/navigation.service';
 import { SurveyTemplate, SurveyTemplateSection } from "shared";
 import { IPepMenuItemClickEvent, PepMenuItem } from '@pepperi-addons/ngx-lib/menu';
@@ -24,7 +24,7 @@ export interface ISurveyRuntimeHostObject {
     templateUrl: './survey-builder-internal.component.html',
     styleUrls: ['./survey-builder-internal.component.scss']
 })
-export class SurveyBuilderComponent implements OnInit, OnDestroy {
+export class SurveyBuilderComponent extends BaseDestroyerDirective implements OnInit, OnDestroy {
     @ViewChild('sectionsCont', { static: true }) sectionsContainer: ElementRef;
 
     @Input() editMode: boolean = false;
@@ -61,8 +61,6 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     protected isSubmitted = false;
     protected surveyName = '';
 
-    private readonly _destroyed: Subject<void>;
-
     constructor(
         private route: ActivatedRoute,
         private renderer: Renderer2,
@@ -72,11 +70,7 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
         private surveysService: SurveysService,
         private validationService: ValidationService
     ) {
-        this._destroyed = new Subject();
-    }
-
-    private getDestroyer() {
-        return takeUntil(this._destroyed);
+        super();
     }
 
     private setSurveyDataProperties(survey: SurveyTemplate) {
@@ -152,9 +146,6 @@ export class SurveyBuilderComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this._destroyed.next();
-        this._destroyed.complete();
-
         this.surveysService.unloadSurveyData();
     }
 
