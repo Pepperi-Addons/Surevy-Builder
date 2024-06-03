@@ -61,14 +61,14 @@ export class QuestionGeneratorComponent extends BaseDestroyerDirective implement
     }
     
     ngOnInit(): void {
-        this.surveysService.questionChange$.subscribe((question: SurveyTemplateQuestion) => {
+        this.surveysService.questionChange$.pipe(this.getDestroyer()).subscribe((question: SurveyTemplateQuestion) => {
             if (question && this.question.Key === question.Key) {
                 this.question = question;
             }
         });
 
         if (this.editable) {
-            this.surveysService.isGrabbingChange$.subscribe((value: boolean) => {
+            this.surveysService.isGrabbingChange$.pipe(this.getDestroyer()).subscribe((value: boolean) => {
                 this.isGrabbing = value;
             });
         }
