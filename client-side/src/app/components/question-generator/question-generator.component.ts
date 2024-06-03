@@ -4,20 +4,20 @@ import { SurveysService } from 'src/app/services/surveys.service';
 import { ValidationService } from 'src/app/services/validation.service';
 import { SurveyTemplateQuestion, SurveyTemplateQuestionType } from 'shared';
 import { IPepMenuStateChangeEvent } from '@pepperi-addons/ngx-lib/menu';
-import { IPepFieldClickEvent } from '@pepperi-addons/ngx-lib';
+import { BaseDestroyerDirective, IPepFieldClickEvent } from '@pepperi-addons/ngx-lib';
 
 @Component({
     selector: 'survey-question-generator',
     templateUrl: './question-generator.component.html',
     styleUrls: ['./question-generator.component.scss', './question-generator.component.theme.scss']
 })
-export class QuestionGeneratorComponent implements OnInit, AfterViewInit {
+export class QuestionGeneratorComponent extends BaseDestroyerDirective implements OnInit, AfterViewInit {
     private _question: SurveyTemplateQuestion;
     @Input() 
     set question(value: SurveyTemplateQuestion) {
         this._question = value;
-debugger;
-        this.questionValue = this.question.Value || '';
+
+        this.questionValue = this.question?.Value || '';
         this.valueLength = this.questionValue ? this.questionValue.length : 0;
     }
     get question(): SurveyTemplateQuestion {
@@ -53,7 +53,9 @@ debugger;
         private surveysService: SurveysService,
         private validationService: ValidationService
     ) { 
-        this.surveysService.selectedQuestionChange$.subscribe((question: SurveyTemplateQuestion) => {
+        super();
+
+        this.surveysService.selectedQuestionChange$.pipe(this.getDestroyer()).subscribe((question: SurveyTemplateQuestion) => {
             this.selectedQuestionKey = question?.Key || '';
         });
     }
