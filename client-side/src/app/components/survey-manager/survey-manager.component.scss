@@ -1,6 +1,7 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions';
-@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins';
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
+@import '../../../mixins.scss';
 
 :host {
     height: inherit;
@@ -22,7 +23,7 @@
             }
     
             .mat-checkbox-layout {
-                @include mixins.font-body(variables.$fs-lg, variables.$lh-lg);
+                @include ngx-mixins.font-body(variables.$fs-lg, variables.$lh-lg);
                 font-weight: variables.$font-weight-bold !important;
     
                 .mat-checkbox-label span {
@@ -62,7 +63,7 @@
     height: 100%;
     width: 100%;
 
-    @include add-padding();
+    // @include add-padding();
 
     pep-side-bar {
         @include side-bar-title();
