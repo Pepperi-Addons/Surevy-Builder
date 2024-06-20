@@ -217,7 +217,7 @@ export class SurveyApiService {
         return Promise.resolve(res != null);
     }
 
-    private async validateAndOverrideSurveyTemplateAccordingInterface(surveyTemplate: SurveyTemplate, validateQuestionsLimit: boolean): Promise<SurveyTemplate> {
+    private validateAndOverrideSurveyTemplateAccordingInterface(surveyTemplate: SurveyTemplate, validateQuestionsLimit: boolean): SurveyTemplate {
         // Validate questions limit number.
         if (validateQuestionsLimit) {
             this.surveysValidatorService.validateQuestionsLimitNumber(surveyTemplate);
@@ -268,7 +268,7 @@ export class SurveyApiService {
         }
 
         // Validate survey template object before upsert.
-        surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(surveyTemplate, true);
+        surveyTemplate = this.validateAndOverrideSurveyTemplateAccordingInterface(surveyTemplate, true);
         
         if (!isDraft) {
             return await this.papiClient.resources.resource(templateResourceName).post(surveyTemplate) as Promise<SurveyTemplate>;
@@ -607,7 +607,7 @@ export class SurveyApiService {
                 // Update the draft survey template and hide it.
                 if (res != null) {
                     const surveyTemplateCopy = JSON.parse(JSON.stringify(surveyTemplate));
-                    this.hideSurveyTemplate(templateResourceName, surveyTemplateCopy, true);
+                    await this.hideSurveyTemplate(templateResourceName, surveyTemplateCopy, true);
                 }
                 
                 return Promise.resolve(res);
@@ -658,7 +658,7 @@ export class SurveyApiService {
                 try {
                     // Get the template for validate and set some properties.
                     const draft = dimxObject['Object'];
-                    const surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(draft.JsonTemplate, true);
+                    const surveyTemplate = this.validateAndOverrideSurveyTemplateAccordingInterface(draft.JsonTemplate, true);
 
                     // Validate that the resource exist.
                     const scheme = await this.papiClient.userDefinedCollections.schemes.name(draft[TEMPLATE_SCHEME_NAME_PROPERTY]).get();
@@ -676,10 +676,10 @@ export class SurveyApiService {
                     draft.JsonTemplate = JSON.stringify(surveyTemplate);
 
                     // dimxObject['Object'] = draft;
-                } catch (err) {
+                } catch (err: any) {
                     // Set the error on the page.
                     dimxObject['Status'] = 'Error';
-                    dimxObject['Details'] = err;
+                    dimxObject['Details'] = err.message;
                 }
             }
 
@@ -700,12 +700,11 @@ export class SurveyApiService {
                     // Get the template from the draft for validate and set some properties.
                     const draft = dimxObject['Object'];
                     const draftTemplate = JSON.parse(draft.JsonTemplate);
-                    await this.validateAndOverrideSurveyTemplateAccordingInterface(draftTemplate, false);
-                    draft.JsonTemplate = draftTemplate; // Set the parsed template as object.
-
+                    draft.JsonTemplate = this.validateAndOverrideSurveyTemplateAccordingInterface(draftTemplate, false);
+                    
                     // Do not touch the dimxObject['Object'] keep the draft as is.
                     // ***********************************************************************************************
-                    // const surveyTemplate = await this.validateAndOverrideSurveyTemplateAccordingInterface(JSON.parse(draft.JsonTemplate));
+                    // const surveyTemplate = this.validateAndOverrideSurveyTemplateAccordingInterface(JSON.parse(draft.JsonTemplate));
                     // // Copy the template scheme to set it later in the import.
                     // surveyTemplate[TEMPLATE_SCHEME_NAME_PROPERTY] = draft[TEMPLATE_SCHEME_NAME_PROPERTY];
                     // dimxObject['Object'] = surveyTemplate;
