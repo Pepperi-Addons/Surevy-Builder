@@ -33,6 +33,8 @@ export const USER_ACTION_ON_SURVEY_TEMPLATE_VIEW_LOAD = 'OnSurveyTemplateViewLoa
 
 // **********************************************************************************************
 export const QUESTIONS_NUBER_LIMITATION = 100;
+export const QUESTION_TITLE_LENGTH_LIMITATION = 90;
+export const QUESTION_DESCRIPTION_LENGTH_LIMITATION = 255;
 
 export type SurveyStatusType = 'Submitted' | 'InCreation';
 

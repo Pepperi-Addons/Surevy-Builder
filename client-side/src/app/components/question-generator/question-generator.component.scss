@@ -1,4 +1,5 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
 @import '../../../mixins.scss';
 
 .question-container {
@@ -48,6 +49,10 @@
             gap: variables.$spacing-sm;
             height: 100%;
             width: 100%;
+
+            .field-title-two-lines {
+                @include ngx-mixins.multi-line-ellipsis(1);
+            }
         }
     }
 

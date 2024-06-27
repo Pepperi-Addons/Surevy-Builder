@@ -1,4 +1,4 @@
-import { QUESTIONS_NUBER_LIMITATION, SurveyTemplate, SurveyTemplateQuestion, SurveyTemplateSection } from 'shared';
+import { QUESTIONS_NUBER_LIMITATION, QUESTION_DESCRIPTION_LENGTH_LIMITATION, QUESTION_TITLE_LENGTH_LIMITATION, SurveyTemplate, SurveyTemplateQuestion, SurveyTemplateSection } from 'shared';
 
 export class SurveysValidatorService {
 
@@ -12,6 +12,10 @@ export class SurveysValidatorService {
         return `${objectBreadcrumb} -> ${propertyName} is empty.`;
     }
     
+    private getLengthValueError(objectBreadcrumb: string, propertyName: string): string {
+        return `${objectBreadcrumb} -> ${propertyName} is exceeded the allowed length.`;
+    }
+
     private getWrongTypeError(objectBreadcrumb: string, propertyName: string, typeName: string): string {
         return `${objectBreadcrumb} -> ${propertyName} should be ${typeName}.`;
     }
@@ -77,8 +81,19 @@ export class SurveysValidatorService {
         // Validate Title if exist
         this.validateObjectProperty(question, 'Title', questionPropertyBreadcrumb);
         
+        // Validate title length
+        if (question.Title.length > QUESTION_TITLE_LENGTH_LIMITATION) {
+            throw new Error(this.getLengthValueError(questionPropertyBreadcrumb, 'Title'));
+        }
+
         // Validate Description if exist (Optional)
         this.validateObjectProperty(question, 'Description', questionPropertyBreadcrumb, true);
+        // Validate Description length
+        if (question.Description && question.Description.length > 0) {
+            if (question.Description.length > QUESTION_DESCRIPTION_LENGTH_LIMITATION) {
+                throw new Error(this.getLengthValueError(questionPropertyBreadcrumb, 'Description'));
+            }
+        }
 
         // Validate Type if exist
         this.validateObjectProperty(question, 'Type', questionPropertyBreadcrumb);

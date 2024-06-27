@@ -93,11 +93,11 @@
         <pep-textbox [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.KEY' | translate" [mandatory]="true" [disabled]="question?.KeyDisabled || false"
             [value]="question?.Key || ''" (valueChange)="onQuestionEditorFieldChanged('Key',$event)">
         </pep-textbox>
-        <pep-textarea [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_TITLE' | translate" [rowSpan]="1.5" [mandatory]="true"
+        <pep-textarea [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.QUESTION_TITLE' | translate" [rowSpan]="1.5" [mandatory]="true" [maxFieldCharacters]="90"
             (valueChange)="onQuestionEditorFieldChanged('Title',$event)" [value]="question?.Title || ''">
         </pep-textarea>
         <pep-textarea 
-            [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2"
+            [label]="'SURVEY_MANAGER.SURVEY_EDITOR.RIGHT_SIDE.DESCRIPTION' | translate" [rowSpan]="2" [maxFieldCharacters]="255"
             [value]="question?.Description || ''" (valueChange)="onQuestionEditorFieldChanged('Description',$event)">
         </pep-textarea>
         

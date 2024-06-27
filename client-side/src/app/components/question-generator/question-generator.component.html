@@ -14,10 +14,12 @@
         <div class="question-field-container " (mousedown)="onQuestionClicked($event)" 
             [ngClass]="{ 'active-question': isActive, 'error-in-question': isValidQuestion() == false }">
 
-            <pep-field-title [label]="question.Title" [mandatory]="question.Mandatory" [fontBodyType]="editable ? 'xs' : 'md'"
+            <!-- Title -->
+            <pep-field-title [label]="question.Title" [multiLine]="true" [mandatory]="question.Mandatory" [fontBodyType]="editable ? 'xs' : 'md'"
                 [inputLength]="valueLength" [maxFieldCharacters]="question.MaxCharacters || 0">
             </pep-field-title>
 
+            <!-- Description -->
             <div *ngIf="question.Description?.length > 0">
                 <span class="body-{{editable ? 'xs' : 'sm'}} color-dimmed" title="{{ question.Description }}">{{ question.Description }}</span>
             </div>
