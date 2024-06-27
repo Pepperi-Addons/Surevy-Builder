@@ -676,7 +676,7 @@ export class SurveyApiService {
                     draft.JsonTemplate = JSON.stringify(surveyTemplate);
 
                     // dimxObject['Object'] = draft;
-                } catch (err: any) {
+                } catch (err) {
                     // Set the error on the page.
                     dimxObject['Status'] = 'Error';
                     dimxObject['Details'] = err.message;
